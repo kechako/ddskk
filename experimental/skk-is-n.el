@@ -2,9 +2,12 @@
 ;; Copyright (C) 1985, 1986, 1989, 1990, 1991, 1992, 1994, 1996, 1997
 ;;  Free Software Foundation, Inc.
 
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-is-n.el,v 1.1.2.2 2000/09/27 13:42:22 minakaji Exp $
 ;; Keywords: japanese
+;; Last Modified: $Date: 2000/09/27 13:42:22 $
 
-;; This file is not part of Daredevil SKK yet.
+;; This file is part of Daredevil SKK.
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

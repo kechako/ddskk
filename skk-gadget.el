@@ -3,11 +3,10 @@
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
-;; Maintainer: Murata Shuuichirou  <mrt@astec.co.jp>
-;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.3 2000/08/13 03:00:38 czkmt Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.4 2000/09/27 13:42:05 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/13 03:00:38 $
+;; Last Modified: $Date: 2000/09/27 13:42:05 $
 
 ;; This file is part of Daredevil SKK.
 

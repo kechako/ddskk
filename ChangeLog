@@ -1,3 +1,48 @@
+2000-09-27  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* Makefile: Change Maintainer to SKK Development Team.
+	* SKK-CFG: Ditto.
+	* SKK-MK: Ditto.
+	* ccc.el: Ditto.
+	* doc/skk.texi: Ditto.
+	* etc/SKK.tut.E: Ditto.
+	* etc/SKK.tut: Ditto.
+	* experimental/skk-correct.el: Ditto.
+	* experimental/skk-dcomp.el: Ditto.
+	* experimental/skk-dos.el: Ditto.
+	* experimental/skk-e18.el: Ditto.
+	* experimental/skk-exsearch.el: Ditto.
+	* experimental/skk-exserv.el: Ditto.
+	* experimental/skk-is-n.el: Ditto.
+	* experimental/tut-code/skk-def.el: Ditto.
+	* experimental/tut-code/skk-tutcode.el: Ditto.
+	* make.bat: Ditto.
+	* skk-abbrev.el: Ditto.
+	* skk-auto.el: Ditto.
+	* skk-comp.el: Ditto.
+	* skk-cursor.el: Ditto.
+	* skk-develop.el: Ditto.
+	* skk-gadget.el: Ditto.
+	* skk-isearch.el: Ditto.
+	* skk-jisx0201.el: Ditto.
+	* skk-kakasi.el: Ditto.
+	* skk-kcode.el: Ditto.
+	* skk-leim.el: Ditto.
+	* skk-look.el: Ditto.
+	* skk-lookup.el: Ditto.
+	* skk-num.el: Ditto.
+	* skk-obsolete.el: Ditto.
+	* skk-server.el: Ditto.
+	* skk-setup.el.in: Ditto.
+	* skk-study.el: Ditto.
+	* skk-tut.el: Ditto.
+	* skk-vars.el: Ditto.
+	* skk-viper.el: Ditto.
+	* skk-xm20_4.el: Ditto.
+	* skk.el: Ditto.
+	* tinyinstall.el: Ditto.
+	* vip.el: Ditto.
+
 2000-09-26  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-num.el (skk-num-type3-kanji-1, skk-num-type5-kanji-1): Don't

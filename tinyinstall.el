@@ -3,11 +3,11 @@
 ;; Copyright (C) 1996,1997,1998,1999,2000 Free Software Foundation, Inc.
 
 ;; Author: MORIOKA Tomohiko <morioka@jaist.ac.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
 ;; Created: 1996/08/18
 ;; Keywords: install, byte-compile, directory detection
-;; Version: $Id: tinyinstall.el,v 1.3.4.3 2000/07/07 22:13:43 minakaji Exp $
-;; Last Modified: $Date: 2000/07/07 22:13:43 $
+;; Version: $Id: tinyinstall.el,v 1.3.4.4 2000/09/27 13:42:12 minakaji Exp $
+;; Last Modified: $Date: 2000/09/27 13:42:12 $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as

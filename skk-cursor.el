@@ -3,10 +3,10 @@
 ;; Masatake YAMATO <masata-y@is.aist-nara.ac.jp> 
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.30 2000/09/09 05:13:26 czkmt Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.31 2000/09/27 13:42:05 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/09 05:13:26 $
+;; Last Modified: $Date: 2000/09/27 13:42:05 $
 
 ;; This file is part of Daredevil SKK.
 

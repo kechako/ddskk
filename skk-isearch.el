@@ -3,10 +3,10 @@
 ;; Enami Tsugutomo <enami@ba2.so-net.or.jp>
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.31 2000/09/17 17:59:48 czkmt Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.32 2000/09/27 13:42:05 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/17 17:59:48 $
+;; Last Modified: $Date: 2000/09/27 13:42:05 $
 
 ;; This file is part of Daredevil SKK.
 

@@ -3,9 +3,10 @@
 ;; Murata Shuuichirou <mrt@astec.co.jp>
 ;;
 ;; Author: Murata Shuuichirou <mrt@mickey.ai.kyutech.ac.jp>
-;; Version: $Id: skk-leim.el,v 1.5.2.3.2.7 2000/09/17 15:03:32 czkmt Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-leim.el,v 1.5.2.3.2.8 2000/09/27 13:42:06 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/17 15:03:32 $
+;; Last Modified: $Date: 2000/09/27 13:42:06 $
 
 ;; This file is part of Daredevil SKK.
 

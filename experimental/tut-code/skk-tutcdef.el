@@ -2,10 +2,10 @@
 ;; Copyright (C) 1999 GUNJI Takao <gunji@sils.shoin.ac.jp>
 
 ;; Author: GUNJI Takao <gunji@sils.shoin.ac.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tutcdef.el,v 1.8.4.1 2000/09/11 20:10:49 minakaji Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-tutcdef.el,v 1.8.4.2 2000/09/27 13:42:23 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/11 20:10:49 $
+;; Last Modified: $Date: 2000/09/27 13:42:23 $
 
 ;; This file is part of Daredevil SKK.
 

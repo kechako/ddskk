@@ -2,10 +2,10 @@
 ;; Copyright (C) 1999 Mikio Nakajima <minakaji@osaka.email.ne.jp>
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-correct.el,v 1.1.2.1 2000/01/27 05:20:25 minakaji Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-correct.el,v 1.1.2.2 2000/09/27 13:42:20 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/27 05:20:25 $
+;; Last Modified: $Date: 2000/09/27 13:42:20 $
 
 ;; This file is part of Daredevil SKK.
 

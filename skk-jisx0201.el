@@ -2,11 +2,11 @@
 ;; Copyright (C) 1999, 2000 Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.27 2000/09/17 15:03:14 czkmt Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.28 2000/09/27 13:42:06 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/09/17 15:03:14 $
+;; Last Modified: $Date: 2000/09/27 13:42:06 $
 
 ;; This file is part of Daredevil SKK.
 

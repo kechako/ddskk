@@ -3,10 +3,10 @@ rem MAKE.BAT for SKK.
 rem Copyright (C) 1999 Yuh Ohmura, mailto:yutopia@t3.rim.or.jp
 rem
 rem Author: Yuh Ohmura, mailto:yutopia@t3.rim.or.jp
-rem Maintainer: Yuh Ohmura, mailto:yutopia@t3.rim.or.jp
-rem Version: $Id: make.bat,v 1.10.4.4 2000/04/26 05:43:25 yutopia Exp $
+rem Maintainer: SKK Development Team mailto:skk@ring.gr.jp
+rem Version: $Id: make.bat,v 1.10.4.5 2000/09/27 13:42:04 minakaji Exp $
 rem Created: March 23, 1999
-rem Last Modified: $Date: 2000/04/26 05:43:25 $
+rem Last Modified: $Date: 2000/09/27 13:42:04 $
 
 rem ********************************************************************
 rem *                                                                  *

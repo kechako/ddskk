@@ -1,10 +1,10 @@
 ;;; vip.el --- a VI Package for GNU Emacs
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
 ;; Version: 3.7
 ;; Keywords: emulations
-;; Last Modified: $Date: 2000/07/07 22:13:43 $
+;; Last Modified: $Date: 2000/09/27 13:42:12 $
 ;; Previous versions:
 ;;   Version 3.5: September 15, 1987
 

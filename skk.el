@@ -4,10 +4,10 @@
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.73 2000/09/24 20:18:46 czkmt Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk.el,v 1.19.2.6.2.74 2000/09/27 13:42:09 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/24 20:18:46 $
+;; Last Modified: $Date: 2000/09/27 13:42:09 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/09/24 20:18:46 $")
+      (let* ((raw-date "$Date: 2000/09/27 13:42:09 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))

@@ -2,10 +2,10 @@
 ;; Copyright (C) 2000 Masatake YAMATO <masata-y@is.aist-nara.ac.jp> 
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: ccc.el,v 1.1.2.1 2000/09/09 03:25:48 minakaji Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: ccc.el,v 1.1.2.2 2000/09/27 13:42:04 minakaji Exp $
 ;; Keywords: cursor
-;; Last Modified: $Date: 2000/09/09 03:25:48 $
+;; Last Modified: $Date: 2000/09/27 13:42:04 $
 
 ;; This software is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free

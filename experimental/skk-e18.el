@@ -2,11 +2,12 @@
 ;; Copyright (C) 2000 Tsukamoto Tetsuo
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
-;; Version: $Id: skk-e18.el,v 1.1.2.24 2000/09/12 09:32:37 czkmt Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-e18.el,v 1.1.2.25 2000/09/27 13:42:21 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/12 09:32:37 $
+;; Last Modified: $Date: 2000/09/27 13:42:21 $
 
-;; This file is not yet part of Daredevil SKK.
+;; This file is part of Daredevil SKK.
 
 ;; Daredevil SKK  is free software;  you  can redistribute it  and/or modify it
 ;; under the terms  of the GNU General Public License  as published by the Free

@@ -4,10 +4,10 @@
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
-;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-comp.el,v 1.4.2.4.2.4 2000/07/17 21:42:43 minakaji Exp $
+;; Maintainer: SKK Development Team <skk@ring.gr.jp>
+;; Version: $Id: skk-comp.el,v 1.4.2.4.2.5 2000/09/27 13:42:05 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/17 21:42:43 $
+;; Last Modified: $Date: 2000/09/27 13:42:05 $
 
 ;; This file is part of Daredevil SKK.
 

@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
-# Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-# Version: $Id: Makefile,v 1.13.4.20 2000/09/18 16:11:08 czkmt Exp $
-# Last Modified: $Date: 2000/09/18 16:11:08 $
+# Maintainer: SKK Development Team <skk@ring.gr.jp>
+# Version: $Id: Makefile,v 1.13.4.21 2000/09/27 13:42:03 minakaji Exp $
+# Last Modified: $Date: 2000/09/27 13:42:03 $
 
 
 VERSION = 11.3

@@ -141,7 +141,7 @@
 	``skk-cursor-color-before-entering-minibuffer''.
 	(minibuffer-exit-hook): Retrieve cursor color from
 	``skk-cursor-color-before-entering-minibuffer''.
-	
+
 	* skk-vars.el (skk-cursor-color-before-entering-minibuffer): New
 	internal buffer local variable.
 
@@ -255,8 +255,8 @@
 1999-12-04  Murata Shuuichirou  <mrt@notwork.org>
 
 	* skk-macs.el (skk-find-coding-system): Check symbolicity of arg,
- 	before pass it to `find-coding-system'.  xemacs's
- 	`find-coding-system' doesn't like string argument.
+	before pass it to `find-coding-system'.  xemacs's
+	`find-coding-system' doesn't like string argument.
 
 1999-12-03  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
@@ -298,7 +298,7 @@
 	* READMEs/CVS_on_Windows: update
 
 	* make.bat: add what-where and clean option
-	
+
 1999-12-01  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-abbrev.el: Do not require stack-m.
@@ -579,7 +579,7 @@
 
 1999-11-21  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
-	* skk-mode.el (skk-mode): Set cursor color if `skk-mode-invoked'
+	* skk.el (skk-mode): Set cursor color if `skk-mode-invoked'
 	is nil and the function is called interactively.
 
 1999-11-21  Mikio Nakajima  <minakaji@osaka.email.ne.jp>

@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/10/09 00:16:29 $
+;; Last Modified: $Date: 2000/10/17 14:14:55 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -215,6 +215,7 @@ ANSI Dvorak 配列キーボードで omelet 入力するための基本ルール。")
 
 ;;
 
-(provide 'skk-omelet-dvorak)
+(require 'product)
+(product-provide (provide 'skk-omelet-dvorak) (require 'skk-version))
 
 ;; skk-omelet.el ends here

@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/10/12 10:11:04 $
+;; Last Modified: $Date: 2000/10/17 14:14:54 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -774,6 +774,7 @@ keycode 131 = underscore\n"))
 
 ;;
 
-(provide 'skk-nicola)
+(require 'product)
+(product-provide (provide 'skk-nicola) (require 'skk-version))
 
 ;; skk-nicola.el ends here

@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/11 10:46:27 $
+;; Last Modified: $Date: 2000/10/17 14:14:52 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -88,6 +88,7 @@ Convert to Hankaku Katakana or Toggle Katakana <=> Hankaku Katakana Mode"
 
 ;;
 
-(provide 'skk-kanagaki-menu)
+(require 'product)
+(product-provide (provide 'skk-kanagaki-menu) (require 'skk-version))
 
 ;;; skk-kanagaki-menu.el ends here

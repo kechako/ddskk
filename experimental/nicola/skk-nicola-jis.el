@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/10/09 00:16:28 $
+;; Last Modified: $Date: 2000/10/17 14:14:53 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -209,6 +209,7 @@
 
 ;;
 
-(provide 'skk-nicola-jis)
+(require 'product)
+(product-provide (provide 'skk-nicola-jis) (require 'skk-version))
 
 ;; skk-nicola-jis.el ends here

@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/10/09 00:16:28 $
+;; Last Modified: $Date: 2000/10/17 14:14:52 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -120,6 +120,7 @@ keycode 34 = at grave\n")
 
 ;;
 
-(provide 'skk-106-jis)
+(require 'product)
+(product-provide (provide 'skk-106-jis) (require 'skk-version))
 
 ;; skk-106-jis.el ends here

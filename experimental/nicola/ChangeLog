@@ -1,3 +1,11 @@
+2000-10-17  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-106-jis.el, skk-kanagaki-menu-oe.el,
+	skk-kanagaki-menu.el, skk-kanagaki-util.el, skk-kanagaki.el,
+	skk-nicola-dvorak.el, skk-nicola-jis.el, skk-nicola-us.el,
+	skk-nicola.el, skk-oasys.el, skk-omelet-dvorak.el,
+	skk-omelet-jis.el, skk-omelet-us.el: Call `product-provide'.
+
 2000-10-12  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-nicola.el (skk-nicola-turn-on-j-mode): Use

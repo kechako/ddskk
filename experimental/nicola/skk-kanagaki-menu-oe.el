@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/06 11:34:47 $
+;; Last Modified: $Date: 2000/10/17 14:14:52 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -128,6 +128,7 @@
 
 ;;
 
-(provide 'skk-kanagaki-menu-oe)
+(require 'product)
+(product-provide (provide 'skk-kanagaki-menu-oe) (require 'skk-version))
 
 ;; skk-kanagaki-menu-oe.el ends here

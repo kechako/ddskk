@@ -1,3 +1,34 @@
+2000-09-04  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK: Under Emacs 18, load bytecomp-runtime.el if possible.
+
+	* skk-cursor.el (execute-extended-command): Advise this function
+	under XEmacs only.
+
+	* skk-isearch.el (skk-isearch-mode-setup): Activate input method
+	in the working buffer, if `current-input-method' is
+	japanese-skk{-auto-fill}.
+	(skk-isearch-mode-cleanup): Inacticate input method in the working
+	buffer, if `default-input-method' is japanese-skk{-auto-fill}.
+	(skk-isearch-find-keys-define): Don't overwrite the keymaps for
+	prefix keys.
+	(skk-isearch-setup-keymap): Keys for `toggle-input-method' call
+	`skk-isearch-skk-mode', if `default-input-method' is
+	japanese-skk{-auto-fill}.
+	(skk-isearch-skk-mode): Add an autoload cookie.
+
+	* skk-leim.el: Now don't set `current-input-method-title'. Always
+	show `skk-input-mode-string'.
+
+	* skk-setup.el.in (isearch-mode-end-hook): Call
+	`skk-isearch-mode-cleanup' if the feature skk-isearch is provided.
+	(isearch-mdoe-map): Make sure C-\ is bound to
+	`isearch-toggle-input-method'.
+	(isearch-toggle-input-method): New advice. Invoke skk-isearch if
+	`default-input-method' is japanese-skk{-auto-fill}.
+	(isearch-message-prefix): Don't show `current-input-method-title'
+	if `default-input-method' is japanese-skk{-auto-fill}.
+
 2000-09-04  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-look.el (skk-look-ispell): New function.

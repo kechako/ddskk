@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.11 2000/09/09 23:09:45 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.12 2000/09/10 16:02:46 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/09 23:09:45 $
+;; Last Modified: $Date: 2000/09/10 16:02:46 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -238,6 +238,7 @@
 	       (null (or (nth 2 poss) (nth 3 poss))))
 	   (skk-look-1 word))
 	  (t
+	   (setq var (nconc (nth 2 poss) (nth 3 poss)))
 	   (while var
 	     ;; call look command by each candidate put out by ispell.
 	     (setq ret (skk-nunion ret (cons (car var) (skk-look-1 (car var))))

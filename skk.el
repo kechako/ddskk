@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.76 2000/10/01 21:04:55 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.77 2000/10/05 16:23:27 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/01 21:04:55 $
+;; Last Modified: $Date: 2000/10/05 16:23:27 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/10/01 21:04:55 $")
+      (let* ((raw-date "$Date: 2000/10/05 16:23:27 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -2746,7 +2746,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   ;; (interactive "f辞書ファイル: ")
   (let ((count (funcall skk-count-jisyo-candidates-function file-or-table)))
     (if (interactive-p)
-	(message "%d entries" count)
+	(message "%d candidates" count)
       count)))
 
 (defun skk-count-jisyo-candidates-original (file)
@@ -2767,11 +2767,20 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                 (re-search-forward "^;; okuri-nasi entries.$" nil t nil))))
             (skk-error "このファイルは SKK 辞書ではありません"
                        "This file is not a SKK dictionary"))
+	(beginning-of-line)
+	(while (looking-at ";")
+	  (forward-line 1)
+	  (beginning-of-line))
+	(search-forward " " nil t)
         (while (search-forward "/" nil t)
-          (cond ((looking-at "\\[")
+          (cond ((or (eolp) (looking-at "\\["))
                  (forward-line 1)
-                 (beginning-of-line))
-                ((not (eolp))
+                 (beginning-of-line)
+		 (while (looking-at ";")
+		   (forward-line 1)
+		   (beginning-of-line))
+		 (search-forward " " nil t))
+                (t
                  (setq count (1+ count))))
           (if interactive-p
               (message "Counting jisyo candidates...%3d%% done"

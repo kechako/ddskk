@@ -1,3 +1,18 @@
+2000-03-16  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-MK (SKK-MK-cleanup-trouble-makers): Removed.
+	(SKK-MK-install): Do not use `SKK-MK-cleanup-trouble-makers'.
+	(SKK-MK-install-package): Ditto. 
+	(LISPDIR): Remove space between a S expression and paren.
+	(SKK-MK-install): Ditto.
+	(SKK-MK-install-package): Ditto.
+	(SKK-MK-texinfo-format): Ditto.
+	(SKK-MK-what-where): Ditto.
+	(SKK-MK-texinfo-format): Bind `standard-output' to nil.
+	(SKK-MK-generate-autoloads-el): Ditto.
+	(SKK-MK-compile): Remove local `standard-output'.
+	(write-region): Removed.
+
 2000-03-13  Takao KAWAMURA  <kawamura@debian.org>
 
 	* Makefile (clean): Doesn't remove ../ddskk*.

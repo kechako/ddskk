@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: SKK Development Team <skk@ring.gr.jp>
-# Version: $Id: Makefile,v 1.13.4.21 2000/09/27 13:42:03 minakaji Exp $
-# Last Modified: $Date: 2000/09/27 13:42:03 $
+# Version: $Id: Makefile,v 1.13.4.22 2000/11/02 09:51:35 czkmt Exp $
+# Last Modified: $Date: 2000/11/02 09:51:35 $
 
 
 VERSION = 11.3
@@ -31,6 +31,9 @@ info:
 
 install:
 	$(EMACS) $(FLAGS) -f SKK-MK-install 
+
+install-info:
+	$(EMACS) $(FLAGS) -f SKK-MK-install-info
 
 install-package:
 	$(XEMACS) $(FLAGS) -f SKK-MK-install-package 

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.22 2000/07/07 22:13:38 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.23 2000/08/31 14:06:04 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:38 $
+;; Last Modified: $Date: 2000/08/31 14:06:04 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -383,6 +383,9 @@
         skk-katakana nil)
   ;; initialize
   (setq skk-input-mode-string skk-hiragana-mode-string)
+  (static-when (eq skk-emacs-type 'xemacs)
+    (let ((cons (rassq 'skk-input-mode-string mode-line-format)))
+      (and cons (setcar cons skk-xmas-hiragana-extent))))
   (static-if (memq skk-emacs-type '(nemacs mule1))
       (use-local-map skk-current-local-map))
   (force-mode-line-update)
@@ -398,6 +401,13 @@
         skk-katakana katakana)
   (setq skk-input-mode-string (if skk-katakana skk-katakana-mode-string
 				skk-hiragana-mode-string))
+  (static-when (eq skk-emacs-type 'xemacs)
+    (let ((cons (rassq 'skk-input-mode-string mode-line-format)))
+      (and cons
+	   (setcar cons
+		   (if skk-katakana
+		       skk-xmas-katakana-extent
+		     skk-xmas-hiragana-extent)))))
   (static-if (memq skk-emacs-type '(nemacs mule1))
       (use-local-map
        (append skk-j-mode-map
@@ -415,6 +425,9 @@
         ;; sub mode of skk-j-mode.
         skk-katakana nil
         skk-input-mode-string skk-latin-mode-string)
+  (static-when (eq skk-emacs-type 'xemacs)
+    (let ((cons (rassq 'skk-input-mode-string mode-line-format)))
+      (and cons (setcar cons skk-xmas-latin-extent))))
   (static-if (memq skk-emacs-type '(nemacs mule1))
       (use-local-map
        (append skk-latin-mode-map
@@ -432,6 +445,9 @@
         ;; sub mode of skk-j-mode.
         skk-katakana nil
         skk-input-mode-string skk-jisx0208-latin-mode-string)
+  (static-when (eq skk-emacs-type 'xemacs)
+    (let ((cons (rassq 'skk-input-mode-string mode-line-format)))
+      (and cons (setcar cons skk-xmas-jisx0208-latin-extent))))
   (static-if (memq skk-emacs-type '(nemacs mule1))
       (use-local-map
        (append skk-jisx0208-latin-mode-map
@@ -455,6 +471,9 @@
         ;; sub mode of skk-j-mode.
         ;;skk-katakana nil
         skk-input-mode-string skk-abbrev-mode-string)
+  (static-when (eq skk-emacs-type 'xemacs)
+    (let ((cons (rassq 'skk-input-mode-string mode-line-format)))
+      (and cons (setcar cons skk-xmas-abbrev-extent))))
   (static-if (memq skk-emacs-type '(nemacs mule1))
       (use-local-map
        (append skk-abbrev-mode-map

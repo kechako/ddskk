@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.51 2000/01/30 10:41:26 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.52 2000/01/30 15:14:12 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/30 10:41:26 $
+;; Last Modified: $Date: 2000/01/30 15:14:12 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/30 10:41:26 $")
+      (let* ((raw-date "$Date: 2000/01/30 15:14:12 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1621,8 +1621,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		 (static-when (memq skk-emacs-type '(nemacs mule1))
 		   (with-current-buffer
 		       (get-buffer-create (format " *Minibuf-%d*" (minibuffer-depth)))
-		     (skk-j-mode-on)
-		     (skk-pre-command))
+		     (skk-j-mode-on))
 		   (append skk-j-mode-map (cdr minibuffer-local-map)))))
         (quit
          (setq new-one "")))

@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.13 1999/12/15 11:54:41 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.14 1999/12/15 12:14:18 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/15 11:54:41 $
+;; Last Modified: $Date: 1999/12/15 12:14:18 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -263,8 +263,7 @@ Optional argument PREFIX is apppended if given."
 
   ;; control chars for skk.
   (define-key map "\C-g" 'skk-isearch-keyboard-quit)
-  (define-key map (or (and (boundp 'skk-kakutei-key) skk-kakutei-key) "\C-j")
-		      'skk-isearch-newline)
+  (define-key map skk-kakutei-key 'skk-isearch-newline)
   (define-key map "\C-m" 'skk-isearch-exit)
 
   ;; Keys for `skk-isearch-delete-char'.

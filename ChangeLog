@@ -1,5 +1,12 @@
 1999-12-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-jisx0201.el: Add Comments.
+	(skk-jisx0201-roman-rule-list, skk-jisx0201-base-rule-tree,
+	skk-jisx0201-roman-rule-tree. skk-jisx0201-roman): New variables.
+	(skk-toggle-jisx0201): New function.
+
+1999-12-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* SKK-MK (LISPDIR): Select a good place for MS-DOS and Windows.
 	(VERSION_SPECIFIC_LISPDIR): Ditto.
 	(standard-translation-table-for-decode): Under Emacs 20.3 or

@@ -1,3 +1,34 @@
+1999-12-09  FURUE Hideyuki  <furue@kke.co.jp>
+
+	* skk.el (keyboard-quit): Typo fixed.
+	(query-replace-regexp): Disable advice because don't work correctly.
+	(query-replace): Ditto.
+
+	* skk-cursor.el (goto-line): Removed.
+	(insert-file): Ditto.
+	(execute-extended-command): Ditto.
+	(read-from-minibuffer): Ditto.
+	(completing-read): Ditto.
+	(minibuffer-keyboard-quit): Ditto.
+	(exit-minibuffer): Ditto.
+	(abort-recursive-edit): Ditto.
+	(delete-window, select-window, select-frame, delete-frame,
+	set-buffer, erase-buffer): New advices.
+	(kill-buffer, bury-buffer, switch-to-buffer, pop-to-buffer,
+	other-window): Included among the above advices.
+	(skk-cursor-current-color): New function. Extracted from
+	``skk-cursor-set-properly''.
+	(skk-cursor-set-properly): Call ``skk-cursor-current-color''.
+	(minibuffer-setup-hook):  Preserve cursor color in
+	``skk-cursor-color-before-entering-minibuffer''.
+	(minibuffer-exit-hook): Retrieve cursor color from
+	``skk-cursor-color-before-entering-minibuffer''.
+	
+	* skk-vars.el (skk-cursor-color-before-entering-minibuffer): New
+	internal buffer local variable.
+
+	* doc/skk.texi (見出し語の補完): Moved @footnote outside @group block.
+
 1999-12-08  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-cursor.el (exit-minibuffer): Set cursor color even if the

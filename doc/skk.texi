@@ -6,13 +6,13 @@
 @c          Yukiyoshi Kameyama <kameyama@@kuis.kyoto-u.ac.jp>
 @c          Mikio Nakajima <minakaji@osaka.email.ne.jp>
 @c  Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-@c  Version: $Id: skk.texi,v 1.9.2.1.2.7 2000/08/26 06:00:06 czkmt Exp $
+@c  Version: $Id: skk.texi,v 1.9.2.1.2.8 2000/08/26 07:36:03 czkmt Exp $
 @c  Keywords: japanese
-@c  Last Modified: $Date: 2000/08/26 06:00:06 $
+@c  Last Modified: $Date: 2000/08/26 07:36:03 $
 @c
 @set EDITION 1.4
 @set SKK-VERSION 11.3
-@set UPDATED $Date: 2000/08/26 06:00:06 $
+@set UPDATED $Date: 2000/08/26 07:36:03 $
 @c @set UPDATED-MONTH Oct 1998
 
 @direntry
@@ -306,9 +306,9 @@ GNU Emacs 20.2$B0J9_!"$b$7$/$O(BXEmacs20.4$B0J9_$G$O!"=i4|>uBV$G$3$N5!G=$rMxM
 $B$9$k$3$H$,2DG=!#(B
 
 @item
-GNU Emacs 19.32 $B0J9_$r4p$K$7$?(B Mule$B$G$O!"(Bdefault$B$G(Bcustom$B$,%P%s%I%k$5$l(B
+GNU Emacs 19.32 $B0J9_$r4p$K$7$?(B Mule$B$G$O!"=i$a$+$i(B custom$B$,%P%s%I%k$5$l(B
 $B$F$$$k$,!"(BSKK$B$N%+%9%?%^%$%:5!G=$,A0Ds$H$7$F$$$k%$%s%?!<%U%'%$%9$r;}$C$F(B
-$B$$$J$$$N$G!"(Bdefault$B$N$^$^$G$O%+%9%?%^%$%:5!G=$,;H$($J$$!#=>$$!"(B
+$B$$$J$$$N$G!"$=$N$^$^$G$O%+%9%?%^%$%:5!G=$,;H$($J$$!#=>$$!"(B
 
 @w{@samp{ftp://ftp.dina.kvl.dk/pub/Staff/Per.Abrahamsen/custom/}}
 
@@ -319,7 +319,7 @@ GNU Emacs 19.32 $B0J9_$r4p$K$7$?(B Mule$B$G$O!"(Bdefault$B$G(Bcustom$B$,%
 $B$9$k!#(B
 
 @item
-GNU Emacs 19.28$B%Y!<%9$N(BMule$B$G$O(Bdefault$B$G(Bcustom$B$O%P%s%I%k$5$l$F$*$i$:!"$7(B
+GNU Emacs 19.28$B%Y!<%9$N(BMule$B$G$O(B custom $B$O%P%s%I%k$5$l$F$*$i$:!"$7(B
 $B$+$bDI2C$N%Q%C%1!<%8$r%$%s%9%H!<%k$7$FF0:n$5$;$k$3$H$b:$Fq$J$h$&$G$"$k!#(B
 @samp{APEl}$B$G$O!"(B19.28$B%Y!<%9$N(BMule$B$N$?$a!"%(%_%e%l!<%7%g%s$NL\E*$G(B
 @file{tinycustom.el}$B$rMQ0U$7$F$$$k!#$3$N%W%m%0%i%`$K$h$jA4$F$N(B
@@ -5301,30 +5301,34 @@ t
 
 @vtable @code
 
-@item skk-default-cursor-color
+@item skk-cursor-default-color
 SKK$B%b!<%I$,%*%U$G$"$k$3$H$r<($9%+!<%=%k?'!#%+!<%=%k$N$"$k3:Ev%U%l!<%`$K(B
 $B$*$1$k%G%#%U%)%k%H$N%+!<%=%k?'$,BeF~$5$l$k!#(B
 
-@item skk-hiragana-cursor-color
+@item skk-cursor-hiragana-color
 $B$+$J%b!<%I$G$"$k$3$H$r<($9%+!<%=%k?'!#%G%#%U%)%k%HCM$O!"(BreverseVideo$B$,(B
 off$B$N$H$-$O(B``coral4''on$B$N$H$-$O(B``pink''$B!#(B
 
-@item skk-katakana-cursor-color
+@item skk-cursor-katakana-color
 $B%+%?%+%J%b!<%I$G$"$k$3$H$r<($9%+!<%=%k?'!#%G%#%U%)%k%HCM$O!"(BreverseVideo
 $B$,(Boff$B$N$H$-$O(B``forestgreen''on$B$N$H$-$O(B``green''$B!#(B
 
-@item skk-jisx0208-latin-cursor-color
+@item skk-cursor-jisx0208-latin-color
 $BA43Q1Q;z%b!<%I$r<($9%+!<%=%k?'!#%G%#%U%)%k%HCM$O!"(B``gold''$B!#(B
 
-@item skk-latin-cursor-color
+@item skk-cursor-latin-color
 $B%"%9%-!<%b!<%I$r<($9%+!<%=%k?'!#%G%#%U%)%k%HCM$O!"(BreverseVideo$B$,(Boff$B$N$H(B
 $B$-$O(B``ivory4''on$B$N$H$-$O(B``gray''$B!#(B
+
+@item skk-cursor-jisx0201-color
+$BH>3Q%+%J%b!<%I$r<($9%+!<%=%k?'!#%G%#%U%)%k%HCM$O!"(BreverseVideo $B$,(B off $B$N(B
+$B$H$-$O(B``blueviolet'' on $B$N$H$-$O(B ``thistle''$B!#(B
 
 @end vtable
 
 $B%+!<%=%k?'$NJQ99$N:]!"%+%i!<%^%C%W@Z$l$,5/$-$?>l9g$K$O%(%i!<%a%C%;!<%8$r(B
 $BI=<($7!"%G%#%U%)%k%H$N%+!<%=%k?'$r;H$&!#$3$N%(%i!<%a%C%;!<%8$NI=<($r;_$a(B
-$B$k$K$O!"(B@code{skk-report-set-cursor-error}$B$NCM$r(B@code{nil}$B$K$9$k!#(B
+$B$k$K$O!"(B@code{skk-cursor-report-set-error}$B$NCM$r(B@code{nil}$B$K$9$k!#(B
 
 @node $B"'%b!<%I$K$*$1$kJQ498uJd$N%O%$%i%$%HI=<((B, $B%(%i!<$J$I$NF|K\8lI=<((B, $BF~NO%b!<%I$r<($9%+!<%=%k?'$K4X$9$k@_Dj(B, $B%G%3%l!<%7%g%s(B
 @comment  node-name,  next,  previous,  up

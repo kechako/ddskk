@@ -1,3 +1,9 @@
+2000-10-12  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-nicola.el (skk-nicola-turn-on-j-mode): Use
+	`skk-cursor-hiragana-color' instead of the return value of
+	`skk-cursor-current-color'.
+
 2000-10-11  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-kanagaki-util.el: Require "static" at compile time.

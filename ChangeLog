@@ -1,3 +1,29 @@
+2000-10-12  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* ccc.el (buffer-local-cursor-color-default,
+	buffer-local-foreground-color-default,
+	buffer-local-background-color-default): Check the feature
+	`xemacs'.
+
+	* skk-cursor.el: Ditto.
+	(minibuffer-setup-hook): Call `set-buffer-local-cursor-color'
+	under FSF Emacs.
+
+	* skk-gadget.el (skk-clock): Don't perform redisplay in `sit-for'.
+
+	* skk-isearch.el (skk-isearch-delete-char): Use `when'.
+
+	* skk-jisx0201.el (skk-jisx0201-insert, skk-toggle-katakana):
+	Don't call `skk-sursor-set-properly'. Call `set-face-property' or
+	`set-buffer-local-cursor-color' instead.
+
+	* skk-obsolete.el (skk-obsolete-function-alist): Don't check
+	`skk-set-cursor-color' and `skk-set-cursor-properly'.
+
+	* skk-vars.el (skk-emacs-type): Check the feature `xemacs'.
+
+	* skk.el (skk-setup-modeline): Don't use `mapcar'.
+
 2000-10-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk.el (skk-count-jisyo-candidates): Use `default-directory'

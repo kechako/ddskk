@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-# Version: $Id: Makefile,v 1.13.4.6 2000/01/23 17:12:58 czkmt Exp $
-# Last Modified: $Date: 2000/01/23 17:12:58 $
+# Version: $Id: Makefile,v 1.13.4.7 2000/03/11 02:17:15 minakaji Exp $
+# Last Modified: $Date: 2000/03/11 02:17:15 $
 
 VERSION = 11.2
 
@@ -12,6 +12,7 @@ CP	= /bin/cp -p
 EMACS	= emacs
 XEMACS	= xemacs
 FLAGS   = -batch -q -no-site-file -l SKK-MK
+BZIP2   = bzip2
 
 elc:
 	$(EMACS) $(FLAGS) -f SKK-MK-compile
@@ -33,12 +34,13 @@ what-where-package:
 	$(EMACS) $(FLAGS) -f SKK-MK-what-where-package
 
 clean:
-	-$(RM) skk-autoloads.el *.elc experimental/*.elc experimental/skk-isearch.el ./doc/skk.info* `find . -name '*~'` 
+	-$(RM) skk-autoloads.el *.elc experimental/*.elc experimental/skk-isearch.el \
+          ./doc/skk.info* `find . -name '*~'` `find . -name '.*~'` \
+          ../ddskk*
 
 tar: clean
-	-$(RM) ../ddskk-$(VERSION).tar.gz
-	cd .. ; ln -sf main ddskk-$(VERSION) ; \
-           $(TAR) cvypf ddskk$(VERSION).tar.bz2 \
-           --exclude-from=./ddskk-$(VERSION)/skk.ex --dereference ./ddskk-$(VERSION)
+	cd .. ; ln -sf main ddskk-$(VERSION)
+	$(TAR) cvpf ../ddskk$(VERSION).tar --exclude-from=skk.ex --dereference ../ddskk-$(VERSION)
+	$(BZIP2) ../ddskk$(VERSION).tar 
 
 # end of Makefile.

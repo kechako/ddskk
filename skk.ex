@@ -4,6 +4,7 @@ not_used
 *,v
 *.elc
 *.bak
+*.BAK
 make.log
 temp.el
 dic/SKK-JISYO.E2J

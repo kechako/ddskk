@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.13 1999/12/12 05:10:13 minakaji Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.14 1999/12/12 12:52:49 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/12 05:10:13 $
+;; Last Modified: $Date: 1999/12/12 12:52:49 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -70,7 +70,7 @@
   ;; カレントバッファの SKK のモードに従い、カーソルの色を変更する。
   (if (and skk-use-color-cursor (get-buffer-window (current-buffer)))
       (skk-cursor-set-color (skk-cursor-current-color)) )
-  (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)) )1
+  (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)) )
 
 ;;; advices.
 ;; cover to original Emacs functions.

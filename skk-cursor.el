@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.23 1999/12/19 09:01:40 minakaji Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.24 1999/12/19 12:37:50 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/19 09:01:40 $
+;; Last Modified: $Date: 1999/12/19 12:37:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -268,17 +268,11 @@
 (add-hook 'minibuffer-exit-hook
 	  (function
 	   (lambda ()
-	     (skk-cursor-set-color
-	      skk-cursor-color-before-entering-minibuffer)
-	     (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)) ))
+	     (with-current-buffer (skk-minibuffer-origin)
+	       (skk-cursor-set-color
+		skk-cursor-color-before-entering-minibuffer)
+	       (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)))))
 	  'append )
-
-;; 最初に load されたときは、skk-cursor adviced function になる前の関数によって
-;; 呼ばれており、advice が効いてないので、トップレベルでカーソルを合わせておく。
-;; (and (get-buffer-window (current-buffer))
-;;      ;; only first time when this file loaded.
-;;      (not skk-mode-invoked)
-;;      (skk-cursor-set-properly skk-cursor-hiragana-color))
 
 ;;; Hooks
 (add-hook 'isearch-mode-end-hook 'skk-cursor-set-properly 'append)

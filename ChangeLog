@@ -32,6 +32,8 @@
 	(skk-cursor-setup-minibuffer): New function.
 	(minibuffer-setup-hook): Hook `skk-cursor-setup-minibuffer'.
 	(skk-mode-hook): Hook `skk-mode-once-again'.
+	(minibuffer-exit-hook): Set cursor in the latest current buffer
+	(not minibuffer).
 	
 	* skk-viper.el: Eliminate all spaces which existed between
 	parens.
@@ -61,7 +63,12 @@
 	(skk-viper-saved-cursor-color): New internal variable.
 	(viper-read-string-with-history): New advice of skk-viper-ad.
 	(read-from-minibuffer): Ditto.
-
+	(skk-mode): Change class of skk-viper-cusror-ad to after.
+	(skk-cursor-set-properly): Change its class to around.
+	Set `viper-insert-state-cursor-color' to the value of
+	`skk-viper-saved-cursor-color' if insert-state.
+	(viper-insert-state-cursor-color): Make it buffer-local variable.
+	;; 
 	* skk-isearch.el: Eliminate all spaces which existed between
 	parens.
 	Modify doc string about hooks.

@@ -6,9 +6,9 @@
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: Murata Shuuichirou <mrt@notwork.org>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.4 1999/12/19 09:01:41 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.5 1999/12/19 12:37:50 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/19 09:01:41 $
+;; Last Modified: $Date: 1999/12/19 12:37:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -60,14 +60,25 @@
   (if skk-use-color-cursor 
       (progn
 	(defvar skk-viper-saved-cursor-color viper-insert-state-cursor-color)
+	;; 恐ろしや〜、必殺のバッファローカル...。
+	(make-variable-buffer-local 'viper-insert-state-cursor-color)
 	;; SKK-CURSOR related.
-	(defadvice skk-cursor-set-properly (before skk-viper-cursor-ad activate)
+	(defadvice skk-cursor-set-properly (around skk-viper-cursor-ad activate)
 	  "vi-state のときは、SKK モードになっていてもカーソルをディフォルトにしておく。"
 	  (if (static-cond ((boundp 'viper-current-state)
 			    (eq viper-current-state 'vi-state))
 			   ((boundp 'vip-current-state)
 			    (eq vip-current-state 'vi-state)))
-	      (ad-set-arg 0 skk-cursor-default-color) ))
+	      (progn
+		(ad-set-arg 0 skk-cursor-default-color)
+		ad-do-it )
+	    ad-do-it 
+	    (cond ((not skk-mode)
+		   (setq viper-insert-state-cursor-color
+			 skk-viper-saved-cursor-color))
+		  (t
+		   (setq viper-insert-state-cursor-color
+			 (skk-cursor-current-color))))))
 
 	;; cover to VIP/Viper functions.
 	(let ((funcs
@@ -106,7 +117,7 @@
 		    (setq viper-insert-state-cursor-color (skk-cursor-current-color)))))
 		(setq funcs (cdr funcs)))))
 
-	(defadvice skk-mode (before skk-viper-cursor-ad activate)
+	(defadvice skk-mode (after skk-viper-cursor-ad activate)
 	  "viper-insert-state-cursor-color を SKK の入力モードのカーソル色と合わせる。"
 	  (setq viper-insert-state-cursor-color 
 		(if skk-mode (skk-cursor-current-color)

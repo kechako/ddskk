@@ -99,7 +99,7 @@ Mule-2.3 添付の egg.el よりコピーした。")
 	  '("\t")))
 
 ;; Macros.
-(defmacro save-match-data (&rest body)
+(defmacro-maybe save-match-data (&rest body)
   "Execute the BODY forms, restoring the global value of the match data."
   (let ((original (make-symbol "match-data")))
     (list 'let (list (list original '(match-data)))

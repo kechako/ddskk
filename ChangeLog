@@ -1,3 +1,12 @@
+2000-10-02  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-vars.el (skk-num-uniq): Check if `skk-num-type-alist' has
+	indexes 2 and 3 or 5.
+
+	* skk.el (skk-henkan-show-candidates): Use
+	`skk-henkan-list-filter' instead of `skk-num-uniq'.
+	Do not use `(skk-num-multiple-convert 7)'.
+
 2000-10-01  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-lookup.el: Require bitmap when running on MULE.

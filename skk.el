@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.75 2000/09/30 15:26:52 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.76 2000/10/01 21:04:55 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/30 15:26:52 $
+;; Last Modified: $Date: 2000/10/01 21:04:55 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/09/30 15:26:52 $")
+      (let* ((raw-date "$Date: 2000/10/01 21:04:55 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1538,13 +1538,12 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	     (t
 	      ;; skk-henkan-show-candidates-keys の最終のキーに対応する候補
 	      ;; が出てくるまでサーチを続ける。
-	      (and (skk-numeric-p) (skk-num-uniq))
+	      (skk-henkan-list-filter)
 	      (while (and skk-current-search-prog-list
 			  (null (nthcdr (+ 11 (* loop 7)) skk-henkan-list)))
 		(setq skk-henkan-list
 		      (skk-nunion skk-henkan-list (skk-search)))
-		(and (skk-numeric-p) (skk-num-uniq)))
-	      (and (skk-numeric-p) (skk-num-multiple-convert 7))
+		(skk-henkan-list-filter))
 	      (setq henkan-list (nthcdr (+ 4 (* loop 7)) skk-henkan-list))))
        (save-window-excursion
 	 (setq n (skk-henkan-show-candidate-subr candidate-keys henkan-list))
@@ -1772,8 +1771,6 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
               ;; 候補を表示したままなので (表示関連では何もしなくても、もう既
               ;; に望みの状態になっている) 何もしない。
             ))
-        ;; ミニバッファで変換した文字列がある (空文字列でない) とき。
-        ;; 末尾の空白を取り除く。
         (and (string-match "[ 　]+$" new-one)
 	     (setq new-one (substring new-one 0 (match-beginning 0))))
 	(setq skk-henkan-list (nconc skk-henkan-list (list new-one)))

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.40 2000/09/30 15:26:51 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.41 2000/10/01 21:04:53 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/30 15:26:51 $
+;; Last Modified: $Date: 2000/10/01 21:04:53 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1771,7 +1771,8 @@ integer `1' を代入する。
 
 (defcustom skk-num-uniq (or (assq 4 skk-num-type-alist)
 			    (and (assq 2 skk-num-type-alist)
-				 (assq 3 skk-num-type-alist)))
+				 (or (assq 3 skk-num-type-alist)
+				     (assq 5 skk-num-type-alist))))
   "*Non-nil であれば、異なる数値表現でも変換結果が同じ数値を重複して出力しない。"
   :type 'boolean
   :group 'skk-num)

@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.10 1999/12/06 14:23:38 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.11 1999/12/14 16:37:53 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/06 14:23:38 $
+;; Last Modified: $Date: 1999/12/14 16:37:53 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -52,7 +52,8 @@
 ;; skk-mode.
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'skk-vars) (require 'static))
+(eval-when-compile (require 'skk-macs) (require 'skk) (require 'static))
+(require 'skk-vars)
 
 ;; interface to skk.el
 ;;
@@ -197,14 +198,14 @@ kakutei'ed and erase the buffer contents."
       (skk-isearch-initialize-working-buffer)
       (skk-isearch-set-initial-mode initial)))
   ;; setup variables and keymap
-  (or (and (boundp 'skk-isearch-mode-map)
-	   skk-isearch-mode-map)
-      (static-if (eq skk-emacs-type 'xemacs)
-	  (progn
-	    (setq skk-isearch-mode-map (skk-isearch-setup-keymap (make-keymap)))
-	    (set-keymap-parents skk-isearch-mode-map isearch-mode-map) )
+  (or (keymapp skk-isearch-mode-map)
+      (static-cond
+       ((eq skk-emacs-type 'xemacs)
+	(setq skk-isearch-mode-map (skk-isearch-setup-keymap (make-keymap)))
+	(set-keymap-parents skk-isearch-mode-map isearch-mode-map))
+       (t
 	(setq skk-isearch-mode-map
-	      (skk-isearch-setup-keymap (cons 'keymap isearch-mode-map)) )))
+	      (skk-isearch-setup-keymap (cons 'keymap isearch-mode-map)) ))))
   (set skk-isearch-overriding-local-map skk-isearch-mode-map)
   (setq skk-isearch-incomplete-message ""
 	;; set skk-isearch-message non-nil to call skk-isearch-message.
@@ -507,53 +508,19 @@ If the current mode is different from previous, remove it first."
 ;; Advice.
 ;;
 
-(defvar isearch-just-started nil)
 (defadvice isearch-repeat (around skk-isearch-ad activate preactivate)
   "`isearch-message' を適切に設定する。"
-  ;; Utility for isearch-repeat-forward and -backward.
-  (if (eq isearch-forward (eq (ad-get-arg 0) 'forward))
-      ;; C-s in forward or C-r in reverse.
-      (if (equal isearch-string "")
-	  ;; If search string is empty, use last one.
-	  (setq isearch-string
-		(or (if isearch-regexp
-			(car regexp-search-ring)
-		      (car search-ring))
-		    "")
-		isearch-message
-		(concat (skk-isearch-mode-string)
-			(mapconcat 'isearch-text-char-description
-				   isearch-string "")))
-	;; If already have what to search for, repeat it.
-	(or isearch-success
-	    (progn
-	      (goto-char (if isearch-forward (point-min) (point-max)))
-	      (setq isearch-wrapped t))))
-    ;; C-s in reverse or C-r in forward, change direction.
-    (setq isearch-forward (not isearch-forward)))
+  (cond ((equal isearch-string "")
+	 ad-do-it
+	 (setq isearch-message
+	       (concat
+		(skk-isearch-mode-string)
+		(mapconcat 'isearch-text-char-description isearch-string "")))
+	 (isearch-push-state)
+	 (isearch-update))
+	(t
+	 ad-do-it)))
 
-  (setq isearch-barrier (point)) ; For subsequent \| if regexp.
-
-  (if (equal isearch-string "")
-      (setq isearch-success t)
-    (if (and isearch-success (equal (match-end 0) (match-beginning 0))
-	     (not isearch-just-started))
-	;; If repeating a search that found
-	;; an empty string, ensure we advance.
-	(if (if isearch-forward (eobp) (bobp))
-	    ;; If there's nowhere to advance to, fail (and wrap next time).
-	    (progn
-	      (setq isearch-success nil)
-	      (and executing-kbd-macro
-		   (not defining-kbd-macro)
-		   (isearch-done))
-	      (ding nil 'isearch-failed))
-	  (forward-char (if isearch-forward 1 -1))
-	  (isearch-search))
-      (isearch-search)))
-
-  (isearch-push-state)
-  (isearch-update))
 
 (put 'skk-isearch-wrapper 'isearch-command t)
 (put 'skk-isearch-keyboard-quit 'isearch-command t)

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.42 2000/01/28 10:36:59 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.43 2000/01/29 15:05:58 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/28 10:36:59 $
+;; Last Modified: $Date: 2000/01/29 15:05:58 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/28 10:36:59 $")
+      (let* ((raw-date "$Date: 2000/01/29 15:05:58 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -3255,7 +3255,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	 (setq matched (buffer-substring-no-properties
 			(match-beginning 0) (match-end 0))
 	       replace (funcall func matched))
-	 (backward-char (skk-str-length matched))
+	 (goto-char (match-beginning 0))
 	 ;; firstly insert a new string, secondly delete an old string to save
 	 ;; the cursor position.
 	 (insert-and-inherit replace)

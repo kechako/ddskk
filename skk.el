@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.4 1999/11/22 11:15:58 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.5 1999/11/22 16:01:55 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/22 11:15:58 $
+;; Last Modified: $Date: 1999/11/22 16:01:55 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -82,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/22 11:15:58 $")
+      (let* ((raw-date "$Date: 1999/11/22 16:01:55 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -3502,28 +3502,29 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 		   (skk-katakana-mode-string . ("--カナ:" . " カナ"))
 		   (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
 		   (skk-abbrev-mode-string . ("--aあ:" . " aあ")) ))
-	 (cond ((featurep 'xemacs)
-		(or (memq 'skk-input-mode-string default-mode-line-format)
-		    (setq-default default-modeline-format
-				  (append '("" skk-input-mode-string)
-					  default-modeline-format) ))
-		(mapc
-		 (function
-		  (lambda (buf)
-		    (if (buffer-live-p buf)
-			(save-excursion
-			  (set-buffer buf)
-			  (or (memq 'skk-input-mode-string modeline-format)
+	 (static-cond
+	  ((eq skk-emacs-type 'xemacs)
+	   (or (memq 'skk-input-mode-string default-mode-line-format)
+	       (setq-default default-modeline-format
+			     (append '("" skk-input-mode-string)
+				     default-modeline-format) ))
+	   (mapc
+	    (function
+	     (lambda (buf)
+	       (if (buffer-live-p buf)
+		   (save-excursion
+		     (set-buffer buf)
+		     (or (memq 'skk-input-mode-string modeline-format)
 			      (setq modeline-format
 				    (append '("" skk-input-mode-string)
 					    modeline-format) ))))))
-		 (buffer-list) ))
-	       (t
-		(or (memq 'skk-input-mode-string mode-line-format)
-		    (setq-default
-		     mode-line-format
-		     (append '("" skk-input-mode-string)
-			     mode-line-format) ))))
+	    (buffer-list) ))
+	  (t
+	   (or (memq 'skk-input-mode-string mode-line-format)
+	       (setq-default
+		mode-line-format
+		(append '("" skk-input-mode-string)
+			mode-line-format) ))))
 	 (setq-default skk-input-mode-string "")
 	 (force-mode-line-update t) )
 	(t

@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: SKK Development Team <skk@ring.gr.jp>
-# Version: $Id: Makefile,v 1.44.2.5 2001/09/11 12:17:18 czkmt Exp $
-# Last Modified: $Date: 2001/09/11 12:17:18 $
+# Version: $Id: Makefile,v 1.44.2.6 2001/09/11 12:23:15 czkmt Exp $
+# Last Modified: $Date: 2001/09/11 12:23:15 $
 
 
 VERSION = 11.5.0.1
@@ -56,16 +56,14 @@ clean:
 
 tar: clean
 	cd .. ;\
-	$(RM) ddskk-11.{1,2,3} ddskk-$(VERSION) ddskk-snapshot ddskk$(VERSION).tar.gz ddskk$(VERSION).tar.bz2 ;\
-	$(RM) ddskk-$(VERSION) ;\
-	ln -sf ddskk-e18 ddskk-$(VERSION) ;\
-	$(TAR) cvpf ddskk$(VERSION).tar --exclude-from=ddskk-$(VERSION)/skk.ex --dereference ddskk-$(VERSION) ;\
-	$(BZIP2) -cf ddskk$(VERSION).tar > ddskk$(VERSION).tar.bz2 ;\
-	$(GZIP) -cf ddskk$(VERSION).tar > ddskk$(VERSION).tar.gz ;\
-	$(RM) ddskk$(VERSION).tar ;\
-p	$(RM) ddskk$(VERSION) ;\
-	$(MD5) ddskk$(VERSION).tar.bz2 >ddskk$(VERSION).tar.bz2.md5 ;\
-	$(MD5) ddskk$(VERSION).tar.gz >ddskk$(VERSION).tar.gz.md5
+	$(RM) ddskk-11.{1,2,3} ddskke18-$(VERSION) ddskk-snapshot ddskke18-$(VERSION).tar.gz ddskke18-$(VERSION).tar.bz2 ;\
+	$(RM) ddskke18-$(VERSION) ;\
+	ln -sf ddskk-e18 ddskke18-$(VERSION) ;\
+	$(TAR) cvpf ddskke18-$(VERSION).tar --exclude-from=ddskke18-$(VERSION)/skk.ex --dereference ddskke18-$(VERSION) ;\
+	$(BZIP2) -cf ddskke18-$(VERSION).tar > ddskke18-$(VERSION).tar.bz2 ;\
+	$(GZIP) -cf ddskke18-$(VERSION).tar > ddskke18-$(VERSION).tar.gz ;\
+	$(RM) ddskke18-$(VERSION).tar ;\
+	$(RM) ddskke18-$(VERSION)
 
 snapshot: clean
 	cd .. ;\

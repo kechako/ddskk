@@ -1,3 +1,14 @@
+1999-12-18  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-cursor.el: Don't always call `skk-cursor-set-properly'.
+	(abort-recursive-edit): Advise under XEmacs.
+	(skk-mode): Call `skk-cursor-set-properly'.
+	(skk-auto-fill-mode): Seems this advice is not needed -- though
+	I'm not sure.
+	(skk-insert): New advice. Call `skk-cursor-set-properly' when
+	`skk-abbrev-mode' is non-nil.
+	(minibuffer-setup-hook): Adjust cusor color under XEmacs.
+
 1999-12-17  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (isearch-search): New advice.

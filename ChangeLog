@@ -1,3 +1,9 @@
+1999-12-05  Takao KAWAMURA  <kawamura@debian.org>
+
+	* SKK-MK (SKK-MK-compile-info): New function.
+
+	* Makefile (info): New entry.
+
 1999-12-05  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-cursor.el (completing-read): New advice. Call

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-setup.el.in,v 1.1.2.12 2000/10/19 08:46:07 czkmt Exp $
+;; Version: $Id: skk-setup.el.in,v 1.1.2.13 2000/10/20 14:51:34 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/19 08:46:07 $
+;; Last Modified: $Date: 2000/10/20 14:51:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -97,12 +97,6 @@
 	     (inactivate-input-method)))
 	  (t
 	   ad-do-it)))
-  (defadvice isearch-message-prefix (around skk-setup-ad activate)
-    (cond ((string-match
-	    "^japanese-skk"
-	    (format "%s" default-input-method))
-	   (let (current-input-method) ad-do-it))
-	  (t ad-do-it)))
   ;;
   (when site-run-file
     (cond

@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.34 2000/10/15 20:34:47 minakaji Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.35 2000/10/20 14:51:35 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:47 $
+;; Last Modified: $Date: 2000/10/20 14:51:35 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -603,6 +603,12 @@ If the current mode is different from previous, remove it first."
 	    (concat
 	     (skk-isearch-mode-string)
 	     (mapconcat 'isearch-text-char-description isearch-string ""))))))
+
+(static-when (memq skk-emacs-type '(mule3 mule4 mule5))
+  (defadvice isearch-message-prefix (around skk-setup-ad activate preactivate)
+    (if (string-match "^japanese-skk" (format "%s" default-input-method))
+	(let (current-input-method) ad-do-it)
+      (t ad-do-it))))
 
 
 ;;

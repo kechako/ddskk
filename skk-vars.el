@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.8 1999/12/08 14:03:28 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.9 1999/12/08 19:25:42 furue Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/08 14:03:28 $
+;; Last Modified: $Date: 1999/12/08 19:25:42 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2093,6 +2093,10 @@ skk-dabbrev-like-completion $B$,(B non-nil $B$N>l9g$O!">o$K:G8e$KJd40$7$?8+=P
 
 (skk-deflocalvar skk-completion-depth 0
   "$BJd40$7$?8l$r(B skk-completion-stack $B$+$i<h$j=P$90LCV!#(B" )
+
+;;; -- SKK-CURSOR.EL related internal variables
+(skk-deflocalvar skk-cursor-color-before-entering-minibuffer nil
+  "$B%_%K%P%C%U%!$KF~$kD>A0$N%+!<%=%k?'(B" )
 
 ;;; -- SKK-GADGET.EL related internal variables
 (defconst skk-week-alist

@@ -93,6 +93,8 @@ May not work with a more complicated program like Gnus."
   (condition-case err1
       ad-do-it
     (error
+     (if (eq (car features) (ad-get-arg 0))
+	 (setq features (cdr features)))
      (let* ((file (or (ad-get-arg 1) (format "%s" (ad-get-arg 0))))
 	    (i 1)
 	    str)

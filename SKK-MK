@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.27 2000/07/07 22:13:36 minakaji Exp $
-;; Last Modified: $Date: 2000/07/07 22:13:36 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.28 2000/07/08 22:12:29 minakaji Exp $
+;; Last Modified: $Date: 2000/07/08 22:12:29 $
 
 ;; Commentary
 ;;
@@ -189,7 +189,7 @@
 			    skk-jisx0201 skk-rdbms skk-study
 			    skk-tutcdef skk-tutcode skk-correct
 			    skk-exsearch skk-exserv
-			    skk-cursor2 ccc
+			    skk-cursor2 ccc skk-cursor3 
 			    ;; VIP 3.7
 			    ;; vip
 			    )))

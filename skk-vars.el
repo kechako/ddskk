@@ -1,27 +1,27 @@
 ;;; skk-vars.el --- variables and constants commonly use 
-;;    in Aloha SKK package programs.
+;;    in Daredevil SKK package programs.
 ;; Copyright (C) 1999 Mikio Nakajima <minakaji@osaka.email.ne.jp>
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.2 1999/11/08 11:55:45 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3 1999/11/10 13:02:39 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/08 11:55:45 $
+;; Last Modified: $Date: 1999/11/10 13:02:39 $
 
-;; This file is part of Aloha SKK.
+;; This file is part of Daredevil SKK.
 
-;; Aloha SKK is free software; you can redistribute it and/or modify
+;; Daredevil SKK is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either versions 2, or (at your option)
 ;; any later version.
 
-;; Aloha SKK is distributed in the hope that it will be useful
+;; Daredevil SKK is distributed in the hope that it will be useful
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with Aloha SKK, see the file COPYING.  If not, write to the Free
+;; along with Daredevil SKK, see the file COPYING.  If not, write to the Free
 ;; Software Foundation Inc., 59 Temple Place - Suite 330, Boston,
 ;; MA 02111-1307, USA.
 

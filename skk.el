@@ -1,26 +1,26 @@
-;;; skk.el --- Aloha branch of SKK (Simple Kana to Kanji conversion program)
+;;; skk.el --- SKK (Simple Kana to Kanji conversion program) Daredevil branch 
 ;; Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
 ;;               1998, 1999
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.5 1999/11/09 13:01:01 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6 1999/11/10 13:02:40 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/09 13:01:01 $
+;; Last Modified: $Date: 1999/11/10 13:02:40 $
 
-;; Aloha SKK is free software; you can redistribute it and/or modify it under
+;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
 ;; Software Foundation; either versions 2, or (at your option) any later
 ;; version.
 
-;; Aloha SKK is distributed in the hope that it will be useful but WITHOUT
+;; Daredevil SKK is distributed in the hope that it will be useful but WITHOUT
 ;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 ;; or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
 ;; License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with Aloha SKK, see the file COPYING.  If not, write to the Free
+;; along with Daredevil SKK, see the file COPYING.  If not, write to the Free
 ;; Software Foundation Inc., 59 Temple Place - Suite 330, Boston,
 ;; MA 02111-1307, USA.
 
@@ -44,18 +44,12 @@
 ;; skk-katakana: t
 ;;   KATAKANA
 
-;; This branch of SKK is called `Aloha SKK'.  As you know `Aloha' is a word
-;; of Hawaian dialect which means `Welcome', `Hello', `Good-bye' and `Love'. 
-;; Initial letters of the five Hawaian local words compose this word, i.e.,
-;; Akahai (親切), Lokahi (合同), Olu`olu (快い), Ha`aha`a (謙遜) and Ahonui
-;; (忍耐).  I hope this branch will be developed by spirit of `Aloha'.
-
 ;;; Code:
 (cond ((or (and (boundp 'epoch::version) epoch::version)
 	   (string< (substring emacs-version 0 2) "18") )
-       (error "THIS SKK requires Emacs 19 or later") )
+       (error "Daredevil SKK requires Emacs 19 or later") )
       ((not (featurep 'mule))
-       (error "THIS SKK requires MULE features") ))
+       (error "Daredevil SKK requires MULE features") ))
 
 ;; APEL 9.22 or later required.
 (eval-when-compile (require 'static))
@@ -88,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/09 13:01:01 $")
+      (let* ((raw-date "$Date: 1999/11/10 13:02:40 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -96,7 +90,7 @@
             (setq month (substring month (match-end 0))) )
         (if (string-match "^0" date)
             (setq date (substring date (match-end 0))) )
-        (message "SKK version Aloha %s (%s) of %s, APEL inside"
+        (message "SKK version Daredevil %s (%s) of %s, APEL inside"
                  skk-version skk-codename
                  (concat (car (rassoc month skk-month-alist))
                          " " date ", " year ))))))

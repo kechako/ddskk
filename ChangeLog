@@ -1,5 +1,10 @@
 1999-12-07  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-cursor.el (completing-read): Fix the advice.
+	(read-from-minibuffer): Ditto.
+
+1999-12-07  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* skk-cursor.el (completing-read): Don't use `unwind-protect'. Use
 	`condition-case'. Don't advise to XEmacs' `completing-read'.
 	(read-from-minibuffer): New advice. Call

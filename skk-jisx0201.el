@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.6 1999/12/04 09:54:30 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.7 1999/12/04 14:31:13 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 1999/12/04 09:54:30 $
+;; Last Modified: $Date: 1999/12/04 14:31:13 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -654,8 +654,10 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
     (if skk-jisx0201-mode
 	(progn
 	  (setq skk-jisx0201-mode nil)
-	  (skk-j-mode-on 'katakana) )
-      (skk-jisx0201-mode-on) ))
+	  (skk-j-mode-on 'katakana)
+	  (setq skk-input-mode-string skk-katakana-mode-string) )
+      (skk-jisx0201-mode-on)
+      (setq skk-input-mode-string skk-jisx0201-mode-string) ))
   (and skk-use-color-cursor (skk-cursor-set-properly)) )
 
 (defun skk-jisx0201-henkan (arg)

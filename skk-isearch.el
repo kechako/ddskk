@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.16 1999/12/17 14:23:56 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.17 1999/12/19 09:01:40 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/17 14:23:56 $
+;; Last Modified: $Date: 1999/12/19 09:01:40 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -29,8 +29,10 @@
 ;; functions for hooks.
 ;;
 ;; 1. always invoke skk isearch.
-;; (add-hook 'isearch-mode-hook 'skk-isearch-mode-setup)
+;; (add-hook 'isearch-mode-hook 
+;;           (function (lambda () (require 'skk) (skk-isearch-mode-setup))))
 ;; (add-hook 'isearch-mode-end-hook 'skk-isearch-mode-cleanup)
+;;
 ;; 2. invoke only if skk-mode is on.
 ;; (add-hook 'isearch-mode-hook
 ;;           (function (lambda ()
@@ -40,10 +42,7 @@
 ;; (add-hook 'isearch-mode-end-hook
 ;;           (function
 ;;            (lambda ()
-;;              (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
-;;              (and (boundp 'skk-mode-invoked) skk-mode-invoked
-;;                   (skk-cursor-set-properly) ))))
-;; 
+;;              (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup)))))
 ;; 
 ;; 3. invoke if current buffer has japanese characters.
 ;; ...
@@ -59,11 +58,11 @@
 ;;
 (defsubst skk-isearch-turn-off-skk-mode ()
   "Turn off skk mode."
-  (skk-mode 0) )
+  (skk-mode 0))
 
 (defsubst skk-isearch-turn-on-skk-mode ()
   "Turn on skk mode."
-  (skk-mode 1) )
+  (skk-mode 1))
 
 (defsubst skk-isearch-conversion-active-p ()
   "Non-nil if skk conversion is active."
@@ -75,23 +74,23 @@
 
 (defsubst skk-isearch-skk-kakutei ()
   "Perform kakutei."
-  (skk-kakutei) )
+  (skk-kakutei))
 
 (defsubst skk-isearch-skk-hiragana-mode-p ()
   "Non-nil if skk is hiragana input mode."
-  (and (not skk-katakana) skk-j-mode) )
+  (and (not skk-katakana) skk-j-mode))
 
 (defsubst skk-isearch-skk-turn-on-hiragana-mode ()
   "Set current skk mode to hiragana input mode."
-  (skk-j-mode-on) )
+  (skk-j-mode-on))
 
 (defsubst skk-isearch-skk-katakana-mode-p ()
   "Non-nil if skk is katakana input mode."
-  (and skk-j-mode skk-katakana) )
+  (and skk-j-mode skk-katakana))
 
 (defsubst skk-isearch-skk-turn-on-katakana-mode ()
   "Set current skk mode to katakana input mode."
-  (skk-j-mode-on 'katakana) )
+  (skk-j-mode-on 'katakana))
 
 (defsubst skk-isearch-skk-jisx0208-latin-mode-p ()
   "Non-nil if skk is jisx0208 latin (zenkaku) input mode."
@@ -103,16 +102,16 @@
 
 (defsubst skk-isearch-skk-turn-on-jix0208-latin-mode ()
   "Set current skk mode to jisx0208 latin (zenkaku) input mode."
-  (skk-jisx0208-latin-mode-on) )
+  (skk-jisx0208-latin-mode-on))
 
 (defsubst skk-isearch-skk-turn-on-latin-mode ()
   "Set current skk mode to normal latin input mode."
-  (skk-latin-mode-on) )
+  (skk-latin-mode-on))
 
 (defun skk-isearch-message ()
   "Show isearch message."
   (skk-isearch-incomplete-message
-   (if (string= skk-prefix "") (char-to-string last-command-char) skk-prefix) ))
+   (if (string= skk-prefix "") (char-to-string last-command-char) skk-prefix)))
 
 (defun skk-isearch-current-mode ()
   "Return the symbolic current mode of skk for skk-isearch."
@@ -210,7 +209,7 @@ kakutei'ed and erase the buffer contents."
 	(set-keymap-parents skk-isearch-mode-map isearch-mode-map))
        (t
 	(setq skk-isearch-mode-map
-	      (skk-isearch-setup-keymap (cons 'keymap isearch-mode-map)) ))))
+	      (skk-isearch-setup-keymap (cons 'keymap isearch-mode-map))))))
   (set skk-isearch-overriding-local-map skk-isearch-mode-map)
   (setq skk-isearch-incomplete-message ""
 	;; set skk-isearch-message non-nil to call skk-isearch-message.
@@ -240,12 +239,12 @@ kakutei'ed and erase the buffer contents."
 	  ((eq mode 'katakana) (skk-j-mode-on t))
 	  ((eq mode 'abbrev) (skk-abbrev-mode-on))
 	  ((eq mode 'latin) (skk-latin-mode-on))
-	  ((eq mode 'jisx0208-latin) (skk-jisx0208-latin-mode-on)) ))
+	  ((eq mode 'jisx0208-latin) (skk-jisx0208-latin-mode-on))))
   (remove-hook 'pre-command-hook 'skk-pre-command 'local)
   (skk-remove-minibuffer-setup-hook
    'skk-j-mode-on 'skk-setup-minibuffer
    (function (lambda ()
-	       (add-hook 'pre-command-hook 'skk-pre-command nil 'local) ))))
+	       (add-hook 'pre-command-hook 'skk-pre-command nil 'local)))))
 
 (defun skk-isearch-incomplete-message (&optional prefix)
   "Show message when kana kanji convertion is in progress.
@@ -314,7 +313,7 @@ Optional argument PREFIX is apppended if given."
 	    (setq unread-command-events
                   (append (if (= (length (this-command-keys)) 0)
                               (list last-command-event)
-                            (this-command-keys) )
+                            (this-command-keys))
                           nil ))
 	    (condition-case error
 		;; setup last-command-event and this-command because
@@ -346,7 +345,7 @@ If the conversion is in progress and no string is fixed, just return nil."
 		((not (zerop (buffer-size)))
 		 (prog1
 		     (buffer-string)
-		   (erase-buffer) )))
+		   (erase-buffer))))
 	;; update incomplete-message with contents of working buffer.
 	(setq skk-isearch-incomplete-message (buffer-string))
 	;; update echo area.
@@ -411,9 +410,9 @@ If the current mode is different from previous, remove it first."
 		  ;; now, we can't pass the universal argument within the
 		  ;; isearch-mode.  so hard code the value `1'.
 		  (delete-backward-char 1)
-		(skk-erase-prefix 'clean) )
+		(skk-erase-prefix 'clean))
 	      (setq skk-isearch-incomplete-message (buffer-string))
-	      (skk-isearch-incomplete-message) )))
+	      (skk-isearch-incomplete-message))))
       (let ((str (skk-isearch-mode-string)))
 	(mapcar
 	 (function (lambda (cmd)
@@ -450,12 +449,12 @@ If the current mode is different from previous, remove it first."
 	      ;; mode, default behaviour of C-j is set current mode
 	      ;; to kana mode.
 	      (skk-isearch-turn-on-skk-mode)
-	      (skk-isearch-mode-message) )))
+	      (skk-isearch-mode-message))))
       (isearch-message)
     (if (event-to-character last-command-event)
 	(skk-isearch-kakutei (function isearch-printing-char))
       (skk-isearch-mode-message)
-      (isearch-message) )))
+      (isearch-message))))
 
 (defun skk-isearch-skk-mode (&rest args)
   (interactive "P")
@@ -489,7 +488,7 @@ If the current mode is different from previous, remove it first."
 	      (let ((command (key-binding string)))
 		(cond ((not (commandp command))
 		       ;; just search literally.
-		       (skk-isearch-process-search-string string) )
+		       (skk-isearch-process-search-string string))
 		      ;; internationalized isearch.el
 		      ((fboundp 'isearch-process-search-multibyte-characters)
 		       ;; internationalized isearch.el binds all
@@ -498,13 +497,13 @@ If the current mode is different from previous, remove it first."
 			      ;; STRING is not a multibyte character.
 			      (> skk-kanji-len (length string))
 			      ;; process a special character, such as *, |, ...
-			      (command-execute command) )
-			     (t (skk-isearch-process-search-string string)) ))
+			      (command-execute command))
+			     (t (skk-isearch-process-search-string string))))
 		      ;; non internationalized isearch.el
-		      (t (command-execute command)) )))
+		      (t (command-execute command)))))
 	  ;; restore the overriding local map.
 	  (set-buffer current-buffer)
-	  (set skk-isearch-overriding-local-map local-map) )))))
+	  (set skk-isearch-overriding-local-map local-map))))))
 
 ;;
 ;; Advice.
@@ -537,7 +536,6 @@ If the current mode is different from previous, remove it first."
 	  (concat
 	   (skk-isearch-mode-string)
 	   (mapconcat 'isearch-text-char-description isearch-string "")))))
-
 
 (put 'skk-isearch-wrapper 'isearch-command t)
 (put 'skk-isearch-keyboard-quit 'isearch-command t)

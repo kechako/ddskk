@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.3 1999/12/06 23:31:21 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.4 1999/12/19 09:01:40 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/06 23:31:21 $
+;; Last Modified: $Date: 1999/12/19 09:01:40 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -395,9 +395,13 @@
 (defsubst skk-minibuffer-origin ()
   (nth 1 (buffer-list)) )
 
-;;;; inline functions
 ;;;; version specific matter.
 ;;; inline functions.
+(defsubst skk-color-display-p ()
+  (static-if (eq skk-emacs-type 'xemacs)
+      (eq (device-class (selected-device)) 'color)
+    (x-display-color-p)))
+    
 (defsubst skk-str-length (str)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4))

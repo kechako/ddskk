@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.22 1999/12/18 19:07:05 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.23 1999/12/19 09:01:40 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/18 19:07:05 $
+;; Last Modified: $Date: 1999/12/19 09:01:40 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -28,257 +28,243 @@
 ;;; Commentary:
 
 ;;; Code:
+(or (skk-color-display-p) (error "SKK-CURSOR requires color display"))
 (eval-when-compile (require 'static)
-		   (require 'skk-macs) (require 'skk-vars) )
+		   (require 'skk-macs) (require 'skk-vars))
 
 ;; functions.
 (defun skk-cursor-set-color (color)
   ;; カーソルの色を COLOR に変更する。
-  (and skk-use-color-cursor
-       (condition-case nil
-	   (set-cursor-color color)
-	 (error
-	  (set-cursor-color skk-cursor-default-color)
-	  (and skk-cursor-report-set-error
-	       (skk-message
-		"カラーマップ切れです。ディフォルトのカラーを使います。"
-		"Color map is exhausting, use default cursor color" ))))))
+  (if (not color)
+      nil
+    (condition-case nil
+	(set-cursor-color color)
+      (error
+       (set-cursor-color skk-cursor-default-color)
+       (and skk-cursor-report-set-error
+	    (skk-message
+	     "カラーマップ切れです。ディフォルトのカラーを使います。"
+	     "Color map is exhausting, use default cursor color" ))))))
 
 (defun skk-cursor-change-when-ovwrt ()
   (static-cond
    ((eq skk-emacs-type 'xemacs) (setq bar-cursor overwrite-mode))
    (t (if overwrite-mode
 	  (modify-frame-parameters (selected-frame) '((cursor-type bar . 3)))
-	(modify-frame-parameters (selected-frame) '((cursor-type . box))) ))))
+	(modify-frame-parameters (selected-frame) '((cursor-type . box)))))))
 
 (defun skk-cursor-current-color ()
   ;; カレントバッファの SKK のモードから、カーソルの色を取得する。
-  (if (not skk-mode)
-      skk-cursor-default-color
-    (cond (skk-jisx0208-latin-mode
-	   skk-cursor-jisx0208-latin-color )
-	  (skk-abbrev-mode skk-cursor-abbrev-color)
-	  (skk-katakana skk-cursor-katakana-color)
-	  (skk-j-mode skk-cursor-hiragana-color)
-	  ((and (boundp 'skk-jisx0201-mode)
-		skk-jisx0201-mode)
-	   skk-cursor-jisx0201-color)
-	  (t skk-cursor-latin-color) )))
+  (cond ((not skk-mode) skk-cursor-default-color)
+	(skk-jisx0208-latin-mode
+	 skk-cursor-jisx0208-latin-color )
+	(skk-abbrev-mode skk-cursor-abbrev-color)
+	(skk-katakana skk-cursor-katakana-color)
+	(skk-j-mode skk-cursor-hiragana-color)
+	((and (boundp 'skk-jisx0201-mode)
+	      skk-jisx0201-mode)
+	 skk-cursor-jisx0201-color)
+	(t skk-cursor-latin-color)))
 
-;; Overwrite by skk-viper.el
-(defun skk-cursor-set-properly ()
+(defun skk-cursor-set-properly (&optional color)
   ;; カレントバッファの SKK のモードに従い、カーソルの色を変更する。
-  (if (not (get-buffer-window (current-buffer)))
+  ;; オプショナル引数の COLOR が指定されたときは、そのカーソル色を使う。
+  ;; OVWRT モードのときはカーソルの幅を小さくする。
+   (if (not (get-buffer-window (current-buffer)))
       nil
     (and skk-use-color-cursor
-	 (skk-cursor-set-color (skk-cursor-current-color)) )
-    (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)) ))
+	 (skk-cursor-set-color (cond (color)
+				     (t (skk-cursor-current-color)))))
+    (and skk-cursor-change-width (skk-cursor-change-when-ovwrt))))
+
+(defun skk-cursor-setup-minibuffer ()
+  (setq skk-cursor-color-before-entering-minibuffer
+	(with-current-buffer
+	    (skk-minibuffer-origin) (skk-cursor-current-color)))
+  (skk-cursor-set-properly)
+  (static-when (eq skk-emacs-type 'xemacs)
+    (cond ((and (memq this-command '(skk-start-henkan skk-insert))
+		(with-current-buffer
+		    (skk-minibuffer-origin) skk-abbrev-mode))
+	   (skk-cursor-set-color skk-cursor-hiragana-color))
+	  ((and (memq this-command '(skk-insert))
+		(not (memq last-command-char
+			   '(?\\))))
+	   nil)
+	  (t
+	   (skk-cursor-set-color skk-cursor-default-color)))))
 
 ;;; advices.
-;; cover to original Emacs functions.
-(defadvice overwrite-mode (after skk-cursor-ad activate)
-  "skk-cursor-change-width が non-nil だったら、カーソルの幅を縮める。"
-  (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)) )
-
-(static-when (featurep 'xemacs)
-  (defadvice abort-recursive-edit (before skk-cursor-ad activate preactivate)
-    "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-    (with-current-buffer (skk-minibuffer-origin) (skk-cursor-set-properly))))
-
-;; 別のバッファへ飛ぶコマンドは skk-mode が nil でもカーソル色を調整する必要が
-;; ある。
-(let ((funcs '(kill-buffer
+;;入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。
+;; 別のバッファへ飛ぶコマンドは skk-mode が nil でもカーソル色を調整する必要がある。
+;; CLASS は after.
+(let ((funcs '(
+	       ;; cover to original Emacs functions.
+	       kill-buffer
 	       bury-buffer
-	       switch-to-buffer
-	       pop-to-buffer
-	       other-window
+	       delete-frame
 	       delete-window
-	       select-window
+	       ;;execute-extended-command 
+	       kill-buffer
+	       other-window
+	       overwrite-mode
+	       pop-to-buffer
 	       select-frame
-	       delete-frame)))
+	       select-window
+	       switch-to-buffer
+	       ;; cover to SKK functions.
+	       skk-auto-fill-mode 
+	       skk-gyakubiki-katakana-message 
+	       skk-gyakubiki-katakana-region 
+	       skk-gyakubiki-message 
+	       skk-hiragana-region 
+	       skk-hurigana-katakana-region 
+	       skk-hurigana-message 
+	       skk-hurigana-region 
+	       skk-jisx0201-region 
+	       skk-jisx0208-latin-region 
+	       skk-katakana-region 
+	       skk-latin-region 
+	       skk-mode 
+	       skk-romaji-message 
+	       skk-romaji-region 
+	       skk-save-jisyo 
+	       skk-toggle-kana)))
   (while funcs
     (eval
      (`
       (defadvice (, (intern (symbol-name (car funcs))))
 	(after skk-cursor-ad activate)
 	"入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-	(skk-cursor-set-properly) ) ) )
-    (setq funcs (cdr funcs)) ) )
+	(skk-cursor-set-properly))))
+    (setq funcs (cdr funcs))))
 
-;;(defadvice goto-line (after skk-cursor-ad activate)
+;;入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。
+;; CLASS は after.
+;; skk-mode が nil か non-nil かの判定付き。
+(let ((funcs '(goto-line 
+	       insert-file 
+	       recenter 
+	       yank
+	       yank-pop 
+	       ;; cover to hilit functions.
+	       hilit-recenter 
+	       hilit-yank 
+	       hilit-yank-pop)))
+  (while funcs
+    (eval
+     (`
+      (defadvice (, (intern (symbol-name (car funcs))))
+	(after skk-cursor-ad activate)
+	"入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+	(and skk-mode (skk-cursor-set-properly)))))
+    (setq funcs (cdr funcs))))
+
+;;入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。
+;; CLASS は before.
+;; ミニバッファから元のカレントバッファを探し出し、カーソルをセット。
+(let ((funcs '(exit-minibuffer)))
+  (static-if (eq skk-emacs-type 'xemacs)
+      (setq funcs (cons 'minibuffer-keyboard-quit funcs)))
+  (while funcs
+    (eval
+     (`
+      (defadvice (, (intern (symbol-name (car funcs))))
+	(before skk-cursor-ad activate)
+	"入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+	(with-current-buffer (skk-minibuffer-origin) (skk-cursor-set-properly)))))
+    (setq funcs (cdr funcs))))
+
+;; 入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。
+;; CLASS は around.
+;; skk-abbrev-mode のときだけカーソルをセット。
+(let ((funcs '(
+	       ;; cover to original Emacs functions.
+	       newline 
+	       ;; cover to SKK functions.
+	       skk-delete-backward-char 
+	       skk-insert 
+	       skk-start-henkan 
+	       )))
+  (while funcs
+    (eval
+     (`
+      (defadvice (, (intern (symbol-name (car funcs))))
+	(around skk-cursor-ad activate preactivate)
+	"入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+	;; CLASS は around.
+	;; skk-abbrev-mode のときだけカーソルをセット。
+	(if skk-abbrev-mode
+	    (progn ad-do-it (skk-cursor-set-properly))
+	  ad-do-it))))
+    (setq funcs (cdr funcs))))
+
+;;(defadvice execute-extended-command (around skk-cursor-ad activate preactivate)
 ;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-;;  (and skk-mode (skk-cursor-set-properly)) )
-
-(defadvice yank (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (and skk-mode (skk-cursor-set-properly)) )
-
-(defadvice yank-pop (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (and skk-mode (skk-cursor-set-properly)) )
-
-(defadvice recenter (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (and skk-mode (skk-cursor-set-properly)) )
-
+;;  (if skk-mode
+;;		(unwind-protect ad-do-it (skk-cursor-set-properly))
+;;	      ad-do-it ))
+;;
+;;(static-unless (eq skk-emacs-type 'xemacs)
+;;  (defadvice completing-read (around skk-cursor-ad activate preactivate)
+;;	 "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;	 (if skk-mode
+;;	     (condition-case err
+;;		 (progn ad-do-it (skk-cursor-set-properly))
+;;	       (error
+;;		(skk-cursor-set-properly)
+;;		(signal (car err) (cdr err)))
+;;	       (quit
+;;		(skk-cursor-set-properly)
+;;		(signal 'quit nil)))
+;;	   ad-do-it ))
+;;  (defadvice read-from-minibuffer (around skk-cursor-ad activate preactivate)
+;;	 "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;	 (if skk-mode
+;;	     (condition-case err
+;;		 (progn ad-do-it (skk-cursor-set-properly))
+;;	       (error
+;;		(skk-cursor-set-properly)
+;;		(signal (car err) (cdr err)))
+;;	       (quit
+;;		(skk-cursor-set-properly)
+;;		(signal 'quit nil)))
+;;	   ad-do-it )))
+;;
 ;;(defadvice insert-file (after skk-cursor-ad activate)
 ;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
 ;;  (and skk-mode (skk-cursor-set-properly)) )
-
-(defadvice newline (around skk-cursor-ad activate preactivate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if skk-abbrev-mode
-      (progn ad-do-it (skk-cursor-set-properly))
-    ad-do-it))
-
-;; cover to hilit19 functions.
-(defadvice hilit-yank (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (and skk-mode (skk-cursor-set-properly)) )
-
-(defadvice hilit-yank-pop (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (and skk-mode (skk-cursor-set-properly)) )
-
-(defadvice hilit-recenter (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (and skk-mode (skk-cursor-set-properly)) )
 
 (defadvice keyboard-quit (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (and skk-mode
        (not skk-henkan-on)
        (not skk-henkan-active)
-       (skk-cursor-set-properly) ) )
+       (skk-cursor-set-properly)))
 
-;; cover to VIP/Viper functions.
-(defadvice viper-intercept-ESC-key (after skk-cursor-ad activate)
-  (and skk-mode (skk-cursor-set-properly)) )
-
-(defadvice vip-intercept-ESC-key (after skk-cursor-ad activate)
-  (and skk-mode (skk-cursor-set-properly)) )
+(static-when (featurep 'xemacs)
+  (defadvice abort-recursive-edit (before skk-cursor-ad activate preactivate)
+    "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+    (with-current-buffer (skk-minibuffer-origin) (skk-cursor-set-properly))))
 
 ;; cover to SKK functions.
-;; skk-mode と skk-auto-fill-mode だけは、skk-cursor-set-properly を呼ばない。
-(defadvice skk-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly))
-
 (defadvice skk-latin-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly) )
+  "カーソル色を skk-cursor-latin-color に変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+  (skk-cursor-set-properly skk-cursor-latin-color))
 
 (defadvice skk-jisx0208-latin-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly) )
-
+  "カーソル色を skk-cursor-jisx0208-latin-color に変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+  (skk-cursor-set-properly skk-cursor-jisx0208-latin-color))
+ 
 (defadvice skk-abbrev-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly) )
-
-(defadvice skk-toggle-kana (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if skk-katakana
-      (skk-cursor-set-color skk-cursor-katakana-color)
-    (skk-cursor-set-color skk-cursor-hiragana-color) ))
+  "応じカーソル色を skk-cursor-abbrev-color に変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+  (skk-cursor-set-properly skk-cursor-abbrev-color))
 
 (defadvice skk-kakutei (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if (interactive-p)
-      (skk-cursor-set-color (if skk-katakana skk-cursor-katakana-color
-			      skk-cursor-hiragana-color ))))
+  (if (interactive-p) (skk-cursor-set-properly)))
 
-(defadvice skk-save-jisyo (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-katakana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-hiragana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-jisx0208-latin-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-latin-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-jisx0201-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-gyakubiki-message (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-gyakubiki-katakana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-gyakubiki-katakana-message (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-hurigana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-hurigana-message (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-hurigana-katakana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-romaji-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-romaji-message (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-delete-backward-char (around skk-cursor-ad activate preactivate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if skk-abbrev-mode
-      (progn ad-do-it (skk-cursor-set-properly))
-    ad-do-it))
-
-(defadvice skk-start-henkan (around skk-cursor-ad activate preactivate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if skk-abbrev-mode
-      (progn ad-do-it (skk-cursor-set-properly))
-    ad-do-it))
-
-(defadvice skk-insert (around skk-cursor-ad activate preactivate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if skk-abbrev-mode
-      (progn ad-do-it (skk-cursor-set-properly))
-    ad-do-it))
-
-;;(add-hook 'after-make-frame-hook 'skk-cursor-set-properly)
-
-(add-hook 'minibuffer-setup-hook
-	  (function
-	   (lambda ()
-	     (setq skk-cursor-color-before-entering-minibuffer
-		   (with-current-buffer
-		       (skk-minibuffer-origin) (skk-cursor-current-color)))
-	     (skk-cursor-set-properly)
-	     (static-when (eq skk-emacs-type 'xemacs)
-	       (cond ((and (memq this-command '(skk-start-henkan skk-insert))
-			    (with-current-buffer
-				(skk-minibuffer-origin) skk-abbrev-mode))
-		      (skk-cursor-set-color skk-cursor-hiragana-color))
-		     ((and (memq this-command '(skk-insert))
-			   (not (memq last-command-char
-				      '(?\\))))
-		      nil)
-		     (t
-		      (skk-cursor-set-color skk-cursor-default-color)))))))
-
+(add-hook 'minibuffer-setup-hook 'skk-cursor-setup-minibuffer) 
 (add-hook 'minibuffer-exit-hook
 	  (function
 	   (lambda ()
@@ -289,13 +275,19 @@
 
 ;; 最初に load されたときは、skk-cursor adviced function になる前の関数によって
 ;; 呼ばれており、advice が効いてないので、トップレベルでカーソルを合わせておく。
-(and (get-buffer-window (current-buffer))
-     ;; only first time when this file loaded.
-     (not skk-mode-invoked)
-     (let ((skk-j-mode t)
-	   skk-latin-mode skk-abbrev-mode skk-jisx0208-latin-mode
-	   skk-katakana )
-       (skk-cursor-set-properly) ))
+;; (and (get-buffer-window (current-buffer))
+;;      ;; only first time when this file loaded.
+;;      (not skk-mode-invoked)
+;;      (skk-cursor-set-properly skk-cursor-hiragana-color))
+
+;;; Hooks
+(add-hook 'isearch-mode-end-hook 'skk-cursor-set-properly 'append)
+
+(defalias 'skk-set-cursor-color 'skk-cursor-set-color)
+(defalias 'skk-change-cursor-when-ovwrt 'skk-cursor-change-when-ovwrt)
+(defalias 'skk-set-cursor-properly 'skk-cursor-set-properly)
+
+(add-hook 'skk-mode-hook 'skk-mode-once-again)
 
 (provide 'skk-cursor)
 ;;; Local Variables:

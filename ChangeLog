@@ -1,3 +1,71 @@
+1999-12-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el: Eliminate all spaces which existed between
+	parens.
+	(skk-mode): Require `skk-cursor.el' everytime skk-mode is called.
+	(skk-mode-once-again): New function.
+	(minibuffer-keyboard-quit): Apply Tsukamoto san's Message-Id:
+	<199912181531.AAA24324@ring.etl.go.jp> patch.
+
+	* skk-vars.el: Eliminate all spaces which existed between
+	parens.
+	(skk-cursor): New group.
+	(skk-cursor-default-color): Change its group to skk-cursor.
+	(skk-cursor-hiragana-color): Ditto.
+	(skk-cursor-katakana-color): Ditto.
+	(skk-cursor-jisx0208-latin-color): Ditto.
+	(skk-cursor-latin-color): Ditto.
+	(skk-cursor-abbrev-color): Ditto.
+	(skk-cursor-report-set-error): Ditto.
+	(skk-cursor-change-width): Ditto.
+
+	* skk-cursor.el: Eliminate all spaces which existed between
+	parens.
+	Check if display supports color.
+	(isearch-mode-end-hook): Add
+	`skk-cursor-set-properly' to the hook.
+	(skk-cursor-current-color): Slightly simplified.
+	(skk-cursor-set-color): Omit check of `skk-use-color-cursor' is
+	nil or non-nil.
+	Check if COLOR is non-nil.
+	(skk-cursor-set-properly): New optional arg COLOR.
+	(skk-cursor-setup-minibuffer): New function.
+	(minibuffer-setup-hook): Hook `skk-cursor-setup-minibuffer'.
+	(skk-mode-hook): Hook `skk-mode-once-again'.
+	
+	* skk-viper.el: Eliminate all spaces which existed between
+	parens.
+	(skk-cursor-set-properly): Change function to advice.
+	(skk-mode-hook): Hook `skk-mode-once-again'.
+	(viper-toggle-case): Japanized version.  Hirakana to Katakana and
+	vice versa.
+	(viper-intercept-ESC-key): Doc fixed.
+	(vip-intercept-ESC-key): Ditto.
+	(vip-Append): New advice of skk-viper-cursor-ad.
+	(vip-Insert): Ditto.
+	(vip-insert): Ditto.
+	(vip-intercept-ESC-key): Ditto.
+	(vip-open-line): Ditto.
+	(viper-Append): Ditto.
+	(viper-Insert): Ditto.
+	(viper-hide-replace-overlay): Ditto.
+	(viper-insert): Ditto.
+	(viper-intercept-ESC-key): Ditto.
+	(viper-open-line): Ditto.
+	(skk-abbrev-mode): Ditto.
+	(skk-jisx0208-latin-mode): Ditto.
+	(skk-kakutei): Ditto.
+	(skk-latin-mode): Ditto.
+	(skk-mode): Ditto.
+	(skk-toggle-kana): Ditto.
+	(skk-viper-saved-cursor-color): New internal variable.
+	(viper-read-string-with-history): New advice of skk-viper-ad.
+	(read-from-minibuffer): Ditto.
+
+	* skk-isearch.el: Eliminate all spaces which existed between
+	parens.
+	Modify doc string about hooks.
+
 1999-12-18  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-hankaku-mode.el: Hey, is she still there? She's

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.11 1999/12/16 17:17:02 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.12 1999/12/19 09:01:41 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/16 17:17:02 $
+;; Last Modified: $Date: 1999/12/19 09:01:41 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -38,9 +38,8 @@
     (` (progn
 	 (defvar (, var) (, default-value)
 	   (, (format "%s\n\(buffer local\)" documentation)))
-	 (make-variable-buffer-local '(, var))
-	 )))
-  (require 'pcustom) )
+	 (make-variable-buffer-local '(, var)))))
+  (require 'pcustom))
 
 (eval-and-compile
   (defconst skk-emacs-type (cond ((string-match "XEmacs" emacs-version) 'xemacs)
@@ -49,7 +48,7 @@
 				 ((and (boundp 'mule-version)
 				       (string< "3.0" mule-version) 'mule3 ))
 				 ((and (boundp 'mule-version)
-				       (string< "2.0" mule-version) 'mule2 )))))
+				       (string< "2.0" mule-version) 'mule2)))))
 (defconst skk-version "11.1")
 (defconst skk-major-version (string-to-int (substring skk-version 0 2)))
 (defconst skk-minor-version (string-to-int (substring skk-version 3)))
@@ -62,7 +61,7 @@
   (cond
    ((eq skk-emacs-type 'xemacs)
     (if (< (apply '+ (color-rgb-components
-                      (face-property 'default 'background) ))
+                      (face-property 'default 'background)))
            (/ (apply '+ (color-rgb-components
                          (make-color-specifier "white"))) 3))
         'dark
@@ -76,23 +75,23 @@
         (setq params (frame-parameters))
         (cond ((cdr (assq 'background-mode params)));; Emacs20.x (Meadow)
 	      ((and (eq system-type 'windows-nt);; Mule for Win32
-                    (fboundp 'win32-color-values) )
+                    (fboundp 'win32-color-values))
                (< (apply '+ (win32-color-values
-                             (cdr (assq 'background-color params)) ))
-                  (/ (apply '+ (win32-color-values "white")) 3) )
+                             (cdr (assq 'background-color params))))
+                  (/ (apply '+ (win32-color-values "white")) 3))
                'dark )
               ((and (memq system-type '(ms-dos windows-nt))
-                    (fboundp 'x-color-values) )
+                    (fboundp 'x-color-values))
                (if (string-match "light"
-                                 (cdr (assq 'background-color params)) )
+                                 (cdr (assq 'background-color params)))
                    'light
                  'dark ))
               ((< (apply '+ (x-color-values
-                             (cdr (assq 'background-color params)) ))
-                  (/ (apply '+ (x-color-values "white")) 3) )
+                             (cdr (assq 'background-color params))))
+                  (/ (apply '+ (x-color-values "white")) 3))
                'dark )
-              (t 'light) ))))
-   (t 'mono) ))
+              (t 'light)))))
+   (t 'mono)))
 
 ;;;; variables declaration
 ;;; user variables
@@ -136,6 +135,10 @@
 (defgroup skk-server nil "SKK server related customization."
   :prefix "skk-server-"
   :group 'skk )
+
+(defgroup skk-cursor nil "SKK cursor related customization."
+  :prefix "skk-cursor-"
+  :group 'skk)
 
 ;;(defgroup skk-viper nil "SKK/Viper related customization."
 ;;  :prefix "skk-"
@@ -303,9 +306,9 @@ skk-search $B4X?t$,(B skk-search-prog-list $B$N(B car $B$+$i8eJ}8~$X=gHV$K
 	  (list (function :tag "Search funcition")
 		(choice :tag "Dictionary" file (const nil))
 		(choice :tag "Minimum region size to be binary-searched"
-			integer (const nil) )
+			integer (const nil))
 		(choice :tag "Quietly reading dictionary to Emacs buffer"
-			(const t) (const nil) )))
+			(const t) (const nil))))
   :group 'skk )
 
 (defcustom skk-jisyo (convert-standard-filename "~/.skk-jisyo")
@@ -886,7 +889,7 @@ left $B$G$"$l$P:8C<$KI=<($9$k!#(B
 skk-rom-kana-rule-list $B$NDj5A$,M%@h$5$l$k!#(B" 
   :type '(repeat
 	  (list string string
-		(choice function string (cons string string)) ))
+		(choice function string (cons string string))))
   :group 'skk )
 
 (defcustom skk-rom-kana-rule-list
@@ -938,7 +941,7 @@ skk-mode $B5/F0;~$K(B skk-rule-tree $B$H$$$&LZ$N7A$K%3%s%Q%$%k$5$l$k!#(B
 $B$,$"$k!#(B" 
   :type '(repeat
 	  (list string string
-		(choice function string (cons string string)) ))
+		(choice function string (cons string string))))
   :group 'skk )
 
 (defcustom skk-kana-input-search-function
@@ -947,7 +950,7 @@ skk-mode $B5/F0;~$K(B skk-rule-tree $B$H$$$&LZ$N7A$K%3%s%Q%$%k$5$l$k!#(B
      (save-match-data
        (and (string-match "^h\\([bcdfghjklmnpqrstvwxz]\\)$" skk-prefix)
 	    (member (char-to-string (preceding-char)) '("$B$*(B" "$B%*(B"))
-	    (cons '("$B%*(B" . "$B$*(B") (match-string 1 skk-prefix)) ))))
+	    (cons '("$B%*(B" . "$B$*(B") (match-string 1 skk-prefix))))))
   "*$B%k!<%k%j%9%H$NCf$K5-$;$J$$JQ49%k!<%k$r=hM}$9$k4X?t!#(B
 skk-rom-kana-base-rule-list $B$H(B skk-rom-kana-rule-list $B$NMWAG$rA4$F8!:w(B
 $B$7$?8e$K%3!<%k$5$l$k!#0z?t$O$J$$!#(B
@@ -1012,7 +1015,7 @@ skk.el $B$N%m!<%I8e(B ($B$b$7$/$O(B skk-load-hook $B$rMxMQ$7$F(B)$B!"(B
 			    ;; $BJQ?tL>$_$?$$$J4X?t$@$J(B...$B!#(B
 			    ;; XEmacs does not have this funciton...
 			    (fboundp 'frame-face-alist)
-			    (fboundp 'selected-frame) )
+			    (fboundp 'selected-frame))
   "*Non-nil $B$G$"$l$P!"(BEmacs $B$N(B face $B$N5!G=$r;HMQ$7$FJQ49I=<($r9T$J$&!#(B" 
   :type 'boolean
   :group 'skk )
@@ -1077,7 +1080,7 @@ skk-comp.el $B0J30$NJd405!G=$rMxMQ$G$-$k$h$&$K4X?t$r(B funcall $B$9$k7A$K$7$F
   :group 'skk-comp )
 
 (defcustom skk-use-color-cursor (and window-system (fboundp 'x-display-color-p)
-				     (x-display-color-p) )
+				     (x-display-color-p))
   "*Non-nil $B$G$"$l$P!"(BSKK $B%b!<%I$NF~NO%b!<%I$K1~$8$F%+!<%=%k$K?'$rIU$1$k!#(B"
   :type 'boolean
   :group 'skk )
@@ -1391,7 +1394,7 @@ nil $B$G$"$l$P!"859fI=<($9$k!#(B"
 $B4A?t;zI=(B: t, 0, 1 $B0J30$N(B non-nil $BCM!#(B"
   :type '(choice (choice :tag "Hankaku" (const nil) (integer 0))
 		 (choice :tag "Zenkaku" (const t) (integer 1))
-		 (integer :tag "Kansuuji" 3) )
+		 (integer :tag "Kansuuji" 3))
   :group 'skk-gadget )
 
 (defcustom skk-gadget-load-hook nil
@@ -1430,8 +1433,8 @@ PROMPT-STRING $B$O!"3:Ev$N(B SKK $B%b!<%I$KBP$7=P$9%W%m%s%W%H$NJ8;zNs!#(B"
 			       (const katakana)
 			       (const jisx0208-latin)
 			       (const latin)
-			       (const nil) )
-		       (string :tag "Prompt string") ))
+			       (const nil))
+		       (string :tag "Prompt string")))
   :group 'skk-isearch )
 
 (defcustom skk-isearch-start-mode nil
@@ -1456,7 +1459,7 @@ isearch $B$r9T$J$&>l9g!">o$K$3$NJQ?t$G;XDj$7$?F~NO%b!<%I$,;HMQ$5$l$k(B ($B%f!
   :type '(choice (const :tag "Succeed an input mode of current buffer" nil)
 		 (const :tag "Ascii search" latin)
 		 (const :tag "Hiragana search" hiragana)
-		 (const :tag "JISX0208 alphabet search" jisx0208-latin) )
+		 (const :tag "JISX0208 alphabet search" jisx0208-latin))
   :group 'skk-isearch )
 
 (defcustom skk-isearch-use-previous-mode nil
@@ -1471,7 +1474,7 @@ isearch $B$r9T$J$&>l9g!">o$K$3$NJQ?t$G;XDj$7$?F~NO%b!<%I$,;HMQ$5$l$k(B ($B%f!
   "*SKK $B%b!<%I$,%*%U$N%+%l%s%H%P%C%U%!$G!":G=i$K(B isearch $B$r9T$J$&:]$NF~NO%b!<%I!#(B"
   :type '(choice (const :tag "Ascii search" latin)
 		 (const :tag "Hiragana search" hiragana)
-		 (const :tag "JISX0208 alphabet search" jisx0208-latin) )
+		 (const :tag "JISX0208 alphabet search" jisx0208-latin))
   :group 'skk-isearch )
 
 (defcustom skk-isearch-whitespace-regexp "\\(\\s \\|[ \t\n\r\f]\\)*"
@@ -1601,7 +1604,7 @@ skk-look-recursive-search $B$,(B non-nil $B$G$"$k$H$-$N$_M-8z!#(B"
     (3 . skk-num-type3-kanji)
     (4 . skk-num-recompute)
     (5 . skk-num-type5-kanji)
-    (9 . skk-num-shogi) )
+    (9 . skk-num-shogi))
   "*$B?tCM$NJQ49$N$?$a$N!"%$%s%G%/%9$HJQ49$K;HMQ$9$k4X?t$H$N%(!<%j%9%H!#(B
 $B3FMWAG$O!"(B`\($B%$%s%G%/%9(B . $B4X?tL>(B\)' $B$H$$$&9=@.$K$J$C$F$$$k!#(B
 $B%$%s%G%/%9$K$O!"Nc$($P8+=P$78l$,(B \"$BJ?@.(B#1$BG/(B\" $B$N$H$-!"(B`#' $B5-9f$ND>8e$KI=<($5$l$k(B
@@ -1617,8 +1620,8 @@ integer `1' $B$rBeF~$9$k!#(B
     9 -> $B>-4}$G;HMQ$9$k?t;z(B \(\"$B#3;M(B\" $B$J$I(B\) $B$KJQ49(B" 
   :type '(repeat (cons (choice :tag "Index"
 			       (integer 0) (integer 1) (integer 2) (integer 3)
-			       (integer 4) (integer 5) (integer 9) )
-		  (function :tag "Function") ))
+			       (integer 4) (integer 5) (integer 9))
+		  (function :tag "Function")))
   :group 'skk-num )
 
 (defcustom skk-num-convert-float nil
@@ -1630,7 +1633,7 @@ integer `1' $B$rBeF~$9$k!#(B
 
 (defcustom skk-num-uniq (or (assq 4 skk-num-type-alist)
 			    (and (assq 2 skk-num-type-alist)
-				 (assq 3 skk-num-type-alist) ))
+				 (assq 3 skk-num-type-alist)))
   "*Non-nil $B$G$"$l$P!"0[$J$k?tCMI=8=$G$bJQ497k2L$,F1$8?tCM$r=EJ#$7$F=PNO$7$J$$!#(B"
   :type 'boolean
   :group 'skk-num )
@@ -1693,7 +1696,7 @@ SKK $B%5!<%P!<$,;HMQ$9$k%]!<%HHV9f$r=q$-!"@_Dj$r$9$k$3$H$,$G$-$k!#(B
 	  (list (string :tag "Hostname")
 		(choice :tag "Server" file (const nil))
 		(choice :tag "Dictionary" file (const nil))
-		(choice :tag "Port number" integer (const nil)) ))
+		(choice :tag "Port number" integer (const nil))))
   :group 'skk-server )
 
 (defcustom skk-server-report-response nil
@@ -1706,13 +1709,13 @@ SKK $B%5!<%P!<$,;HMQ$9$k%]!<%HHV9f$r=q$-!"@_Dj$r$9$k$3$H$,$G$-$k!#(B
       (and (boundp 'remote-shell-program) remote-shell-program)
       (cond
        ((eq system-type 'berkeley-unix)
-        (if (file-exists-p "/usr/ucb/rsh") "/usr/ucb/rsh" "/usr/bin/rsh") )
+        (if (file-exists-p "/usr/ucb/rsh") "/usr/ucb/rsh" "/usr/bin/rsh"))
        ((eq system-type 'usg-unix-v)
         (if (file-exists-p "/usr/ucb/remsh") "/usr/ucb/remsh" "/bin/rsh"))
        ((eq system-type 'hpux) "/usr/bin/remsh")
        ((eq system-type 'EWS-UX/V) "/usr/ucb/remsh")
        ((eq system-type 'pcux) "/usr/bin/rcmd")
-       (t "rsh") ))
+       (t "rsh")))
   "*$B%j%b!<%H%7%'%k$N%W%m%0%i%`L>!#(B"
   :type 'file
   :group 'skk-server )
@@ -1729,7 +1732,7 @@ SKK $B%5!<%P!<$,;HMQ$9$k%]!<%HHV9f$r=q$-!"@_Dj$r$9$k$3$H$,$G$-$k!#(B
 (defconst skk-month-alist
   '(("Jan" . "1") ("Feb" . "2") ("Mar" . "3") ("Apr" . "4") ("May" . "5")
     ("Jun" . "6") ("Jul" . "7") ("Aug" . "8") ("Sep" . "9") ("Oct" . "10")
-    ("Nov" . "11") ("Dec" . "12") )
+    ("Nov" . "11") ("Dec" . "12"))
   "$B1Q8l$N7nL>$H;;MQ?t;z$NO"A[%j%9%H!#(B
 
 $B;;MQ?t;z$+$i1Q8l$N7nL>$N$_$r=PNO$9$k$N$G$"$l$P!"%Y%/%?!<$r;H$C$?J}$,9bB.$@$,!"(B
@@ -1748,11 +1751,11 @@ SKK $B%5!<%P!<$,;HMQ$9$k%]!<%HHV9f$r=q$-!"@_Dj$r$9$k$3$H$,$G$-$k!#(B
       '(("euc" . euc-japan)
         ("ujis" . euc-japan)
         ("sjis". sjis)
-        ("jis" . junet) )
+        ("jis" . junet))
     '(("euc" . *euc-japan*)
       ("ujis" . *euc-japan*)
       ("sjis". *sjis*)
-      ("jis" . *junet*) ))
+      ("jis" . *junet*)))
   "coding-system $B$NJ8;zNsI=8=$H!"%7%s%\%kI=8=$NO"A[%j%9%H!#(B" )
 
 (defconst skk-default-jisx0208-latin-vector
@@ -1818,13 +1821,13 @@ SKK $B%5!<%P!<$,;HMQ$9$k%]!<%HHV9f$r=q$-!"@_Dj$r$9$k$3$H$,$G$-$k!#(B
 	(195 . 124)	;?\|
 	(209 . 125)	;?\}
 	(177 . 126)	;?\~
-	(198 . 96) ))	;?` 
+	(198 . 96)))	;?` 
   "$BJ8;z%3!<%I$N(B 2 $BHVL\$N%P%$%H$H$=$NJ8;z$KBP1~$9$k(B ascii $BJ8;z(B \(char\) $B$H$NO"A[%j%9%H!#(B
 Mule l $B$b$7$/$O(B  Mule 2 $B$r;HMQ$9$k>l9g$K(B skk-latin-region $B$G;2>H$9$k!#(B
 Mule-2.3 $BE:IU$N(B egg.el $B$h$j%3%T!<$7$?!#(B" )
 
 (defconst skk-kana-cleanup-command-list
-  '(skk-delete-backward-char skk-insert skk-previous-candidate) )
+  '(skk-delete-backward-char skk-insert skk-previous-candidate))
 
 (defvar skk-emacs-id nil
   "$BJ#?t(B emacs $B$r<1JL$9$kJ8;zNs!#(B
@@ -2072,12 +2075,12 @@ skk-remove-common $B$G;2>H$5$l$k!#(B" )
   (if (boundp 'early-packages)
       (let ((dirs (append (if early-package-load-path early-packages)
 			  (if late-package-load-path late-packages)
-			  (if last-package-load-path last-packages) ))
+			  (if last-package-load-path last-packages)))
 	    dir )
 	(while (not (file-exists-p (setq dir (car dirs))))
-	  (setq dirs (cdr dirs)) )
+	  (setq dirs (cdr dirs)))
 	(and dir
-	     (expand-file-name "skk" (expand-file-name "etc" dir)) ))))
+	     (expand-file-name "skk" (expand-file-name "etc" dir))))))
 
 ;;; -- SKK-COMP.EL related internal variables
 ;; ---- buffer local variables
@@ -2103,7 +2106,7 @@ skk-dabbrev-like-completion $B$,(B non-nil $B$N>l9g$O!">o$K:G8e$KJd40$7$?8+=P
 ;;; -- SKK-GADGET.EL related internal variables
 (defconst skk-week-alist
   '(("Sun" . "$BF|(B") ("Mon" . "$B7n(B") ("Tue" . "$B2P(B") ("Wed" . "$B?e(B") ("Thu" . "$BLZ(B")
-    ("Fri" . "$B6b(B") ("Sat" . "$BEZ(B") )
+    ("Fri" . "$B6b(B") ("Sat" . "$BEZ(B"))
   "$BMKF|L>$NO"A[%j%9%H!#(B\($B1Q8lI=5-J8;zNs(B . $BF|K\8lI=5-J8;zNs(B\)" )
 
 ;;; SKK-ISEARCH.EL related internal constants and variables.
@@ -2114,7 +2117,7 @@ The SYMBOL is canonical skk mode, and NUMBER is its numerical representation.")
 
 (defconst skk-isearch-mode-alias-alist
   '((hirakana . hiragana) (kana . hiragana) (eiji . jisx0208-latin)
-    (ascii . latin) )
+    (ascii . latin))
   "Alist of \(ALIAS . CANONICAL\).
 The both ALIAS and CANONICAL should be symbol.
 ALIAS can be used as an alias of CANONICAL.
@@ -2161,16 +2164,16 @@ This map should be derived from isearch-mode-map." )
 		    (or (> emacs-minor-version 2)
 			(and (= emacs-minor-version 2)
 			     (boundp 'emacs-beta-version) emacs-beta-version
-			     (>= emacs-beta-version 2) ))))
+			     (>= emacs-beta-version 2)))))
 	   'overriding-local-map )
-	  (t 'overriding-terminal-local-map) ))
+	  (t 'overriding-terminal-local-map)))
 	;; for Mule/GNU Emacs.
 	((or (> emacs-major-version 19)
-	     (and (= emacs-major-version 19) (> emacs-minor-version 28)) )
+	     (and (= emacs-major-version 19) (> emacs-minor-version 28)))
 	 ;; GNU Emacs version 19.29, 19.30 and 19.31 uses this in isearch.el.
 	 'overriding-terminal-local-map )
 	;; GNU Emacs version 19.22 .. 19.28 uses this in isearch.el.
-	(t 'overriding-local-map) )
+	(t 'overriding-local-map))
   "Variable holding overrinding local map used in isearch-mode.")
 
 (defvar skk-isearch-last-mode-string "")
@@ -2184,7 +2187,7 @@ This map should be derived from isearch-mode-map." )
 (defconst skk-code-null 128)
 (defconst skk-kcode-charset-list
   (if (memq skk-emacs-type '(xemacs mule4 mule3))
-      (mapcar '(lambda (x) (list (symbol-name x))) (charset-list)) ))
+      (mapcar '(lambda (x) (list (symbol-name x))) (charset-list))))
 (defvar skk-input-by-code-or-menu-jump-default skk-code-n1-min)
 
 ;;; SKK-LOOK.EL related internal constant and variable.
@@ -2196,21 +2199,21 @@ This map should be derived from isearch-mode-map." )
     (?4 . "$B#4(B") (?5 . "$B#5(B") (?6 . "$B#6(B") (?7 . "$B#7(B")
     (?8 . "$B#8(B") (?9 . "$B#9(B")
     (?. . "$B!%(B")	; $B>.?tE@!#(B(?. . ".") $B$NJ}$,NI$$?M$b$$$k$+$b(B...$B!#(B
-    (?  . "") )
+    (?  . ""))
   "ascii $B?t;z$N(B char type $B$HA43Q?t;z$N(B string type $B$NO"A[%j%9%H!#(B
 \"1995\" -> \"$B#1#9#9#5(B\" $B$N$h$&$JJ8;zNs$NJQ49$r9T$&:]$KMxMQ$9$k!#(B" )
 
 (defconst skk-num-alist-type2
   '((?0 . "$B!;(B") (?1 . "$B0l(B") (?2 . "$BFs(B") (?3 . "$B;0(B")
     (?4 . "$B;M(B") (?5 . "$B8^(B") (?6 . "$BO;(B") (?7 . "$B<7(B")
-    (?8 . "$BH,(B") (?9 . "$B6e(B") (?  . "") )
+    (?8 . "$BH,(B") (?9 . "$B6e(B") (?  . ""))
   "ascii $B?t;z$N(B char type $B$H4A?t;z$N(B string type $B$NO"A[%j%9%H!#(B
 \"1995\" -> \"$B0l6e6e8^(B\" $B$N$h$&$JJ8;zNs$NJQ49$r9T$&:]$KMxMQ$9$k!#(B" )
 
 (defconst skk-num-alist-type5
   '((?1 . "$B0m(B") (?2 . "$BFu(B") (?3 . "$B;2(B")
     (?4 . "$B;M(B") (?5 . "$B8`(B") (?6 . "$BO;(B") (?7 . "$B<7(B")
-    (?8 . "$BH,(B") (?9 . "$B6e(B") (?  . "") )
+    (?8 . "$BH,(B") (?9 . "$B6e(B") (?  . ""))
   "ascii $B?t;z$N(B char type $B$H4A?t;z$N(B string type $B$NO"A[%j%9%H!#(B
 \"1995\" -> \"$B0mot6eI46e=&8`(B\" $B$N$h$&$JJ8;zNs$NJQ49$r9T$&:]$KMxMQ$9$k!#(B" )
 
@@ -2229,7 +2232,7 @@ This map should be derived from isearch-mode-map." )
 
 ;;; SKK-VIPER.EL related internal constant.
 (defconst skk-viper-use-vip-prefix
-  (not (fboundp 'viper-normalize-minor-mode-map-alist)) )
+  (not (fboundp 'viper-normalize-minor-mode-map-alist)))
 
 (defconst skk-viper-normalize-map-function
   (if skk-viper-use-vip-prefix 

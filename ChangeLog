@@ -1,10 +1,13 @@
 2000-09-12  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
+	* SKK-MK: Emacs 18 only. Work around for a bug in cl.el.
+
 	* experimental/skk-e18.el: Modify the error message.
 
 	* patch/e18: New repository.
 
-	* patch/e18/{README.ja, advice.el, cl.elc}: New files.
+	* patch/e18/{README.ja, advice.el, cl.elc, cl_el-defsetf.patch}:
+	New files.
 
 	* patch/e18/bytecomp-2.07: New repository.
 

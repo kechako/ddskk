@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-setup.el.in,v 1.1.2.10 2000/09/27 13:42:07 minakaji Exp $
+;; Version: $Id: skk-setup.el.in,v 1.1.2.11 2000/10/02 12:40:56 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:07 $
+;; Last Modified: $Date: 2000/10/02 12:40:56 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -80,7 +80,27 @@
 		     "^japanese-skk"
 		    (format "%s" default-input-method))
 		    (let (current-input-method) ad-do-it))
-		   (t ad-do-it))))))
+		   (t ad-do-it)))
+	   ;;
+	   (when site-run-file
+	     (cond
+	      ((fboundp 'load-leim-list-except-this)
+	       ;; egg/leim-list.el is already loaded.
+	       nil)
+	      ((locate-library "egg/leim-list.el" 'nosuffix)
+	       ;; Try loading egg/leim-list.el.
+	       (load "egg/leim-list.el" 'noerror 'nomessage 'nosuffix))
+	      (t
+	       (defun load-leim-list-except-this ()
+		 (load-libraries
+		  "leim-list"
+		  (cdr-safe
+		   (member (directory-file-name
+			    (file-name-directory load-file-name))
+			   load-path))))
+	       (message "Finished loading %s \n   and load others..."
+			load-file-name)
+	       (load-leim-list-except-this)))))))
 
 (provide 'skk-setup)
 ;;; Local Variables:

@@ -1,5 +1,12 @@
 1999-11-28  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-isearch.el (skk-isearch-delete-char): Check the car of the
+	cdr of each element of `isearch-cmds', and update it, if
+	necessary, according to the return value of
+	`skk-isearch-mode-string'.
+
+1999-11-28  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* skk-cursor.el (newline): New advice. Call
 	`skk-cursor-set-properly'.
 	(skk-delete-backward-char): Ditto.

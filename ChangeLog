@@ -1,6 +1,6 @@
 2000-09-07  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
-	* Makefile (skk_jisyo): New variable.
+	* Makefile (set_jisyo): New variable.
 
 	* SKK-MK (SKK_SET_JISYO): New variable.
 	(SKK-MK-install): Set `skk-large-jisyo' if `SKK_SET_JISYO' is

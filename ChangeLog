@@ -58,6 +58,19 @@
 	18.
 	(member): New function for Emacs 18.
 
+2000-01-23  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-henkan-show-candidates): Remove unnecessary
+	temporary variable STR.
+
+2000-01-21  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-insert-new-word): Change for new `skk-eval-string'.
+	(skk-henkan-show-candidate-subr): Ditto.
+	(skk-nunion): Change open parens to closed ones.
+
+	* skk-macs.el (skk-eval-string): Return STRING.
+	
 2000-01-19  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK: Typo.
@@ -76,6 +89,7 @@
 
 	* skk-jisx0201.el: Modify comments.
 
+>>>>>>> 1.1.2.4.2.116
 2000-01-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (skk-insert-new-word): Use `skk-eval-string'.

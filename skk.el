@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.34 2000/01/23 13:41:23 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.35 2000/01/24 12:37:40 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/23 13:41:23 $
+;; Last Modified: $Date: 2000/01/24 12:37:40 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/23 13:41:23 $")
+      (let* ((raw-date "$Date: 2000/01/24 12:37:40 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1350,7 +1350,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 (defun skk-henkan-show-candidates ()
   ;; ミニバッファで変換した候補群を表示する。
   (skk-save-point
-   (let* ((candidate-keys ; 表示用のキーリスト
+   (let* ((candidate-keys		; 表示用のキーリスト
            (mapcar
 	    (function (lambda (c)
 			(and (memq c '(?\C-g ?\040 ?x)) ; ?\040 is SPC.
@@ -1359,8 +1359,8 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 					"skk-henkan-show-candidates-keys"))
 			(char-to-string (upcase c))))
 	    skk-henkan-show-candidates-keys))
-          key-num-alist ; 候補選択用の連想リスト
-          (key-num-alist1 ; key-num-alist を組み立てるための作業用連想リスト。
+          key-num-alist			; 候補選択用の連想リスト
+          (key-num-alist1		; key-num-alist を組み立てるための作業用連想リスト。
            (let ((count 6))
              (mapcar (function (lambda (key) (prog1 (cons key count)
                                                (setq count (1- count)))))
@@ -1369,46 +1369,43 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
                      (reverse skk-henkan-show-candidates-keys))))
           (loop 0)
           inhibit-quit
-          henkan-list new-one str reverse n)
+          henkan-list new-one reverse n)
      ;; Emacs 19.28 だと Overlay を消しておかないと、次に insert される
      ;; skk-henkan-key に何故か Overlay がかかってしまう。
      (and skk-use-face (skk-henkan-face-off))
      (delete-region skk-henkan-start-point skk-henkan-end-point)
      (while loop
-       (if str
-           (let (message-log-max)
-             (message str))
-         (cond (reverse
-                (setq loop (1- loop)
-                      henkan-list (nthcdr (+ 4 (* loop 7)) skk-henkan-list)
-                      reverse nil))
-               (skk-exit-show-candidates
-                ;; 候補が尽きてしまって、skk-henkan-show-candidates ->
-                ;; skk-henkan-in-minibuff -> skk-henkan
-                ;; -> skk-henkan-show-candidates の順で、再びこの関数が呼ばれ
-                ;; たときは、ここで henkan-list と loop を計算する。
-                (setq henkan-list (nthcdr skk-henkan-count skk-henkan-list)
-                      loop (car skk-exit-show-candidates)
-                      skk-exit-show-candidates nil))
-               (t
-                ;; skk-henkan-show-candidates-keys の最終のキーに対応する候補
-                ;; が出てくるまでサーチを続ける。
-                (and (skk-numeric-p) (skk-num-uniq))
-                (while (and skk-current-search-prog-list
-                            (null (nthcdr (+ 11 (* loop 7)) skk-henkan-list)))
-                  (setq skk-henkan-list
-                        (skk-nunion skk-henkan-list (skk-search)))
-                  (and (skk-numeric-p) (skk-num-uniq)))
-                (and (skk-numeric-p) (skk-num-convert*7))
-                (setq henkan-list (nthcdr (+ 4 (* loop 7)) skk-henkan-list))))
-         (setq n (skk-henkan-show-candidate-subr candidate-keys henkan-list)))
+       (cond (reverse
+	      (setq loop (1- loop)
+		    henkan-list (nthcdr (+ 4 (* loop 7)) skk-henkan-list)
+		    reverse nil))
+	     (skk-exit-show-candidates
+	      ;; 候補が尽きてしまって、skk-henkan-show-candidates ->
+	      ;; skk-henkan-in-minibuff -> skk-henkan
+	      ;; -> skk-henkan-show-candidates の順で、再びこの関数が呼ばれ
+	      ;; たときは、ここで henkan-list と loop を計算する。
+	      (setq henkan-list (nthcdr skk-henkan-count skk-henkan-list)
+		    loop (car skk-exit-show-candidates)
+		    skk-exit-show-candidates nil))
+	     (t
+	      ;; skk-henkan-show-candidates-keys の最終のキーに対応する候補
+	      ;; が出てくるまでサーチを続ける。
+	      (and (skk-numeric-p) (skk-num-uniq))
+	      (while (and skk-current-search-prog-list
+			  (null (nthcdr (+ 11 (* loop 7)) skk-henkan-list)))
+		(setq skk-henkan-list
+		      (skk-nunion skk-henkan-list (skk-search)))
+		(and (skk-numeric-p) (skk-num-uniq)))
+	      (and (skk-numeric-p) (skk-num-convert*7))
+	      (setq henkan-list (nthcdr (+ 4 (* loop 7)) skk-henkan-list))))
+       (setq n (skk-henkan-show-candidate-subr candidate-keys henkan-list))
        (if (> n 0)
            (condition-case nil
                (let* ((event (skk-read-event))
                       (char (event-to-character event))
                       num)
 		 (if (eq skk-emacs-type 'xemacs)
-		     (message "")) ; clear out candidates in echo area
+		     (message ""))	; clear out candidates in echo area
                  (if (null char)
                      (skk-unread-event event)
                    (setq key-num-alist (nthcdr (- 7 n) key-num-alist1))
@@ -1421,13 +1418,11 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
                           (setq new-one (nth num henkan-list)
                                 skk-henkan-count (+ 4 (* loop 7) num)
                                 skk-kakutei-flag t
-                                loop nil
-                                str nil))
+                                loop nil))
                          ((eq char ?\040) ; SPC
                           (if (or skk-current-search-prog-list
                                   (nthcdr 7 henkan-list))
-                              (setq loop (1+ loop)
-                                    str nil)
+                              (setq loop (1+ loop))
                             ;; 候補が尽きた。この関数から抜ける。
                             (let ((last-showed-index (+ 4 (* loop 7))))
                               (setq skk-exit-show-candidates
@@ -1438,8 +1433,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
                               ;; skk-henkan-list の最後の候補の次 (存在しない
                               ;; --- nil)を指す。
                               (setq skk-henkan-count (+ last-showed-index n)
-                                    loop nil
-                                    str nil))))
+                                    loop nil))))
                          ((eq char skk-previous-candidate-char)	; ?x
                           (if (= loop 0)
                               ;; skk-henkan-show-candidates を呼ぶ前の状態に戻
@@ -1451,8 +1445,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
                                 ;; skk-henkan まで一気に throw する。
                                 (throw 'unread nil))
                             ;; 一つ前の候補群をエコーエリアに表示する。
-                            (setq reverse t
-                                  str nil)))
+                            (setq reverse t)))
 			 ;; これがないと quit できない。何故？
 			 ((and (eq skk-emacs-type 'xemacs)
 			       (eq char (quit-char)))
@@ -1466,47 +1459,10 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
               (setq skk-henkan-count 0)
               (skk-unread-event (character-to-event skk-previous-candidate-char))
               ;; skk-henkan まで一気に throw する。
-              (throw 'unread nil)))))  ; end of while loop
+              (throw 'unread nil)))))	; end of while loop
      (if (consp new-one)
          (cdr new-one)
        new-one))))
-
-(defun skk-henkan-show-candidate-subr (keys candidates)
-  ;; key と candidates を組み合わせて 7 つの候補群 (候補数が 7 に満たなかっ
-  ;; たらそこで打ち切る) の文字列を作り、ミニバッファに表示する。
-  (let ((workinglst
-	 ;; CANDIDATES の先頭の 7 つのみのリスト。
-	 (let ((count 0) e v)
-	   (while (> 7 count)
-	     (setq e (nth count candidates))
-	     (if e
-		 (setq v (cons (if (not (skk-lisp-prog-p e))
-				   e
-				 (or (skk-eval-string e) e))
-			       v)
-		       count (1+ count))
-	       (setq count 7)))
-	   (nreverse v)))
-	(n 0) str cand message-log-max)
-    (if (not (car workinglst))
-        nil
-      (setq workinglst (skk-truncate-message workinglst))
-      (setq n 1
-            ;; 最初の候補の前に空白をくっつけないように最初の候補だけ先に取り
-            ;; 出す。
-            str (concat (car keys) ":" (if (consp (car workinglst))
-					   (cdr (car workinglst))
-					 (car workinglst))))
-      ;; 残りの 6 つを取り出す。候補と候補の間を空白でつなぐ。
-      (while (and (< n 7) (setq cand (nth n workinglst)))
-        (setq cand (if (consp cand) (cdr cand) cand)
-              str (concat str "  " (nth n keys) ":" cand)
-              n (1+ n)))
-      (message "%s  [残り %d%s]"
-               str (length (nthcdr n candidates))
-               (make-string (length skk-current-search-prog-list) ?+)))
-    ;; 表示する候補数を返す。
-    n))
 
 (defun skk-truncate-message (l)
   (let* (
@@ -1728,9 +1684,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   (and skk-use-face (skk-henkan-face-off))
   (delete-region skk-henkan-start-point skk-henkan-end-point)
   (goto-char skk-henkan-start-point)
-  (insert-and-inherit (if (not (skk-lisp-prog-p word))
-			  word
-			(or (skk-eval-string word) word)))
+  (insert-and-inherit (if (skk-lisp-prog-p word) (skk-eval-string word) word))
   (skk-set-marker skk-henkan-end-point (point))
   (and skk-use-face (skk-henkan-face-on))
   (and skk-insert-new-word-function
@@ -2899,8 +2853,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 		       (setq list1 (cdr list1))))
 		   (setcdr list1 (list (car list2)))
 		   (setq x (cdr oldlist1)))
-	       (setq list2 (cdr list2)))
-	      ))
+		 (setq list2 (cdr list2)))))
 	   x)))
 
 (defun skk-search-kakutei-jisyo-file (file limit &optional nomsg)

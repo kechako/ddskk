@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.8 2000/01/23 13:39:34 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.9 2000/01/24 12:37:39 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/23 13:39:34 $
+;; Last Modified: $Date: 2000/01/24 12:37:39 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -153,6 +153,100 @@
 ;;  (mapcar function sequence)
 ;;  sequence)
 
+;;;; INLINE FUNCTIONS.
+;;; version dependent
+(defsubst skk-color-display-p ()
+  (static-cond
+   ((eq skk-emacs-type 'xemacs) (eq (device-class (selected-device)) 'color))
+   ((fboundp 'x-display-color-p) (and window-system (x-display-color-p)))))
+ 
+(defsubst skk-str-length (str)
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4))
+    (length str))
+   ((eq skk-emacs-type 'mule3)
+    (length (string-to-vector str)))
+   ((eq skk-emacs-type 'mule2)
+    (length (string-to-char-list str)))))
+
+(defsubst skk-substring (str pos1 pos2)
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4))
+    (substring str pos1 pos2))
+   ((eq skk-emacs-type 'mule3)
+    (if (< pos1 0)
+	(setq pos1 (+ (skk-str-length str) pos1)))
+    (if (< pos2 0)
+	(setq pos2 (+ (skk-str-length str) pos2)))
+    (if (>= pos1 pos2)
+	""
+      (let ((sl (nthcdr pos1 (string-to-char-list str))))
+	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
+	(concat sl))))
+   ((eq skk-emacs-type 'mule2)
+    (if (< pos1 0)
+	(setq pos1 (+ (skk-str-length str) pos1)))
+    (if (< pos2 0)
+	(setq pos2 (+ (skk-str-length str) pos2)))
+    (if (>= pos1 pos2)
+	""
+      (let ((sl (nthcdr pos1 (string-to-char-list str))))
+	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
+	(mapconcat 'char-to-string sl ""))))))
+
+;; no argument use only in SKK.
+(defsubst skk-read-event ()
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (next-command-event))
+   (t (read-event))))
+
+(defsubst skk-char-to-string (char)
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (char-to-string char))
+   ((string< "20" emacs-version)
+    (condition-case nil (char-to-string char) (error)))
+   (t (char-to-string char))))
+
+(defsubst skk-ascii-char-p (char)
+  ;; CHAR が ascii 文字だったら t を返す。
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4 mule3))
+    (eq (char-charset char) 'ascii))
+   ((eq skk-emacs-type 'mule2)
+    (= (char-leading-char char) 0))))
+ 
+(defsubst skk-str-ref (str pos)
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4))
+    (aref str pos))
+   ((eq skk-emacs-type 'mule3)
+    (aref (string-to-vector str) pos))
+   ((eq skk-emacs-type 'mule2)
+    (nth pos (string-to-char-list str)))))
+
+(defsubst skk-jisx0208-p (char)
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4 mule3))
+    (eq (char-charset char) 'japanese-jisx0208))
+   ((eq skk-emacs-type 'mule2)
+    (= (char-leading-char char) lc-jp))))
+
+(defsubst skk-char-octet (ch &optional n)
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (or (nth (if n (1+ n) 1) (split-char ch)) 0))
+   (t (char-octet ch n))))
+
+;; this one is called once in skk-kcode.el, too.
+(defsubst skk-charsetp (object)
+  (static-cond
+   ((fboundp 'charsetp) (charsetp object))
+   ((eq skk-emacs-type 'xemacs) (find-charset object))
+   ((eq skk-emacs-type 'mule2) (character-set object))))
+
+;;; version independent
 ;; ツリーにアクセスするためのインターフェース
 (defsubst skk-make-rule-tree (char prefix nextstate kana branch-list)
   (list char
@@ -418,106 +512,15 @@
 	(setq func (car (read-from-string string)))
       (error (setq func string)))
     (condition-case nil
-	(and (listp func) (functionp (car func)) (eval func))
-      (error nil))))
+	(and (listp func) (functionp (car func))
+	     (setq string (eval func)))
+      (error string))
+    string))
 
 ;;;; from dabbrev.el.  Welcome!
 ;; 判定間違いを犯す場合あり。要改良。
 (defsubst skk-minibuffer-origin ()
   (nth 1 (buffer-list)))
-
-;;;; version specific matter.
-;;; inline functions.
-(defsubst skk-color-display-p ()
-  (static-cond
-   ((eq skk-emacs-type 'xemacs) (eq (device-class (selected-device)) 'color))
-   ((fboundp 'x-display-color-p) (and window-system (x-display-color-p)))))
-
-(defsubst skk-str-length (str)
-  (static-cond
-   ((memq skk-emacs-type '(xemacs mule4))
-    (length str))
-   ((eq skk-emacs-type 'mule3)
-    (length (string-to-vector str)))
-   ((eq skk-emacs-type 'mule2)
-    (length (string-to-char-list str)))))
-
-(defsubst skk-substring (str pos1 pos2)
-  (static-cond
-   ((memq skk-emacs-type '(xemacs mule4))
-    (substring str pos1 pos2))
-   ((eq skk-emacs-type 'mule3)
-    (if (< pos1 0)
-	(setq pos1 (+ (skk-str-length str) pos1)))
-    (if (< pos2 0)
-	(setq pos2 (+ (skk-str-length str) pos2)))
-    (if (>= pos1 pos2)
-	""
-      (let ((sl (nthcdr pos1 (string-to-char-list str))))
-	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
-	(concat sl))))
-   ((eq skk-emacs-type 'mule2)
-    (if (< pos1 0)
-	(setq pos1 (+ (skk-str-length str) pos1)))
-    (if (< pos2 0)
-	(setq pos2 (+ (skk-str-length str) pos2)))
-    (if (>= pos1 pos2)
-	""
-      (let ((sl (nthcdr pos1 (string-to-char-list str))))
-	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
-	(mapconcat 'char-to-string sl ""))))))
-
-;; no argument use only in SKK.
-(defsubst skk-read-event ()
-  (static-cond
-   ((eq skk-emacs-type 'xemacs)
-    (next-command-event))
-   (t (read-event))))
-
-(defsubst skk-char-to-string (char)
-  (static-cond
-   ((eq skk-emacs-type 'xemacs)
-    (char-to-string char))
-   ((string< "20" emacs-version)
-    (condition-case nil (char-to-string char) (error)))
-   (t (char-to-string char))))
-
-(defsubst skk-ascii-char-p (char)
-  ;; CHAR が ascii 文字だったら t を返す。
-  (static-cond
-   ((memq skk-emacs-type '(xemacs mule4 mule3))
-    (eq (char-charset char) 'ascii))
-   ((eq skk-emacs-type 'mule2)
-    (= (char-leading-char char) 0))))
-
-(defsubst skk-str-ref (str pos)
-  (static-cond
-   ((memq skk-emacs-type '(xemacs mule4))
-    (aref str pos))
-   ((eq skk-emacs-type 'mule3)
-    (aref (string-to-vector str) pos))
-   ((eq skk-emacs-type 'mule2)
-    (nth pos (string-to-char-list str)))))
-
-(defsubst skk-jisx0208-p (char)
-  (static-cond
-   ((memq skk-emacs-type '(xemacs mule4 mule3))
-    (eq (char-charset char) 'japanese-jisx0208))
-   ((eq skk-emacs-type 'mule2)
-    (= (char-leading-char char) lc-jp))))
-
-(defsubst skk-char-octet (ch &optional n)
-  (static-cond
-   ((eq skk-emacs-type 'xemacs)
-    (or (nth (if n (1+ n) 1) (split-char ch)) 0))
-   (t (char-octet ch n))))
-
-;; this one is called once in skk-kcode.el, too.
-(defsubst skk-charsetp (object)
-  (static-cond
-   ((fboundp 'charsetp) (charsetp object))
-   ((eq skk-emacs-type 'xemacs) (find-charset object))
-   ((eq skk-emacs-type 'mule2) (character-set object))))
 
 (provide 'skk-macs)
 ;;; end of skk-macs.el.

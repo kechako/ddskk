@@ -6,9 +6,9 @@
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: Murata Shuuichirou <mrt@notwork.org>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.7 1999/12/23 06:33:35 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.8 2000/01/24 12:37:39 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/23 06:33:35 $
+;; Last Modified: $Date: 2000/01/24 12:37:39 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -278,6 +278,7 @@ Convert hirakana to katakana and vice versa."
 	 (if (eolp) (backward-char 1))
 	 (setq val (1- val))))))
 
+;; viper-toggle-key-action と連動させる？
 (skk-viper-normalize-map)
 (add-hook 'skk-mode-hook 'skk-mode-once-again)
 

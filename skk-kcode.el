@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.9 2000/10/15 20:34:48 minakaji Exp $
+;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.10 2000/10/24 03:45:08 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:48 $
+;; Last Modified: $Date: 2000/10/24 03:45:08 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -52,8 +52,8 @@
 	(enable-recursive-minibuffer t)
 	n1 n2)
     (if (string-match "\\(.+\\)-\\(.+\\)" str)
-	(setq n1 (+ (string-to-number (match-string 1 str)) 32 128)
-	      n2 (+ (string-to-number (match-string 2 str)) 32 128))
+	(setq n1 (+ (string-to-number (match-string-no-properties 1 str)) 32 128)
+	      n2 (+ (string-to-number (match-string-no-properties 2 str)) 32 128))
       (setq n1 (if (string= str "") 128
 		 (+ (* 16 (skk-char-to-hex (aref str 0) 'jis))
 		    (skk-char-to-hex (aref str 1))))

@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-lookup.el,v 1.1.2.3.2.8 2000/10/15 20:34:49 minakaji Exp $
+;; Version: $Id: skk-lookup.el,v 1.1.2.3.2.9 2000/10/24 03:45:08 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Sep. 23, 1999
-;; Last Modified: $Date: 2000/10/15 20:34:49 $
+;; Last Modified: $Date: 2000/10/24 03:45:08 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -59,7 +59,7 @@
 ;;
 ;; 現在対応している辞書は
 ;;
-;;   ispell, jedict, CHIEZO, CHUJITEN, COLLOC, GENIUS, GN99EP01,
+;;   ispell, jedict, CHIEZO, CHUJITEN, COLLOC, CRCEN, GENIUS, GN99EP01,
 ;;   GN99EP02, IWAKOKU, KANJIGEN, KANWA, KOJIEN, KOKUGO, KOUJIEN,
 ;;   MYPAEDIA, NEWANC, PLUS, RIKAGAKU, WAEI
 ;;
@@ -109,31 +109,32 @@
       ;; as prefix, like `IWANAMI/KOJIEN'.  The following forms will truncate
       ;; it to `KOJIEN'.
       (if (and (null list) (string-match "/\\(.+\\)$" name))
-	  (setq list (assoc (match-string 1 name) skk-lookup-option-alist)))
-      (setq sex (nth okuri-process (if list (cdr list) skk-lookup-default-option-list)))
+	  (setq list (assoc (match-string-no-properties 1 name)
+			    skk-lookup-option-alist)))
+      (setq sex (nth okuri-process (if list
+				       (cdr list)
+				     skk-lookup-default-option-list)))
       (cond ((symbolp sex) sex)
 	    (t (eval sex))))))
 
-(defsubst skk-lookup-get-nonsearch-sex (name)
+(defsubst skk-lookup-get-1 (name index)
   (save-match-data
     (let ((list (assoc name skk-lookup-option-alist)))
       (if (and (null list) (string-match "/\\(.+\\)$" name))
 	  (setq list (assoc (match-string 1 name) skk-lookup-option-alist)))
-      (nth 3 (if list (cdr list) skk-lookup-default-option-list)))))
+      (nth index (if list (cdr list) skk-lookup-default-option-list)))))
+
+(defsubst skk-lookup-get-nonsearch-sex (name)
+  (skk-lookup-get-1 name 3))
 
 (defsubst skk-lookup-get-pickup-regexp (name)
-  (save-match-data
-    (let ((list (assoc name skk-lookup-option-alist)))
-      (if (and (null list) (string-match "/\\(.+\\)$" name))
-	  (setq list (assoc (match-string 1 name) skk-lookup-option-alist)))
-      (nth 4 (if list (cdr list) skk-lookup-default-option-list)))))
+  (skk-lookup-get-1 name 4))
 
 (defsubst skk-lookup-get-split-regexp (name)
-  (save-match-data
-    (let ((list (assoc name skk-lookup-option-alist)))
-      (if (and (null list) (string-match "/\\(.+\\)$" name))
-	  (setq list (assoc (match-string 1 name) skk-lookup-option-alist)))
-      (nth 5 (if list (cdr list) skk-lookup-default-option-list)))))
+  (skk-lookup-get-1 name 5))
+
+(defsubst skk-lookup-get-cleanup-regexp (name)
+  (skk-lookup-get-1 name 6))
 
 ;;;; funcitions.
 ;;;###autoload
@@ -173,7 +174,7 @@
 
 (defun skk-lookup-search-1 (module key okuri-process)
   ;; search pattern.
-  (let (name method entries pickup-regexp split-regexp
+  (let (name method entries ;pickup-regexp split-regexp
 	     candidates-string candidates-list)
     (setq lookup-search-pattern key)
     ;; setup modules.
@@ -190,26 +191,28 @@
 		  (setq entries (lookup-vse-search-query
 				 dictionary
 				 (lookup-make-query method lookup-search-pattern))))
-	 (setq pickup-regexp (skk-lookup-get-pickup-regexp name)
-	       split-regexp (skk-lookup-get-split-regexp name))
+	 ;;(setq pickup-regexp (skk-lookup-get-pickup-regexp name)
+	 ;;      split-regexp (skk-lookup-get-split-regexp name))
 	 (lookup-foreach
 	  (lambda (entry)
 	    ;; pickup necessary string for SKK.
 	    (setq candidates-string (lookup-entry-heading entry))
-	    (if (not (or pickup-regexp split-regexp))
-		(progn
-		  (setq candidates-string (skk-lookup-process-okurigana
-					   candidates-string
-					   okuri-process))
-		  (if (and candidates-string
-			   (not (string= lookup-search-pattern candidates-string)))
-		      (setq candidates-list (cons candidates-string
-						  candidates-list))))
-	      (setq candidates-list
-		    (nconc (skk-lookup-process-heading
-			    candidates-string pickup-regexp split-regexp
-			    okuri-process)
-			   candidates-list))))
+	    ;;(if (or pickup-regexp split-regexp)
+	    (if (or (skk-lookup-get-pickup-regexp name)
+		    (skk-lookup-get-split-regexp name))
+		(setq candidates-list
+		      (nconc (skk-lookup-process-heading
+			      name	; NEW
+			      candidates-string ;pickup-regexp split-regexp
+			      okuri-process)
+			     candidates-list))
+	      (setq candidates-string (skk-lookup-process-okurigana
+				       candidates-string
+				       okuri-process))
+	      (if (and candidates-string
+		       (not (string= lookup-search-pattern candidates-string)))
+		  (setq candidates-list (cons candidates-string
+					      candidates-list)))))
 	  entries)))
      ;; dictionaries to be searched.
      (lookup-module-dictionaries module))
@@ -252,20 +255,33 @@
 		  (substring string 0 (- okuri-length))))))))
 
 (defun skk-lookup-process-heading
-  (heading pickup-regexp split-regexp okuri-process-type)
+  ;;(heading pickup-regexp split-regexp okuri-process-type)
+  (dicname heading okuri-process-type)
   ;; heading しか取り出さないのはもったいない？  他にも情報を取り出し
   ;; ておいて、必要に応じて参照するか？
   (save-match-data
-    (do (candidates-string candidates-list)
+    (do* ((pickup (skk-lookup-get-pickup-regexp name))
+	  (pickup-regexp (if (consp pickup) (car pickup)))
+	  (match (if (consp pickup) (cdr pickup) 1))
+	  (split-regexp (skk-lookup-get-split-regexp name))
+	  (cleanup-regexp (skk-lookup-get-cleanup-regexp name))
+	  candidates-string candidates-list)
 	((or (string= heading "")
 	     (and pickup-regexp (not (string-match pickup-regexp heading))))
 	 candidates-list)
       (if pickup-regexp
-	  (setq candidates-string (match-string 1 heading)
-		heading (substring heading (min (+ (match-end 1) skk-kanji-len)
-						(length heading))))
+	  (setq candidates-string
+		(match-string-no-properties (eval match) heading)
+		heading
+		(substring heading (min (+ (match-end (eval match)) skk-kanji-len)
+					(length heading))))
 	(setq candidates-string heading
 	      heading ""))
+      (if cleanup-regexp
+	  (while (string-match cleanup-regexp candidates-string)
+	    (setq candidates-string
+		  (concat (substring candidates-string 0 (match-beginning 0))
+			  (substring candidates-string (match-end 0))))))
       (if split-regexp
 	  (lookup-foreach
 	   (lambda (c)
@@ -348,7 +364,7 @@
 (defun skk-lookup-test-regexp (regexp place string)
   "Search STRING by REGEXP and pick up a part of STRING in PLACE."
   (string-match regexp string)
-  (match-string place string))
+  (match-string-no-properties place string))
 
 (defun skk-lookup-pickup-headings (pattern method)
   "Search PATTERN by METHOD."

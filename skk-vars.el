@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.44 2000/10/22 05:14:56 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.45 2000/10/24 03:45:08 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/22 05:14:56 $
+;; Last Modified: $Date: 2000/10/24 03:45:08 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2433,35 +2433,53 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
 (defcustom skk-lookup-option-alist
   '(
     ;; "[spla -> splat]"
-    ("ispell" exact nil nil (not skk-okuri-char) "-> \\([^ ]+\\)]$" nil)
+    ("ispell" exact nil nil (not skk-okuri-char)
+     ("-> \\([^ ]+\\)]$" . 1) nil)
     ;; what's this?
-    ("jedict" exact nil nil (not skk-okuri-char) nil nil)
+    ("jedict" exact nil nil (not skk-okuri-char) nil nil nil)
     ;; $B!V<-!&E5!&HW!W(B "$B$"$+#3(B $B^@(B", "ethanol"
-    ("CHUJITEN" exact exact prefix t "[$B#0(B-$B#9(B]* *\\([^ ]+\\)$" nil)
+    ("CHUJITEN" exact exact prefix t ("[$B#0(B-$B#9(B]* *\\([^ ]+\\)$" . 1) nil nil)
     ;; "($BHiIf$J$I$N(B)$B$"$+(B <grime>", "$B!T1Q!U(B ($B%Q%$%W$J$I$N(B)$B$"$+(B <fur>"
-    ("COLLOC" exact exact prefix t "\\([^ $B!T!U(B]+\\) <[a-z]+>$" nil)
+    ("COLLOC" exact exact prefix t ("\\([^ $B!T!U(B]+\\) <[a-z]+>$" . 1) nil nil)
     ;; $B%8!<%K%"%91QOB(B, "$B$"$+(B[$B^@(B]"
     ;; $B%8!<%K%"%91QOB!&OB1Q<-E5(B $B$$$l$+$((B[$BF~$lBX$((B,$BF~$l49$((B]
-    ("GENIUS" exact exact prefix t "\\[\\(.+\\)\\]" ",")
+    ("GENIUS" exact exact prefix t ("\\[\\(.+\\)\\]" . 1) "," nil)
     ;; Super$BE}9g<-=q(B99 Disk1, 2/$B8=BeMQ8l$N4pACCN<1(B
     ;; "$B!&(B" $B$,6h@Z$jJ8;z$G$"$k$H$-$H$=$&$G$J$$$H$-$,$"$k$J$!(B...$B!#(B
     ;; "$B"!<k!&3t!&<l!&<n!L;w$?$b$N4A;z!M(B" "$B"!@V%o%$%s!&%V!<%`!L7r9/LdBj!M(B"
-    ("GN99EP01" exact exact prefix t "^$B"!(B\\([^$B!L!M(B]+\\)$B!L(B.+$B!M(B$" nil)
-    ("GN99EP02" exact exact prefix t "^$B"!(B\\([^$B!L!M(B]+\\)$B!L(B.+$B!M(B$" nil)
+    ("GN99EP01" exact exact prefix t ("^$B"!(B\\([^$B!L!M(B]+\\)$B!L(B.+$B!M(B$" . 1) nil nil)
+    ("GN99EP02" exact exact prefix t ("^$B"!(B\\([^$B!L!M(B]+\\)$B!L(B.+$B!M(B$" . 1) nil nil)
     ;; IWAKOKU: $B!V<-!&E5!&HW!W(B
     ;; "$B$7$?$$!Z;`BN!&;SBN![(B", "$B$7$?$$!Z;YBb![!Z;^Bb![(B",
     ;; "$B$"$$!Z0&![(B", "$B$"$$(B($B$"$p(B)$B!ZMu![(B"
     ;; "$B$"$$(B<gaiji=za52a>$B0%(B<gaiji=za52b>"
-    ("IWAKOKU" exact exact prefix t "$B!Z(B\\(.+\\)$B![(B" "$B![!Z(B\\|$B!&(B")
+    ("IWAKOKU" exact exact prefix t ("$B!Z(B\\(.+\\)$B![(B" . 1) "$B![!Z(B\\|$B!&(B" nil)
     ;; "$B9$(B", "$B@V(B"
-    ("KANWA" exact exact prefix t nil nil)
+    ("KANWA" exact exact prefix t nil nil nil)
+    ;; KOUJIEN: $B9-<-1q(B $BBh(B4$BHG(B($B4dGH(B,EPWING) $B%^%k%A%a%G%#%"HG(B
+    ;; $B$"$$!Z9g$$!&2q$$![%"%R(B
+    ;; $B$"$$!Z4V![%"%R(B
+    ;; $B%&%#!Z(Boui $B%U%i%s%9![(B
+    ;; $B%=!Z(Bsol $B%$%?%j%"![(B
+    ;; ($BL$BP1~(B) $B%"!<%H%^%s!Z(B_tman $B[p![(B; $B30;z$r4^$`8uJd!#(B_ $B$O30;z(B
+    ("KOUJIEN" exact exact prefix t
+     ("$B!Z(B\\([a-zA-Z]+\\) [$B!<%!(B-$B%s(B]+$B![(B\\|$B!Z(B\\([^$B!Z![(B]+\\)$B![(B" .
+      (cond ((match-beginning 1) 1) ((match-beginning 2) 2))) "$B!&(B" nil)
+    ;; KOJIEN: $B9-<-1qBh(B5$BHG(B($B4dGH(B,EPWING)
+    ("KOJIEN" exact exact prefix t
+     ("$B!Z(B\\([a-zA-Z]+\\) [$B!<%!(B-$B%s(B]+$B![(B\\|$B!Z(B\\([^$B!Z![(B]+\\)$B![(B" .
+      (cond ((match-beginning 1) 1) ((match-beginning 2) 2))) "$B!&(B" nil)
+    ;; KOKUGO: $B;0>JF2(B $BF|K\8l<-E5!J8=Be9q8l!"30Mh8l!K(B
+    ;; `$B!R(B' $B$O!"EvMQ4A;zI=$K$J$$4A;z$G!"(B`$B!T(B' $B$O!"EvMQ4A;zI=$K$O$"$k$,!"$=$N2;!"(B
+    ;; $B71$,EvMQ4A;zI=$N2;71I=$K$J$$4A;z!#(B
+    ("KOKUGO" exact exact prefix t ("$B!Z(B\\([^$B!Z![(B]+\\)$B![(B" . 1) "$B!&(B" nil "[$B!T!R(B]")
     ;; $B!V<-!&E5!&HW!W(B "$B9$(B"
-    ("MYPAEDIA" exact exact prefix t nil nil)
+    ("MYPAEDIA" exact exact prefix t nil nil nil)
     ;; $B%K%e!<%"%s%+!<1QOB(B "$B$"$+#2(B $B9$(B"
-    ("NEWANC" exact exact prefix t "[$B#0(B-$B#9(B]* *\\([^ ]+\\)$" nil)
+    ("NEWANC" exact exact prefix t ("[$B#0(B-$B#9(B]* *\\([^ ]+\\)$" . 1) nil nil)
     ;; "$B!!$"$+(B <scud$B#2(B>", "$B!!!V$"$+!W(B <rust>"
-    ("PLUS" exact exact prefix t "^$B!!(B\\(.+\\) <[a-z$B#0(B-$B#9(B]+>$" nil)
-  )
+    ("PLUS" exact exact prefix t ("^$B!!(B\\(.+\\) <[a-z$B#0(B-$B#9(B]+>$" . 1) nil nil)
+    )
   "*$B<-=qKh$N8!:w!"J8;z@Z$j=P$7%*%W%7%g%s!#(B
 $B%j%9%H$N3FMWAG$O2<5-$NDL$j!#(B
 
@@ -2479,15 +2497,18 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
        $B$=$N<-=q$r8!:w$7$J$$!#(B
   4th: S $B<0!#$3$N(B S $B<0$rI>2A$7$F(B nil $B$K$J$k$H$-$O8!:w$7$J$$!#$"$k0lDj$N>r7o$rK~(B
        $B$7$?>l9g$K8!:w$7$J$$$h$&$K;XDj$G$-$k!#(B
-  5th: $B8uJd$r@Z$j=P$9$?$a$N(B regexp \(\(match-string 1\) $B$G8uJd$r<h$j=P$9$3$H$,(B
-       $B$G$-$k$h$&;XDj$9$k(B\)$B!#@Z$j=P$5$:$KJ8;zNsA4BN$rBP>]$K$9$k$H$-$O!"(Bnil $B$r;XDj(B
-       $B$9$k!#(B
+  5th: $B8uJd$r@Z$j=P$9$?$a$N(B regexp $B;XDj5Z$S@Z$j=P$7%*%W%7%g%s!#(B
+       car $B$K(B regexp $B$r<($9J8;zNs!"(Bcdr $B$K(B match-string $B$KEO$9(B count $B$r;XDj$9$k(B
+       \(5th $B$KJ8;zNs$@$1$r;XDj$7$?>l9g$O(B match-string $B$K$O(B 1 $B$,EO$5$l$k(B\)$B!#(B
+       cdr $BIt$K(B cond $B<0$K$h$k(B S $B<0$r;XDj$9$k$3$H$b2DG=!#(B
+       $B@Z$j=P$5$:$KJ8;zNsA4BN$rBP>]$K$9$k$H$-$O!"(B5th $B$K$O(B nil $B$r;XDj$9$k!#(B
   6th: $B@Z$j=P$5$l$?J8;zNs$NCf$K99$KJ#?t$N8uJd$r4^$`>l9g$N6h@Z$j$rI=$o$9(B regexp$B!#(B
        $BJ#?t$N8uJd$,F10l(B heading $B$NCf$K=PNO$5$l$J$$$H$-$O!"(Bnil $B$r;XDj$9$k!#(B
-
-$B8=:_BP1~$7$F$$$k<-=qL>$O!"(B\"CHUJITEN\", \"COLLOC\", \"GENIUS\", \"GN99EP01\",
-\"GN99EP02\", \"IWAKOKU\", \"KANWA\", \"MYPAEDIA\", \"NEWANC\", \"PLUS\".
-
+  7th: $B@Z$j=P$5$l$?J8;zNs$+$iFCDj$NJ8;zNs$r<h$j=|$/>l9g$K;XDj$9$k(B regexp$B!#(B
+       $B<-=q$N=PNO$,<-=qFCM-$N5-9fJ8;z$r4^$`>l9g$K;XDj$9$k!#(B
+$B8=:_BP1~$7$F$$$k<-=qL>$O(B \"ispell\", \"jedict\", \"CHUJITEN\", \"COLLOC\", \"GENIUS\",
+\"GN99EP01\", \"GN99EP02\", \"IWAKOKU\", \"KANWA\", \"KOUJIEN\", \"KOJIEN\", \"MYPAEDIA\"
+\"NEWANC\" $B5Z$S(B \"PLUS\"$B!#(B
 `lookup-entry-heading' $B$,<+J,$N;HMQ$9$k<-=q$+$i$I$N$h$&$JJ8;zNs$r<h$j=P$9$N$+(B
 $B3N$+$a$?$$$H$-$O!"(B`skk-lookup-pickup-headings' $B$r;HMQ$9$k!#Nc$($P!"(B
 
@@ -2511,18 +2532,18 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
 			(const nil))
 		(sexp :tag "S expression to search")
 		(choice :tag "Regexp to substring candidate from heading"
-			regexp (const nil))
+			(cons regexp sexp) (const nil))
 		(choice :tag "Regexp to split candidates"
-		       regexp (const nil))))
+			regexp (const nil))
+		(choice :tag "Regexp to remove a string from candidates"
+			regexp (const nil))))
   :group 'skk-lookup)
 
 (defcustom skk-lookup-default-option-list
-  '(exact exact prefix t "$B!Z(B\\([^$B!Z![(B]+\\)$B![(B" "$B!&(B")
+  '(exact exact prefix t ("$B!Z(B\\([^$B!Z![(B]+\\)$B![(B" . 1) "$B!&(B" nil)
   ;; CHIEZO: $B!V<-!&E5!&HW!W(B
+  ;; CRCEN: $B;0>JF2(B $B%K%e!<%;%s%A%e%j!<1QOB!&?7%/%i%&%sOB1Q<-E5(B
   ;; KANJIGEN: Super$BE}9g<-=q(B99 Disk2/$B4A;z8;(B : EPWING
-  ;; KOUJIEN: $B9-<-1q(B $BBh(B4$BHG(B($B4dGH(B,EPWING) $B%^%k%A%a%G%#%"HG(B
-  ;; KOJIEN: $B9-<-1qBh(B5$BHG(B($B4dGH(B,EPWING)
-  ;; KOKUGO: $BF|K\8l<-E5!J8=Be9q8l!"30Mh8l!K(B
   ;; RIKAGAKU: $BM}2=3X<-E5(B
   ;; WAEI: what's this?
   "*$B%G%#%U%)%k%H$N<-=q8!:w!"J8;z@Z$j=P$7%*%W%7%g%s!#(B
@@ -2545,14 +2566,18 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
        $B$=$N<-=q$r8!:w$7$J$$!#(B
   3th: S $B<0!#$3$N(B S $B<0$rI>2A$7$F(B nil $B$K$J$k$H$-$O8!:w$7$J$$!#$"$k0lDj$N>r7o$rK~(B
        $B$7$?>l9g$K8!:w$7$J$$$h$&$K;XDj$G$-$k!#(B
-  4th: $B8uJd$r@Z$j=P$9$?$a$N(B regexp \(\(match-string 1\) $B$G8uJd$r<h$j=P$9$3$H(B
-       $B$,$G$-$k$h$&;XDj$9$k(B\)$B!#@Z$j=P$5$:$KJ8;zNsA4BN$rBP>]$K$9$k$H$-$O!"(Bnil $B$r;XDj(B
-       $B$9$k!#(B
+  4th: $B8uJd$r@Z$j=P$9$?$a$N(B regexp $B;XDj5Z$S@Z$j=P$7%*%W%7%g%s!#(B
+       car $B$K(B regexp $B$r<($9J8;zNs!"(Bcdr $B$K(B match-string $B$KEO$9(B count $B$r;XDj$9$k(B
+       \(4th $B$KJ8;zNs$@$1$r;XDj$7$?>l9g$O(B match-string $B$K$O(B 1 $B$,EO$5$l$k(B\)$B!#(B
+       cdr $BIt$K(B cond $B<0$K$h$k(B S $B<0$r;XDj$9$k$3$H$b2DG=!#(B
+       $B@Z$j=P$5$:$KJ8;zNsA4BN$rBP>]$K$9$k$H$-$O!"(B4th $B$K$O(B nil $B$r;XDj$9$k!#(B
   5th: $B@Z$j=P$5$l$?J8;zNs$NCf$K99$KJ#?t$N8uJd$r4^$`>l9g$N6h@Z$j$rI=$o$9(B regexp$B!#(B
        $BJ#?t$N8uJd$,F10l(B heading $B$NCf$K=PNO$5$l$J$$$H$-$O!"(Bnil $B$r;XDj$9$k!#(B
+  6th: $B@Z$j=P$5$l$?J8;zNs$+$iFCDj$NJ8;zNs$r<h$j=|$/>l9g$K;XDj$9$k(B regexp$B!#(B
+       $B<-=q$N=PNO$,<-=qFCM-$N5-9fJ8;z$r4^$`>l9g$K;XDj$9$k!#(B
 
-$B$3$N%*%W%7%g%s$GBP1~$7$F$$$k<-=qL>$O!"(B\"CHIEZO\", \"KANJIGEN\", \"KOJIEN\",
-\"KOUJIEN\", \"KOKUGO, \"RIKAGAKU\", \"WAEI\".
+$B$3$N%*%W%7%g%s$GBP1~$7$F$$$k<-=qL>$O!"(B\"CHIEZO\", \"KANJIGEN\", \"KOKUGO\",
+\"RIKAGAKU\" $B5Z$S(B \"WAEI\".
 `lookup-entry-heading' $B$G<h$j=P$7$?J8;zNs$,2<5-$N$h$&$K$J$k$3$H$rA0Ds$K$7$F$$$k!#(B
 
   \"$B$"!>$+!Z0!2J![!E%/%o(B\"
@@ -2580,8 +2605,10 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
 		       (const nil))
 	       (sexp :tag "S expression to search")
 	       (choice :tag "Regexp to substring candidate from heading"
-		       regexp (const nil))
+		       (cons regexp sexp) (const nil))
 	       (choice :tag "Regexp to split candidates"
+		       regexp (const nil))
+	       (choice :tag "Regexp to remove a string from candidates"
 		       regexp (const nil)))
   :group 'skk-lookup)
 

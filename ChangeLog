@@ -1,4 +1,31 @@
+2000-10-24  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-vars.el (skk-lookup-option-alist): Change 6th element regexp
+	to cons cell and defcustom type accordingly.
+        Add new element 7th and defcustom type accordingly.
+	Add new lists of which headers are "KOUJIEN", "KOJIEN" and "KOKUGO"
+	(skk-lookup-default-option-list): Change 5th element regexp to
+	cons cell and defcustom type accordingly.
+        Add new element 6th and defcustom type accordingly.
+
+	* skk-lookup.el (skk-lookup-get-1): New inline function.
+	(skk-lookup-get-cleanup-regexp): Ditto.
+	(skk-lookup-get-nonsearch-sex): Use `skk-lookup-get-1'.
+	(skk-lookup-get-pickup-regexp): Ditto.
+	(skk-lookup-get-split-regexp): Ditto.
+	(skk-lookup-process-heading): Use cdr part of 6th element of
+	`skk-lookup-option-alist' or 5th element of
+	`skk-lookup-default-option-alist' in order to get a matched
+	string.
+	Remove unnecessary strings from CANDIDATES-STRING by using 7th
+	element of `skk-lookup-option-alist' or 6th element of
+	`skk-lookup-default-option-alist'.
+	* skk-kcode.el (skk-input-by-code-or-menu): Use
+	`match-string-no-properties' instead of `match-string'.
+	
 2000-10-22  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* doc/skk-faq.texi ([Q.1-4] SKK はどんなオペレーティングシステムで使えますか？): 
 
 	* skk.el (skk-abbrev-comma): Bug fixed.
 

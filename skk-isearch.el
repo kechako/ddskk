@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.30 2000/09/17 15:02:53 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.31 2000/09/17 17:59:48 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/17 15:02:53 $
+;; Last Modified: $Date: 2000/09/17 17:59:48 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -291,7 +291,7 @@ Optional argument PREFIX is apppended if given."
 ;;
 
 (defun skk-isearch-find-keys-define (map commands command)
-  ;; COMANDS のいずれかにバインドされているキーを全て調べる。skk-isearh の中で
+  ;; COMMANDS のいずれかにバインドされているキーを全て調べる。skk-isearh の中で
   ;; それらのキーを COMMAND にバインドする。
   (do ((commands commands (cdr commands))
        prefs)

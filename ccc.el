@@ -3,9 +3,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: ccc.el,v 1.1.2.4 2000/10/15 20:34:46 minakaji Exp $
+;; Version: $Id: ccc.el,v 1.1.2.5 2000/10/17 14:40:33 minakaji Exp $
 ;; Keywords: cursor
-;; Last Modified: $Date: 2000/10/15 20:34:46 $
+;; Last Modified: $Date: 2000/10/17 14:40:33 $
 
 ;; This software is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -134,64 +134,69 @@
 (make-variable-buffer-local 'buffer-local-background-color)
 
 ;;; advices.
-(eval-when-compile
-  (let ((funcs '(
-		 ;; cover to original Emacs functions.
-		 ;; subr, but no argument.
-		 bury-buffer 
-		 delete-frame
-		 delete-window
+(eval
+ (cons 'progn
+       (eval-when-compile
+	 (let ((funcs '(
+			;; cover to original Emacs functions.
+			;; subr, but no argument.
+			bury-buffer 
+			delete-frame
+			delete-window
 
-		 overwrite-mode
-		 ;; subr, but non-command.
-		 pop-to-buffer 
-		 select-window 
+			overwrite-mode
+			;; subr, but non-command.
+			pop-to-buffer 
+			select-window 
 	       
-		 ;; subrs possibly with interactive specs.
-		 (execute-extended-command . "P")
-		 (kill-buffer . "bKill buffer: ")
-		 (other-window . "p")
-		 (select-frame . "e")
-		 (switch-to-buffer . "BSwitch to buffer: ")
+			;; subrs possibly with interactive specs.
+			(execute-extended-command . "P")
+			(kill-buffer . "bKill buffer: ")
+			(other-window . "p")
+			(select-frame . "e")
+			(switch-to-buffer . "BSwitch to buffer: ")
 
-		 ;;goto-line 
-		 ;;insert-file 
-		 ;;recenter 
-		 ;;yank
-		 ;;yank-pop 
-		 ))
-	func)
-    (while (setq func (car funcs))
-      ;; check if it is really subr command.
-      (if (and (consp func) (not (and (commandp (car func)) (subr-fboundp (car func)))))
-	  (setq func (car func)))
-      (if (consp func)
-	  ;; command that has an interactive spec.
-	  (eval
-	   (`
-	    (defadvice (, (intern (symbol-name (car func))))
-	      (after buffer-local-frame-params-ad activate)
-	      "Update frame frame parameters if `buffer-local-*-color' given."
-	      (interactive (, (cdr func)))
-	      (update-buffer-local-frame-params)
-	      )))
-	;; non-command or command that has not an interactice spec.
-	(if (and (commandp func) (subr-fboundp func)
-		 ;; subr, but no argument.
-		 (null (memq func
-			     ;; XXX posibilly Emacs version dependent
-			     '(bury-buffer delete-frame delete-window))))
-	    (message
-	     "WARNING: Adding advice to %s without mirroring its interactive spec"
-	     func))
-	(eval
-	 (`
-	  (defadvice (, (intern (symbol-name func)))
-	    (after buffer-local-frame-params-ad activate)
-	    "Update frame frame parameters if `buffer-local-*-color' given."
-	    (update-buffer-local-frame-params)
-	    ))))
-      (setq funcs (cdr funcs)))))
+			;;goto-line 
+			;;insert-file 
+			;;recenter 
+			;;yank
+			;;yank-pop 
+			))
+	       func list)
+	   (while (setq func (car funcs))
+	     ;; check if it is really subr command.
+	     (if (and (consp func) (not (and (commandp (car func)) (subr-fboundp (car func)))))
+		 (setq func (car func)))
+	     (if (consp func)
+		 ;; command that has an interactive spec.
+		 (setq list
+		       (nconc
+			list
+			(`
+			 ((defadvice (, (intern (symbol-name (car func))))
+			    (after buffer-local-frame-params-ad activate)
+			    "Update frame frame parameters if `buffer-local-*-color' given."
+			    (interactive (, (cdr func)))
+			    (update-buffer-local-frame-params))))))
+	       ;; non-command or command that has not an interactice spec.
+	       (if (and (commandp func) (subr-fboundp func)
+			;; subr, but no argument.
+			(null (memq func
+				    ;; XXX posibilly Emacs version dependent
+				    '(bury-buffer delete-frame delete-window))))
+		   (message
+		    "WARNING: Adding advice to %s without mirroring its interactive spec"
+		    func))
+	       (setq list
+		     (nconc
+		      list
+		      (`
+		       ((defadvice (, (intern (symbol-name func)))
+			  (after buffer-local-frame-params-ad activate)
+			  "Update frame frame parameters if `buffer-local-*-color' given."
+			  (update-buffer-local-frame-params)))))))
+	     (setq funcs (cdr funcs)))
+	   list))))
 
 ;;; Hooks
 (add-hook 'isearch-mode-end-hook 'update-buffer-local-frame-params 'append)

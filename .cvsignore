@@ -1,4 +1,5 @@
 *.BAK
+cvs.hist
 cvs.log
 leim-list.el
 make.log

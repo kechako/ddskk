@@ -1,3 +1,10 @@
+2000-10-17  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* ccc.el: Apply Tsukamoto-san's patch Message-ID:
+	<sa6hf6cikv6.fsf@remus.dti.ne.jp>.
+
+	* READMEs/CVS_on_Windows: Typo fixed.
+
 2000-10-16  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/README.win (SKK95 (Windows 95/98/NT)): Remove the

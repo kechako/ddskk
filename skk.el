@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.48 2000/01/30 04:21:08 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.49 2000/01/30 04:33:59 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/30 04:21:08 $
+;; Last Modified: $Date: 2000/01/30 04:33:59 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/30 04:21:08 $")
+      (let* ((raw-date "$Date: 2000/01/30 04:33:59 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -114,7 +114,7 @@
 (define-obsolete-function-alias 'skk-ascii-henkan 'skk-latin-henkan)
 (define-obsolete-function-alias 'skk-convert-ad-to-gengo 'skk-ad-to-gengo)
 (define-obsolete-function-alias 'skk-convert-gengo-to-ad 'skk-gengo-to-ad)
-(unless (memq skk-emacs-type '(nemacs mule1))
+(static-unless (memq skk-emacs-type '(nemacs mule1))
   (define-obsolete-function-alias 'skk-isearch-forward 'isearch-forward)
   (define-obsolete-function-alias 'skk-isearch-forward-regexp 'isearch-forward-regexp)
   (define-obsolete-function-alias 'skk-isearch-backward 'isearch-backward)

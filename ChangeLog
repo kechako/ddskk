@@ -1,3 +1,14 @@
+2000-09-07  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* Makefile (skk_jisyo): New variable.
+
+	* SKK-MK (SKK_SET_JISYO): New variable.
+	(SKK-MK-install): Set `skk-large-jisyo' if `SKK_SET_JISYO' is
+	non-nil.
+	(SKk-MK-install-package): Ditto.
+
+	* skk-vars.el (skk): Place this group under "Mule" and "Leim".
+
 2000-09-07  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-look.el (skk-look-ispell): Return not only miss but also

@@ -1,3 +1,8 @@
+2000-08-25  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-dos.el (skk-save-jisyo): Advise to preserve
+	file modes.
+
 2000-08-23  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-dos.el: Work around for Demacs 1.2.0.

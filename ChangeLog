@@ -1,3 +1,9 @@
+1999-11-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-cursor.el (newline, execute-extended-command,
+	skk-delete-backward-char, skk-start-henkan): Advise, maybe, more
+	effectively.
+
 1999-11-29  Takao KAWAMURA  <kawamura@debian.org>
 
 	* Makefile (clean): Remove skk-autoloads.el.

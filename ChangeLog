@@ -3,7 +3,8 @@
 	* SKK-MK: Under Emacs 18, load bytecomp-runtime.el if possible.
 
 	* experimental/nicola: New repository. Import
-	NICOLA-DDSKK. ChangeLog file in this repository will show details.
+	NICOLA-DDSKK. ChangeLog files in this repository will show
+	details.
 
 	* skk-cursor.el (execute-extended-command): Advise this function
 	under XEmacs only.

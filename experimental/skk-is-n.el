@@ -3,9 +3,9 @@
 ;;  Free Software Foundation, Inc.
 
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-is-n.el,v 1.1.2.2 2000/09/27 13:42:22 minakaji Exp $
+;; Version: $Id: skk-is-n.el,v 1.1.2.3 2000/10/16 09:16:35 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:22 $
+;; Last Modified: $Date: 2000/10/16 09:16:35 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -650,5 +650,6 @@ the keyboard if CHAR does not correspond to a command."
 
 ;; end of patch for old Nemacs (v2)
 
-(provide 'skk-isearch)
+(require 'product)
+(product-provide (provide 'skk-isearch) (require 'skk-version))
 ;;; skk-isearch.el ends here

@@ -4,9 +4,9 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-dos.el,v 1.1.2.8 2000/09/27 13:42:21 minakaji Exp $
+;; Version: $Id: skk-dos.el,v 1.1.2.9 2000/10/16 09:16:34 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:21 $
+;; Last Modified: $Date: 2000/10/16 09:16:34 $
 
 ;; This file is not part of Daredevil SKK yet.
 
@@ -247,6 +247,7 @@
    (signal 'error err1)))
 
 (provide 'skk-autoloads)
-(provide 'skk-dos)
 
+(require 'product)
+(product-provide (provide 'skk-dos) (require 'skk-version))
 ;;; skk-dos.el ends here

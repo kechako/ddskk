@@ -3,9 +3,9 @@
 
 ;; Author: GUNJI Takao <gunji@sils.shoin.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-tutcode.el,v 1.11.4.2 2000/09/27 13:42:23 minakaji Exp $
+;; Version: $Id: skk-tutcode.el,v 1.11.4.3 2000/10/16 09:17:37 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:23 $
+;; Last Modified: $Date: 2000/10/16 09:17:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -187,5 +187,6 @@
 
     val))
 
-(provide 'skk-tutcode)
+(require 'product)
+(product-provide (provide 'skk-tutcode) (require 'skk-version))
 ;;; skk-tutcode.el ends here

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-dcomp.el,v 1.5.4.3 2000/09/27 13:42:20 minakaji Exp $
+;; Version: $Id: skk-dcomp.el,v 1.5.4.4 2000/10/16 09:16:34 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:20 $
+;; Last Modified: $Date: 2000/10/16 09:16:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -88,7 +88,8 @@
   (setq skk-dcomp-start-point nil
 	skk-completion-stack nil ))
 
-(provide 'skk-dcomp)
+(require 'product)
+(product-provide (provide 'skk-dcomp) (require 'skk-version))
 ;;; Local Variables:
 ;;; End:
 ;;; skk-dcomp.el ends here

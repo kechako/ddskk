@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-dbm.el,v 1.1.4.1 1999/12/03 10:49:35 czkmt Exp $
+;; Version: $Id: skk-dbm.el,v 1.1.4.2 2000/10/16 09:17:08 minakaji Exp $
 ;; Keywords: japanese, dbm, gdbm
 ;; Created: Jan. 1, 1999
-;; Last Modified: $Date: 1999/12/03 10:49:35 $
+;; Last Modified: $Date: 2000/10/16 09:17:08 $
 
 ;; This file is not part of SKK yet.
 
@@ -390,8 +390,8 @@ berkeley-db を使用する場合のみ指定すること。"
 ;;(add-hook 'kill-emacs-hook 'skk-dbm-close-all-database)
 
 (run-hooks 'skk-dbm-load-hook)
-(provide 'skk-dbm)
-
+(require 'product)
+(product-provide (provide 'skk-dbm) (require 'skk-version))
 ;; Local Variables:
 ;; mode: auto-fill
 ;; fill-column: 78

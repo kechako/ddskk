@@ -5,10 +5,10 @@
 ;; Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;;
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
-;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-exserv.el,v 1.1.2.4 2000/09/27 13:42:22 minakaji Exp $
+;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
+;; Version: $Id: skk-exserv.el,v 1.1.2.5 2000/10/16 09:16:34 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:22 $
+;; Last Modified: $Date: 2000/10/16 09:16:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -221,7 +221,8 @@ candidates that are delimited by slash.")
 
 (run-hooks 'skk-exserv-load-hook)
 
-(provide 'skk-exserv)
+(require 'product)
+(product-provide (provide 'skk-exserv) (require 'skk-version))
 ;;; Local Variables:
 ;;; eval: (require 'eieio)
 ;;; End:

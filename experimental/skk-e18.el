@@ -3,9 +3,9 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-e18.el,v 1.1.2.25 2000/09/27 13:42:21 minakaji Exp $
+;; Version: $Id: skk-e18.el,v 1.1.2.26 2000/10/16 09:16:34 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:21 $
+;; Last Modified: $Date: 2000/10/16 09:16:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -128,6 +128,6 @@ be applied to `file-coding-system-for-read'."
 ;;	       ;; end case nemacs
 ;;	       ))))
 
-(provide 'skk-e18)
-
+(require 'product)
+(product-provide (provide 'skk-e18) (require 'skk-version))
 ;;; skk-e18.el ends here

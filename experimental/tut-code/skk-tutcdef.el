@@ -3,9 +3,9 @@
 
 ;; Author: GUNJI Takao <gunji@sils.shoin.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-tutcdef.el,v 1.8.4.2 2000/09/27 13:42:23 minakaji Exp $
+;; Version: $Id: skk-tutcdef.el,v 1.8.4.3 2000/10/16 09:17:37 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:23 $
+;; Last Modified: $Date: 2000/10/16 09:17:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -959,5 +959,6 @@
 		   ("alu" nil "ヴ") ("eld" nil "ヵ") ("elg" nil "ヶ") )
 		 skk-rom-kana-rule-list )))
 
-(provide 'skk-tutcdef)
+(require 'product)
+(product-provide (provide 'skk-tutcdef) (require 'skk-version))
 ;;; skk-tutcdef.el ends here

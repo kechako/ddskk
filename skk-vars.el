@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.1 1999/11/10 14:09:03 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.2 1999/11/14 15:10:07 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/10 14:09:03 $
+;; Last Modified: $Date: 1999/11/14 15:10:07 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -46,7 +46,7 @@
 				       (string< "3.0" mule-version) 'mule3 ))
 				 ((and (boundp 'mule-version)
 				       (string< "2.0" mule-version) 'mule2 )))))
-(defconst skk-version "10.57")
+(defconst skk-version "11.1")
 (defconst skk-major-version (string-to-int (substring skk-version 0 2)))
 (defconst skk-minor-version (string-to-int (substring skk-version 3)))
 (defconst skk-codename "Mino-o (Osaka)")

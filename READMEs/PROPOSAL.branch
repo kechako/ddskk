@@ -1,19 +1,50 @@
 -*- outline -*-
 
-             $Date: 1999/11/11 04:01:02 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
-	     $Id: PROPOSAL.branch,v 1.1.2.1 1999/11/11 04:01:02 minakaji Exp $
+             $Date: 1999/11/14 15:10:22 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
+	     $Id: PROPOSAL.branch,v 1.1.2.2 1999/11/14 15:10:22 minakaji Exp $
 
-* CVS
+* CVS $B%@%$%8%'%9%H(B
 
-** Checkout
+$B<+J,$NM}2r$r=u$1$k$?$a$K=q$$$?$b$N$G$9!#4V0c$$$N$4;XE&!"4JJX$J$d$jJ}$,(B
+$BB>$K$"$k$J$I$N>pJs$r$$$?$@$1$l$P9,$$$G$9!#(B
 
-Checkout $B$7$F(B cvs server $B$+$i%=!<%9$r$b$i$C$F$-$^$9(B ($B$3$l$r%o!<%-%s%0(B
-$B%3%T!<$H$$$$$^$9(B) (*1)
+** cvs server repositry tree
 
-  $ cvs checkout -d ext:openlab.ring.gr.jp:/circus/cvsroot/skk -r daredevil skk/main
+  $CVSROOT(openlab.ring.gr.jp:/circus/cvsroot)
+     |
+     |
+     +-- skk --+-- main (Main distribution -- Emacs Lisp, info, tutorials, etc)
+     	       |
+	       |
+	       +-- dic (Dictionaries)
+	       |
+	       |
+	       +-- tools (Dictionary maintenance tools)
 
-$B:G=i$K(B 1 $B2s$@$1%Q%9%o!<%I$rF~$l$kI,MW$,$"$j$^$9!#(B~/.cvspass $B$H$$$&%U%!(B
-$B%$%k$K(B password $B$,5-O?$5$l$^$9!#(B
+** cvs $B%5!<%P$+$i$N%=!<%9$r$b$i$C$F$/$k(B (checkout)$B!#(B
+
+*** Login
+
+$B$^$:!"(Bguest $B%"%+%&%s%H$G(B openlab.ring.gr.jp $B$K%m%0%$%s$7$^$9(B
+(openlab.ring.gr.jp $B$N(B cvs server $BMQ$K8D?M$N%"%+%&%s%H$r;}$C$F$i$C$7$c(B
+$B$kJ}$O!"$=$l$r;H$$$^$7$g$&(B)$B!#(B
+
+  $ cvs -d :pserver:guest@openlab.ring.gr.jp:/circus/cvsroot login
+
+$B%W%m%s%W%H$,=P$k$N$G!"%Q%9%o!<%I$K(B `guest' $B$rF~$l!"(BCR $B$7$^$7$g$&!#(B
+
+  CVS password: guest (CR)
+
+~/.cvspass $B$H$$$&%U%!%$%k$K(B password $B$,5-O?$5$l!"<!$+$i$OL@<(E*$J(B
+login $B$OITMW$K$J$j$^$9(B ($BCm(B1)$B!#(B
+
+
+*** Checkout
+
+Checkout $B$7$F(B cvs server $B$+$i%=!<%9$r$b$i$C$F$-$^$9(B ($B$3$N%U%!%$%k$r%o!<(B
+$B%-%s%0%3%T!<$H$$$$$^$9(B) ($BCm(B2)$B!#(B
+
+  $ cvs checkout -r daredevil skk/main
 
 $B%+%l%s%H%G%#%l%/%H%j$N2<$K$G$-$k(B skk/main $B$H$$$&%G%#%l%/%H%j$K%o!<%-%s(B
 $B%0%3%T!<$,%3%T!<$5$l$^$9!#(B
@@ -22,21 +53,46 @@ Checkout $B$7$F(B cvs server $B$+$i%=!<%9$r$b$i$C$F$-$^$9(B ($B$3$l$r%o!<%-
 
 $B%3%s%Q%$%k$7$F;H$&$J$j!"JT=8$9$k$J$j$4<+M3$K$I$&$>!#(B
 
- (*1): ~/.cvsrc $B$K!"(B 
-         cvs -z9
-       $B$H=q$$$F$*$/$H!"(Bcvs server $B$H$NDL?.FbMF$,05=L$5$l$^$9!#(B
 
+** $B<j85$N%=!<%9$rJQ99$7$F(B cvs server $B$K$"$k%=!<%9$KJQ99$rH?1G$9$k(B (update, commit, etc)$B!#(B
 
-** Update
+*** cvs account $B$NH/9T(B
+
+openlab.ring.gr.jp $B>e$K%"%+%&%s%H$,$J$$$H(B update, commit, tag $B$G$-$^$;(B
+$B$s!#(Bminakaji@ring.gr.jp $B08$F$K4uK>$9$k%"%+%&%s%HL>$H!"(Bcrypt $B$5$l$?%Q%9(B
+$B%o!<%IJ8;zNs$rO"Mm$7$F2<$5$$(B ($BCm(B4)$B!#(B
+
+$BEPO?$,40N;$7$?$i$4O"Mm?=$7>e$2$^$9!#(B
+
+*** Login
+
+$B$^$:!"(Bopenlab.ring.gr.jp $B$K%m%0%$%s$7$^$9!#(B
+
+  $ cvs -d :pserver:your_account@openlab.ring.gr.jp:/circus/cvsroot login
+                    ^^^^^^^^^^^^
+
+$BEPO?$5$l$?%Q%9%o!<%I$rF~NO$7$F2<$5$$!#(B
+
+  CVS password: XXXX (CR)
+
+$B<!$+$i$O(B login $B<jB3$-$OMW$j$^$;$s!#(B
+ 
+
+*** Update
 
 $B%o!<%-%s%0%3%T!<$O;D$7$F$*$/$H!"(Bcvs server $B>e$N%=!<%9$KJQ99$,2C$($i$l(B
 $B$?$H$-$K:9J,$@$1<h$j4s$;!"%o!<%-%s%0%3%T!<$r:G?7$N>uBV$K$9$k$3$H$,$G$-(B
 $B$^$9!#(B
+$B%o!<%-%s%0%3%T!<$O!"(Bopenlab.ring.gr.jp:/circus/cvsroot $B$r;X$7$F$$$k$3(B
+$B$H$r5-21$7$F$$$k(B ($BCm(B3) $B$N$G!"<!@a$N(B Checkout $B$+$i;O$a$k$H!"<+F0E*$K%m(B
+$B%0%$%s$G$-$^$9!#(B
 
    $ cvs update
 
 
-** Commit
+*** Commit
+
+$B2<5-$N<j=g$rF'$s$G(B commit $B$7$F2<$5$$$M!#(B
 
 $B$^$:!"%o!<%-%s%0%3%T!<$N%=!<%9$r<+J,$N4D6-$G%3%s%Q%$%k(B & $B%$%s%9%H!<(B
 $B%k$7$^$9!#(B
@@ -51,16 +107,46 @@ ML $B$KEj9F$9$k$?$a$N%j%j!<%9%N!<%H$r=q$$$F2<$5$$(B ($B<g$JJQ99E@$,J,$kDxEY(
 $B%j%j!<%9%N!<%H$N5-;v$r=q$$$F$$$k4VCf$b(B SKK $B$KLdBj$,$J$1$l$P!"%o!<%-%0(B
 $B%3%T!<$r(B commit $B$7$F>e5-%j%j!<%9%N!<%H$r(B ML $B$KEj9F$7$F2<$5$$!#(B
 
+ChangeLog $B$N99?7$r$*K:$l$J$/(B ($B1Q8l$G=q$$$F$$$^$9$,!"1Q8l$,6lDK$J$iF|K\(B
+$B8l$G=q$$$F$bA4A3LdBj$"$j$^$;$s(B)$B!#(B
+  
   $ cd skk/main
-  $ cvs commit -m "Your comment please." skk.el
+  $ cvs commit -m "$B$"$J$?$N%3%a%s%H$r$3$3$K=q$$$F$M!#(B" ChangeLog
+  $ cvs commit -m "$B$"$J$?$N%3%a%s%H$r$3$3$K=q$$$F$M!#(B" skk.el
 
 
-** Tagify
+*** Tagify
 
-Daredevil SKK $B$K<j$r2C$($??M$O!"$3$N%U%!%$%k$HF1$8%G%#%l%/%H%j$K$"$k(B
-Codename $B$H$$$&%U%!%$%k$NCf?H$r;2>H$7$F%3!<%I%M!<%`$r(B tag $BIU$1$7$F2<$5(B
-$B$$!#(B
+Daredevil SKK $B$K?7$?$J5!G=$r2C$($??M$O!"$3$N%U%!%$%k$HF1$8%G%#%l%/%H%j(B
+$B$K$"$k(B Codename $B$H$$$&%U%!%$%k$NCf?H$r;2>H$7$F(B tag $BIU$1$7$F2<$5$$!#(B
+maintrunk $B$K$O(B tag $BIU$1$7$J$$$G2<$5$$!#(Bmaintrunk $B$N(B tag $BIU$1%k!<%k$O$^(B
+$B$@9M$($F$$$^$;$s!#(B
 
-     $ cvs tag Codename .
+     $ cvs tag (Codename) .
+
+
+** $B5SCm(B
+
+*** $BCm(B1
+
+$B%o!<%-%s%0%3%T!<$O!"(Bopenlab.ring.gr.jp:/circus/cvsroot $B$r;X$7$F$$$k$3(B
+$B$H$r5-21$7$F$$$k(B ($BCm(B3) $B$N$G!"%o!<%-%s%0%3%T!<$rCV$$$F$$$k%G%#%l%/%H%j(B
+$B$G(B checkout, update, commit, tag $B$J$I$N(B cvs $B%3%^%s%I$r<B9T$9$k$H!"<+F0(B
+$BE*$K(B openlab.ring.gr.jp $B$K%m%0%$%s$7$F!"$=$l$>$l$N%3%^%s%I$r<B9T$7$^$9!#(B
+
+
+*** $BCm(B2
+
+~/.cvsrc $B$K!"(B
+
+  cvs -z9
+
+$B$H=q$$$F$*$/$H!"(Bcvs server $B$H$NDL?.FbMF$,05=L$5$l$^$9!#(B
+
+
+*** $BCm(B3
+
+$B%o!<%-%s%0%3%T!<$N$"$k%G%#%l%/%H%j$N(B CVS/Root $B$H$$$&%U%!%$%k$K%5!<%P>p(B
+$BJs$,J]B8$5$l$F$$$^$9!#(B
 
 [end of PROPOSAL]

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.64 2000/08/11 15:18:42 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.65 2000/08/16 12:48:05 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/11 15:18:42 $
+;; Last Modified: $Date: 2000/08/16 12:48:05 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/08/11 15:18:42 $")
+      (let* ((raw-date "$Date: 2000/08/16 12:48:05 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -555,6 +555,7 @@ dependent."
        (skk-adjust-search-prog-list-for-server-search 'non-del))
   (and skk-auto-okuri-process (skk-adjust-search-prog-list-for-auto-okuri))
   (and skk-use-look (require 'skk-look))
+  (and skk-use-jisx0201-input-method (require 'skk-jisx0201))
   (skk-setup-delete-selection-mode)
   (skk-adjust-user-option))
 
@@ -3617,20 +3618,24 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 			  (strs (cdr el)))
 		      (if (string= (symbol-value sym) (cdr strs))
 			  (set sym (car strs))))))
-		 (cond
-		  ((and (fboundp 'face-proportional-p)
-			(face-proportional-p 'modeline))
-		   '((skk-latin-mode-string . ("--SKK:" . " SKK"))
-		     (skk-hiragana-mode-string . ("--かな:" . " かな"))
-		     (skk-katakana-mode-string . ("--カナ:" . " カナ"))
-		     (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
-		     (skk-abbrev-mode-string . ("--aあ:" . " aあ"))))
-		  (t
-		   '((skk-latin-mode-string . ("--SKK::" . " SKK"))
-		     (skk-hiragana-mode-string . ("--かな:" . " かな"))
-		     (skk-katakana-mode-string . ("--カナ:" . " カナ"))
-		     (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
-		     (skk-abbrev-mode-string . ("--aあ::" . " aあ"))))))
+		 (append
+		  (cond
+		   ((and (fboundp 'face-proportional-p)
+			 (face-proportional-p 'modeline))
+		    '((skk-latin-mode-string . ("--SKK:" . " SKK"))
+		      (skk-hiragana-mode-string . ("--かな:" . " かな"))
+		      (skk-katakana-mode-string . ("--カナ:" . " カナ"))
+		      (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
+		      (skk-abbrev-mode-string . ("--aあ:" . " aあ"))
+		      (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201"))))
+		   (t
+		    '((skk-latin-mode-string . ("--SKK::" . " SKK"))
+		      (skk-hiragana-mode-string . ("--かな:" . " かな"))
+		      (skk-katakana-mode-string . ("--カナ:" . " カナ"))
+		      (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
+		      (skk-abbrev-mode-string . ("--aあ::" . " aあ"))
+		      (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201")))))))
+	 ;;
 	 (static-cond
 	  ((eq skk-emacs-type 'xemacs)
 	   (or (memq 'skk-input-mode-string default-modeline-format)
@@ -3648,6 +3653,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 				       (append '("" skk-input-mode-string)
 					       modeline-format))))))))
 		 (buffer-list)))
+	  ;;
 	  (t
 	   (or (memq 'skk-input-mode-string (default-value 'mode-line-format))
 	       (setq-default mode-line-format
@@ -3668,6 +3674,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 		   (buffer-list))))
 	 (setq-default skk-input-mode-string "")
 	 (force-mode-line-update t))
+	;;
 	((eq skk-status-indicator 'minor-mode)
 	 (static-if (eq skk-emacs-type 'xemacs)
 	     (add-minor-mode 'skk-mode 'skk-input-mode-string)

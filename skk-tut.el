@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.6 2000/07/17 21:42:43 minakaji Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.7 2000/07/21 08:52:10 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/17 21:42:43 $
+;; Last Modified: $Date: 2000/07/21 08:52:10 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -318,7 +318,7 @@ The English version is SKK.tut.E."
     (skk-try-completion-key . "\t")
     (skk-update-jisyo-function . 'skk-update-jisyo-original)
     (skk-use-color-cursor . (and window-system (fboundp 'x-display-color-p) (x-display-color-p)))
-    (skk-cursor-change-width . t)
+    (skk-cursor-change-width . nil)
     (skk-use-face . window-system)
     (skk-use-look . nil)
     (skk-use-numeric-conversion . t)

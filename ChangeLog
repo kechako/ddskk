@@ -1,3 +1,7 @@
+2000-10-19  Tsuyoshi AKIHO  <akiho@media.osaka-cu.ac.jp>
+
+ 	* READMEs/NEWS : 新機能や廃止された関数について加筆。
+
 2000-10-19  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-leim.el: In "auto-autoloads.el", require "skk-setup".

@@ -4,6 +4,8 @@
 
 	* skk-setup.el.in (isearch-message-prefix): Move the advice
 	* skk-isearch.el: to here.
+	(skk-isearch-delete-char): Update only the 2nd element of
+	`isearch-cmds'.
 
 2000-10-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 

@@ -2,6 +2,8 @@
 
 	* READMEs/CVS_00readme: Update.
 
+	* skk-cursor.el (skk-mode-hook): Call `skk-mode-one-again'.
+
 	* skk-vars.el (skk-coding-system-alist): sjis => shift_jis.
 
 	* skk.el (skk-henkan-show-candidate-subr): If the selected frame

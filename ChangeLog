@@ -2,7 +2,7 @@
 
 	* skk-isearch.el (skk-isearch-mode-setup): Call
 	`skk-isearch-setup-keymap' in this function, not at top level, so
-	that `skk-kakutei-key' is set in `skk-init-file'.
+	that `skk-kakutei-key' can be set in `skk-init-file'.
 
 1999-11-24  FURUE Hideyuki  <furue@kke.co.jp>
 

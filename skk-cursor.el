@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.27 2000/08/16 12:46:03 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.28 2000/09/04 14:43:54 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/16 12:46:03 $
+;; Last Modified: $Date: 2000/09/04 14:43:54 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -187,6 +187,7 @@
 	       skk-delete-backward-char
 	       skk-insert
 	       skk-start-henkan
+	       skk-jisx0208-latin-henkan
 	       )))
   (while funcs
     (eval
@@ -201,12 +202,13 @@
 	  ad-do-it))))
     (setq funcs (cdr funcs))))
 
-;;(defadvice execute-extended-command (around skk-cursor-ad activate preactivate)
-;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-;;  (if skk-mode
-;;		(unwind-protect ad-do-it (skk-cursor-set-properly))
-;;	      ad-do-it ))
-;;
+(static-when (featurep 'xemacs)
+  (defadvice execute-extended-command (around skk-cursor-ad activate)
+    "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+    (if skk-mode
+	(unwind-protect ad-do-it (skk-cursor-set-properly))
+      ad-do-it)))
+
 ;;(static-unless (eq skk-emacs-type 'xemacs)
 ;;  (defadvice completing-read (around skk-cursor-ad activate preactivate)
 ;;	 "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"

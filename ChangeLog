@@ -1,3 +1,8 @@
+2000-09-15  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* doc/skk.texi (お願い): Change `skk-jisyo@kuis.kyoto-u.ac.jp' to
+	`skk@ring.gr.jp'.
+
 2000-09-14  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (skk-isearch-delete-char): Rewrite the last change.

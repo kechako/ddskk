@@ -1,3 +1,7 @@
+2000-08-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* READMEs/PROPOSAL : tm ML => APEL ML.
+
 2000-08-16  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK (SKK-MK-generate-autoloads-el): Provide skk-autoloads.

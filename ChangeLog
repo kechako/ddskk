@@ -1,3 +1,11 @@
+2000-08-28  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK (SKK-MK-compile): Require cl for Emacs 18.
+
+	* experimental/skk-e18.el: Don't require cl here.
+
+	* skk-kcode.el (skk-make-char): Typo.
+
 2000-08-27  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-e18.el (call-process): Work around for Emacs
@@ -5,7 +13,7 @@
 
 	* ptexinfmt.el: New file imported from Wanderlust.
 
-	* SKK-MK: (SKK-MK-texinfo-format): Require ptexinfmt.
+	* SKK-MK (SKK-MK-texinfo-format): Require ptexinfmt.
 	(SKK-MK-compile): Work around for Emacs 18.55.
 
 	* skk-num.el (skk-num-convert): Work around for Emacs 18.55.

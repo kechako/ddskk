@@ -3,9 +3,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: ccc.el,v 1.1.2.2 2000/09/27 13:42:04 minakaji Exp $
+;; Version: $Id: ccc.el,v 1.1.2.3 2000/10/12 10:06:34 czkmt Exp $
 ;; Keywords: cursor
-;; Last Modified: $Date: 2000/09/27 13:42:04 $
+;; Last Modified: $Date: 2000/10/12 10:06:34 $
 
 ;; This software is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -44,7 +44,7 @@
 ;; buffer-local-cursor
 ;;
 (defun buffer-local-cursor-color-default ()
-  (static-if (eq (string-match "XEmacs" emacs-version) 'xemacs)
+  (static-if (featurep 'xemacs)
       (frame-property (selected-frame) 'cursor-color)
     (cdr (assq 'cursor-color (frame-parameters (selected-frame))))))
 
@@ -68,7 +68,7 @@
 ;; buffer-local-foreground-color
 ;;
 (defun buffer-local-foreground-color-default ()
-  (static-if (eq (string-match "XEmacs" emacs-version) 'xemacs)
+  (static-if (featurep 'xemacs)
       (frame-property (selected-frame) 'foreground-color)
     (cdr (assq 'foreground-color (frame-parameters (selected-frame))))))
 
@@ -92,7 +92,7 @@
 ;; buffer-local-background-color
 ;;
 (defun buffer-local-background-color-default ()
-  (static-if (eq (string-match "XEmacs" emacs-version) 'xemacs)
+  (static-if (featurep 'xemacs)
       (frame-property (selected-frame) 'background-color)
     (cdr (assq 'background-color (frame-parameters (selected-frame))))))
 

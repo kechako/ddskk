@@ -1,3 +1,18 @@
+2000-09-06  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK (SKK-MK-server-installed-p): Newfunction.
+	(SKK-MK-install): Don't set `skk-large-jisyo' if a local server is
+	found.
+	(SKk-MK-install-package): Ditto.
+
+	* skk-isearch.el (skk-isearch-mode-setup): Don't call
+	`toggle-input-method' so that the SKK status is preserverd.
+
+	* skk-setup.el.in (skk-aux-large-jisyo): Use @AUXDIC@ instead of
+	@DIC@.
+
+	* skk-vars.el (skk-look-use-ispell): Check if ispell.el is installed.
+
 2000-09-06  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/MEMO.txt: Add some idea.

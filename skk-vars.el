@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.6 1999/12/05 05:59:26 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.7 1999/12/07 19:26:22 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/05 05:59:26 $
+;; Last Modified: $Date: 1999/12/07 19:26:22 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -546,6 +546,12 @@ skk-backward-and-set-henkan-point の動作に影響する。"
 nil であれば、送り仮名を含めた見出し語をそのまま残し、■モードに入る。例えば、
 
     \"▽な*く -> ▼泣く -> \"C-g\" -> なく\"" 
+  :type 'boolean
+  :group 'skk )
+
+(defcustom skk-check-okurigana-on-toroku nil
+  "*Non-ni; であれば、送りありの登録時に、ユーザーが登録する語の末尾に余計な仮名を
+付けていないかどうかテェックし、ユーザに確認を求める。"
   :type 'boolean
   :group 'skk )
 

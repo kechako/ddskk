@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.19 1999/12/08 19:19:54 furue Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.20 1999/12/09 16:13:03 furue Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/08 19:19:54 $
+;; Last Modified: $Date: 1999/12/09 16:13:03 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/12/08 19:19:54 $")
+      (let* ((raw-date "$Date: 1999/12/09 16:13:03 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -2214,7 +2214,8 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 (defun skk-delete-okuri-mark ()
   ;; 送り仮名入力中にカレントバッファに表われる `*' マークを消し、送り仮名関連
   ;; フラグを nil にセットする。
-  (if (or (not skk-okurigana-start-point)
+  (if (or (not skk-okurigana)
+	  (not skk-okurigana-start-point)
 	  (not (markerp skk-okurigana-start-point))
 	  (not (marker-position skk-okurigana-start-point)) )
       nil

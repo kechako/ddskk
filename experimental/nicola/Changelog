@@ -1,6 +1,10 @@
-2000-09-04  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+2000-09-06  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
-	* skk-nicola.el (skk-nicola-insert): Sync with a new
+	* skk-*.el: Add keywords.
+
+2000-09-05  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-nicola.el (skk-nicola-insert): Sync with new
 	cursor-controlling functions.
 	Fix the behaviour of right-shift-key simultaneous typing.
 

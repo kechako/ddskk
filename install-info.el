@@ -3,7 +3,6 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: docs, help, info
-;; Last Modified: Oct 31 2000
 
 ;; This file is not part of GNU Emacs.
 
@@ -52,8 +51,8 @@ itself.
 
 If optional fifth arg DELETE is non-nil, delete existing entries for INFO-FILE
 from DIR-FILE; don't insert any new entries."
-  (let ((buf (generate-new-buffer " *tmp*"))
-	entries)
+  (let ((buf (get-buffer-create " *install-info-tmp*"))
+	groups)
     ;;
     (if (stringp info-file)
 	(setq info-file (expand-file-name info-file))
@@ -77,7 +76,7 @@ from DIR-FILE; don't insert any new entries."
     ;;
     (cond
      ((and entry section)
-      (setq entries (install-info-entries section entry)))
+      (setq groups (install-info-groups section entry)))
      (entry
       (save-excursion
 	(set-buffer buf)
@@ -85,10 +84,11 @@ from DIR-FILE; don't insert any new entries."
 	(while (re-search-forward "^INFO-DIR-SECTION " nil t)
 	  (end-of-line)
 	  (setq section
-		(cons (buffer-substring (match-end 0) (point)) section))))
+		(nconc section
+		       (list (buffer-substring (match-end 0) (point)))))))
       (unless section
 	(setq section (list "Miscellaneous")))
-      (setq entries (install-info-entries section entry)))
+      (setq groups (install-info-groups section entry)))
      (section
       (save-excursion
 	(set-buffer buf)
@@ -97,7 +97,7 @@ from DIR-FILE; don't insert any new entries."
 	  (forward-line 1)
 	  (beginning-of-line)
 	  (while (not (looking-at "^END-INFO-DIR-ENTRY"))
-	    (let (start end str)
+	    (let (start str)
 	      (setq start (point))
 	      (unless (eolp)
 		(end-of-line)
@@ -112,22 +112,29 @@ from DIR-FILE; don't insert any new entries."
 	      (beginning-of-line)))))
       (unless (setq entry (nreverse entry))
 	(error "warning; no info dir entry in %s" info-file))
-      (setq entries (install-info-entries section entry)))
+      (setq groups (install-info-groups section entry)))
      (t
       (save-excursion
 	(set-buffer buf)
 	(goto-char (point-min))
 	(while (re-search-forward "^INFO-DIR-SECTION " nil t)
-	  (let (sec entry)
-	    (end-of-line)
-	    (setq sec (buffer-substring (match-end 0) (point)))
-	    (forward-line 1)
+	  (let (section entry)
 	    (beginning-of-line)
+	    (while (looking-at "^INFO-DIR-SECTION ")
+	      (end-of-line)
+	      (setq section
+		    (nconc section
+			   (list (buffer-substring (match-end 0) (point)))))
+	      (forward-line 1)
+	      (beginning-of-line))
+	    (while (and (eolp) (not (eobp)))
+	      (forward-line 1)
+	      (beginning-of-line))
 	    (when (looking-at "^START-INFO-DIR-ENTRY")
 	      (forward-line 1)
 	      (beginning-of-line)
 	      (while (not (looking-at "^END-INFO-DIR-ENTRY"))
-		(let (start end str)
+		(let (start str)
 		  (setq start (point))
 		  (unless (eolp)
 		    (end-of-line)
@@ -140,18 +147,18 @@ from DIR-FILE; don't insert any new entries."
 				    (cdr entry))))))
 		  (forward-line 1)
 		  (beginning-of-line))))
-	    (when (and sec (setq entry (nreverse entry)))
-	      (setq entries
-		    (nconc entries
-			   (install-info-entries (list sec) entry))))))
+	    (when (and section (setq entry (nreverse entry)))
+	      (setq groups
+		    (nconc groups
+			   (install-info-groups section entry))))))
 	;;
-	(unless entries
+	(unless groups
 	  (goto-char (point-min))
 	  (while (re-search-forward "^START-INFO-DIR-ENTRY" nil t)
 	    (forward-line 1)
 	    (beginning-of-line)
 	    (while (not (looking-at "^END-INFO-DIR-ENTRY"))
-	      (let (start end str)
+	      (let (start str)
 		(setq start (point))
 		(unless (eolp)
 		  (end-of-line)
@@ -168,36 +175,33 @@ from DIR-FILE; don't insert any new entries."
 	    (error "warning; no info dir entry in %s" info-file))
 	  (unless section
 	    (setq section (list "Miscellaneous")))
-	  (setq entries (install-info-entries section entry))))))
+	  (setq groups (install-info-groups section entry))))))
     ;;
     (if delete
-	(install-info-delete-entries entries dir-file)
-      (install-info-add-entries (nreverse entries) dir-file))
+	(install-info-delete-groups groups dir-file)
+      (install-info-add-groups groups dir-file))
     ;;
     (kill-buffer buf)))
 
-(defun install-info-entries (section entry)
-  (let (entries)
+(defun install-info-groups (section entry)
+  (let (groups)
     (dolist (sec section)
-      (dolist (en entry)
-	(setq entries
-	      (nconc entries (list (cons sec en))))))
-    entries))
+      (setq groups
+	    (nconc groups (list (cons sec entry)))))
+    groups))
 
-(defun install-info-delete-entries (entries dir)
+(defun install-info-delete-groups (groups dir)
   (setq dir (expand-file-name dir))
-  (let ((buf (generate-new-buffer " *dir*")))
+  (let ((buf (get-buffer-create " *install-info-dir*")))
     (save-excursion
       (set-buffer buf)
       (erase-buffer)
       (if (not (file-exists-p dir))
-	  (error "%s is non-existent" dir)
+	  (error "No such file or directory for %s" dir)
 	(install-info-insert-file-contents dir)
-	(dolist (entry entries)
-	  (let ((en (cdr entry))
-		key)
-	    (when (string-match ")" en)
-	      (setq key (substring en 0 (match-beginning 0))))
+	(dolist (en (apply 'append (mapcar 'cdr groups)))
+	  (let ((key (when (string-match ")" en)
+		       (substring en 0 (match-beginning 0)))))
 	    (goto-char (point-min))
 	    (while (re-search-forward
 		    (concat "^" (regexp-quote key) "\\(\\.info\\)?)") nil t)
@@ -212,9 +216,9 @@ from DIR-FILE; don't insert any new entries."
       (install-info-write-region (point-min) (point-max) dir))
     (kill-buffer buf)))
 
-(defun install-info-add-entries (entries dir)
+(defun install-info-add-groups (groups dir)
   (setq dir (expand-file-name dir))
-  (let ((buf (generate-new-buffer " *dir*")))
+  (let ((buf (get-buffer-create " *install-info-dir*")))
     (save-excursion
       (set-buffer buf)
       (erase-buffer)
@@ -237,40 +241,55 @@ File: dir,	Node: Top	This is the top of the INFO tree
 * Menu:
 
 "))
-      (dolist (entry entries)
-	(let ((sec (car entry))
-	      (en (cdr entry))
-	       key)
-	  (when (string-match ")" en)
-	    (setq key (substring en 0 (match-beginning 0))))
+      (dolist (group groups)
+	(let ((sec (car group))
+	      (entry (cdr group)))
 	  (goto-char (point-min))
 	  (cond
 	   ((re-search-forward (concat "^" sec "$") nil t)
 	    (if (eq 1 (forward-line 1))
 		(newline 1)
 	      (beginning-of-line))
-	    (save-excursion
-	      (while (not (eolp))
-		(cond
-		 ((looking-at
-		   (concat "^" (regexp-quote key) "\\(\\.info\\)?)"))
-		  (let ((start (point)))
-		    (when (eq 0 (forward-line 1))
-		      (beginning-of-line))
-		    (while (not (or (eolp)
-				    (looking-at "^* ")))
+	    (dolist (en entry)
+	      (let ((key (when (string-match ")" en)
+			   (setq key (substring en 0 (match-beginning 0))))))
+		(save-excursion
+		  (while (not (eolp))
+		    (cond
+		     ((looking-at
+		       (concat "^" (regexp-quote key) "\\(\\.info\\)?)"))
+		      (let ((start (point)))
+			(when (eq 0 (forward-line 1))
+			  (beginning-of-line))
+			(while (not (or (eolp)
+					(looking-at "^* ")))
+			  (when (eq 0 (forward-line 1))
+			    (beginning-of-line)))
+			(delete-region start (point))))
+		     (t
 		      (when (eq 0 (forward-line 1))
-			(beginning-of-line)))
-		    (delete-region start (point))))
-		 (t
-		  (when (eq 0 (forward-line 1))
-		    (beginning-of-line))))))
-	    (insert (format "%s\n" en)))
+			(beginning-of-line))))))
+		(save-excursion
+		  (catch 'here
+		    (while (not (eolp))
+		      (let ((line
+			     (buffer-substring
+			      (point)
+			      (save-excursion (end-of-line) (point)))))
+			(if (string-lessp line en)
+			    (when (eq 0 (forward-line 1))
+			      (beginning-of-line))
+			  (throw 'here t)))))
+		  (unless (bolp)
+		    (newline 1))
+		  (insert (format "%s\n" en))))))
 	   (t
 	    (goto-char (point-max))
 	    (unless (bolp)
 	      (newline 1))
-	    (insert (format "\n%s\n%s\n" sec en))))))
+	    (insert (format "\n%s\n" sec))
+	    (dolist (en entry)
+		(insert (format "%s\n" en)))))))
       (install-info-write-region (point-min) (point-max) dir))
     (kill-buffer buf)))
 
@@ -287,15 +306,17 @@ File: dir,	Node: Top	This is the top of the INFO tree
 
 (defun install-info-insert-file-contents (file &optional visit beg end replace)
   (let ((coding-system-for-read 'raw-text))
-    (if (install-info-compressed-p file)
-	(jka-compr-insert-file-contents file visit beg end replace)
-      (insert-file-contents file visit beg end replace))))
+    (funcall (if (install-info-compressed-p file)
+		 'jka-compr-insert-file-contents
+	       'insert-file-contents)
+	     file visit beg end replace)))
 
 (defun install-info-write-region (start end file &optional append visit)
   (let ((coding-system-for-write 'raw-text))
-    (if (install-info-compressed-p file)
-	(jka-compr-write-region start end file append visit)
-      (write-region start end file append visit))))
+    (funcall (if (install-info-compressed-p file)
+		 'jka-compr-write-region
+	       'write-region)
+	     start end file append visit)))
 
 ;;
 

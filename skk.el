@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.30 2000/01/17 07:12:07 mrt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.31 2000/01/19 13:34:25 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/17 07:12:07 $
+;; Last Modified: $Date: 2000/01/19 13:34:25 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/17 07:12:07 $")
+      (let* ((raw-date "$Date: 2000/01/19 13:34:25 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1480,7 +1480,10 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	   (while (> 7 count)
 	     (setq e (nth count candidates))
 	     (if e
-		 (setq v (cons e v)
+		 (setq v (cons (if (not (skk-lisp-prog-p e))
+				   e
+				 (or (skk-eval-string e) e))
+			       v)
 		       count (1+ count))
 	       (setq count 7)))
 	   (nreverse v)))
@@ -1726,17 +1729,9 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
     (and skk-use-face (skk-henkan-face-off))
     (delete-region skk-henkan-start-point skk-henkan-end-point)
     (goto-char skk-henkan-start-point)
-    ;; (^_^;) のような見出し語に対し、read-from-string を呼ぶとエラーになるの
-    ;; で、condition-case でそのエラーを捕まえる。
-    (condition-case nil
-	(setq func (car (read-from-string word)))
-      (error (setq func word)))
-    (condition-case nil
-	(insert-and-inherit (if (and (listp func)
-				     (functionp (car func)))
-				(eval func) word))
-      ;; 文字列を返さない Lisp プログラムを評価してもエラーにならない方が便利？
-      (error nil))
+    (insert-and-inherit (if (not (skk-lisp-prog-p word))
+			    word
+			  (or (skk-eval-string word) word)))
     (skk-set-marker skk-henkan-end-point (point))
     (and skk-use-face (skk-henkan-face-on))
     (and skk-insert-new-word-function
@@ -3112,14 +3107,6 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                            (append word nil) "")
                 "\")")
       word)))
-
-(defun skk-lisp-prog-p (string)
-  ;; STRING が Lisp プログラムであれば、t を返す。
-  (let ((l (skk-str-length string)))
-    (and (> l 2) (eq (aref string 0) ?\()
-	 ;; second character is ascii or not.
-	 (< ?\37 (aref string 1)) (< (aref string 1) ?\200) 
-         (eq (skk-str-ref string (1- l)) ?\)))))
 
 (defun skk-public-jisyo-has-entry-p (okurigana word)
   ;; 共有辞書が MIDASHI 及びそれに対応する WORDS エントリを持っていれば、

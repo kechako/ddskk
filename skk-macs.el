@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.6 1999/12/26 02:33:07 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.7 2000/01/19 13:34:25 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/26 02:33:07 $
+;; Last Modified: $Date: 2000/01/19 13:34:25 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -398,6 +398,26 @@
 	((and code (stringp code))
 	 (cdr (assoc code skk-coding-system-alist)))
 	(t (cdr (assoc "euc" skk-coding-system-alist)))))
+
+(defsubst skk-lisp-prog-p (string)
+  ;; STRING が Lisp プログラムであれば、t を返す。
+  (let ((l (skk-str-length string)))
+    (and (> l 2) (eq (aref string 0) ?\()
+	 ;; second character is ascii or not.
+	 (< ?\37 (aref string 1)) (< (aref string 1) ?\200) 
+         (eq (skk-str-ref string (1- l)) ?\)))))
+
+(defsubst skk-eval-string (string)
+  ;; eval STRING as a lisp program and return the result.
+  (let (func)
+    ;; (^_^;) のような文字列に対し、read-from-string を呼ぶとエラーになるの
+    ;; で、condition-case でそのエラーを捕まえる。
+    (condition-case nil
+	(setq func (car (read-from-string string)))
+      (error (setq func string)))
+    (condition-case nil
+	(and (listp func) (functionp (car func)) (eval func))
+      (error nil))))
 
 ;;;; from dabbrev.el.  Welcome!
 ;; 判定間違いを犯す場合あり。要改良。

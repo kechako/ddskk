@@ -1,3 +1,11 @@
+2000-01-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-insert-new-word): Use `skk-eval-string'.
+
+	* skk-macs.el (skk-lisp-prog-p): Move from skk.el and make it
+	inline.
+	(skk-eval-string): New inline function.
+
 2000-01-18  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK (standard-character-unification-table-for-decode): Under

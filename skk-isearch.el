@@ -5,9 +5,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.6 1999/11/27 22:27:04 minakaji Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.7 1999/11/28 15:10:32 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/27 22:27:04 $
+;; Last Modified: $Date: 1999/11/28 15:10:32 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -412,7 +412,16 @@ If the current mode is different from previous, remove it first."
 		(skk-erase-prefix 'clean) )
 	      (setq skk-isearch-incomplete-message (buffer-string))
 	      (skk-isearch-incomplete-message) )))
-      (isearch-delete-char)))
+      (let ((str (skk-isearch-mode-string)))
+	(mapcar
+	 (function (lambda (cmd)
+		     (or (string-match (concat "^" str) (car (cdr cmd)))
+			 (setcdr cmd
+				 (cons
+				  (concat str (car cmd))
+				  (cdr (cdr cmd)))))))
+	 isearch-cmds)
+	(isearch-delete-char))))
 
 (defun skk-isearch-kakutei (isearch-function)
   "Special wrapper for skk-kakutei or newline."

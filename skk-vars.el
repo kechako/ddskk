@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.7 1999/12/07 19:26:22 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.8 1999/12/08 14:03:28 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/07 19:26:22 $
+;; Last Modified: $Date: 1999/12/08 14:03:28 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -550,8 +550,17 @@ nil $B$G$"$l$P!"Aw$j2>L>$r4^$a$?8+=P$78l$r$=$N$^$^;D$7!""#%b!<%I$KF~$k!#Nc$($P!
   :group 'skk )
 
 (defcustom skk-check-okurigana-on-toroku nil
-  "*Non-ni; $B$G$"$l$P!"Aw$j$"$j$NEPO?;~$K!"%f!<%6!<$,EPO?$9$k8l$NKvHx$KM>7W$J2>L>$r(B
-$BIU$1$F$$$J$$$+$I$&$+%F%'%C%/$7!"%f!<%6$K3NG'$r5a$a$k!#(B"
+  "*Non-nil $B$G$"$l$P!"Aw$j$"$j$NEPO?;~$K!"M>7W$J2>L>$r%A%'%C%/$9$k!#(B
+$BNc$($P!"(B
+
+     \"$B$H$S$@(B*$B$9(B $BHt$S=P(B\"
+
+$B$HEPO?$9$k$N$,@5$7$$$K$b$+$+$o$i$:!"%f!<%6$,(B
+
+     \"$B$H$S$@(B*$B$9(B $BHt$S=P$9(B\"
+
+$B$G$&$C$+$j(B [RET] $B$r2!$7$F$7$^$C$?$H$-$K!":G8e$N!V$9!W$,Aw$j2>L>$G$"$k$+$I$&$+(B
+$B%f!<%6$K3NG'$r5a$a!"Aw$j2>L>$J$i$P$3$l$r<h$j=|$$$F$+$iEPO?$9$k!#(B"
   :type 'boolean
   :group 'skk )
 

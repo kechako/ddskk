@@ -41,7 +41,8 @@
 
 (defmacro install-info-forward-line (n)
   (` (when (< 0 (forward-line (, n)))
-       (insert "\n"))))
+       (unless (bolp)
+	 (insert "\n")))))
 
 (defmacro install-info-point-at-eol (&optional n)
   (if (fboundp 'point-at-eol)
@@ -311,13 +312,11 @@ File: dir,	Node: Top	This is the top of the INFO tree
 			(if (string-lessp line en)
 			    (install-info-forward-line 1)
 			  (throw 'here t)))))
-		  (unless (bolp)
-		    (newline 1))
+		  (install-info-forward-line 1)
 		  (insert (format "%s\n" en))))))
 	   (t
 	    (goto-char (point-max))
-	    (unless (bolp)
-	      (newline 1))
+	    (install-info-forward-line 1)
 	    (insert (format "\n%s\n" sec))
 	    (dolist (en (sort entry 'string-lessp))
 		(insert (format "%s\n" en)))))))

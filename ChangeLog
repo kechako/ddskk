@@ -1,3 +1,10 @@
+1999-11-23  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-jisx0201.el (skk-setup-modeline): Fix typo -- use
+	`default-modeline-format', not `default-mode-line-format' under
+	XEmacs.
+	* skk.el (skk-setup-modeline): Ditto.
+
 1999-11-22  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* doc/.cvsignore: Add skk.info-4.

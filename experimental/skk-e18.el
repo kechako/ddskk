@@ -96,11 +96,8 @@
 (defun-maybe float (arg)
   arg)
 
-(defun-maybe insert-and-inherit (&rest args)
-  (apply 'insert args))
-
-(defun-maybe number-to-string (num)
-  (format "%d" num))
+(defalias-maybe 'insert-and-inherit 'insert)
+(defalias-maybe 'number-to-string 'int-to-string)
 
 (when (eq skk-emacs-type 'mule1)
   (defun insert-file-contents-as-coding-system

@@ -2,6 +2,8 @@
 
 	* skk-isearch.el (skk-isearch-find-keys-define): New function.
 	(skk-isearch-setup-keymap): Call it.
+	* skk.el (skk-truncate-message): Use `truncate-string' instead of
+	`truncate-string-to-width'.
 
 2000-01-19  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 

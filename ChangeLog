@@ -1,3 +1,8 @@
+2000-11-10  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk.el (skk-remove-redundant-okurgana): Remove the kana even if
+	it is not the same as `skk-henkan-okurigana'.
+
 2000-11-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-macs.el (skk-sit-for): New macro.

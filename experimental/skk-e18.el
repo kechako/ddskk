@@ -3,9 +3,9 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-e18.el,v 1.1.2.26 2000/10/16 09:16:34 minakaji Exp $
+;; Version: $Id: skk-e18.el,v 1.1.2.27 2000/11/09 10:12:45 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/16 09:16:34 $
+;; Last Modified: $Date: 2000/11/09 10:12:45 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -41,7 +41,7 @@
     (require 'advice)
   (error
    (error "advice.el is required for this version of SKK.
-Install patch/e18/advice.el in load-path and try again.")))
+Install patch/e18/advice.el in load-path and try again")))
 
 ;; skk-vars.el で default variable を nil にしておきましたが、念のた
 ;; め、defconst しておきましょう。

@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.9 1999/12/05 05:59:25 minakaji Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.10 1999/12/06 14:23:38 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/05 05:59:25 $
+;; Last Modified: $Date: 1999/12/06 14:23:38 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -504,13 +504,14 @@ If the current mode is different from previous, remove it first."
 	  (set skk-isearch-overriding-local-map local-map) )))))
 
 ;;
-;; Advices.
+;; Advice.
 ;;
 
 (defvar isearch-just-started nil)
-(defadvice isearch-repeat (around skk-isearch-ad activate)
+(defadvice isearch-repeat (around skk-isearch-ad activate preactivate)
+  "`isearch-message' を適切に設定する。"
   ;; Utility for isearch-repeat-forward and -backward.
-  (if (eq isearch-forward (eq direction 'forward))
+  (if (eq isearch-forward (eq (ad-get-arg 0) 'forward))
       ;; C-s in forward or C-r in reverse.
       (if (equal isearch-string "")
 	  ;; If search string is empty, use last one.

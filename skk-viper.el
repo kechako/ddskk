@@ -6,9 +6,9 @@
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: Murata Shuuichirou <mrt@notwork.org>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.8 2000/01/24 12:37:39 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.9 2000/04/03 08:46:22 mrt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/24 12:37:39 $
+;; Last Modified: $Date: 2000/04/03 08:46:22 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -228,7 +228,7 @@ viper-read-string-with-history は minibuffer-setup-hook を関数ローカル
   (let ((other-buffer
 	 (static-if (eq skk-emacs-type 'xemacs)
 	     (local-variable-p 'minor-mode-map-alist nil t)
-	   (local-variable-p 'minor-mode-map-alist))))
+	   (local-variable-if-set-p 'minor-mode-map-alist))))
     ;; for current buffer and buffers to be created in the future.
     ;; substantially the same job as viper-harness-minor-mode does.
     (funcall skk-viper-normalize-map-function)

@@ -1,6 +1,6 @@
 -*- text -*-
 
-     $Id: README.ja,v 1.1.2.4 2000/09/12 16:55:51 czkmt Exp $
+     $Id: README.ja,v 1.1.2.5 2000/09/13 09:44:32 czkmt Exp $
 
 $B$3$N%G%#%l%/%H%j$K$O!"(BEmacs 18 $B>e$G(B Daredevil SKK $B$rMxMQ$9$k:]$K!"I,MW(B
 $B$J$b$N!"$*$h$S$"$k$HJXMx$J$b$N$r<}O?$7$^$9!#(B
@@ -25,8 +25,8 @@ Daredevil SKK $B$K1w$1$k(B Emacs 18 (Nemacs 3.3.2 $B$^$?$O(B Mule 1.1) $BBP
 
 i. advice.el
 
-   $B$3$l$O(B Darevil SKK $B$rMxMQ$9$k$N$KI,MW$G$9!#(Bload-path $B$NDL$C$?=j$KCV(B
-   $B$$$F!"%P%$%H%3%s%Q%$%k$7$F$/$@$5$$!#(B
+   $B$3$l$O(B Daredevil SKK $B$rMxMQ$9$k$N$KI,MW$G$9!#(Bload-path $B$NDL$C$?=j$K(B
+   $BCV$$$F!"%P%$%H%3%s%Q%$%k$7$F$/$@$5$$!#(B
 
    (*) $B%P%$%H%3%s%Q%$%k$7$J$$$H!"(B SKK $B$r(B make $B$7$F$$$k$H$-$K(B
 
@@ -44,8 +44,8 @@ ii. cl.elc
    $B$H$$$&%(%i!<$,H/@8$7$^$9!#=$@5$9$k$K$O!"(Bcl.elc $B$r$3$3$K$"$k$b$N$G>e(B
    $B=q$-$7$F2<$5$$!#(B
 
-   $B$J$*!"(BMule 1.1 $B$N@5<0G[I[$KIU$$$F$/$k(B cl.elc $B$OF~$lBX$($J$/$F$b$=$N(B
-   $B$^$^;H$($^$9!#(B
+   $B$J$*!"(BMule 1.1 $B$N@5<0G[I[$KIU$$$F$/$k(B cl.elc $B$OF~$lBX$($J$/$F$b(B ($B0l(B
+   $B1~(B) $B$=$N$^$^;H$($^$9!#(B
 
 iii. bytecomp 2.07
 
@@ -58,7 +58,7 @@ iii. bytecomp 2.07
 i. advice.el 
 
    Emacs Lisp $B4X?t$rDj5A$7$J$*$9$3$HL5$7$K$=$N5sF0$rA`$k$?$a$N5!9=(B
-   (advice) $B$rDs6!$7$^$9!#(BDaredevil SKK $B$O(B advice $B$rMxMQ$7$F$$$^$9!#(B
+   (Advice) $B$rDs6!$7$^$9!#(BDaredevil SKK $B$O(B Advice $B$rMxMQ$7$F$$$^$9!#(B
 
 ii. cl.elc
 

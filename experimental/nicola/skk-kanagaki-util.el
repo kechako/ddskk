@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/06 11:34:48 $
+;; Last Modified: $Date: 2000/09/13 09:46:34 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -29,9 +29,6 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'skk-kanagaki))
-
 ;; Variables.
 
 (defconst skk-kanagaki-dakuten-alist
@@ -53,8 +50,41 @@
 
 ;; Macros
 
+(defmacro skk-kanagaki-help-1 (bufname title list)
+  (`
+   (let ((buf (get-buffer-create (, bufname))))
+     (save-excursion
+       (set-buffer buf)
+       (setq buffer-read-only nil)
+       (erase-buffer)
+       (insert
+	(apply
+	 'concat
+	 (format "%s\n\n" (, title))
+	 (mapcar
+	  (function
+	   (lambda (cons)
+	     (cond
+	      ((and (symbolp (car cons))
+		    (symbol-value (car cons)))
+	       (format "%s … %s\n"
+		       (key-description (symbol-value (car cons))) (cdr cons)))
+	      (t
+	       (format "%s … %s\n" (car cons) (cdr cons))))))
+	  ;;
+	  (delq nil (, list)))))
+       ;;
+       (setq buffer-read-only t)
+       (set-buffer-modified-p nil)
+       (goto-char (point-min))
+       (help-mode))
+     (let ((standard-output buf))
+       (print-help-return-message))
+     (display-buffer buf))))
+
 ;;;###autoload
 (put 'skk-kanagaki-call-xmodmap 'lisp-indent-function 1)
+
 (defmacro skk-kanagaki-call-xmodmap (string &rest form)
   ;; STRING の内容を xmodmap に渡す。成功したら FORM を実行する。
   ;; macro である必然性ゼロ。ひとつないと寂しいから…

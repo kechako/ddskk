@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/11 11:51:07 $
+;; Last Modified: $Date: 2000/09/13 09:46:34 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -37,12 +37,10 @@
 
 (eval-when-compile
   (require 'cl)
+  (require 'skk-kanagaki-util)
   (require 'skk-macs)
   (require 'skk-vars)
   (require 'static))
-
-(eval-when-compile
-  (require 'skk-kanagaki-util))
 
 (require 'skk-kanagaki)
 
@@ -448,7 +446,10 @@ keycode 131 = underscore\n"))
 		 (let ((last-command-char ?\ ))
 		   (cond ((or skk-henkan-on skk-henkan-active)
 			  (skk-kanagaki-insert arg)
-			  (skk-kanagaki-insert arg))
+			  (unless (>= skk-nicola-interval 1)
+			    ;; Emacs 18  で単独打鍵を同一キー連続打鍵で代用でき
+			    ;; るように。
+			    (skk-kanagaki-insert arg)))
 			 (t
 			  (self-insert-command
 			   (if (>= skk-nicola-interval 1)

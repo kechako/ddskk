@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/06 11:34:49 $
+;; Last Modified: $Date: 2000/09/13 09:46:34 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -30,9 +30,7 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'cl))
-
-(eval-when-compile
+  (require 'cl)
   (require 'skk-kanagaki-util))
 
 (require 'skk-kanagaki)

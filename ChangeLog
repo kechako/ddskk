@@ -1,3 +1,11 @@
+2000-09-13  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* patch/e18/README.ja: Update.
+
+	* patch/e18/bytecomp-2.07/eval.c-e19,patch: <= eval.c.patch.
+
+	* patch/e18/bytecomp-2.07/eval_c-e18,patch: New file.
+
 2000-09-13  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* patch/custom-1.9962.patch: Moved to e19 subdirectory.

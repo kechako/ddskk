@@ -1,3 +1,12 @@
+1999-12-14  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-isearch.el: Require `skk-vars' also at the load time.
+	(skk-isearch-mode-setup): Make sure `skk-isearch-mode-map' is a
+	keymap.
+	(isearch-repeat): Rewrite the advice so that it look like an
+	advice. :-)
+	There should be no changes in its behaviour.
+
 1999-12-14  FURUE Hideyuki  <furue@kke.co.jp>
 
 	* skk-cursor.el (set-buffer, erase-buffer): Remove advices.
@@ -78,14 +87,14 @@
 	(force-mode-line-update): New advice.
 	(after-make-frame-hook): Remove hook.
 	(minibuffer-setup-hook): Simplify hook.
-	
+
 1999-12-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-cursor.el (skk-cursor-set-properly) : Bug fixed.
 
 	* skk.el (skk-mode): Call `skk-cursor-set-properly` if
         `skk-use-color-cursor' or `skk-cursor-change-width' is non-nil.
-	
+
 	Not required skk-num.el expressly. (skk-num-list という buffer
 	local 変数に関するエラーを回避するために
 	skk-use-numeric-conversion が non-nil であれば skk-mode 内で先に

@@ -27,6 +27,8 @@
 	 (require 'skk-e18))
     (autoload 'browse-url "browse-url" nil t)
     (autoload 'browse-url-netscape "browse-url" nil t)
+    (autoload 'update-buffer-local-frame-params "ccc" nil nil)
+;    (autoload 'set-face-property "faces" nil nil)
     (princ (format "PREFIX=%s
 LISPDIR=%s\n" PREFIX LISPDIR))))
 

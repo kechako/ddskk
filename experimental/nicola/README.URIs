@@ -1,6 +1,6 @@
 -*- mode: fundamental -*-
 
-	$Id: README.URIs,v 1.1.2.3 2000/09/09 06:45:32 czkmt Exp $
+	$Id: README.URIs,v 1.1.2.4 2000/09/10 12:06:43 czkmt Exp $
 
 
 o 日本語入力コンソーシアム (NICOLA)
@@ -45,8 +45,7 @@ http://www.fujitsu.co.jp/people/kanda/
 # eval: (save-excursion
 	  (goto-char (point-min))
 	  (while (re-search-forward "\\(ht\\|f\\)tp://.+$" nil t)
-	    (put-text-property (match-beginning 0) (match-end 0)
-			       'mouse-face 'highlight)
-	    (put-text-property (match-beginning 0) (match-end 0) 'face 'bold)))
-# eval: (set-buffer-modified-p nil)
+	    (let ((overlay (make-overlay (match-beginning 0) (match-end 0))))
+	      (overlay-put overlay 'mouse-face 'highlight)
+	      (overlay-put overlay 'face 'bold))))
 # End:

@@ -1,3 +1,9 @@
+2000-09-10  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* README.URIs: Use overlays instead of text properties.
+
+	* README.ja: Ditto.
+
 2000-09-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* Makefile (VERSION): Use version number of Darevil SKK.

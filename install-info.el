@@ -2,7 +2,7 @@
 ;; Copyright (C) 2000 Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
-;; Keywords: docs, help, info
+;; Keywords: docs, help
 
 ;; This file is not part of GNU Emacs.
 
@@ -99,13 +99,13 @@ from DIR-FILE; don't insert any new entries."
     ;;
     (if (stringp info-file)
 	(setq info-file (expand-file-name info-file))
-      (error "%s" "No input file specified."))
+      (error "%s" "No input file specified"))
     (unless (file-exists-p info-file)
       (error "No such file or directory for %s" info-file))
     ;;
     (if (stringp dir-file)
 	(setq dir-file (expand-file-name dir-file))
-      (error "%s" "No dir file specified."))
+      (error "%s" "No dir file specified"))
     ;;
     (when (stringp entry)
       (setq entry (list entry)))

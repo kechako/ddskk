@@ -3,8 +3,8 @@
 
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
-;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/11/07 10:10:17 $
+;; Keywords: hardware, japanese
+;; Last Modified: $Date: 2000/11/09 10:12:04 $
 
 ;; This file is not yet part of Daredevil SKK.
 

@@ -1,5 +1,12 @@
 2000-01-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-jisx0208.el (skk-setup-modeline): Set the value of
+	`mode-line-format' in each buffer.
+
+	* skk.el (skk-setup-modeline): Ditto.
+
+2000-01-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* experimental/skk-e18.el (skk-hiragana-to-katakana): New function
 	for Nemacs.
 	(skk-katakana-to-hiragana): Ditto.

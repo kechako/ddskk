@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-server.el,v 1.3.2.4.2.3 2000/03/21 13:46:22 minakaji Exp $
+;; Version: $Id: skk-server.el,v 1.3.2.4.2.4 2000/03/21 21:54:43 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/03/21 13:46:22 $
+;; Last Modified: $Date: 2000/03/21 21:54:43 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -273,8 +273,6 @@
                        (list
                         '(skk-search-server skk-aux-large-jisyo 10000)))))
     (if (not non-del)
-        ;; skk-search-prog-list の先頭が skk-search-server から始まるリストだ
-        ;; ということはまずないだろうが、念のため、setq しておく。
 	(remove-alist 'skk-search-prog-list 'skk-search-server))))
 
 (defun skk-disconnect-server ()

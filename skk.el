@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.17 1999/12/05 05:59:27 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.18 1999/12/07 19:27:11 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/05 05:59:27 $
+;; Last Modified: $Date: 1999/12/07 19:27:11 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/12/05 05:59:27 $")
+      (let* ((raw-date "$Date: 1999/12/07 19:27:11 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -1544,6 +1544,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   ;; ミニバッファで辞書登録をし、登録したエントリの文字列を返す。
   (save-match-data
     (let ((enable-recursive-minibuffers t)
+	  (okurigana skk-henkan-okurigana)
           ;; 変換中に isearch message が出ないようにする。
           skk-isearch-message new-one )
       (add-hook 'minibuffer-setup-hook 'skk-j-mode-on)
@@ -1564,6 +1565,19 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		     (funcall skk-read-from-minibuffer-function) )))
         (quit
          (setq new-one "") ))
+      ;; 送りありの登録をするとき、送り仮名を消してから [RET] を押さなければ正しく
+      ;; 登録できない。そこで、ユーザが間違えて送り仮名を消し忘れていないかどうか、
+      ;; SKK の側でチェックできる範囲についてはユーザの確認を取る。この部分は
+      ;; `skk-check-okurigana-on-toroku' を non-nil に設定している場合のみ有効。
+      (if (and skk-okuri-char new-one skk-check-okurigana-on-toroku)
+	  (if (and
+	       (string-match (concat okurigana "$") new-one)
+	       (skk-y-or-n-p
+		(format "「%s」 の 「%s」 は送り仮名ですか？" new-one okurigana)
+		(format "You mean \"%s\" in \"%s\" is okurigana ?" okurigana new-one)))
+	      ;; ユーザの指示に従い送り仮名を取り除く。
+	      (setq new-one (substring new-one 0 (match-beginning 0)))))
+      ;;
       (if (string= new-one "")
           (if skk-exit-show-candidates
               ;; ミニバッファに表示した候補が尽きて辞書登録に入ったが、空文字

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.17 2000/01/23 13:40:37 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.18 2000/01/25 13:15:24 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/23 13:40:37 $
+;; Last Modified: $Date: 2000/01/25 13:15:24 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -49,7 +49,10 @@
 				 ((and (boundp 'mule-version)
 				       (string< "3.0" mule-version) 'mule3))
 				 ((and (boundp 'mule-version)
-				       (string< "2.0" mule-version) 'mule2)))))
+				       (string< "2.0" mule-version) 'mule2))
+				 ((and (boundp 'mule-version)
+				       (string< "1.0" mule-version) 'mule1)))))
+
 (defconst skk-version "11.2")
 (defconst skk-major-version (string-to-int (substring skk-version 0 2)))
 (defconst skk-minor-version (string-to-int (substring skk-version 3)))
@@ -67,7 +70,7 @@
                          (make-color-specifier "white"))) 3))
         'dark
       'light))
-   ((eq skk-emacs-type 'nemacs)
+   ((memq skk-emacs-type '(nemacs mule1))
     nil)
    ((and window-system (x-display-color-p))
     (let ((bg-resource (x-get-resource ".backgroundMode"
@@ -1347,7 +1350,7 @@ skk-toggle-kutouten はこれをトグルで切り換える。
 (defcustom skk-cursor-default-color
   (cond ((eq skk-emacs-type 'xemacs)
 	 (frame-property (selected-frame) 'cursor-color))
-	((eq skk-emacs-type 'nemacs)
+	((memq skk-emacs-type '(nemacs mule1))
 	 nil)
 	(t
 	 (cdr (assq 'cursor-color (frame-parameters (selected-frame))))))
@@ -1561,7 +1564,7 @@ nil であれば、訓令式 \"(「日本式」とも言うようだ)\" を用いる。
   (cond ((memq skk-emacs-type '(xemacs mule4 mule3))
 	 'japanese-jisx0208)
 	((eq skk-emacs-type 'nemacs)
-	 nil) ;; ??
+	 nil)
 	(t
 	 lc-jp))
   "*skk-input-by-code-or-menu で使われる文字セット。"
@@ -2160,7 +2163,7 @@ CANONICAL should be found in `skk-isearch-mode-canonical-alist'. ")
 		     ;;   (or (= lc lc-jp) (= lc lc-cn)))
 		     (string-match word-across-newline
 				   (char-to-string char)))))
-	((eq skk-emacs-type 'nemacs)
+	((memq skk-emacs-type '(nemacs mule1))
 	 nil)
 	(t (error "No appropriate function as: %s"
 		  'skk-isearch-breakable-character-p-function)))

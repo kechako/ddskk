@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.30 2000/08/15 11:02:45 czkmt Exp $
-;; Last Modified: $Date: 2000/08/15 11:02:45 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.31 2000/08/16 03:09:33 czkmt Exp $
+;; Last Modified: $Date: 2000/08/16 03:09:33 $
 
 ;; Commentary
 ;;
@@ -353,21 +353,6 @@
     (when (= 18 emacs-major-version)
       (install-elisp-modules '(skk-e18 skk-isearch) "./experimental" SKK_LISPDIR))
     (install-elisp-modules SKK_MODULES "." SKK_LISPDIR)
-    ;;
-    (when (fboundp 'update-autoloads-from-directories)
-      (let* ((file (expand-file-name "skk-autoloads.el" SKK_LISPDIR))
-	     (generated-autoload-file file)
-	     (coding-system-for-write 'iso-2022-7bit))
-	(update-autoloads-from-directories (file-name-directory file))
-	(let ((buf (get-buffer-create " *SKK-MK-generate-autoloads-el*")))
-	  (save-excursion
-	    (set-buffer buf)
-	    (erase-buffer)
-	    (goto-char (point-min))
-	    (insert "\n(provide 'skk-autoloads)\n;;; skk-autoloads.el ends here\n")
-	    (write-region (point-min) (point-max) file 'append)))
-	(byte-compile-file file)
-	(delete-file (format "%s~" file))))
     ;; install infos.
     (SKK-MK-compile-info)
     (install-files SKK_INFOS DOCDIR SKK_INFODIR nil t nil)
@@ -416,9 +401,9 @@
 	;; merely copy without setup dictionary information.
 	(copy-file "skk-setup.el.in" "skk-setup.el" 'ok-if-already-exists)))
     ;;
-    (and (fboundp 'register-input-method)
-	 (copy-file "skk-setup.el" "leim-list.el" 'ok-if-already-exists)
-	 (install-elisp-modules (list 'leim-list) "." SKK_LISPDIR))
+    (when (fboundp 'register-input-method)
+      (copy-file "skk-setup.el" "leim-list.el" 'ok-if-already-exists)
+      (install-elisp-modules (list 'leim-list) "." SKK_LISPDIR))
     ;; install skk-setup.el
     (install-elisp-modules (list 'skk-setup) "." SKK_LISPDIR)))
 
@@ -613,9 +598,22 @@ SKK tutorials:
 
 ;;; Code:\n\n")
       (cond
-       ((fboundp 'update-autoloads-from-directories)
-	(write-region (point-min) (point-max) "skk-autoloads.el"
-		      nil 'quiet)
+       ((and (condition-case nil
+		 (progn 
+		   (require 'autoload)
+		   (require 'poem))
+	       (error))
+	     (fboundp 'generate-file-autoloads))
+	(mapcar
+	 (function
+	  (lambda (module)
+	    (let ((file (expand-file-name (format "%s.el" module) default-directory)))
+	      (and (file-exists-p file)
+		     (generate-file-autoloads file)))))
+	 modules)
+	(write-region-as-coding-system
+	 (if (boundp 'MULE) *junet*unix 'iso-2022-7bit)
+	 (point-min) (point-max) "skk-autoloads.el" nil 'quiet)
 	(kill-buffer buf))
        (t
 	(setq sort-min (point))

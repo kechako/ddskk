@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.52 2000/10/31 13:38:29 czkmt Exp $
-;; Last Modified: $Date: 2000/10/31 13:38:29 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.53 2000/11/01 09:42:26 czkmt Exp $
+;; Last Modified: $Date: 2000/11/01 09:42:26 $
 
 ;; Commentary
 ;;
@@ -509,8 +509,10 @@ Just working the bug around ...")
 		    (expand-file-name "dir.info" SKK_INFODIR))
 		   (t
 		    (expand-file-name "dir" SKK_INFODIR)))))
-	(install-info (expand-file-name SKK_INFO SKK_INFODIR)
-		      dir-file nil nil t)
+	(condition-case nil
+	    (install-info (expand-file-name SKK_INFO SKK_INFODIR)
+			  dir-file nil nil 'delete)
+	  (error))
 	(install-info (expand-file-name SKK_INFO SKK_INFODIR)
 		      dir-file nil nil nil)))
     ;; install tutorials.

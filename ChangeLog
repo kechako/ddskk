@@ -14,7 +14,7 @@
 	* skk-isearch.el (skk-isearch-delete-char): Use `when'.
 
 	* skk-jisx0201.el (skk-jisx0201-insert, skk-toggle-katakana):
-	Don't call `skk-sursor-set-properly'. Call `set-face-property' or
+	Don't call `skk-cursor-set-properly'. Call `set-face-property' or
 	`set-buffer-local-cursor-color' instead.
 
 	* skk-obsolete.el (skk-obsolete-function-alist): Don't check

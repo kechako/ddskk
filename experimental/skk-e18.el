@@ -2,9 +2,9 @@
 ;; Copyright (C) 2000 Tsukamoto Tetsuo
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
-;; Version: $Id: skk-e18.el,v 1.1.2.20 2000/08/12 14:25:02 czkmt Exp $
+;; Version: $Id: skk-e18.el,v 1.1.2.21 2000/08/27 18:33:52 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/12 14:25:02 $
+;; Last Modified: $Date: 2000/08/27 18:33:52 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -87,6 +87,12 @@
 (defadvice re-search-backward (after skk-e18-ad activate)
   (when ad-return-value
     (setq ad-return-value (match-beginning 0))))
+
+(when (< emacs-minor-version 59)
+  (defadvice call-process (after skk-e18-ad activate)
+    (when (and (not (eq 0 (ad-get-arg 2)))
+	       (null ad-return-value))
+      (setq ad-return-value 0))))
 
 ;; Other functions.
 (defun-maybe window-minibuffer-p (&optional window)

@@ -1,3 +1,11 @@
+2000-11-05  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-macs.el (skk-do-auto-fill): Check `skk-emacs-type' instead
+	of `emacs-version'.
+
+	* skk.el (skk-insert-str): Call `skk-do-auto-fill' when
+	`skk-j-mode' is on and `skk-henkan-on' is off.
+
 2000-11-03  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* install-info.el (install-info-add-groups): Use simple regexps.

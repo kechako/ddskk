@@ -1,3 +1,37 @@
+2000-01-25  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK (SKK_MODULES): Do not install skk-cursor.el for Emacs 18.
+
+	* experimental/skk-e18.el (skk-use-color-cursor): Default to nil
+	under Emacs 18.
+	(skk-cursor-change-width): Ditto.
+	(skk-e18-self-insert-keys): New variable.
+	(skk-lisp-prog-p): Don't redefine here -- use the original.
+	(skk-in-minibuffer-p): Ditto.
+	(skk-str-length): New inline function.
+	(skk-str-ref): Ditto.
+	(search-backward): New advice -- by 中島さん.
+	(re-search-backward): Ditto.
+	(window-minibuffer-p): New function -- by 中島さん.
+	(skk-e18-define-j-mode-map): Abolish.
+	(insert-file-contents-as-coding-system): Work arond for Mule 1.
+	(skk-make-string): This is only for Nemacs.
+	(skk-make-char): This is for Mule 1.
+
+	* skk-macs.el (skk-emacs-type): Add `mule1'.
+	(skk-detect-emacs): Ditto.
+
+	* skk-vars.el (skk-emacs-type): Ditto.
+	(skk-background-mode): Avoide an error under Emacs 18.
+	(skk-cursor-default-color): Ditto.
+	(skk-isearch-overriding-local-map): Ditto.
+
+	* skk.el (skk-isearch-forward): This function is not obsolete for
+	Emacs 18 -- though Emacs 18 seems obsolete ;^)
+	(skk-isearch-forward-regexp): Ditto.
+	(skk-isearch-backward): Ditto.
+	(skk-isearch-backward-regexp): Ditto.
+
 2000-01-24  Takao KAWAMURA  <kawamura@debian.org>
 
 	* SKK-MK (SKK-MK-generate-autoloads-el): corrected the

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-develop.el,v 1.6.2.4 1999/11/08 23:26:58 minakaji Exp $
+;; Version: $Id: skk-develop.el,v 1.6.2.5 1999/11/09 13:01:01 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/08 23:26:58 $
+;; Last Modified: $Date: 1999/11/09 13:01:01 $
 
 ;; This file is part of Aloha SKK.
 
@@ -42,18 +42,6 @@ mail-user-agent $B$r@_Dj$9$k$3$H$K$h$j9%$_$N%a!<%k%$%s%?!<%U%'%$%9$r;HMQ$9$k$3$
 	    "SKK $B$K$D$$$F$N%P%0%l%]!<%H$r=q$-$^$9$+!)(B "
 	    "Do you really want to write a bug report on SKK? " ))
       nil
-    (if (boundp 'mail-user-agent)
-	(cond ((eq mail-user-agent 'wl-user-agent)
-	       (require 'wl-user-agent)
-	       (define-mail-user-agent
-		 'wl-user-agent 'wl-user-agent-compose
-		 'wl-draft-send 'wl-draft-kill
-		 'mail-send-hook ))
-	      ((eq mail-user-agent 'mew-user-agent)
-	       ;; Mew 1.93 works well.
-	       (require 'mew)
-	       (define-mail-user-agent 'mew-user-agent
-		 'mew-send 'mew-draft-send-letter 'mew-draft-kill ))))
     (reporter-submit-bug-report
      skk-ml-address
      (concat "skk.el " (skk-version)
@@ -98,18 +86,6 @@ mail-user-agent $B$r@_Dj$9$k$3$H$K$h$j9%$_$N%a!<%k%$%s%?!<%U%'%$%9$r;HMQ$9$k$3$
   '(progn
      (def-edebug-spec skk-save-point t)
      (def-edebug-spec skk-with-point-move t)
-     (def-edebug-spec skk-defun-cond
-       (&define name lambda-list
-		[&optional stringp]
-		[&rest ([&not eval] [&rest sexp])]
-		[&optional (eval [&optional ("interactive" interactive)] def-body)]
-		&rest (&rest sexp) ))
-     (def-edebug-spec skk-defmacro-cond
-       (&define name lambda-list
-		[&rest ([&not eval] [&rest sexp])]
-		[&optional (eval def-body)]
-		&rest (&rest sexp) ))
-     (def-edebug-spec skk-defsubst-cond skk-defmacro-cond)
      ))
 
 (eval-after-load "hilit19"

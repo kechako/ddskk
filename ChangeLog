@@ -1,3 +1,40 @@
+1999-11-09  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-develop.el: Remove def-edebug-spec for `skk-defun-cond',
+	`skk-defsubst-cond', `skk-defmacro-cond'.
+	(skk-submit-bug-report): Remove code for a certain specific
+	version of Mew and Wanderlust.
+
+	* skk-macs.el (skk-face-on): Use `defmacro' and `static-cond'
+	instead of `skk-defmacro-cond' and `cond'.
+	(skk-defun-cond): Removed.
+	(skk-defsubst-cond): Removed.
+	(skk-defmacro-cond): Removed.
+
+	* skk-kcode.el (skk-display-code): Use `defun' and
+	`static-cond' instead of `skk-defun-cond' and `cond'.
+	Require static.el.
+
+	* skk-cursor.el (skk-change-cursor-when-ovwrt): Use `defun' and
+	`static-cond' instead of `skk-defun-cond' and `cond'.
+	Require static.el.
+
+	* skk.el (skk-detach-extent): Use `defun' and `static-cond'
+	instead of `skk-defun-cond' and `cond'.
+	(skk-jisx0208-to-ascii): Ditto.
+	(skk-make-char): Ditto.
+
+	* skk-macs.el (skk-str-length): Use `defsubst' and `static-cond'
+	instead of `skk-defsubst-cond' and `cond'.
+	(skk-substring): Ditto.
+	(skk-read-event): Ditto.
+	(skk-char-to-string): Ditto.
+	(skk-ascii-char-p): Ditto.
+	(skk-str-ref): Ditto.
+	(skk-jisx0208-p): Ditto.
+	(skk-char-octet): Ditto.
+	(skk-charsetp): Ditto.
+
 1999-11-08  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 

@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.3 1999/11/08 23:26:58 minakaji Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.4 1999/11/09 13:01:01 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/08 23:26:58 $
+;; Last Modified: $Date: 1999/11/09 13:01:01 $
 
 ;; This file is part of Aloha SKK.
 
@@ -28,7 +28,8 @@
 ;;; Commentary:
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'skk-vars))
+(eval-when-compile (require 'static)
+		   (require 'skk-macs) (require 'skk-vars) )
 
 ;; functions.
 (defun skk-cursor-set-color (color)
@@ -43,6 +44,13 @@
 		"カラーマップ切れです。ディフォルトのカラーを使います。"
 		"Color map is exhausting, use default cursor color" ))))))
 
+(defun skk-change-cursor-when-ovwrt ()
+  (static-cond
+   ((eq skk-emacs-type 'xemacs) (setq bar-cursor overwrite-mode))
+   (t (if overwrite-mode
+	  (modify-frame-parameters (selected-frame) '((cursor-type bar . 3)))
+	(modify-frame-parameters (selected-frame) '((cursor-type . box))) ))))
+
 ;; Overwite by skk-viper.el
 (defun skk-cursor-set-properly ()
   ;; カレントバッファの SKK のモードに従い、カーソルの色を変更する。
@@ -55,12 +63,6 @@
 				    (skk-j-mode skk-cursor-hiragana-color)
 				    (t skk-cursor-latin-color) ))))
   (and skk-cursor-change-width (skk-change-cursor-when-ovwrt)) )
-
-(skk-defun-cond skk-change-cursor-when-ovwrt ()
-  ((eq skk-emacs-type 'xemacs) (setq bar-cursor overwrite-mode))
-  (t (if overwrite-mode
-	 (modify-frame-parameters (selected-frame) '((cursor-type bar . 3)))
-       (modify-frame-parameters (selected-frame) '((cursor-type . box))) )))
 
 ;;; advices.
 ;; cover to original Emacs functions.

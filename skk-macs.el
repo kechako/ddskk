@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.2 1999/11/08 11:55:21 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.3 1999/11/09 13:01:01 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/08 11:55:21 $
+;; Last Modified: $Date: 1999/11/09 13:01:01 $
 
 ;; This file is part of Aloha SKK.
 
@@ -30,8 +30,7 @@
 ;;; Code:
 ;;;; macros
 (eval-when-compile
-  (require 'static)
-  (require 'skk-vars)
+  (require 'static) (require 'skk-vars)
   (defconst skk-emacs-type
     (cond ((string-match "XEmacs" emacs-version) 'xemacs)
 	  ((and (boundp 'mule-version)
@@ -41,72 +40,6 @@
 	  ((and (boundp 'mule-version)
 		(string< "2.0" mule-version) 'mule2 )))))
 
-(defmacro skk-defun-cond (name args &optional doc &rest everything-else)
-  (or (stringp doc)
-      (setq everything-else (cons doc everything-else)
-	    doc nil))
-  (` (prog1
-	 (static-cond
-	  (,@ (mapcar
-	       (function
-		(lambda (case)
-		  (list (car case)
-			(if doc
-			    (` (defun (, name) (, args)
-				 (, doc)
-				 (,@ (cdr case))))
-			  (` (defun (, name) (, args)
-			       (,@ (cdr case))))))))
-	       everything-else)))
-       (setq current-load-list
-	     (cons (quote (, name)) current-load-list))
-       )))
-
-(defmacro skk-defsubst-cond (name args &optional doc &rest everything-else)
-  (or (stringp doc)
-      (setq everything-else (cons doc everything-else)
-	    doc nil))
-  (` (prog1
-	 (static-cond
-	  (,@ (mapcar
-	       (function
-		(lambda (case)
-		  (list (car case)
-			(if doc
-			    (` (defsubst (, name) (, args)
-				 (, doc)
-				 (,@ (cdr case))))
-			  (` (defsubst (, name) (, args)
-			       (,@ (cdr case))))))))
-	       everything-else)))
-       (setq current-load-list
-	     (cons (quote (, name)) current-load-list))
-       )))
-
-(defmacro skk-defmacro-cond (name args &optional doc &rest everything-else)
-  (or (stringp doc)
-      (setq everything-else (cons doc everything-else)
-	    doc nil))
-  (` (prog1
-	 (static-cond
-	  (,@ (mapcar
-	       (function
-		(lambda (case)
-		  (list (car case)
-			(if doc
-			    (` (defmacro (, name) (, args)
-				 (, doc)
-				 (,@ (cdr case))))
-			  (` (defmacro (, name) (, args)
-			       (,@ (cdr case))))))))
-	       everything-else)))
-       (setq current-load-list
-	     (cons (quote (, name)) current-load-list)))))
-
-;; Why I use non-intern temporary variable in the macro --- see comment in
-;; save-match-data of subr.el of GNU Emacs. And should we use the same manner
-;; in the save-current-buffer, with-temp-buffer and with-temp-file macro
-;; definition?
 (defmacro skk-save-point (&rest body)
   (` (let ((skk-save-point (point-marker)))
        (unwind-protect
@@ -168,32 +101,28 @@
 	 (progn (,@ form))
        (setq skk-previous-point (point)) )))
 
-(skk-defmacro-cond skk-face-on (object start end face &optional priority)
-  (
-   ;;(string-match "XEmacs" emacs-version)
-   (eq skk-emacs-type 'xemacs)
-   (` (let ((inhibit-quit t))
-	(if (not (extentp (, object)))
-	    (progn
-	      (setq (, object) (make-extent (, start) (, end)))
-	      (if (not (, priority))
-		  (set-extent-face (, object) (, face))
-		(set-extent-properties
-		 (, object) (list 'face (, face) 'priority (, priority)) )))
-	  (set-extent-endpoints (, object) (, start) (, end))  ))))
-  (t
-   (` (let ((inhibit-quit t))
-	(if (not (overlayp (, object)))
-	    (progn
-	      (setq (, object) (make-overlay (, start) (, end)))
-	      (and (, priority) (overlay-put (, object) 'priority (, priority)))
-	      (overlay-put (, object) 'face (, face)) )
-	  (move-overlay (, object) (, start) (, end)) )))))
+(defmacro skk-face-on (object start end face &optional priority)
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (` (let ((inhibit-quit t))
+	 (if (not (extentp (, object)))
+	     (progn
+	       (setq (, object) (make-extent (, start) (, end)))
+	       (if (not (, priority))
+		   (set-extent-face (, object) (, face))
+		 (set-extent-properties
+		  (, object) (list 'face (, face) 'priority (, priority)) )))
+	   (set-extent-endpoints (, object) (, start) (, end))  ))))
+   (t
+    (` (let ((inhibit-quit t))
+	 (if (not (overlayp (, object)))
+	     (progn
+	       (setq (, object) (make-overlay (, start) (, end)))
+	       (and (, priority) (overlay-put (, object) 'priority (, priority)))
+	       (overlay-put (, object) 'face (, face)) )
+	   (move-overlay (, object) (, start) (, end)) ))))))
 
 (put 'skk-deflocalvar 'lisp-indent-function 'defun)
-(put 'skk-defmacro-cond 'lisp-indent-function 'defun)
-(put 'skk-defsubst-cond 'lisp-indent-function 'defun)
-(put 'skk-defun-cond  'lisp-indent-function 'defun)
 
 ;;(defun-maybe mapvector (function sequence)
 ;;  "Apply FUNCTION to each element of SEQUENCE, making a vector of the results.
@@ -446,88 +375,97 @@
 ;;;; inline functions
 ;;;; version specific matter.
 ;;; inline functions.
-(skk-defsubst-cond skk-str-length (str)
-  ((memq skk-emacs-type '(xemacs mule4))
-   (length str) )
-  ((eq skk-emacs-type 'mule3)
-   (length (string-to-vector str)) )
-  ((eq skk-emacs-type 'mule2)
-   (length (string-to-char-list str)) ))
+(defsubst skk-str-length (str)
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4))
+    (length str) )
+   ((eq skk-emacs-type 'mule3)
+    (length (string-to-vector str)) )
+   ((eq skk-emacs-type 'mule2)
+    (length (string-to-char-list str)) )))
 
-(skk-defsubst-cond skk-substring (str pos1 pos2)
-  ((memq skk-emacs-type '(xemacs mule4))
-   (substring str pos1 pos2) )
-  ((eq skk-emacs-type 'mule3)
-   (if (< pos1 0)
-       (setq pos1 (+ (skk-str-length str) pos1)) )
-   (if (< pos2 0)
-       (setq pos2 (+ (skk-str-length str) pos2)) )
-   (if (>= pos1 pos2)
-       ""
-     (let ((sl (nthcdr pos1 (string-to-char-list str))))
-       (setcdr (nthcdr (- pos2 pos1 1) sl) nil)
-       (concat sl) )))
-  ((eq skk-emacs-type 'mule2)
-   (if (< pos1 0)
-       (setq pos1 (+ (skk-str-length str) pos1)) )
-   (if (< pos2 0)
-       (setq pos2 (+ (skk-str-length str) pos2)) )
-   (if (>= pos1 pos2)
-       ""
-     (let ((sl (nthcdr pos1 (string-to-char-list str))))
-       (setcdr (nthcdr (- pos2 pos1 1) sl) nil)
-       (mapconcat 'char-to-string sl "") ))))
+(defsubst skk-substring (str pos1 pos2)
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4))
+    (substring str pos1 pos2) )
+   ((eq skk-emacs-type 'mule3)
+    (if (< pos1 0)
+	(setq pos1 (+ (skk-str-length str) pos1)) )
+    (if (< pos2 0)
+	(setq pos2 (+ (skk-str-length str) pos2)) )
+    (if (>= pos1 pos2)
+	""
+      (let ((sl (nthcdr pos1 (string-to-char-list str))))
+	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
+	(concat sl) )))
+   ((eq skk-emacs-type 'mule2)
+    (if (< pos1 0)
+	(setq pos1 (+ (skk-str-length str) pos1)) )
+    (if (< pos2 0)
+	(setq pos2 (+ (skk-str-length str) pos2)) )
+    (if (>= pos1 pos2)
+	""
+      (let ((sl (nthcdr pos1 (string-to-char-list str))))
+	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
+	(mapconcat 'char-to-string sl "") )))))
 
 ;; no argument use only in SKK.
-(skk-defsubst-cond skk-read-event ()
-  ((eq skk-emacs-type 'xemacs)
-   (next-command-event) )
-  (t (read-event)) )
+(defsubst skk-read-event ()
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (next-command-event) )
+   (t (read-event)) ))
 
-(skk-defsubst-cond skk-char-to-string (char)
-  ((eq skk-emacs-type 'xemacs)
-   (char-to-string char) )
-  ((string< "20" emacs-version)
-   (condition-case nil (char-to-string char) (error)) )
-  (t (char-to-string char)) )
+(defsubst skk-char-to-string (char)
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (char-to-string char) )
+   ((string< "20" emacs-version)
+    (condition-case nil (char-to-string char) (error)) )
+   (t (char-to-string char)) ))
 
-(skk-defsubst-cond skk-ascii-char-p (char)
+(defsubst skk-ascii-char-p (char)
   ;; CHAR が ascii 文字だったら t を返す。
-  ((memq skk-emacs-type '(xemacs mule4 mule3))
-   (eq (char-charset char) 'ascii) )
-  ((eq skk-emacs-type 'mule2)
-   (= (char-leading-char char) 0) ))
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4 mule3))
+    (eq (char-charset char) 'ascii) )
+   ((eq skk-emacs-type 'mule2)
+    (= (char-leading-char char) 0) )))
  
-(skk-defsubst-cond skk-str-ref (str pos)
-  ((memq skk-emacs-type '(xemacs mule4))
-   (aref str pos) )
-  ((eq skk-emacs-type 'mule3)
-   (aref (string-to-vector str) pos ) )
-  ((eq skk-emacs-type 'mule2)
-   (nth pos (string-to-char-list str)) ))
+(defsubst skk-str-ref (str pos)
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4))
+    (aref str pos) )
+   ((eq skk-emacs-type 'mule3)
+    (aref (string-to-vector str) pos ) )
+   ((eq skk-emacs-type 'mule2)
+    (nth pos (string-to-char-list str)) )))
 
-(skk-defsubst-cond skk-jisx0208-p (char)
-  ((memq skk-emacs-type '(xemacs mule4 mule3))
-   (eq (char-charset char) 'japanese-jisx0208) )
-  ((eq skk-emacs-type 'mule2)
-   (= (char-leading-char char) lc-jp) ))
+(defsubst skk-jisx0208-p (char)
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4 mule3))
+    (eq (char-charset char) 'japanese-jisx0208) )
+   ((eq skk-emacs-type 'mule2)
+    (= (char-leading-char char) lc-jp) )))
 
-(skk-defsubst-cond skk-char-octet (ch &optional n)
-  ((eq skk-emacs-type 'xemacs)
-   (or (nth (if n (1+ n) 1) (split-char ch)) 0) )
-  (t (char-octet ch n)) )
+(defsubst skk-char-octet (ch &optional n)
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (or (nth (if n (1+ n) 1) (split-char ch)) 0) )
+   (t (char-octet ch n)) ))
 
 ;; this one is called once in skk-kcode.el, too.
-(skk-defsubst-cond skk-charsetp (object)
-  ((and (eq skk-emacs-type 'xemacs) (fboundp 'charsetp))
-   (charsetp object) )
-  ((eq skk-emacs-type 'xemacs)
-   ;; Is there XEmacs that doesn't have `charsetp'?
-   (find-charset object) )
-  ((memq skk-emacs-type '(mule4 mule3))
-   (charsetp object) )
-  ((eq skk-emacs-type 'mule2)
-   (character-set object) ))
+(defsubst skk-charsetp (object)
+  (static-cond
+   ((and (eq skk-emacs-type 'xemacs) (fboundp 'charsetp))
+    (charsetp object) )
+   ((eq skk-emacs-type 'xemacs)
+    ;; Is there XEmacs that doesn't have `charsetp'?
+    (find-charset object) )
+   ((memq skk-emacs-type '(mule4 mule3))
+    (charsetp object) )
+   ((eq skk-emacs-type 'mule2)
+    (character-set object) )))
 
 (provide 'skk-macs)
 ;;; end of skk-macs.el.

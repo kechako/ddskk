@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.4 1999/11/08 23:27:00 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.5 1999/11/09 13:01:01 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/08 23:27:00 $
+;; Last Modified: $Date: 1999/11/09 13:01:01 $
 
 ;; Aloha SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -46,10 +46,9 @@
 
 ;; This branch of SKK is called `Aloha SKK'.  As you know `Aloha' is a word
 ;; of Hawaian dialect which means `Welcome', `Hello', `Good-bye' and `Love'. 
-;; Origin of the word is each initial letters of the five Hawaian local 
-;; words, i.e., Akahai (親切), Lokahi (合同), Olu`olu (快い), Ha`aha`a (謙遜)
-;; and Ahonui (忍耐).  I hope this branch will be developed by spirit of 
-;; `Aloha'.
+;; Initial letters of the five Hawaian local words compose this word, i.e.,
+;; Akahai (親切), Lokahi (合同), Olu`olu (快い), Ha`aha`a (謙遜) and Ahonui
+;; (忍耐).  I hope this branch will be developed by spirit of `Aloha'.
 
 ;;; Code:
 (cond ((or (and (boundp 'epoch::version) epoch::version)
@@ -89,7 +88,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/08 23:27:00 $")
+      (let* ((raw-date "$Date: 1999/11/09 13:01:01 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -267,30 +266,32 @@
 ;; VERSION SPECIFIC MATTERS.
 ;; tiny function, but called once in skk-kcode.el.  So not make it inline.
 ;; or should I think to move to skk-kcode.el?
-(skk-defun-cond skk-make-char (charset n1 n2)
-  ((eq skk-emacs-type 'xemacs)
-   (make-char charset (logand (lognot 128) n1) (logand (lognot 128) n2)) )
-  ((memq skk-emacs-type '(mule4 mule3))
-   (make-char charset n1 n2) )
-  ((eq skk-emacs-type 'mule2)
-   (make-character charset n1 n2) ))
+(defun skk-make-char (charset n1 n2)
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (make-char charset (logand (lognot 128) n1) (logand (lognot 128) n2)) )
+   ((memq skk-emacs-type '(mule4 mule3))
+    (make-char charset n1 n2) )
+   ((eq skk-emacs-type 'mule2)
+    (make-character charset n1 n2) )))
 
-(skk-defun-cond skk-jisx0208-to-ascii (string)
-  ((memq skk-emacs-type '(xemacs mule4 mule3))
-   (require 'japan-util)
-   (let ((char
-	  (get-char-code-property (string-to-char string) 'ascii) ))
-     (and char (char-to-string char)) ))
-  ((eq skk-emacs-type 'mule2)
-   (let ((char
-	  (let* ((ch (string-to-char string))
-		 (ch1 (char-component ch 1)) )
-	    (cond ((eq 161 ch1)		; ?\241
-		   (cdr (assq (char-component ch 2) skk-hankaku-alist)) )
-		  ((eq 163 ch1)		; ?\243
-		   (- (char-component ch 2) 128) ; ?\200
-		   )))))
-     (and char (char-to-string char)) )))
+(defun skk-jisx0208-to-ascii (string)
+  (static-cond
+   ((memq skk-emacs-type '(xemacs mule4 mule3))
+    (require 'japan-util)
+    (let ((char
+	   (get-char-code-property (string-to-char string) 'ascii) ))
+      (and char (char-to-string char)) ))
+   ((eq skk-emacs-type 'mule2)
+    (let ((char
+	   (let* ((ch (string-to-char string))
+		  (ch1 (char-component ch 1)) )
+	     (cond ((eq 161 ch1)	; ?\241
+		    (cdr (assq (char-component ch 2) skk-hankaku-alist)) )
+		   ((eq 163 ch1)	; ?\243
+		    (- (char-component ch 2) 128) ; ?\200
+		    )))))
+      (and char (char-to-string char)) ))))
 
 ;;;###autoload
 (defun skk-mode (&optional arg)
@@ -3366,11 +3367,12 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   ;; skk-henkan-overlay を消す。
   (and skk-henkan-face (skk-detach-extent skk-henkan-overlay)) )
 
-(skk-defun-cond skk-detach-extent (object)
-  ((eq skk-emacs-type 'xemacs)
-   (and (extentp object) (detach-extent object)) )
-  (t
-   (and (overlayp object) (delete-overlay object)) ))
+(defun skk-detach-extent (object)
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (and (extentp object) (detach-extent object)) )
+   (t
+    (and (overlayp object) (delete-overlay object)) )))
 
 (defun skk-make-face (face)
   ;; hilit-lookup-face-create のサブセット。tutorial で色付けを行なう場合でも

@@ -1,5 +1,9 @@
 1999-12-04  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-isearch.el (isearch-repeat): New advice.
+
+1999-12-04  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* skk-jisx0201.el (skk-toggle-katakana): Set
 	`skk-input-mode-string'.
 

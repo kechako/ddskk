@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.5 2000/07/17 20:59:17 minakaji Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.6 2000/07/17 21:42:43 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/17 20:59:17 $
+;; Last Modified: $Date: 2000/07/17 21:42:43 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -128,7 +128,6 @@ The English version is SKK.tut.E."
     (skk-byte-compile-init-file . nil)
     (skk-comp-load-hook . nil)
     (skk-compare-jisyo-size-when-saving . nil)
-    (skk-completion-function . 'skk-completion-original)
     (skk-convert-okurigana-into-katakana . nil)
     (skk-count-jisyo-candidates-function . 'skk-count-jisyo-candidates-original)
     (skk-count-private-jisyo-candidates-exactly . nil)
@@ -181,7 +180,6 @@ The English version is SKK.tut.E."
     (skk-next-completion-key . ".")
     (skk-number-style . 1)
     (skk-okuri-char-alist . nil)
-    (skk-previous-completion-function . 'skk-previous-completion-original)
     (skk-previous-completion-key . ",")
     (skk-process-okuri-early . nil)
     (skk-public-jisyo-has-entry-p-function . 'skk-public-jisyo-has-entry-p-original)

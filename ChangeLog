@@ -1,5 +1,17 @@
 2000-07-18  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk-tut.el (skktut-init-variables-alist): Removed 
+	`(skk-previous-completion-function . 'skk-previous-completion-original)'
+	and
+	`(skk-completion-function . 'skk-completion-original)' pairs.
+	
+	* skk-comp.el (skk-completion-original): Merged into
+	`skk-completion'.
+	(skk-completion-1): New subroutine.
+	(skk-completion): Do not use temporary variable `COMPLETION-WORD'.
+	(skk-previous-completion-original): Merged into
+	`skk-previous-completion'. 
+
 	* skk-vars.el (skk-package-data-directory): Removed.
 
 	* experimental/skk-exsearch.el: Require path-util.

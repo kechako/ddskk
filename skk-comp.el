@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-comp.el,v 1.4.2.4.2.3 1999/12/13 06:03:56 furue Exp $
+;; Version: $Id: skk-comp.el,v 1.4.2.4.2.4 2000/07/17 21:42:43 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/13 06:03:56 $
+;; Last Modified: $Date: 2000/07/17 21:42:43 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -41,29 +41,23 @@
   (if (and skk-henkan-on (not skk-henkan-active))
       (progn
         (skk-completion (not (eq last-command 'skk-completion)))
-        (skk-start-henkan arg) )
-    (skk-emulate-original-map arg) ))
+        (skk-start-henkan arg))
+    (skk-emulate-original-map arg)))
 
 ;;;###autoload
 (defun skk-completion (first)
   ;; skk-try-completion のサブルーチン。
-  ;; skk-comp.el 以外の補完機能を利用できるように関数を funcall する形にしておく。
-  (funcall skk-completion-function first) )
-
-(defun skk-completion-original (first)
-  ;; default の skk-completion-function.
   (let ((inhibit-quit t)
 	;; skk-num が require されてないと buffer-local 値を壊す恐れあり。
-        skk-num-list
-        completion-word c-word )
+        skk-num-list c-word)
     (skk-kana-cleanup 'force)
     (and first (setq skk-completion-stack nil skk-completion-depth 0))
     (and (or first skk-dabbrev-like-completion)
 	 (setq skk-completion-word
-	       (buffer-substring-no-properties skk-henkan-start-point (point)) ))
+	       (buffer-substring-no-properties skk-henkan-start-point (point))))
     (and (string= skk-completion-word "")
 	 (skk-error "空文字から補完することはできません！"
-		    "Cannot complete an empty string!" ))
+		    "Cannot complete an empty string!"))
     (if (> skk-completion-depth 0)
 	;; (過去に探索済みの読みをアクセス中)
 	(setq skk-completion-depth (1- skk-completion-depth)
@@ -71,64 +65,60 @@
       ;; (新規の読みを辞書バッファから探索)
       ;; skk-completion-word はバッファローカル値なので、辞書バッファに移る前に
       ;; 一時変数に移し変えておく。
-      (setq completion-word skk-completion-word)
-      (with-current-buffer (skk-get-jisyo-buffer skk-jisyo)
-	(if first (goto-char skk-okuri-nasi-min))
-	(save-match-data
-	  ;; case-fold-search は、辞書バッファでは常に nil。
-	  (while
-	      (and (not c-word)
-		   (search-forward
-		    (concat "\n"
-			    (if skk-use-numeric-conversion
-				(skk-num-compute-henkan-key completion-word)
-			      completion-word ))
-		    nil t ))
-	    (if (eq (following-char) ?\040) ;SPC
-		nil
-	      (setq c-word (concat completion-word
-				   (buffer-substring-no-properties
-				    ;; 見出し語に空白は含まれない。" /" をサー
-				    ;; チする必要はない。
-				    (point) (1- (search-forward " ")) )))))))
-      (and (not c-word) skk-abbrev-mode skk-use-look
-	   (setq c-word (skk-look-completion)) )
-      ;; 新規に見つけたときだけ cons する。
-      (setq skk-completion-stack (cons c-word skk-completion-stack)) )
+      (and (setq c-word
+		 (or (skk-completion-1 skk-completion-word first)
+		     (and skk-abbrev-mode skk-use-look (skk-look-completion))))
+	   ;; 新規に見つけたときだけ cons する。
+	   (setq skk-completion-stack (cons c-word skk-completion-stack))))
     ;; 辞書バッファの外。
     (if (not c-word)
 	(progn
 	  (setq skk-completion-depth (1+ skk-completion-depth))
 	  (if skk-japanese-message-and-error
 	      (error "\"%s\" で補完すべき見出し語は%sありません"
-		     skk-completion-word (if first "" "他に") )
+		     skk-completion-word (if first "" "他に"))
 	    (error "No %scompletions for \"%s\""
-		   (if first "" "more ") skk-completion-word )) )
+		   (if first "" "more ") skk-completion-word)))
       (delete-region skk-henkan-start-point (point))
-      (insert c-word) )))
+      (insert c-word))))
+
+(defun skk-completion-1 (key first)
+  (let (c-word)
+    (with-current-buffer (skk-get-jisyo-buffer skk-jisyo)
+      (if first (goto-char skk-okuri-nasi-min))
+      (save-match-data
+	;; case-fold-search は、辞書バッファでは常に nil。
+	(while (and (not c-word)
+		    (search-forward (concat "\n"
+					    (if skk-use-numeric-conversion
+						(skk-num-compute-henkan-key key)
+					      key))
+				    nil t))
+	  (or (eq (following-char) ?\040) ;SPC
+	      (setq c-word (concat key
+				   (buffer-substring-no-properties
+				    ;; 見出し語に空白は含まれない。" /" をサー
+				    ;; チする必要はない。
+				    (point) (1- (search-forward " ")))))))
+	c-word))))
 
 ;;;###autoload
 (defun skk-previous-completion ()
   ;; skk-abbrev-comma, skk-insert-comma のサブルーチン。直前に補完を行った見
   ;; 出しを挿入する。
-  ;; skk-comp.el 以外の補完機能を利用できるように関数を funcall する形にしておく。
-  (funcall skk-previous-completion-function) )
-
-(defun skk-previous-completion-original ()
-  ;; default の skk-previous-completion-function.
   (let ((inhibit-quit t)
         (c-word 
 	 (progn
 	   (setq skk-completion-depth (1+ skk-completion-depth))
-	   (nth skk-completion-depth skk-completion-stack) )))
+	   (nth skk-completion-depth skk-completion-stack))))
     (if c-word
 	(progn
 	  (delete-region skk-henkan-start-point (point))
-	  (insert c-word) )
+	  (insert c-word))
       (setq skk-completion-depth (1- skk-completion-depth))
       (skk-error "\"%s\"で補完すべき見出し語は他にありません"
                  "No more previous completions for \"%s\""
-                 skk-completion-word ))))
+                 skk-completion-word))))
 
 (run-hooks 'skk-comp-load-hook)
 

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.32 2000/01/19 13:43:16 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.33 2000/01/19 16:30:31 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/19 13:43:16 $
+;; Last Modified: $Date: 2000/01/19 16:30:31 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/19 13:43:16 $")
+      (let* ((raw-date "$Date: 2000/01/19 16:30:31 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1545,10 +1545,10 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	  ;; 最大幅以上の文字列を
 	  (cond ((and (stringp e) (> (string-width e) max))
 		 ;; 最大幅に収まるように短かくする。
-		 (concat (truncate-string-to-width e (- max 3)) "..."))
+		 (concat (truncate-string e (- max 3)) "..."))
 		((and (consp e) (> (string-width (cdr e)) max))
-		 (cons (car e) 
-		       (concat (truncate-string-to-width (cdr e) (- max 3))
+		 (cons (car e)
+		       (concat (truncate-string (cdr e) (- max 3))
 			       "...")))
 		(t e))))
        l))))

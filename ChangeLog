@@ -1,3 +1,13 @@
+2000-10-13  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-cursor.el: Changes for XEmacs.
+	(minibuffer-keyboard-quit): New advice.
+	(minibuffer-exit-hook): Call `set-face-property' in the
+	minibuffer.
+
+	* skk-macs.el (skk-emacs-type, skk-detect-emacs): Check the
+	feature `xemacs'.
+
 2000-10-12  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* ccc.el (buffer-local-cursor-color-default,

@@ -1,3 +1,12 @@
+1999-12-07  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-cursor.el (completing-read): Don't use `unwind-protect'. Use
+	`condition-case'. Don't advise to XEmacs' `completing-read'.
+	(read-from-minibuffer): New advice. Call
+	`skk-cursor-set-properly'.
+
+	* skk-jisx0201.el (fence-mode-map): defvar under Mule 2.
+
 1999-12-07  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-macs.el (skk-detect-emacs): New macro.

@@ -1,4 +1,10 @@
-1999-11-22  FURUE Hideyuki  <furue@kke.co.jp>
+1999-11-24  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-isearch.el (skk-isearch-mode-setup): Call
+	`skk-isearch-setup-keymap' in this function, not at top level, so
+	that `skk-kakutei-key' is set in `skk-init-file'.
+
+1999-11-24  FURUE Hideyuki  <furue@kke.co.jp>
 
 	* skk-isearch.el (skk-isearch-mode-setup): Call `skk-erase-prefix'
 	with its argument non-nil in `skk-isearch-working-buffer'.

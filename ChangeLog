@@ -1,3 +1,15 @@
+2000-11-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK (SKK_INFODIR): See `Info-directory-list' when
+	$INFOPATH is set.
+
+	* skk-cursor.el: Don't set cursor color when
+	`skk-use-color-cursor' is nil.
+
+	* nicola: Update.
+
+	* skk.el: Fix for invalid condition handler.
+
 2000-11-07  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* READMEs/NEWS: Update.

@@ -37,6 +37,7 @@
 ;; において配布されています。
 
 ;;; Code:
+(require 'cl)
 (condition-case nil
     (require 'advice)
   (error
@@ -95,6 +96,11 @@
 
 (defun-maybe float (arg)
   arg)
+
+(defun-maybe frame-width (&optional frame)
+  "Return number of columns available for display on FRAME.
+If FRAME is omitted, describe the currently selected frame."
+  (screen-width))
 
 (defalias-maybe 'insert-and-inherit 'insert)
 (defalias-maybe 'number-to-string 'int-to-string)

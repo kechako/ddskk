@@ -110,6 +110,31 @@
 be applied to `file-coding-system-for-read'."
     (insert-file-contents filename visit coding-system)))
 
+;; Hooks.
+
+(add-hook 'skk-load-hook
+	  (function
+	   (lambda ()
+
+	     (when (eq skk-emacs-type 'nemacs)
+	       (defun skk-hiragana-to-katakana (hiragana)
+		 (save-match-data
+		   (let ((start 0))
+		     (while (string-match "[ぁ-ん]" hiragana start)
+		       (aset hiragana (match-beginning 0) ?\245)
+		       (setq start (match-end 0)))
+		     hiragana)))
+
+	       (defun skk-katakana-to-hiragana (katakana)
+		 (save-match-data
+		   (let ((start 0))
+		     (while (string-match "[ァ-ン]" katakana start)
+		       (aset hiragana (match-beginning 0) ?\244)
+		       (setq start (match-end 0)))
+		     katakana)))
+	       ;; end case nemacs
+	       ))))
+
 (provide 'skk-e18)
 
 ;;; skk-e18.el ends here

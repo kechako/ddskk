@@ -1,3 +1,7 @@
+2000-09-13  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* patch/custom-1.9962.patch: Moved to e19 subdirectory.
+
 2000-09-12  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK: Emacs 18 only. Work around for a bug in cl.el.

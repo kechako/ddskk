@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.32 2000/09/27 13:42:05 minakaji Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.33 2000/10/12 10:07:56 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:05 $
+;; Last Modified: $Date: 2000/10/12 10:07:56 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -475,10 +475,10 @@ If the current mode is different from previous, remove it first."
 	;; messege の内容を update しないと [DEL] したときのモードの表示がおかし
 	;; くなる。
 	(do ((alist skk-isearch-mode-string-alist (cdr alist))
-	     (msg nil (and (string-match
-			    (concat "^" (regexp-quote (cdar alist)))
-			    (cadr cmd))
-			   (substring (cadr cmd) (match-end 0)))))
+	     (msg nil (when (string-match
+			     (concat "^" (regexp-quote (cdar alist)))
+			     (cadr cmd))
+			(substring (cadr cmd) (match-end 0)))))
 	    ((or msg (null alist))
 	     (setcdr cmd (cons (concat prompt (or msg (cadr cmd)))
 			       (cddr cmd)))))))))

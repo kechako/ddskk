@@ -242,9 +242,9 @@ from DIR-FILE; don't insert any new entries."
 	(install-info-insert-file-contents dir))
       (goto-char (point-min))
       (unless (let ((case-fold-search t))
-		(re-search-forward
-		 "^\037\\(.\\|\n\\).*Node:.*Top\\(.\\|\n\\)*\n\\* Menu:"
-		 nil t))
+		(and (re-search-forward "^\037" nil t)
+		     (re-search-forward "Node:.*Top" nil t)
+		     (re-search-forward "^* Menu:" nil t)))
 	(unless (= 0 (buffer-size))
 	  (install-info-write-region (point-min) (point-max) (concat dir "~")))
 	(erase-buffer)

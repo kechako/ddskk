@@ -1,3 +1,7 @@
+2000-11-02  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-kanagaki.el (skk-okurigana-prefix): New advice.
+
 2000-10-17  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-106-jis.el, skk-kanagaki-menu-oe.el,

@@ -107,7 +107,8 @@
     (coding-system filename &optional visit beg end replace)
     "Like `insert-file-contents', q.v., but CODING-SYSTEM the first arg will
 be applied to `file-coding-system-for-read'."
-    (insert-file-contents filename visit coding-system)))
+    (let ((file-coding-system-for-read coding-system))
+      (insert-file-contents filename visit))))
 
 ;; Hooks.
 

@@ -1,3 +1,18 @@
+2002-03-02   Daiki Ueno  <ueno@unixuser.org>
+
+	* skk-vars.el (skk-henkan-show-candidates-rows): New user option.
+	(skk-henkan-show-candidates-keys): Append 14 keys to default.
+
+	* skk.el (skk-multiple-line-message-clear): New function.
+	(skk-multiple-line-message): New function.
+	(skk-multiple-line-string-width): New function.
+	(skk-henkan-show-candidates): Take into account of
+	`skk-henkan-show-candidates-rows'; bind `echo-keystrokes' to 0;
+	clear out candidates in echo area each time one enters an
+	interaction loop.
+	(skk-henkan-show-candidate-subr): Take into account of
+	`skk-henkan-show-candidates-rows'.
+	
 2001-03-30  Norio Maeda  <nmaeda@dd.iij4u.or.jp>
 
 	* skk-kcode.el (skk-display-code): added SJIS encoding

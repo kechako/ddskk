@@ -5,9 +5,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.4 1999/11/24 13:54:48 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.5 1999/11/24 14:32:56 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/24 13:54:48 $
+;; Last Modified: $Date: 1999/11/24 14:32:56 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -198,6 +198,14 @@ kakutei'ed and erase the buffer contents."
       (skk-isearch-initialize-working-buffer)
       (skk-isearch-set-initial-mode initial)))
   ;; setup variables and keymap
+  (or (and (boundp 'skk-isearch-mode-map)
+	   skk-isearch-mode-map)
+      (static-if (eq skk-emacs-type 'xemacs)
+	  (progn
+	    (setq skk-isearch-mode-map (skk-isearch-setup-keymap (make-keymap)))
+	    (set-keymap-parents skk-isearch-mode-map isearch-mode-map) )
+	(setq skk-isearch-mode-map
+	      (skk-isearch-setup-keymap (cons 'keymap isearch-mode-map)) )))
   (set skk-isearch-overriding-local-map skk-isearch-mode-map)
   (setq skk-isearch-incomplete-message ""
 	;; set skk-isearch-message non-nil to call skk-isearch-message.
@@ -278,15 +286,6 @@ Optional argument PREFIX is apppended if given."
   (define-key map [?\C-x t] 'isearch-other-control-char)
   (define-key map "\C-x\C-j" 'skk-isearch-skk-mode)
   map)
-
-(or (and (boundp 'skk-isearch-mode-map)
-	 skk-isearch-mode-map)
-    (static-if (eq skk-emacs-type 'xemacs)
-        (progn
-          (setq skk-isearch-mode-map (skk-isearch-setup-keymap (make-keymap)))
-          (set-keymap-parents skk-isearch-mode-map isearch-mode-map) )
-      (setq skk-isearch-mode-map
-            (skk-isearch-setup-keymap (cons 'keymap isearch-mode-map)) )))
 
 
 ;;

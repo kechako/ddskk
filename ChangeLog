@@ -1,3 +1,23 @@
+2000-07-18  Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
+
+	* skk-vars.el (skk-isearch-switch, skk-isearch-state,
+	skk-isearch-in-editing): New internal variables.
+
+	* skk-isearch.el (skk-isearch-initial-mode): Restore the previous
+	SKK status for the isearch after `isearch-edit-string'.
+	(skk-isearch-setup): Set `skk-isearch-switch' to t. Set
+	`skk-isearch-in-editing' to nil.
+	(skk-isearch-cleanup): Set `skk-isearch-switch' to nil. If
+	`skk-isearch-in-editing' is nil, set `skk-isearch-state' to nil.
+	(skk-isearch-newline): Turn on SKK mode when
+	`skk-isearch-current-mode' reurns nil.
+	(isearch-repeat): Advise this function only when
+	`skk-isearch-switch' is t.
+	(isearch-search): Ditto.
+	(isearch-edit-string): Ditto. Save the value
+	`skk-isearch-current-mode' returns. Set `skk-isearch-in-editing'
+	to t.
+
 2000-07-18  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-tut.el (skktut-init-variables-alist): Removed 

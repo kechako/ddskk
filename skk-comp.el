@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-comp.el,v 1.4.2.1 1999/11/07 14:43:18 minakaji Exp $
+;; Version: $Id: skk-comp.el,v 1.4.2.2 1999/11/08 11:54:21 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:43:18 $
+;; Last Modified: $Date: 1999/11/08 11:54:21 $
 
 ;; This file is part of SKK.
 
@@ -30,25 +30,9 @@
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
+
 ;; Elib version 1.0 required.
 (require 'stack-m)
-
-;;; -- internal variables
-;; ---- buffer local variables
-;; 空文字列に対して skk-completion を呼ぶこともありうるので、"" を nil では代
-;; 用できない。
-(skk-deflocalvar skk-completion-word ""
-  "補完すべき見出し語。
-skk-dabbrev-like-completion が non-nil の場合は、常に最後に補完した見出し語が
-代入される。" )
-;; 辞書登録時ミニバッファで補完した場合、元のバッファに戻ったときに
-;; skk-completion-word の値が破壊されていない方がベター。
-
-;; skk-completion-stack はバッファローカル値であり、しかも stack-m.el では破壊
-;; 的にリストを操作するので初期値は nil にしておく必要がある。
-(skk-deflocalvar skk-completion-stack nil
-  "補完した語を保存しておくスタック。
-skk-previous-completion では、スタックからポップして以前に補完した語に戻る。" )
 
 ;;;###autoload
 (defun skk-start-henkan-with-completion (arg)

@@ -6,9 +6,9 @@
 ;;         Murata Shuuichirou <mrt@astec.co.jp>
 ;; Maintainer: Murata Shuuichirou <mrt@astec.co.jp>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.1 1999/11/07 14:45:33 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.2 1999/11/08 11:55:48 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:45:33 $
+;; Last Modified: $Date: 1999/11/08 11:55:48 $
 
 ;; This file is not part of SKK yet.
 
@@ -32,18 +32,6 @@
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
 (require 'viper)
-
-;; internal constant.
-;;;###autoload
-(defconst skk-viper-use-vip-prefix
-  (not (fboundp 'viper-normalize-minor-mode-map-alist)) )
-
-;;;###autoload
-(defconst skk-viper-normalize-map-function
-  (if skk-viper-use-vip-prefix 
-      'vip-normalize-minor-mode-map-alist 
-    'viper-normalize-minor-mode-map-alist )
-  "Viper が minor-mode-map-alist を調整するための関数。" )
 
 ;; macros and inline functions.
 (defmacro skk-viper-advice-select (viper vip arg body)

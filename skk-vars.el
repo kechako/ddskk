@@ -1,26 +1,27 @@
-;;; skk-vars.el --- User variables.
+;;; skk-vars.el --- variables and constants commonly use 
+;;    in Aloha SKK package programs.
 ;; Copyright (C) 1999 Mikio Nakajima <minakaji@osaka.email.ne.jp>
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.1 1999/11/07 14:45:30 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.2 1999/11/08 11:55:45 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:45:30 $
+;; Last Modified: $Date: 1999/11/08 11:55:45 $
 
-;; This file is not part of SKK yet.
+;; This file is part of Aloha SKK.
 
-;; SKK is free software; you can redistribute it and/or modify
+;; Aloha SKK is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either versions 2, or (at your option)
 ;; any later version.
 
-;; SKK is distributed in the hope that it will be useful
+;; Aloha SKK is distributed in the hope that it will be useful
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with SKK, see the file COPYING.  If not, write to the Free
+;; along with Aloha SKK, see the file COPYING.  If not, write to the Free
 ;; Software Foundation Inc., 59 Temple Place - Suite 330, Boston,
 ;; MA 02111-1307, USA.
 
@@ -28,11 +29,28 @@
 ;;
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs))
+(eval-when-compile
+  (defmacro skk-deflocalvar (var default-value &optional documentation)
+    (` (progn
+	 (defvar (, var) (, default-value)
+	   (, (format "%s\n\(buffer local\)" documentation)))
+	 (make-variable-buffer-local '(, var))
+	 )))
+  (require 'pcustom) )
 
+(eval-and-compile
+  (defconst skk-emacs-type (cond ((string-match "XEmacs" emacs-version) 'xemacs)
+				 ((and (boundp 'mule-version)
+				       (string< "4.0" mule-version) 'mule4 ))
+				 ((and (boundp 'mule-version)
+				       (string< "3.0" mule-version) 'mule3 ))
+				 ((and (boundp 'mule-version)
+				       (string< "2.0" mule-version) 'mule2 )))))
 (defconst skk-version "10.57")
 (defconst skk-major-version (string-to-int (substring skk-version 0 2)))
 (defconst skk-minor-version (string-to-int (substring skk-version 3)))
+(defconst skk-codename "Hankyu Minoo")
+(defconst skk-ml-address "skk@ring.gr.jp")
 (defconst skk-background-mode
   ;; from font-lock-make-faces of font-lock.el  Welcome!
   (cond
@@ -124,7 +142,6 @@ skk.el 9.x より ~/.emacs でのカスタマイズも可能となった。"
 ;From skk.el 9.x on all customization may be done in ~/.emacs."
 )
 
-;;;###autoload
 (defgroup skk nil "SKK basic customization."
   :prefix "skk-"
   :group 'japanese
@@ -1776,6 +1793,17 @@ Mule-2.3 添付の egg.el よりコピーした。" )
 (defconst skk-kana-cleanup-command-list
   '(skk-delete-backward-char skk-insert skk-previous-candidate) )
 
+(defvar skk-emacs-id nil
+  "複数 emacs を識別する文字列。
+ユーザー辞書を複数の emacs 上で起動されている SKK で共有するときに参照する。" )
+
+(defvar skk-jisyo-update-vector nil
+  "長さが skk-jisyo-save-count のベクトル。
+辞書バッファ更新の記録を保存し、辞書バッファを辞書ファイルにセーブするときに、
+他の SKK が辞書ファイルに最近アクセスしているときには、辞書ファイルをバッファ
+に読み込んでから、skk-jisyo-update-vector を用いてバッファを更新し、その
+結果をファイルにセーブする。" )
+
 (defvar skk-rule-tree nil
   "ローマ字 -> かな変換の状態遷移規則を表すツリーの初期状態。
 skk-mode の起動時に毎回 skk-rom-kana-base-rule-list と
@@ -1812,6 +1840,8 @@ skk-record-file の \"登録:\" 項目のカウンター。" )
   "入力モードを表わすシンボル。
 有効な値は、`hiragana', `katakana', `abbrev', `latin', `jisx0208-latin' もしくは
 nil のいずれか。" )
+
+(defvar skk-menu nil)
 
 ;; ---- buffer local variables
 ;; <フラグ類>
@@ -2004,6 +2034,172 @@ skk-remove-common で参照される。" )
 
 (skk-deflocalvar skk-okuri-index-max -1
   "skk-henkan-list のインデクスで自動送り処理、もしくはサ変検索で検索した最後の候補を指すもの。" )
+
+(defconst skk-package-data-directory
+  (if (boundp 'early-packages)
+      (let ((dirs (append (if early-package-load-path early-packages)
+			  (if late-package-load-path late-packages)
+			  (if last-package-load-path last-packages) ))
+	    dir )
+	(while (not (file-exists-p (setq dir (car dirs))))
+	  (setq dirs (cdr dirs)) )
+	(and dir
+	     (expand-file-name "skk" (expand-file-name "etc" dir)) ))))
+
+;;; -- SKK-COMP.EL related internal variables
+;; ---- buffer local variables
+;; 空文字列に対して skk-completion を呼ぶこともありうるので、"" を nil では代
+;; 用できない。
+(skk-deflocalvar skk-completion-word ""
+  "補完すべき見出し語。
+skk-dabbrev-like-completion が non-nil の場合は、常に最後に補完した見出し語が
+代入される。" )
+;; 辞書登録時ミニバッファで補完した場合、元のバッファに戻ったときに
+;; skk-completion-word の値が破壊されていない方がベター。
+
+;; skk-completion-stack はバッファローカル値であり、しかも stack-m.el では破壊
+;; 的にリストを操作するので初期値は nil にしておく必要がある。
+(skk-deflocalvar skk-completion-stack nil
+  "補完した語を保存しておくスタック。
+skk-previous-completion では、スタックからポップして以前に補完した語に戻る。" )
+
+;;; -- SKK-GADGET.EL related internal variables
+(defconst skk-week-alist
+  '(("Sun" . "日") ("Mon" . "月") ("Tue" . "火") ("Wed" . "水") ("Thu" . "木")
+    ("Fri" . "金") ("Sat" . "土") )
+  "曜日名の連想リスト。\(英語表記文字列 . 日本語表記文字列\)" )
+
+;;; SKK-ISEARCH.EL related internal constants and variables.
+(defconst skk-isearch-mode-canonical-alist
+  '((hiragana . 0) (katakana . 1) (jisx0208-latin . 2) (latin . 3))
+  "Alist of \(SYMBOL . NUMBER\).
+The SYMBOL is canonical skk mode, and NUMBER is its numerical representation.")
+
+(defconst skk-isearch-mode-alias-alist
+  '((hirakana . hiragana) (kana . hiragana) (eiji . jisx0208-latin)
+    (ascii . latin) )
+  "Alist of \(ALIAS . CANONICAL\).
+The both ALIAS and CANONICAL should be symbol.
+ALIAS can be used as an alias of CANONICAL.
+CANONICAL should be found in `skk-isearch-mode-canonical-alist'. ")
+
+(defconst skk-isearch-breakable-character-p-function
+  (cond ((fboundp 'char-category-set)
+	 (function (lambda (char)
+		     ;; see emacs/lisp/fill.el how the category `|' is
+		     ;; treated.
+		     (aref (char-category-set char) ?|))))
+	((boundp 'word-across-newline)
+	 (function (lambda (char)
+		     ;; (let ((lc (char-leading-char char)))
+		     ;;   (or (= lc lc-jp) (= lc lc-cn)))
+		     (string-match word-across-newline
+				   (char-to-string char)))))
+	(t (error "No appropriate function as: %s"
+		  'skk-isearch-breakable-character-p-function)))
+  "Function to test if we can insert a newline around CHAR when filling.")
+
+(defconst skk-isearch-working-buffer " *skk-isearch*"
+  "Work buffer for skk isearch." )
+
+(defvar skk-isearch-mode nil
+  "Current search mode.
+0 means hira kana search.
+1 means kana search.
+2 means zenkaku eiji (i.e. JIS X0208 alphabet) search.
+3 means ascii search." )
+
+(defvar skk-isearch-incomplete-message ""
+  "Incomplete isearch message" )
+
+(defvar skk-isearch-mode-map nil
+  "Keymap for skk isearch mode.
+This map should be derived from isearch-mode-map." )
+
+(defvar skk-isearch-overriding-local-map
+  (cond ((eq skk-emacs-type 'xemacs)
+	 (cond
+	  ((or (> emacs-major-version 21)
+	       (and (= emacs-major-version 21)
+		    (or (> emacs-minor-version 2)
+			(and (= emacs-minor-version 2)
+			     (boundp 'emacs-beta-version) emacs-beta-version
+			     (>= emacs-beta-version 2) ))))
+	   'overriding-local-map )
+	  (t 'overriding-terminal-local-map) ))
+	;; for Mule/GNU Emacs.
+	((or (> emacs-major-version 19)
+	     (and (= emacs-major-version 19) (> emacs-minor-version 28)) )
+	 ;; GNU Emacs version 19.29, 19.30 and 19.31 uses this in isearch.el.
+	 'overriding-terminal-local-map )
+	;; GNU Emacs version 19.22 .. 19.28 uses this in isearch.el.
+	(t 'overriding-local-map) )
+  "Variable holding overrinding local map used in isearch-mode.")
+
+(defvar skk-isearch-last-mode-string "")
+(defvar skk-isearch-last-mode-regexp "")
+
+;;; -- SKK-KCODE.EL related internal constants and variables.
+(defconst skk-code-n1-min 161)
+(defconst skk-code-n1-max 244)
+(defconst skk-code-n2-min 161)
+(defconst skk-code-n2-max 254)
+(defconst skk-code-null 128)
+(defconst skk-kcode-charset-list
+  (if (memq skk-emacs-type '(xemacs mule4 mule3))
+      (mapcar '(lambda (x) (list (symbol-name x))) (charset-list)) ))
+(defvar skk-input-by-code-or-menu-jump-default skk-code-n1-min)
+
+;;; SKK-LOOK.EL related internal constant and variable.
+(defconst skk-look-working-buffer " *skk look*")
+(defvar skk-look-completion-words nil)
+
+;;; SKK-NUM.EL related internal constants and variables
+(defconst skk-num-alist-type1
+  '((?0 . "０") (?1 . "１") (?2 . "２") (?3 . "３")
+    (?4 . "４") (?5 . "５") (?6 . "６") (?7 . "７")
+    (?8 . "８") (?9 . "９")
+    (?. . "．")	; 小数点。(?. . ".") の方が良い人もいるかも...。
+    (?  . "") )
+  "ascii 数字の char type と全角数字の string type の連想リスト。
+\"1995\" -> \"１９９５\" のような文字列の変換を行う際に利用する。" )
+
+(defconst skk-num-alist-type2
+  '((?0 . "〇") (?1 . "一") (?2 . "二") (?3 . "三")
+    (?4 . "四") (?5 . "五") (?6 . "六") (?7 . "七")
+    (?8 . "八") (?9 . "九") (?  . "") )
+  "ascii 数字の char type と漢数字の string type の連想リスト。
+\"1995\" -> \"一九九五\" のような文字列の変換を行う際に利用する。" )
+
+(defconst skk-num-alist-type5
+  '((?1 . "壱") (?2 . "弐") (?3 . "参")
+    (?4 . "四") (?5 . "伍") (?6 . "六") (?7 . "七")
+    (?8 . "八") (?9 . "九") (?  . "") )
+  "ascii 数字の char type と漢数字の string type の連想リスト。
+\"1995\" -> \"壱阡九百九拾伍\" のような文字列の変換を行う際に利用する。" )
+
+(skk-deflocalvar skk-num-list nil
+  "skk-henkan-key の中に含まれる数字を表す文字列のリスト。
+例えば、\"▽へいせい7ねん10がつ\" の変換を行うとき、skk-henkan-key は
+\"へいせい7ねん10がつ\" であり、skk-num-list は \(\"7\" \"10\"\) となる。" )
+
+(skk-deflocalvar skk-num-recompute-key nil
+  "#4 タイプのキーにより数値の再計算を行なったときの検索キー。" )
+
+;;; SKK-SERVER.EL related internal constants and variables.
+(defconst skk-network-open-status 'open)
+(defconst skkserv-working-buffer " *skkserv*")
+(defvar skkserv-process nil)
+
+;;; SKK-VIPER.EL related internal constant.
+(defconst skk-viper-use-vip-prefix
+  (not (fboundp 'viper-normalize-minor-mode-map-alist)) )
+
+(defconst skk-viper-normalize-map-function
+  (if skk-viper-use-vip-prefix 
+      'vip-normalize-minor-mode-map-alist 
+    'viper-normalize-minor-mode-map-alist )
+  "Viper が minor-mode-map-alist を調整するための関数。" )
 
 (provide 'skk-vars)
 ;;; skk-vars.el ends here

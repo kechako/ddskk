@@ -1,11 +1,10 @@
+1999-11-08  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+
 1999-11-07  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-jisx0201.el (skk-jisx0201-cursor-color): Renamed to
 	`skk-cursor-jisx0201-color'.
-
-	* skk-vars.el: New file for definitions of user variables.
-	
-	* skk-vars.el: Renamed to skk-xm20_4.el.
 
 	* SKK-MK (SKK_MODULES): Arrange for new files.
 
@@ -95,6 +94,7 @@
 
 	* skk.el (skk-emacs-id-file): New user option.
 	(skk-share-private-jisyo): Ditto.
+	
 	(skk-mode): Add code for `skk-share-private-jisyo'.
 	(skk-save-jisyo-original): Ditto.
 	(skk-update-jisyo-original): Ditto.
@@ -104,6 +104,12 @@
 	(skk-jisx0201-rule-list): Define latin-jisx0201 characters.
 	(skk-setup-modeline): Change mode indicator to `jisx0201'.
 
+	* skk-vars.el: Renamed to skk-xm20_4.el.
+	
+	* skk-vars.el: New file for definitions of user variables.
+	(skk-emacs-id): New internal variable.
+	(skk-jisyo-update-vector): Ditto.
+	
 1999-11-03  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* experimental/skk-jisx0201.el (skk-jisx0201-search-and-replace):

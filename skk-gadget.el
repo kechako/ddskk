@@ -5,9 +5,9 @@
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Murata Shuuichirou  <mrt@astec.co.jp>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-gadget.el,v 1.3.2.1 1999/11/07 14:43:57 minakaji Exp $
+;; Version: $Id: skk-gadget.el,v 1.3.2.2 1999/11/08 11:55:57 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:43:57 $
+;; Last Modified: $Date: 1999/11/08 11:55:57 $
 
 ;; This file is part of SKK.
 
@@ -51,12 +51,6 @@
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
-
-;; --internal variables
-(defconst skk-week-alist
-  '(("Sun" . "日") ("Mon" . "月") ("Tue" . "火") ("Wed" . "水") ("Thu" . "木")
-    ("Fri" . "金") ("Sat" . "土") )
-  "曜日名の連想リスト。\(英語表記文字列 . 日本語表記文字列\)" )
 
 ;; -- programs
 ;;;###autoload

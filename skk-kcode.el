@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-kcode.el,v 1.7.2.1 1999/11/07 14:44:55 minakaji Exp $
+;; Version: $Id: skk-kcode.el,v 1.7.2.2 1999/11/08 11:55:05 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:44:55 $
+;; Last Modified: $Date: 1999/11/08 11:55:05 $
 
 ;; This file is part of SKK.
 
@@ -30,17 +30,6 @@
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
-
-;; internal constants and variables.
-(defconst skk-code-n1-min 161)
-(defconst skk-code-n1-max 244)
-(defconst skk-code-n2-min 161)
-(defconst skk-code-n2-max 254)
-(defconst skk-code-null 128)
-(defconst skk-kcode-charset-list
-  (if (memq skk-emacs-type '(xemacs mule4 mule3))
-      (mapcar '(lambda (x) (list (symbol-name x))) (charset-list)) ))
-(defvar skk-input-by-code-or-menu-jump-default skk-code-n1-min)
 
 ;;;###autoload
 (defun skk-input-by-code-or-menu (&optional arg)

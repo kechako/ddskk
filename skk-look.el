@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.1 1999/11/07 14:45:00 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.2 1999/11/08 11:55:09 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:45:00 $
+;; Last Modified: $Date: 1999/11/08 11:55:09 $
 
 ;; This file is not part of SKK yet.
 
@@ -96,15 +96,12 @@
 ;; ました。難波さんに感謝いたします。
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs)(require 'skk-vars))
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
+
 ;; Elib
 (require 'stack-m)
 ;; APEL
 (require 'path-util)
-
-;; internal constant and variable.
-(defconst skk-look-working-buffer " *skk look*")
-(defvar skk-look-completion-words nil)
 
 (and skk-look-command
      (null (member '(skk-look) skk-search-prog-list))

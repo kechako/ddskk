@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-num.el,v 1.6.2.1 1999/11/07 14:45:17 minakaji Exp $
+;; Version: $Id: skk-num.el,v 1.6.2.2 1999/11/08 11:55:25 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:45:17 $
+;; Last Modified: $Date: 1999/11/08 11:55:25 $
 
 ;; This file is part of SKK.
 
@@ -29,40 +29,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'skk-vars) (require 'cl))
-
-;; internal constants and variables
-(defconst skk-num-alist-type1
-  '((?0 . "０") (?1 . "１") (?2 . "２") (?3 . "３")
-    (?4 . "４") (?5 . "５") (?6 . "６") (?7 . "７")
-    (?8 . "８") (?9 . "９")
-    (?. . "．")				; 小数点。(?. . ".") の方が良い人もいるかも...。
-    (?  . "") )
-  "ascii 数字の char type と全角数字の string type の連想リスト。
-\"1995\" -> \"１９９５\" のような文字列の変換を行う際に利用する。" )
-
-(defconst skk-num-alist-type2
-  '((?0 . "〇") (?1 . "一") (?2 . "二") (?3 . "三")
-    (?4 . "四") (?5 . "五") (?6 . "六") (?7 . "七")
-    (?8 . "八") (?9 . "九") (?  . "") )
-  "ascii 数字の char type と漢数字の string type の連想リスト。
-\"1995\" -> \"一九九五\" のような文字列の変換を行う際に利用する。" )
-
-(defconst skk-num-alist-type5
-  '((?1 . "壱") (?2 . "弐") (?3 . "参")
-    (?4 . "四") (?5 . "伍") (?6 . "六") (?7 . "七")
-    (?8 . "八") (?9 . "九") (?  . "") )
-  "ascii 数字の char type と漢数字の string type の連想リスト。
-\"1995\" -> \"壱阡九百九拾伍\" のような文字列の変換を行う際に利用する。" )
-
-;;;###autoload
-(skk-deflocalvar skk-num-list nil
-  "skk-henkan-key の中に含まれる数字を表す文字列のリスト。
-例えば、\"▽へいせい7ねん10がつ\" の変換を行うとき、skk-henkan-key は
-\"へいせい7ねん10がつ\" であり、skk-num-list は \(\"7\" \"10\"\) となる。" )
-
-(skk-deflocalvar skk-num-recompute-key nil
-  "#4 タイプのキーにより数値の再計算を行なったときの検索キー。" )
+(eval-when-compile (require 'cl) (require 'skk-macs) (require 'skk-vars))
 
 (defun skk-num-compute-henkan-key (key)
   ;; KEY の中の連続する数字を現わす文字列を "#" に置き換えた文字列を返す。"12"
@@ -355,7 +322,7 @@
 	    ;; のため、nil を入れておく。
             skk-henkan-okurigana skk-okuri-char skk-use-numeric-conversion )
         (while skk-current-search-prog-list
-          (setq result (kk-nunion result (skk-search))) )))
+          (setq result (skk-nunion result (skk-search))) )))
     ;; ここで temp-buffer を出て変換を行なっているカレントバッファに戻る
     ;; (バッファローカル値である skk-henkan-list を操作したいため)。
     (setq skk-num-recompute-key num)

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-server.el,v 1.3.2.1 1999/11/07 14:45:24 minakaji Exp $
+;; Version: $Id: skk-server.el,v 1.3.2.2 1999/11/08 11:55:31 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:45:24 $
+;; Last Modified: $Date: 1999/11/08 11:55:31 $
 
 ;; This file is part of SKK.
 
@@ -30,11 +30,6 @@
 ;;
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
-
-;; internal constants and variables.
-(defconst skk-network-open-status 'open)
-(defconst skkserv-working-buffer " *skkserv*")
-(defvar skkserv-process nil)
 
 (defun skk-server-version ()
   (interactive)

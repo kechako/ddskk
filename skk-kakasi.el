@@ -2,9 +2,9 @@
 ;; Copyright (C) 1996, 1998, 1999 Mikio Nakajima <minakaji@osaka.email.ne.jp>
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-kakasi.el,v 1.4.2.1 1999/11/07 14:44:52 minakaji Exp $
+;; Version: $Id: skk-kakasi.el,v 1.4.2.2 1999/11/08 11:55:02 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:44:52 $
+;; Last Modified: $Date: 1999/11/08 11:55:02 $
 
 ;; This file is not part of SKK yet.
 
@@ -41,6 +41,7 @@
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
+
 ;; APEL
 (require 'path-util)
 

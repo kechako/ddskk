@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-obsolete.el,v 1.1.2.1 1999/11/07 14:45:20 minakaji Exp $
+;; Version: $Id: skk-obsolete.el,v 1.1.2.2 1999/11/08 11:55:28 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:45:20 $
+;; Last Modified: $Date: 1999/11/08 11:55:28 $
 
 ;; This file is not part of SKK yet.
 
@@ -27,7 +27,7 @@
 ;;; Commentary:
 ;;
 ;;; Code:
-(eval-when-compile (require 'skk-macs))
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
 (defvar skk-obsolete-variable-alist
   '((skk-abbrev-cursor-color . skk-cursor-abbrev-color)

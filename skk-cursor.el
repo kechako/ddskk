@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.1 1999/11/07 14:43:50 minakaji Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.2 1999/11/08 11:54:24 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:43:50 $
+;; Last Modified: $Date: 1999/11/08 11:54:24 $
 
 ;; This file is part of SKK.
 
@@ -29,11 +29,6 @@
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
-
-;;;; from dabbrev.el.  Welcome!
-;; 判定間違いを犯す場合あり。要改良。
-(defsubst skk-minibuffer-origin ()
-  (nth 1 (buffer-list)) )
 
 ;; functions.
 (defun skk-cursor-set-color (color)
@@ -158,6 +153,9 @@
 (defadvice skk-mode (after skk-cursor-ad activate)
   (skk-cursor-set-properly) )
 
+(defadvice skk-latin-mode (after skk-cursor-ad activate)
+  (skk-cursor-set-properly) )
+
 (defadvice skk-jisx0208-latin-mode (after skk-cursor-ad activate)
   (skk-cursor-set-properly) )
 
@@ -176,16 +174,14 @@
 (defadvice skk-toggle-kana (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (if skk-katakana
-      (progn
-        (setq skk-input-mode-string skk-katakana-mode-string)
-        (skk-cursor-set-color skk-cursor-katakana-color) )
-    (setq skk-input-mode-string skk-hiragana-mode-string)
+      (skk-cursor-set-color skk-cursor-katakana-color)
     (skk-cursor-set-color skk-cursor-hiragana-color) ))
 
 (defadvice skk-kakutei (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-color (if skk-katakana skk-cursor-katakana-color
-			  skk-cursor-hiragana-color )))
+  (if (interactive-p)
+      (skk-cursor-set-color (if skk-katakana skk-cursor-katakana-color
+			      skk-cursor-hiragana-color ))))
 
 (defadvice skk-save-jisyo-original (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"

@@ -5,9 +5,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.1 1999/11/07 14:44:01 minakaji Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.2 1999/11/08 11:56:00 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:44:01 $
+;; Last Modified: $Date: 1999/11/08 11:56:00 $
 
 ;; This file is part of SKK.
 
@@ -54,80 +54,7 @@
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
-(require 'skk)
 
-;; internal constants and variables.
-(defconst skk-isearch-mode-canonical-alist
-  '((hiragana . 0) (katakana . 1) (jisx0208-latin . 2) (latin . 3))
-  "Alist of \(SYMBOL . NUMBER\).
-The SYMBOL is canonical skk mode, and NUMBER is its numerical representation.")
-
-(defconst skk-isearch-mode-alias-alist
-  '((hirakana . hiragana) (kana . hiragana) (eiji . jisx0208-latin)
-    (ascii . latin) )
-  "Alist of \(ALIAS . CANONICAL\).
-The both ALIAS and CANONICAL should be symbol.
-ALIAS can be used as an alias of CANONICAL.
-CANONICAL should be found in `skk-isearch-mode-canonical-alist'. ")
-
-(defconst skk-isearch-breakable-character-p-function
-  (cond ((fboundp 'char-category-set)
-	 (function (lambda (char)
-		     ;; see emacs/lisp/fill.el how the category `|' is
-		     ;; treated.
-		     (aref (char-category-set char) ?|))))
-	((boundp 'word-across-newline)
-	 (function (lambda (char)
-		     ;; (let ((lc (char-leading-char char)))
-		     ;;   (or (= lc lc-jp) (= lc lc-cn)))
-		     (string-match word-across-newline
-				   (char-to-string char)))))
-	(t (error "No appropriate function as: %s"
-		  'skk-isearch-breakable-character-p-function)))
-  "Function to test if we can insert a newline around CHAR when filling.")
-
-(defconst skk-isearch-working-buffer " *skk-isearch*"
-  "Work buffer for skk isearch." )
-
-(defvar skk-isearch-mode nil
-  "Current search mode.
-0 means hira kana search.
-1 means kana search.
-2 means zenkaku eiji (i.e. JIS X0208 alphabet) search.
-3 means ascii search." )
-
-(defvar skk-isearch-incomplete-message ""
-  "Incomplete isearch message" )
-
-(defvar skk-isearch-mode-map nil
-  "Keymap for skk isearch mode.
-This map should be derived from isearch-mode-map." )
-
-;;;###autoload
-(defvar skk-isearch-overriding-local-map
-  (cond ((eq skk-emacs-type 'xemacs)
-	 (cond
-	  ((or (> emacs-major-version 21)
-	       (and (= emacs-major-version 21)
-		    (or (> emacs-minor-version 2)
-			(and (= emacs-minor-version 2)
-			     (boundp 'emacs-beta-version) emacs-beta-version
-			     (>= emacs-beta-version 2) ))))
-	   'overriding-local-map )
-	  (t 'overriding-terminal-local-map) ))
-	;; for Mule/GNU Emacs.
-	((or (> emacs-major-version 19)
-	     (and (= emacs-major-version 19) (> emacs-minor-version 28)) )
-	 ;; GNU Emacs version 19.29, 19.30 and 19.31 uses this in isearch.el.
-	 'overriding-terminal-local-map )
-	;; GNU Emacs version 19.22 .. 19.28 uses this in isearch.el.
-	(t 'overriding-local-map) )
-  "Variable holding overrinding local map used in isearch-mode.")
-
-(defvar skk-isearch-last-mode-string "")
-(defvar skk-isearch-last-mode-regexp "")
-
-;;
 ;; interface to skk.el
 ;;
 (defsubst skk-isearch-turn-off-skk-mode ()
@@ -264,6 +191,7 @@ kakutei'ed and erase the buffer contents."
   "hook function called when skk isearch begin."
   ;; setup working buffer.  initial skk mode for isearch should be
   ;; determined in the original buffer and set in working buffer.
+  (require 'skk)
   (let ((initial (skk-isearch-initial-mode)))
     (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
       (skk-isearch-initialize-working-buffer)

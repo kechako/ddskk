@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.2 1999/11/07 14:45:53 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.3 1999/11/08 11:55:51 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 14:45:53 $
+;; Last Modified: $Date: 1999/11/08 11:55:51 $
 
 ;; SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -58,46 +58,20 @@
       ((not (featurep 'mule))
        (error "THIS SKK requires MULE features") ))
 
-(eval-when-compile (require 'static))
-
-(require 'skk-vars)
-
-;; Emacs standard library.
-(require 'advice)
-(require 'easymenu)
-
 ;; APEL 9.22 or later required.
+(eval-when-compile (require 'static))
 (require 'poe)
 (require 'poem) ; requires pces.
 (require 'pces)
 (require 'pcustom)
 (require 'alist)
-
 ;; Elib 1.0 is required.
 (require 'queue-m)
+;; Emacs standard library.
+(require 'advice)
+(require 'easymenu)
+(eval-and-compile (require 'skk-vars) (require 'skk-macs))
 
-;;;###autoload
-(eval-and-compile
-  (defconst skk-emacs-type (cond ((string-match "XEmacs" emacs-version) 'xemacs)
-				 ((and (boundp 'mule-version)
-				       (string< "4.0" mule-version) 'mule4 ))
-				 ((and (boundp 'mule-version)
-				       (string< "3.0" mule-version) 'mule3 ))
-				 ((and (boundp 'mule-version)
-				       (string< "2.0" mule-version) 'mule2 )))))
-
-(defconst skk-package-data-directory
-  (if (boundp 'early-packages)
-      (let ((dirs (append (if early-package-load-path early-packages)
-			  (if late-package-load-path late-packages)
-			  (if last-package-load-path last-packages) ))
-	    dir )
-	(while (not (file-exists-p (setq dir (car dirs))))
-	  (setq dirs (cdr dirs)) )
-	(and dir
-	     (expand-file-name "skk" (expand-file-name "etc" dir)) ))))
-
-;;;; inline functions
 ;; inline functions to hook.
 (defsubst skk-after-point-move ()
   (and (or (not skk-previous-point) (not (= skk-previous-point (point))))
@@ -110,314 +84,12 @@
        (null (memq this-command skk-kana-cleanup-command-list))
        (skk-kana-cleanup t) ))
 
-(defsubst skk-file-exists-and-writable-p (file)
-  (and (setq file (expand-file-name file))
-       (file-exists-p file) (file-writable-p file) ))
-
-(defsubst skk-lower-case-p (char)
-  ;; CHAR が小文字のアルファベットであれば、t を返す。
-  (and (<= ?a char) (>= ?z char) ))
-
-(defsubst skk-downcase (char)
-  (or (cdr (assq char skk-downcase-alist)) (downcase char)) )
-
-(defsubst skk-mode-off ()
-  (setq skk-mode nil
-        skk-abbrev-mode nil
-        skk-latin-mode nil
-        skk-j-mode nil
-        skk-jisx0208-latin-mode nil
-        ;; j's sub mode.
-        skk-katakana nil )
-  ;; initialize
-  (setq skk-input-mode-string skk-hiragana-mode-string)
-  (force-mode-line-update)
-  (remove-hook 'pre-command-hook 'skk-pre-command 'local) )
-
-(defsubst skk-j-mode-on (&optional katakana)
-  (setq skk-mode t
-        skk-abbrev-mode nil
-        skk-latin-mode nil
-        skk-j-mode t
-        skk-jisx0208-latin-mode nil
-        ;; j's sub mode.
-        skk-katakana katakana )
-  (force-mode-line-update) )
-
-(defsubst skk-latin-mode-on ()
-  (setq skk-mode t
-        skk-abbrev-mode nil
-        skk-latin-mode t
-        skk-j-mode nil
-        skk-jisx0208-latin-mode nil
-        ;; j's sub mode.
-        skk-katakana nil
-        skk-input-mode-string skk-latin-mode-string )
-  (force-mode-line-update) )
-
-(defsubst skk-jisx0208-latin-mode-on ()
-  (setq skk-mode t
-        skk-abbrev-mode nil
-        skk-latin-mode nil
-        skk-j-mode nil
-        skk-jisx0208-latin-mode t
-        ;; j's sub mode.
-        skk-katakana nil
-        skk-input-mode-string skk-jisx0208-latin-mode-string )
-  (force-mode-line-update) )
-
-(defsubst skk-abbrev-mode-on ()
-  (setq skk-mode t
-        skk-abbrev-mode t
-        skk-latin-mode nil
-        skk-j-mode nil
-        skk-jisx0208-latin-mode nil
-        ;; j's sub mode.
-        skk-katakana nil
-        skk-input-mode-string skk-abbrev-mode-string )
-  (force-mode-line-update) )
-
-(defsubst skk-in-minibuffer-p ()
-  ;; カレントバッファがミニバッファかどうかをチェックする。
-  (window-minibuffer-p (selected-window)) )
-
-(defsubst skk-insert-prefix (&optional char)
-  ;; skk-echo が non-nil であればカレントバッファに skk-prefix を挿入する。
-  (and skk-echo
-       ;; skk-prefix の挿入をアンドゥの対象としない。挿入したプレフィックスは、
-       ;; かな文字を挿入する前に全て消去するので、その間、buffer-undo-list を
-       ;; t にしてアンドゥ情報を蓄えなくとも問題がない。
-       (let ((buffer-undo-list t))
-         (insert-and-inherit (or char skk-prefix)) )))
-
-(defsubst skk-erase-prefix (&optional clean)
-  ;; skk-echo が non-nil であればカレントバッファに挿入された skk-prefix を消
-  ;; す。オプショナル引数の CLEAN が指定されると、変数としての skk-prefix を
-  ;; null 文字に、skk-current-rule-tree を nil 初期化する。
-  ;;
-  ;; かな文字の入力がまだ完成していない場合にこの関数が呼ばれたときなどは、バッ
-  ;; ファに挿入されている skk-prefix は削除したいが、変数としての skk-prefix は
-  ;; null 文字にしたくない。
-  (and skk-echo skk-kana-start-point
-       (not (string= skk-prefix ""))	; fail safe.
-       ;; skk-prefix の消去をアンドゥの対象としない。
-       (let ((buffer-undo-list t)
-	     (start (marker-position skk-kana-start-point)) )
-	 (and start
-	      (condition-case nil
-		  (delete-region start (+ start (length skk-prefix)))
-		(error
-		 (skk-set-marker skk-kana-start-point nil) 
-		 (setq skk-prefix ""
-		       skk-current-rule-tree nil ))))))
-  (and clean (setq skk-prefix ""
-		   skk-current-rule-tree nil ))) ; fail safe
-
-(defsubst skk-string<= (str1 str2)
-  ;; STR1 と STR2 とを比較して、string< か string= であれば、t を返す。
-  (or (string< str1 str2) (string= str1 str2)) )
-
-(defsubst skk-do-auto-fill ()
-  ;; auto-fill-function に値が代入されておれば、do-auto-fill をコールする。
-  (and auto-fill-function (funcall auto-fill-function)) )
-
-(defsubst skk-current-insert-mode ()
-  (cond (skk-abbrev-mode 'abbrev)
-	(skk-latin-mode 'latin)
-	(skk-jisx0208-latin-mode 'jisx0208-latin)
-	(skk-katakana 'katakana)
-	(skk-j-mode 'hiragana) ))
-
-(defsubst skk-numeric-p ()
-  (and skk-use-numeric-conversion (require 'skk-num) skk-num-list) )
-
-(defsubst skk-substring-head-character (string)
-  (char-to-string (string-to-char string)) )
-
-(defsubst skk-get-current-candidate-simply (&optional noconv)
-  (if (> 0 skk-henkan-count)
-      (skk-error "候補を取り出すことができません"
-		 "Cannot get current candidate" )
-    ;; (nth -1 '(A B C)) は、A を返すので、負でないかどうかチェックする。
-    (let ((word (nth skk-henkan-count skk-henkan-list)))
-      (and word
-	   (if (and (skk-numeric-p) (consp word))
-	       (if noconv (car word) (cdr word))
-	     word )))))
-
-;; convert skk-rom-kana-rule-list to skk-rule-tree.
-;; The rule tree follows the following syntax:
-;; <branch-list>    ::= nil | (<tree> . <branch-list>)
-;; <tree>         ::= (<char> <prefix> <nextstate> <kana> <branch-list>)
-;; <kana>         ::= (<ひらがな文字列> . <カタカナ文字列>) | nil
-;; <char>         ::= <英小文字>
-;; <nextstate>    ::= <英小文字文字列> | nil
-
-;; ツリーにアクセスするためのインターフェース
-
-(defsubst skk-make-rule-tree (char prefix nextstate kana branch-list)
-  (list char
-	prefix
-	(if (string= nextstate "") nil nextstate)
-	kana
-	branch-list ))
-
-(defsubst skk-get-char (tree)
-  (car tree) )
-
-(defsubst skk-set-char (tree char)
-  (setcar tree char) )
-
-(defsubst skk-set-prefix (tree prefix)
-  (setcar (nthcdr 1 tree) prefix) )
-
-(defsubst skk-get-prefix (tree)
-  (nth 1 tree) )
-
-(defsubst skk-get-nextstate (tree)
-  (nth 2 tree) )
-
-(defsubst skk-set-nextstate (tree nextstate)
-  (if (string= nextstate "") (setq nextstate nil))
-  (setcar (nthcdr 2 tree) nextstate) )
-
-(defsubst skk-get-kana (tree)
-  (nth 3 tree) )
-
-(defsubst skk-set-kana (tree kana)
-  (setcar (nthcdr 3 tree) kana) )
-
-(defsubst skk-get-branch-list (tree)
-  (nth 4 tree) )
-
-(defsubst skk-set-branch-list (tree branch-list)
-  (setcar (nthcdr 4 tree) branch-list) )
-
-;; tree procedure for skk-kana-input.
-(defsubst skk-add-branch (tree branch)
-  (skk-set-branch-list tree (cons branch (skk-get-branch-list tree))) )
-
-(defsubst skk-select-branch (tree char)
-  (assq char (skk-get-branch-list tree)) )
-
-(defsubst skk-kana-cleanup (&optional force)
-  (let ((data (or
-	       (and skk-current-rule-tree
-		    (null (skk-get-nextstate skk-current-rule-tree))
-		    (skk-get-kana skk-current-rule-tree) )
-	       (and skk-kana-input-search-function
-		    (car (funcall skk-kana-input-search-function)) )))
-	kana )
-	(if (or force data)
-	    (progn
-	      (skk-erase-prefix 'clean)
-	      (setq kana (if (functionp data) (funcall data nil) data))
-	      (if (consp kana)
-		  (setq kana (if skk-katakana (car kana) (cdr kana))) )
-	      (if (stringp kana) (skk-insert-str kana))
-	      (skk-set-marker skk-kana-start-point nil)
-	      t ))))
-
-(defsubst skk-make-raw-arg (arg)
-  (cond ((= arg 1) nil)
-	((= arg -1) '-)
-	((numberp arg) (list arg)) ))
-
-(defsubst skk-unread-event (event)
-  ;; Unread single EVENT.
-  (setq unread-command-events (nconc unread-command-events (list event))) )
-
-;;(defsubst skk-get-current-henkan-data (key)
-;;  (cdr (assq key skk-current-henkan-data)) )
-
-;;(defsubst skk-put-current-henkan-data (key val)
-;;  (setq skk-current-henkan-data (put-alist key val skk-current-henkan-data)) )
-
-(defsubst skk-get-last-henkan-data (key)
-  (cdr (assq key skk-last-henkan-data)) )
-
-(defsubst skk-put-last-henkan-data (key val)
-  (setq skk-last-henkan-data (put-alist key val skk-last-henkan-data)) )
-
-;;;; version specific matter.
-;;; inline functions.
-(skk-defsubst-cond skk-str-length (str)
-  ((memq skk-emacs-type '(xemacs mule4))
-   (length str) )
-  ((eq skk-emacs-type 'mule3)
-   (length (string-to-vector str)) )
-  ((eq skk-emacs-type 'mule2)
-   (length (string-to-char-list str)) ))
-
-(skk-defsubst-cond skk-substring (str pos1 pos2)
-  ((memq skk-emacs-type '(xemacs mule4))
-   (substring str pos1 pos2) )
-  ((eq skk-emacs-type 'mule3)
-   (if (< pos1 0)
-       (setq pos1 (+ (skk-str-length str) pos1)) )
-   (if (< pos2 0)
-       (setq pos2 (+ (skk-str-length str) pos2)) )
-   (if (>= pos1 pos2)
-       ""
-     (let ((sl (nthcdr pos1 (string-to-char-list str))))
-       (setcdr (nthcdr (- pos2 pos1 1) sl) nil)
-       (concat sl) )))
-  ((eq skk-emacs-type 'mule2)
-   (if (< pos1 0)
-       (setq pos1 (+ (skk-str-length str) pos1)) )
-   (if (< pos2 0)
-       (setq pos2 (+ (skk-str-length str) pos2)) )
-   (if (>= pos1 pos2)
-       ""
-     (let ((sl (nthcdr pos1 (string-to-char-list str))))
-       (setcdr (nthcdr (- pos2 pos1 1) sl) nil)
-       (mapconcat 'char-to-string sl "") ))))
-
-;; no argument use only in SKK.
-(skk-defsubst-cond skk-read-event ()
-  ((eq skk-emacs-type 'xemacs)
-   (next-command-event) )
-  (t (read-event)) )
-
-(skk-defsubst-cond skk-char-to-string (char)
-  ((eq skk-emacs-type 'xemacs)
-   (char-to-string char) )
-  ((string< "20" emacs-version)
-   (condition-case nil (char-to-string char) (error)) )
-  (t (char-to-string char)) )
-
-(skk-defsubst-cond skk-ascii-char-p (char)
-  ;; CHAR が ascii 文字だったら t を返す。
-  ((memq skk-emacs-type '(xemacs mule4 mule3))
-   (eq (char-charset char) 'ascii) )
-  ((eq skk-emacs-type 'mule2)
-   (= (char-leading-char char) 0) ))
- 
-(skk-defsubst-cond skk-str-ref (str pos)
-  ((memq skk-emacs-type '(xemacs mule4))
-   (aref str pos) )
-  ((eq skk-emacs-type 'mule3)
-   (aref (string-to-vector str) pos ) )
-  ((eq skk-emacs-type 'mule2)
-   (nth pos (string-to-char-list str)) ))
-
-(skk-defsubst-cond skk-jisx0208-p (char)
-  ((memq skk-emacs-type '(xemacs mule4 mule3))
-   (eq (char-charset char) 'japanese-jisx0208) )
-  ((eq skk-emacs-type 'mule2)
-   (= (char-leading-char char) lc-jp) ))
-
-(skk-defsubst-cond skk-char-octet (ch &optional n)
-  ((eq skk-emacs-type 'xemacs)
-   (or (nth (if n (1+ n) 1) (split-char ch)) 0) )
-  (t (char-octet ch n)) )
-
 (defun skk-version ()
   (interactive)
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/07 14:45:53 $")
+      (let* ((raw-date "$Date: 1999/11/08 11:55:51 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -425,51 +97,12 @@
             (setq month (substring month (match-end 0))) )
         (if (string-match "^0" date)
             (setq date (substring date (match-end 0))) )
-        (message "SKK version Aloha %s of %s, APEL inside"
-                 skk-version
+        (message "SKK version Aloha %s (%s) of %s, APEL inside"
+                 skk-version skk-codename
                  (concat (car (rassoc month skk-month-alist))
                          " " date ", " year ))))))
 
 ;;; normal functions.
-;; tiny function, but called once in skk-kcode.el.  So not make it inline.
-;; or should I think to move to skk-kcode.el?
-(skk-defun-cond skk-make-char (charset n1 n2)
-  ((eq skk-emacs-type 'xemacs)
-   (make-char charset (logand (lognot 128) n1) (logand (lognot 128) n2)) )
-  ((memq skk-emacs-type '(mule4 mule3))
-   (make-char charset n1 n2) )
-  ((eq skk-emacs-type 'mule2)
-   (make-character charset n1 n2) ))
-
-;; this one is called once in skk-kcode.el, too.
-(skk-defsubst-cond skk-charsetp (object)
-  ((and (eq skk-emacs-type 'xemacs) (fboundp 'charsetp))
-   (charsetp object) )
-  ((eq skk-emacs-type 'xemacs)
-   ;; Is there XEmacs that doesn't have `charsetp'?
-   (find-charset object) )
-  ((memq skk-emacs-type '(mule4 mule3))
-   (charsetp object) )
-  ((eq skk-emacs-type 'mule2)
-   (character-set object) ))
-
-(skk-defun-cond skk-jisx0208-to-ascii (string)
-  ((memq skk-emacs-type '(xemacs mule4 mule3))
-   (require 'japan-util)
-   (let ((char
-	  (get-char-code-property (string-to-char string) 'ascii) ))
-     (and char (char-to-string char)) ))
-  ((eq skk-emacs-type 'mule2)
-   (let ((char
-	  (let* ((ch (string-to-char string))
-		 (ch1 (char-component ch 1)) )
-	    (cond ((eq 161 ch1)		; ?\241
-		   (cdr (assq (char-component ch 2) skk-hankaku-alist)) )
-		  ((eq 163 ch1)		; ?\243
-		   (- (char-component ch 2) 128) ; ?\200
-		   )))))
-     (and char (char-to-string char)) )))
-
 ;;;; aliases
 ;; for backward compatibility.
 (define-obsolete-function-alias 'skk-zenkaku-mode 'skk-jisx0208-latin-mode)
@@ -631,7 +264,33 @@
        (cons 'skk-j-mode skk-j-mode-map)
        (cons 'skk-jisx0208-latin-mode skk-jisx0208-latin-mode-map) ))
 
-;;;; mode setup
+;; VERSION SPECIFIC MATTERS.
+;; tiny function, but called once in skk-kcode.el.  So not make it inline.
+;; or should I think to move to skk-kcode.el?
+(skk-defun-cond skk-make-char (charset n1 n2)
+  ((eq skk-emacs-type 'xemacs)
+   (make-char charset (logand (lognot 128) n1) (logand (lognot 128) n2)) )
+  ((memq skk-emacs-type '(mule4 mule3))
+   (make-char charset n1 n2) )
+  ((eq skk-emacs-type 'mule2)
+   (make-character charset n1 n2) ))
+
+(skk-defun-cond skk-jisx0208-to-ascii (string)
+  ((memq skk-emacs-type '(xemacs mule4 mule3))
+   (require 'japan-util)
+   (let ((char
+	  (get-char-code-property (string-to-char string) 'ascii) ))
+     (and char (char-to-string char)) ))
+  ((eq skk-emacs-type 'mule2)
+   (let ((char
+	  (let* ((ch (string-to-char string))
+		 (ch1 (char-component ch 1)) )
+	    (cond ((eq 161 ch1)		; ?\241
+		   (cdr (assq (char-component ch 2) skk-hankaku-alist)) )
+		  ((eq 163 ch1)		; ?\243
+		   (- (char-component ch 2) 128) ; ?\200
+		   )))))
+     (and char (char-to-string char)) )))
 
 ;;;###autoload
 (defun skk-mode (&optional arg)
@@ -1044,6 +703,8 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
          (skk-j-mode-on) )
         (t (setq skk-katakana (not skk-katakana))) )
   (skk-kakutei)
+  (setq skk-input-mode-string (if skk-katakana skk-katakana-mode-string
+				skk-hiragana-mode-string ))
   (force-mode-line-update) )
 
 (defun skk-misc-for-picture ()
@@ -2077,7 +1738,10 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
     (and skk-kakutei-end-function (funcall skk-kakutei-end-function))
     (skk-kakutei-initialize (if (skk-numeric-p) (cons kakutei-word converted)
 			      kakutei-word ))
-    (skk-do-auto-fill) ))
+    (skk-do-auto-fill)
+    (setq skk-input-mode-string (if skk-katakana skk-katakana-mode-string
+				  skk-hiragana-mode-string ))
+    (force-mode-line-update) ))
 
 (defun skk-kakutei-cleanup-buffer ()
   ;; 確定直後のバッファの整形を行なう。

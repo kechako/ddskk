@@ -1,3 +1,37 @@
+1999-12-13  FURUE Hideyuki  <furue@kke.co.jp>
+
+	* skk-comp.el (skk-completion-original): Bug fixed.
+	(skk-previous-completion-original): Ditto.
+
+	* skk-cursor.el (skk-cursor-current-color): Change order to evaluate
+	`skk-abbrev-mode' first.
+	(newline): Remove advice.
+	(skk-latin-mode): Ditto.
+	(skk-jisx0208-latin-mode): Ditto.
+	(skk-abbrev-mode): Ditto.
+	(skk-auto-fill-mode): Ditto.
+	(skk-toggle-kana): Ditto.
+	(skk-kakutei): Ditto.
+	(skk-save-jisyo-original): Ditto.
+	(skk-katakana-region): Ditto.
+	(skk-hiragana-region): Ditto.
+	(skk-jisx0208-latin-region): Ditto.
+	(skk-latin-region): Ditto.
+	(skk-jisx0201-region): Ditto.
+	(skk-gyakubiki-message): Ditto.
+	(skk-gyakubiki-katakana-region): Ditto.
+	(skk-gyakubiki-katakana-message): Ditto.
+	(skk-hurigana-region): Ditto.
+	(skk-hurigana-message): Ditto.
+	(skk-hurigana-katakana-region): Ditto.
+	(skk-romaji-region): Ditto.
+	(skk-romaji-message): Ditto.
+	(skk-delete-backward-char): Ditto.
+	(skk-start-henkan): Ditto.
+	(force-mode-line-update): New advice.
+	(after-make-frame-hook): Remove hook.
+	(minibuffer-setup-hook): Simplify hook.
+	
 1999-12-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-cursor.el (skk-cursor-set-properly) : Bug fixed.

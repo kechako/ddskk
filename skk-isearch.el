@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.12 1999/12/15 10:27:09 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.13 1999/12/15 11:54:41 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/15 10:27:09 $
+;; Last Modified: $Date: 1999/12/15 11:54:41 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -271,8 +271,7 @@ Optional argument PREFIX is apppended if given."
   (let ((commands '(backward-delete-char-untabify
 		    backward-delete-char
 		    backward-or-forward-delete-char
-		    delete-backward-char
-		    ))
+		    delete-backward-char))
 	keys )
     (while commands
       (setq keys (where-is-internal (car commands) (current-global-map))
@@ -414,11 +413,10 @@ If the current mode is different from previous, remove it first."
       (let ((str (skk-isearch-mode-string)))
 	(mapcar
 	 (function (lambda (cmd)
-		     (or (string-match (concat "^" str) (car (cdr cmd)))
-			 (setcdr cmd
-				 (cons
-				  (concat str (car cmd))
-				  (cdr (cdr cmd)))))))
+		     (or (string-match (concat "^" (regexp-quote str))
+				       (car (cdr cmd)))
+			 (setcdr cmd (cons (concat str (car cmd))
+					   (cdr (cdr cmd)))))))
 	 isearch-cmds)
 	(isearch-delete-char))))
 

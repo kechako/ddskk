@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.36 2000/09/09 04:27:52 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.37 2000/09/11 10:44:55 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/09 04:27:52 $
+;; Last Modified: $Date: 2000/09/11 10:44:55 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2324,15 +2324,11 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
   "ascii 数字の char type と漢数字の string type の連想リスト。
 \"1995\" -> \"壱阡九百九拾伍\" のような文字列の変換を行う際に利用する。")
 
-;;;###autoload
-(defvar skk-num-list nil
+(skk-deflocalvar skk-num-list nil
   "skk-henkan-key の中に含まれる数字を表す文字列のリスト。
 例えば、\"▽へいせい7ねん10がつ\" の変換を行うとき、skk-henkan-key は
 \"へいせい7ねん10がつ\" であり、skk-num-list は \(\"7\" \"10\"\) となる。
 \(buffer local\)")
-
-;;;###autoload
-(make-variable-buffer-local 'skk-num-list)
 
 (defvar skk-num-recompute-key nil
   "#4 タイプのキーにより数値の再計算を行なったときの検索キー。")

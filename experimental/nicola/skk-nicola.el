@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/10/17 14:14:54 $
+;; Last Modified: $Date: 2000/11/04 15:58:01 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -206,26 +206,33 @@ keycode 131 = underscore\n"))
 
 (add-hook 'skk-mode-hook 'skk-nicola-setup)
 
-(add-hook 'skk-mode-hook
-	  (function
-	   (lambda ()
-	     ;;
-	     (setq skk-nicola-lshift-original
-		   (static-cond
-		    ((memq skk-emacs-type '(nemacs mule1))
-		     (or (lookup-key (or skk-current-local-map
-					 (make-sparse-keymap))
-				     skk-nicola-lshift-key)
-			 (lookup-key (current-global-map)
-				     skk-nicola-lshift-key)))
-		    (t
-		     (let (skk-mode skk-j-mode)
-		       (key-binding skk-nicola-lshift-key)))))
-	     ;;
-	     (setq skk-hiragana-mode-string skk-nicola-hiragana-mode-string
-		   skk-katakana-mode-string skk-nicola-katakana-mode-string
-		   skk-input-mode-string skk-hiragana-mode-string))))
-
+(add-hook
+ 'skk-mode-hook
+ (function
+  (lambda ()
+    ;;
+    (setq skk-nicola-lshift-original
+	  (static-cond
+	   ((memq skk-emacs-type '(nemacs mule1))
+	    (or (lookup-key (or skk-current-local-map
+				(make-sparse-keymap))
+			    skk-nicola-lshift-key)
+		(lookup-key (current-global-map)
+			    skk-nicola-lshift-key)))
+	   (t
+	    (let (skk-mode skk-j-mode)
+	      (key-binding skk-nicola-lshift-key)))))
+    ;;
+    (make-local-variable 'skk-hiragana-mode-string)
+    (make-local-variable 'skk-katakana-mode-string)
+    (case skk-kanagaki-state
+      (kana
+       (setq skk-hiragana-mode-string skk-nicola-hiragana-mode-string
+	     skk-katakana-mode-string skk-nicola-katakana-mode-string))
+      (rom
+       (setq skk-hiragana-mode-string skk-nicola-hiragana-rom-string
+	     skk-katakana-mode-string skk-nicola-katakana-rom-string)))
+    (setq skk-input-mode-string skk-hiragana-mode-string))))
 
 ;; Functions.
 
@@ -684,12 +691,15 @@ keycode 131 = underscore\n"))
   (setq skk-nicola-okuri-flag nil)
   ad-do-it
   ;; モード行の表示の調節。
-  (cond (skk-use-kana-keyboard
-	 (setq skk-hiragana-mode-string skk-nicola-hiragana-mode-string
-	       skk-katakana-mode-string skk-nicola-katakana-mode-string))
-	(t
-	 (setq skk-hiragana-mode-string skk-nicola-hiragana-rom-string
-	       skk-katakana-mode-string skk-nicola-katakana-rom-string)))
+  (make-local-variable 'skk-hiragana-mode-string)
+  (make-local-variable 'skk-katakana-mode-string)
+  (case skk-kanagaki-state
+    (kana
+     (setq skk-hiragana-mode-string skk-nicola-hiragana-mode-string
+	   skk-katakana-mode-string skk-nicola-katakana-mode-string))
+    (rom
+     (setq skk-hiragana-mode-string skk-nicola-hiragana-rom-string
+	   skk-katakana-mode-string skk-nicola-katakana-rom-string)))
   (when skk-j-mode
     (cond (skk-katakana
 	   (setq skk-input-mode-string skk-katakana-mode-string))

@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/11/02 12:25:34 $
+;; Last Modified: $Date: 2000/11/04 15:58:00 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -352,7 +352,15 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
 (defvar skk-kanagaki-rule-tree nil)
 (defvar skk-kanagaki-rom-kana-rule-tree nil)
 
-(defvar skk-kanagaki-temp-dir (or (getenv "TMP") "/tmp"))
+(defvar skk-kanagaki-temp-dir
+  (cond ((fboundp 'temp-directory)
+	 (temp-directory))
+	((and (boundp 'temporary-file-directory) temporary-file-directory)
+	 temporary-file-directory)
+	(t
+	 (or (getenv "TMP") "/tmp"))))
+
+(skk-deflocalvar skk-kanagaki-state nil)
 
 ;; Functions.
 
@@ -362,7 +370,12 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
 (defun skk-kanagaki-toggle-rom-kana ()
   "$B%m!<%^;zF~NO(B $B"N(B $B2>L>F~NO(B $B$r@Z$jBX$($k!#(B"
   (interactive)
-  (setq skk-use-kana-keyboard (not skk-use-kana-keyboard)))
+  (setq skk-kanagaki-state
+	(case skk-kanagaki-state
+	  (kana 'rom)
+	  (rom 'kana)
+	  ;; $B$H$j$"$($:!#(B
+	  (t 'kana))))
 
 ;;;###autoload
 (defun skk-kanagaki-midashi-henkan (&optional arg)
@@ -530,15 +543,19 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
 	    (delq last-command-char list))
 	   (t
 	    list))))
-    (cond (skk-use-kana-keyboard
-	   (unless (equal skk-rule-tree skk-kanagaki-rule-tree)
-	     (setq skk-rule-tree skk-kanagaki-rule-tree))
-	   (let (skk-set-henkan-point-key)
-	     ad-do-it))
-	  (t
-	   (unless (equal skk-rule-tree skk-kanagaki-rom-kana-rule-tree)
-	     (setq skk-rule-tree skk-kanagaki-rom-kana-rule-tree))
-	   ad-do-it))))
+    (case skk-kanagaki-state
+      (kana
+       (unless (equal skk-rule-tree skk-kanagaki-rule-tree)
+	 (make-local-variable 'skk-rule-tree)
+	 (setq skk-rule-tree skk-kanagaki-rule-tree))
+       (let (skk-set-henkan-point-key)
+	 ad-do-it))
+      (rom
+       (unless (equal skk-rule-tree skk-kanagaki-rom-kana-rule-tree)
+	 (make-local-variable 'skk-rule-tree)
+	 (setq skk-rule-tree skk-kanagaki-rom-kana-rule-tree))
+       ad-do-it)
+      (t nil))))
 
 (defadvice skk-okurigana-prefix (around skk-knagaki-ad activate compile)
   (cond ((and skk-use-kana-keyboard

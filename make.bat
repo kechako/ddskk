@@ -4,9 +4,9 @@ rem Copyright (C) 1999 Yuh Ohmura, mailto:yutopia@t3.rim.or.jp
 rem
 rem Author: Yuh Ohmura, mailto:yutopia@t3.rim.or.jp
 rem Maintainer: Mikio Nakajima, mailto:minakaji@osaka.email.ne.jp
-rem Version: $Id: make.bat,v 1.10.4.2 1999/12/16 01:12:49 yutopia Exp $
+rem Version: $Id: make.bat,v 1.10.4.3 2000/01/17 03:42:43 furue Exp $
 rem Created: March 23, 1999
-rem Last Modified: $Date: 1999/12/16 01:12:49 $
+rem Last Modified: $Date: 2000/01/17 03:42:43 $
 
 rem ********************************************************************
 rem *                                                                  *
@@ -35,7 +35,7 @@ goto end
 goto end
 
 :clean
-del skk-autoloads.el *.elc doc\skk.info* *~'
+del skk-autoloads.el *.elc doc\skk.info* *~
 
 :end
 

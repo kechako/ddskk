@@ -6,8 +6,8 @@
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Created: 1996/08/18
 ;; Keywords: install, byte-compile, directory detection
-;; Version: $Id: tinyinstall.el,v 1.3.4.1 1999/12/30 09:05:51 czkmt Exp $
-;; Last Modified: $Date: 1999/12/30 09:05:51 $
+;; Version: $Id: tinyinstall.el,v 1.3.4.2 2000/01/23 13:41:56 czkmt Exp $
+;; Last Modified: $Date: 2000/01/23 13:41:56 $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -25,6 +25,20 @@
 ;; Boston, MA 02111-1307, USA.
 
 ;;; Code:
+
+(defvar emacs-major-version
+  (progn (string-match "^[0-9]+" emacs-version)
+	 (string-to-int (substring emacs-version
+				   (match-beginning 0)(match-end 0))))
+  "Major version number of this version of Emacs.")
+
+(or (fboundp 'member)
+    (defun member (elt list)
+      "Return non-nil if ELT is an element of LIST.  Comparison done with EQUAL.
+The value is actually the tail of LIST whose car is ELT."
+      (while (and list (not (equal elt (car list))))
+	(setq list (cdr list)))
+      list))
 
 (defvar install-prefix
   (cond ((or (<= emacs-major-version 18)	; running-emacs-18

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.29 2000/01/07 22:44:23 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.30 2000/01/17 07:12:07 mrt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/07 22:44:23 $
+;; Last Modified: $Date: 2000/01/17 07:12:07 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/07 22:44:23 $")
+      (let* ((raw-date "$Date: 2000/01/17 07:12:07 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1794,9 +1794,10 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   ;; 確定直後のバッファの整形を行なう。
   (if skk-okurigana
       (progn
-        (skk-delete-okuri-mark)
-        (and skk-katakana skk-convert-okurigana-into-katakana
-	     (skk-katakana-region skk-henkan-end-point (point)))))
+        (skk-delete-okuri-mark)))
+  (and skk-katakana skk-convert-okurigana-into-katakana
+       (< skk-henkan-end-point (point))
+       (skk-katakana-region skk-henkan-end-point (point)))
   (skk-delete-henkan-markers)
   (and (boundp 'self-insert-after-hook) self-insert-after-hook
        (funcall self-insert-after-hook skk-henkan-start-point (point)))

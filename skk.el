@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.41 2000/01/28 05:21:43 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.42 2000/01/28 10:36:59 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/28 05:21:43 $
+;; Last Modified: $Date: 2000/01/28 10:36:59 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/28 05:21:43 $")
+      (let* ((raw-date "$Date: 2000/01/28 10:36:59 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -134,7 +134,8 @@
     (setq skk-current-local-map (if (skk-in-minibuffer-p) minibuffer-local-map
 				  (current-local-map)))
     (let ((i 0) e list)
-      (setq list '(skk-latin-mode-map skk-j-mode-map skk-jisx0208-latin-mode-map))
+      (setq list '(skk-latin-mode-map skk-j-mode-map skk-jisx0208-latin-mode-map
+				      skk-abbrev-mode-map))
       (while (setq e (nth i list))
 	(set e (if skk-current-local-map (copy-keymap skk-current-local-map)
 		 (make-sparse-keymap)))

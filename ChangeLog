@@ -1,3 +1,12 @@
+2000-01-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-e18.el (skk-hiragana-to-katakana): New function
+	for Nemacs.
+	(skk-katakana-to-hiragana): Ditto.
+
+	* skk.el (skk-search-and-replace): Use `goto-char' to go back to
+	the beginning of the match, instead of `backward-char'.
+
 2000-01-29   Daiki Ueno  <ueno@ueda.info.waseda.ac.jp>
 
 	* skk-macs.el (skk-charsetp): Rearrange conditionals.
@@ -16,13 +25,13 @@
 	(skk-hankaku-alist): Define for mule1 and nemacs, too.
 	(skk-coding-system-alist): Define string and number data for
 	nemacs.
-	
+
 	* experimental/skk-e18.el (skk-j-mode-on): Removed
 	(skk-j-mode-on): Ditto.
 	(skk-latin-mode-on): Ditto.
 	(skk-jisx0208-latin-mode-on): Ditto.
 	(skk-abbrev-mode-on): Ditto.
- 	(skk-hankaku-alist): Ditto.
+	(skk-hankaku-alist): Ditto.
 	(skk-emulate-original-map): Ditto.
 	(skk-mode): Remove advice.
 	(skk-e18-setup): Moved to skk.el.
@@ -86,7 +95,7 @@
 	`skk-emacs-type'.
 	(skk-kill-emacs-without-saving-jisyo): Ditto.
 	(skk-henkan-show-candidates): Ditto.
-	
+
 	* experimental/skk-e18.el (read-event): Removed.
 	(skk-in-minibuffer-p): Ditto.
 	(skk-lisp-prog-p): Ditto.
@@ -204,7 +213,7 @@
 	(skk-nunion): Change open parens to closed ones.
 
 	* skk-macs.el (skk-eval-string): Return STRING.
-	
+
 2000-01-19  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK: Typo.
@@ -223,7 +232,6 @@
 
 	* skk-jisx0201.el: Modify comments.
 
->>>>>>> 1.1.2.4.2.116
 2000-01-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (skk-insert-new-word): Use `skk-eval-string'.
@@ -368,11 +376,11 @@
 	(skk-remove-redundant-okurgana): Bug fixed.
 
 	* skk-vars.el: Remove unnecessary blanks between parens.
-	
+
 	* skk-viper.el (skk-viper-normalize-map): Use `static-if' instead
 	of `if'.  Call `skk-viper-normalize-map-function' even if
 	SKK related minor mode map is in minor-mode-map-alist.
- 
+
 1999-12-21  Murata Shuuichirou  <mrt@notwork.org>
 
 	* skk-macs.el (skk-color-display-p): Check whether X or not,
@@ -385,10 +393,10 @@
 
 	* skk.el (kill-buffer): Doc fixed.
 	(minibuffer-keyboard-quit): Add advice only for XEmacs.
-	
+
 	* READMEs/PROPOSAL (分割したファイルに必須の記述): Modify for
 	Daredevil.
-	
+
 	* READMEs/README.win (Message-ID): Ditto.
 
 1999-12-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
@@ -427,7 +435,7 @@
 	(skk-mode-hook): Hook `skk-mode-once-again'.
 	(minibuffer-exit-hook): Set cursor in the latest current buffer
 	(not minibuffer).
-	
+
 	* skk-viper.el: Eliminate all spaces which existed between
 	parens.
 	(skk-cursor-set-properly): Change function to advice.
@@ -461,7 +469,7 @@
 	Set `viper-insert-state-cursor-color' to the value of
 	`skk-viper-saved-cursor-color' if insert-state.
 	(viper-insert-state-cursor-color): Make it buffer-local variable.
-	;; 
+	;;
 	* skk-isearch.el: Eliminate all spaces which existed between
 	parens.
 	Modify doc string about hooks.

@@ -2,9 +2,9 @@
 ;; Copyright (C) 2000 Tsukamoto Tetsuo
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
-;; Version: $Id: skk-e18.el,v 1.1.2.22 2000/08/28 14:53:17 czkmt Exp $
+;; Version: $Id: skk-e18.el,v 1.1.2.23 2000/09/12 08:57:37 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/28 14:53:17 $
+;; Last Modified: $Date: 2000/09/12 08:57:37 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -31,17 +31,15 @@
 ;;
 ;; に限られています。
 ;; Daredevil SKK は advice.el を必要とします。Emacs 18 で利用できる
-;; advice.el は
-;;
-;;     ftp://ftp.cs.buffalo.edu/pub/Emacs/
-;;
-;; において配布されています。
+;; advice.el Daredevil SKK のアーカイブの patch/e18/ というディレクトリに収録さ
+;; れています。
 
 ;;; Code:
 (condition-case nil
     (require 'advice)
   (error
-   (error "advice.el is required for This version of SKK.")))
+   (error "advice.el is required for this version of SKK.
+Install patch/e18/advice.el in load-path and try again.")))
 
 ;; skk-vars.el で default variable を nil にしておきましたが、念のた
 ;; め、defconst しておきましょう。

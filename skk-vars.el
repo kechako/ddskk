@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.34 2000/09/06 14:57:34 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.35 2000/09/07 10:08:52 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/06 14:57:34 $
+;; Last Modified: $Date: 2000/09/07 10:08:52 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -106,8 +106,8 @@
 
 (defgroup skk nil "SKK basic customization."
   :prefix "skk-"
-  :group 'japanese
-  :group 'input-method)
+  :group 'mule
+  :group 'leim)
 
 (defgroup skk-faces nil
   "Faces used by SKK."
@@ -2329,9 +2329,9 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
   "skk-henkan-key の中に含まれる数字を表す文字列のリスト。
 例えば、\"▽へいせい7ねん10がつ\" の変換を行うとき、skk-henkan-key は
 \"へいせい7ねん10がつ\" であり、skk-num-list は \(\"7\" \"10\"\) となる。
-\(buffer local\)" )
+\(buffer local\)")
 
-;;###autoload
+;;;###autoload
 (make-variable-buffer-local 'skk-num-list)
 
 (defvar skk-num-recompute-key nil

@@ -1,7 +1,7 @@
 -*- outline -*-
 
-             $Date: 1999/11/22 06:20:07 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
-	     $Id: CVS_digest,v 1.1.2.7 1999/11/22 06:20:07 minakaji Exp $
+             $Date: 2000/09/05 21:40:48 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
+	     $Id: CVS_digest,v 1.1.2.8 2000/09/05 21:40:48 minakaji Exp $
 
 [CVS $B%@%$%8%'%9%H(B]
 
@@ -20,6 +20,9 @@
 	       |
 	       |
 	       +-- tools (Dictionary maintenance tools)
+	       |
+	       |
+	       +-- pySKK (SKK related libraries using python)
 
 * cvs $B%5!<%P$+$i$N%=!<%9$NF~<j(B
 
@@ -131,7 +134,7 @@ guest $B$G(B checkout $B$7$?%o!<%-%s%0%3%T!<$O(B guest@openlab.ring.gr.jp $
 login $B$9$k$h$&(B CVS/Root $B$K>pJs$,<}G<$5$l$F$$$^$9$N$G!"(Bcommit $B$9$k$J$I!"(B
 cvs server $B>e$N%=!<%9$KJQ99$r2C$($k>l9g$O!"$3$N>pJs$r(B
 
-   `$B<+J,$N%"%+%&%s%HL>(B@ring.gr.jp'
+   `$B<+J,$N%"%+%&%s%HL>(B@openlab.ring.gr.jp'
 
 $B$KJQ99$9$k$+!"<+J,$N%"%+%&%s%H$r;H$C$F:FEY(B checkout $B$9$kI,MW$,$"$j$^$9!#(B
 

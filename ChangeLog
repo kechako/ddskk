@@ -1,3 +1,10 @@
+2000-09-06  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/MEMO.txt: Add some idea.
+
+	* READMEs/CVS_digest: Typo fixed.
+	Add description about pySKK.
+
 2000-09-06  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-leim.el (skk-leim-exit-from-minibuffer): New function.

@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.21 1999/12/18 08:58:35 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.22 1999/12/18 19:07:05 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/18 08:58:35 $
+;; Last Modified: $Date: 1999/12/18 19:07:05 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -268,14 +268,14 @@
 		       (skk-minibuffer-origin) (skk-cursor-current-color)))
 	     (skk-cursor-set-properly)
 	     (static-when (eq skk-emacs-type 'xemacs)
-	       (cond ((and (memq this-command '(skk-insert))
+	       (cond ((and (memq this-command '(skk-start-henkan skk-insert))
+			    (with-current-buffer
+				(skk-minibuffer-origin) skk-abbrev-mode))
+		      (skk-cursor-set-color skk-cursor-hiragana-color))
+		     ((and (memq this-command '(skk-insert))
 			   (not (memq last-command-char
 				      '(?\\))))
 		      nil)
-		     ((and (memq this-command '(skk-start-henkan))
-			   (with-current-buffer
-			       (skk-minibuffer-origin) skk-abbrev-mode))
-		      (skk-cursor-set-color skk-cursor-hiragana-color))
 		     (t
 		      (skk-cursor-set-color skk-cursor-default-color)))))))
 

@@ -104,8 +104,9 @@ May not work with a more complicated program like Gnus."
 		      (and
 		       (ad-Orig-require (ad-get-arg 0) (format "%s~%d" str i))
 		       (throw 'tag t))
-		    (file-error nil)
-		    (error (car err2) (cdr err2)))
+		    (error
+		     (if (eq (car features) (ad-get-arg 0))
+			 (setq features (cdr features)))))
 		  (setq i (1+ i)))))
 	     (t
 	      nil)))

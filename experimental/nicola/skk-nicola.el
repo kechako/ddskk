@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/10 16:00:39 $
+;; Last Modified: $Date: 2000/09/11 10:46:28 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -300,13 +300,11 @@ keycode 131 = underscore\n"))
     (list
      (let ((str
 	    (catch 'tag
-	      (mapcar
-	       (function
-		(lambda (list)
-		  (when (eq (nth 3 list)
-			    'skk-kanagaki-set-okurigana)
-			  (throw 'tag (nth 1 list)))))
-	       (nth 4 skk-kanagaki-rule-tree)))))
+	      (dolist (list (nth 4 skk-kanagaki-rule-tree))
+		(when (memq (nth 3 list)
+			    '(skk-kanagaki-set-okurigana
+			      skk-kanagaki-set-okurigana-no-sokuon))
+		  (throw 'tag (nth 1 list)))))))
        (if (stringp str)
 	   (cons str "送りあり変換開始"))))
     ;;

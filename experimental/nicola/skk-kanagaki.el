@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/06 11:34:48 $
+;; Last Modified: $Date: 2000/09/11 10:46:27 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -169,6 +169,7 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'cl)
   (require 'skk-macs)
   (require 'skk-vars)
   (require 'static))
@@ -387,20 +388,19 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
       (insert
        (apply
 	'concat
-	(cons
-	 (format "%s\n\n" title)
-	 (mapcar
-	  (function
-	   (lambda (cons)
-	     (cond
-	      ((and (symbolp (car cons))
-		    (symbol-value (car cons)))
-	       (format "%s $B!D(B %s\n"
-		       (key-description (symbol-value (car cons))) (cdr cons)))
-	      (t
-	       (format "%s $B!D(B %s\n" (car cons) (cdr cons))))))
-	  ;;
-	  (delq nil list)))))
+	(format "%s\n\n" title)
+	(mapcar
+	 (function
+	  (lambda (cons)
+	    (cond
+	     ((and (symbolp (car cons))
+		   (symbol-value (car cons)))
+	      (format "%s $B!D(B %s\n"
+		      (key-description (symbol-value (car cons))) (cdr cons)))
+	     (t
+	      (format "%s $B!D(B %s\n" (car cons) (cdr cons))))))
+	 ;;
+	 (delq nil list))))
       ;;
       (setq buffer-read-only t)
       (set-buffer-modified-p nil)
@@ -434,13 +434,11 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
     (list
      (let ((str
 	    (catch 'tag
-	      (mapcar
-	       (function
-		(lambda (list)
-		  (when (eq (nth 3 list)
-			    'skk-kanagaki-set-okurigana)
-		    (throw 'tag (nth 1 list)))))
-	       (nth 4 skk-kanagaki-rule-tree)))))
+	      (dolist (list (nth 4 skk-kanagaki-rule-tree))
+		(when (memq (nth 3 list)
+			    '(skk-kanagaki-set-okurigana
+			      skk-kanagaki-set-okurigana-no-sokuon))
+		  (throw 'tag (nth 1 list)))))))
        (if (stringp str)
 	   (cons str "$BAw$j$"$jJQ493+;O(B")))))))
 

@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/08 17:23:15 $
+;; Last Modified: $Date: 2000/09/11 10:46:27 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -26,6 +26,7 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'cl)
   (require 'skk-vars))
 
 (eval-and-compile
@@ -73,18 +74,17 @@ Convert to Hankaku Katakana or Toggle Katakana <=> Hankaku Katakana Mode"
  ((not (fboundp 'easy-menu-add-item))
   (require 'skk-kanagaki-menu-oe))
  (t
-  (mapcar
-   (function
-    (lambda (map)
-      (easy-menu-add-item
-       map
-       '("menu-bar" "SKK")
-       skk-kanagaki-menu-items)))
-   (append
-    (list skk-j-mode-map skk-latin-mode-map skk-abbrev-mode-map
-	  skk-jisx0208-latin-mode-map)
-    (and (featurep 'skk-jisx0201)
-	 (list skk-jisx0201-mode-map))))))
+  (dolist (map (append
+		(list skk-j-mode-map
+		      skk-latin-mode-map
+		      skk-abbrev-mode-map
+		      skk-jisx0208-latin-mode-map)
+		(and (featurep 'skk-jisx0201)
+		     (list skk-jisx0201-mode-map))))
+    (easy-menu-add-item
+     map
+     '("menu-bar" "SKK")
+     skk-kanagaki-menu-items))))
 
 ;;
 

@@ -1,31 +1,35 @@
 -*- text -*-
 
-     $Id: CVS_00readme,v 1.1.2.5 2000/09/10 12:07:57 czkmt Exp $
+     $Id: CVS_00readme,v 1.1.2.6 2000/09/22 13:31:42 czkmt Exp $
 
 
 CVS の入手
 
-  CVS は GNU のミラーサイトから入手できます。マスターサイトは
+  CVS は 以下のサイトで配布されています。
 
-    ftp://ftp.gnu.org/gnu/non-gnu/cvs/
+  ftp://ftp.cvshome.org/pub/
+
+  現時点での最新版は cvs-1.11 です。
+
+  また、少し更新が遅れ気味のようですが、 GNU のミラーサイトからも入手
+  できます。マスターサイトは
+
+  ftp://ftp.gnu.org/gnu/non-gnu/cvs/
 
   ですが、日本から入手する場合は
 
-    ftp://ftp.ring.gr.jp/pub/GNU/non-gnu/cvs/
-    ftp://ftp.win.ne.jp/pub/GNU/non-gnu/cvs/
-    ftp://ftp.iij.ad.jp/pub/GNU/non-gnu/cvs/
-    ftp://ftp.tokyonet.ad.jp/pub/GNU/non-gnu/cvs/
+  ftp://ftp.ring.gr.jp/pub/GNU/non-gnu/cvs/ 
+  ftp://ftp.win.ne.jp/pub/GNU/non-gnu/cvs/ 
+  ftp://ftp.iij.ad.jp/pub/GNU/non-gnu/cvs/ 
+  ftp://ftp.tokyonet.ad.jp/pub/GNU/non-gnu/cvs/ 
 
-  等の日本のサイトを利用すればいいでしょう。現時点での最新版は 
-  cvs-1.10 です。
+  等の日本のサイトを利用すればいいでしょう。
 
-  GNU のミラーサイトに置かれるのは安定した正式リリース版のみですが、最
-  新の開発版を利用したい人は
+  上記は安定した正式リリース版ですが、最新の開発版を利用したい人は
 
-    http://www.cvshome.org/dev/source.html
+  http://www.cvshome.org/dev/source.html
 
-  に置かれているものが利用できます。現時点での最新版は cvs-1.10.8 です。
-
+  をご覧ください。
 
   Windows の binary が欲しい方は、
 

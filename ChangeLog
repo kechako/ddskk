@@ -1,3 +1,9 @@
+2000-08-20  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-isearch.el (skk-isearch-delete-char): Call `skk-kakutei' if
+	point in the working buffer is the same as {or less than}
+	`skk-henkan-start-point'.
+
 2000-08-19  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* READMEs/CVS_00readme: Update.

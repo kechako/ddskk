@@ -1,3 +1,10 @@
+2000-10-02  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-leim.el (locate-libraries, load-libraries): New functinos
+	from egg-util.el in Tamago 4.
+
+	* skk-setup.el.in: Load all `leim-list.el' files.
+
 2000-10-02  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-vars.el (skk-num-uniq): Check if `skk-num-type-alist' has

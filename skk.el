@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.37 2000/01/25 14:55:30 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.38 2000/01/25 15:19:56 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/25 14:55:30 $
+;; Last Modified: $Date: 2000/01/25 15:19:56 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/25 14:55:30 $")
+      (let* ((raw-date "$Date: 2000/01/25 15:19:56 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1463,6 +1463,43 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
      (if (consp new-one)
          (cdr new-one)
        new-one))))
+
+(defun skk-henkan-show-candidate-subr (keys candidates)
+  ;; key と candidates を組み合わせて 7 つの候補群 (候補数が 7 に満たなかっ
+  ;; たらそこで打ち切る) の文字列を作り、ミニバッファに表示する。
+  (let ((workinglst
+	 ;; CANDIDATES の先頭の 7 つのみのリスト。
+	 (let ((count 0) e v)
+	   (while (> 7 count)
+	     (setq e (nth count candidates))
+	     (if e
+		 (setq v (cons (if (not (skk-lisp-prog-p e))
+				   e
+				 (or (skk-eval-string e) e))
+			       v)
+		       count (1+ count))
+	       (setq count 7)))
+	   (nreverse v)))
+	(n 0) str cand message-log-max)
+    (if (not (car workinglst))
+        nil
+      (setq workinglst (skk-truncate-message workinglst))
+      (setq n 1
+            ;; 最初の候補の前に空白をくっつけないように最初の候補だけ先に取り
+            ;; 出す。
+            str (concat (car keys) ":" (if (consp (car workinglst))
+					   (cdr (car workinglst))
+					 (car workinglst))))
+      ;; 残りの 6 つを取り出す。候補と候補の間を空白でつなぐ。
+      (while (and (< n 7) (setq cand (nth n workinglst)))
+        (setq cand (if (consp cand) (cdr cand) cand)
+              str (concat str "  " (nth n keys) ":" cand)
+              n (1+ n)))
+      (message "%s  [残り %d%s]"
+               str (length (nthcdr n candidates))
+               (make-string (length skk-current-search-prog-list) ?+)))
+    ;; 表示する候補数を返す。
+    n))
 
 (defun skk-truncate-message (l)
   (let* (

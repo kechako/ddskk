@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-setup.el.in,v 1.1.2.6 2000/08/15 11:02:46 czkmt Exp $
+;; Version: $Id: skk-setup.el.in,v 1.1.2.7 2000/09/04 14:45:50 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/15 11:02:46 $
+;; Last Modified: $Date: 2000/09/04 14:45:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -55,7 +55,7 @@
 
 (add-hook 'isearch-mode-end-hook
 	  (lambda ()
-	    (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))))
+	    (and (featurep 'skk-isearch) (skk-isearch-mode-cleanup))))
 
 (add-hook 'isearch-mode-end-hook
 	  (lambda ()
@@ -64,6 +64,34 @@
 		     (skk-color-display-p))
 		(skk-set-cursor-properly)))
 	  'append)
+
+(or (featurep 'xemacs)
+    (and (fboundp 'register-input-method)
+	 (progn
+	   (define-key isearch-mode-map "\C-\\" 'isearch-toggle-input-method)
+	   (defadvice isearch-toggle-input-method (around skk-setup-ad activate)
+	     (cond ((string-match
+		     "^japanese-skk"
+		    (format "%s" default-input-method))
+		    (let ((skk-isearch-initial-mode-when-skk-mode-disabled 'latin))
+		      (skk-isearch-mode-setup)
+		      (skk-isearch-skk-mode)))
+		   ((null default-input-method)
+		    ad-do-it
+		    (when (string-match
+			   "^japanese-skk"
+			   (format "%s" default-input-method))
+		      (let ((skk-isearch-initial-mode-when-skk-mode-disabled 'latin))
+			(skk-isearch-mode-setup))
+		      (inactivate-input-method)))
+		   (t
+		    ad-do-it)))
+	   (defadvice isearch-message-prefix (around skk-setup-ad activate)
+	     (cond ((string-match
+		     "^japanese-skk"
+		    (format "%s" default-input-method))
+		    (let (current-input-method) ad-do-it))
+		   (t ad-do-it))))))
 
 (provide 'skk-setup)
 ;;; Local Variables:

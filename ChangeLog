@@ -17,6 +17,8 @@
 
 	* skk.el (skk-regularize): Require skk-jisx0201 if
 	`skk-use-jisx0201-input-method' is non-nil.
+	Require skk-kanagaki if `skk-use-kana-keyboard' is non-nil. --
+	in this function instead of `skk-mode'.
 
 2000-08-16  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 

@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.29 2000/09/14 14:49:14 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.30 2000/09/17 15:02:53 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/14 14:49:14 $
+;; Last Modified: $Date: 2000/09/17 15:02:53 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -219,6 +219,7 @@ kakutei'ed and erase the buffer contents."
 	(setq skk-isearch-mode-map
 	      (skk-isearch-setup-keymap (cons 'keymap isearch-mode-map))))))
   (set skk-isearch-overriding-local-map skk-isearch-mode-map)
+  ;; Input Method として SKK を使っている場合の対策
   (when (and (boundp 'current-input-method) current-input-method
 	     (string-match "^japanese-skk" current-input-method))
     (let* ((method current-input-method)
@@ -229,8 +230,10 @@ kakutei'ed and erase the buffer contents."
 	(unless current-input-method
 	  (setq inactivate-current-input-method-function func)
 	  (setq current-input-method method)))))
+  ;; skk-isearch の状態を表す内部変数の設定
   (setq skk-isearch-switch t)
   (setq skk-isearch-in-editing nil)
+  ;;
   (setq skk-isearch-incomplete-message ""
 	;; set skk-isearch-message non-nil to call skk-isearch-message.
 	skk-isearch-message "")
@@ -260,13 +263,16 @@ kakutei'ed and erase the buffer contents."
 	  ((eq mode 'abbrev) (skk-abbrev-mode-on))
 	  ((eq mode 'latin) (skk-latin-mode-on))
 	  ((eq mode 'jisx0208-latin) (skk-jisx0208-latin-mode-on))))
-  (setq skk-isearch-switch nil)
-  (unless skk-isearch-in-editing
-    (setq skk-isearch-state nil))
+  ;; Input Method として SKK を使っている場合の対策
   (when (and (boundp 'default-input-method)
 	     (string-match "^japanese-skk" (format "%s" default-input-method)))
     (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
       (inactivate-input-method)))
+  ;; skk-isearch の状態を表す内部変数の設定
+  (setq skk-isearch-switch nil)
+  (unless skk-isearch-in-editing
+    (setq skk-isearch-state nil))
+  ;;
   (remove-hook 'pre-command-hook 'skk-pre-command 'local)
   (skk-remove-minibuffer-setup-hook
    'skk-j-mode-on 'skk-setup-minibuffer
@@ -285,6 +291,8 @@ Optional argument PREFIX is apppended if given."
 ;;
 
 (defun skk-isearch-find-keys-define (map commands command)
+  ;; COMANDS のいずれかにバインドされているキーを全て調べる。skk-isearh の中で
+  ;; それらのキーを COMMAND にバインドする。
   (do ((commands commands (cdr commands))
        prefs)
       ((null commands))
@@ -292,7 +300,7 @@ Optional argument PREFIX is apppended if given."
       (when (and (= (length key) 2) (not (member (aref key 0) prefs)))
 	(define-key map (vector (aref key 0)) (make-sparse-keymap))
 	(setq prefs (cons (aref key 0) prefs)))
-      (unless (> (length key) 2)
+      (when (<= (length key) 2)
 	(define-key map key command)))))
 
 ;; XXX should be more generic
@@ -436,39 +444,44 @@ If the current mode is different from previous, remove it first."
 ;;
 (defun skk-isearch-delete-char (&rest args)
   (interactive "P")
-  (or (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
-	;; following code is highly depends on internal of skk.
-	(if (skk-isearch-conversion-active-p)
-	    (prog1
-		t
-	      (cond
-	       ((save-excursion
-		  (condition-case nil (goto-char (point-max)) (error))
-		  (>= skk-henkan-start-point (point)))
-		(setq skk-henkan-count 0)
-		(skk-kakutei)
-		(isearch-message))
-	       (t
-		(if (string= skk-prefix "")
-		    ;; now, we can't pass the universal argument within the
-		    ;; isearch-mode.  so hard code the value `1'.
-		    (delete-backward-char 1)
-		  (skk-erase-prefix 'clean))
-		(setq skk-isearch-incomplete-message (buffer-string))
-		(skk-isearch-incomplete-message))))))
-      (do* ((cmds isearch-cmds (cdr cmds))
-	    (cmd (car cmds) (car cmds))
-	    (prompt (skk-isearch-mode-string)))
-	  ((null cmds) (isearch-delete-char))
-	(unless (string-match (concat "^" (regexp-quote prompt)) (cadr cmd))
-	  (do ((alist skk-isearch-mode-string-alist (cdr alist))
-	       (msg nil (and (string-match
-			      (concat "^" (regexp-quote (cdar alist)))
-			      (cadr cmd))
-			     (substring (cadr cmd) (match-end 0)))))
-	      ((or msg (null alist))
-	       (setcdr cmd (cons (concat prompt (or msg (cadr cmd)))
-				 (cddr cmd)))))))))
+  (unless (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
+	    ;; following code is highly depends on internal of skk.
+	    (if (skk-isearch-conversion-active-p)
+		(prog1
+		    t
+		  (cond
+		   ((save-excursion
+		      (condition-case nil (goto-char (point-max)) (error))
+		      (>= skk-henkan-start-point (point)))
+		    (setq skk-henkan-count 0)
+		    (skk-kakutei)
+		    (isearch-message))
+		   (t
+		    (if (string= skk-prefix "")
+			;; now, we can't pass the universal argument within the
+			;; isearch-mode.  so hard code the value `1'.
+			(delete-backward-char 1)
+		      (skk-erase-prefix 'clean))
+		    (setq skk-isearch-incomplete-message (buffer-string))
+		    (skk-isearch-incomplete-message))))))
+    ;;
+    (do* ((cmds isearch-cmds (cdr cmds))
+	  (cmd (car cmds) (car cmds))
+	  (prompt (skk-isearch-mode-string)))
+	((null cmds) (isearch-delete-char))
+      (unless (string-match (concat "^" (regexp-quote prompt)) (cadr cmd))
+	;; `skk-isearch-delete-char' が呼ばれる前に `skk-isearch-working-buffer'
+	;; 内のモードが切り替えられていた場合、isearch-cmds の各要素について、
+	;; messege の内容を update しないと [DEL] したときのモードの表示がおかし
+	;; くなる。
+	(do ((alist skk-isearch-mode-string-alist (cdr alist))
+	     (msg nil (and (string-match
+			    (concat "^" (regexp-quote (cdar alist)))
+			    (cadr cmd))
+			   (substring (cadr cmd) (match-end 0)))))
+	    ((or msg (null alist))
+	     (setcdr cmd (cons (concat prompt (or msg (cadr cmd)))
+			       (cddr cmd)))))))))
 
 (defun skk-isearch-kakutei (isearch-function)
   "Special wrapper for skk-kakutei or newline."
@@ -554,7 +567,7 @@ If the current mode is different from previous, remove it first."
 	  (set skk-isearch-overriding-local-map local-map))))))
 
 ;;
-;; Advice.
+;; Pieces of advice.
 ;;
 
 (defadvice isearch-repeat (after skk-isearch-ad activate preactivate)
@@ -591,6 +604,9 @@ If the current mode is different from previous, remove it first."
 	     (skk-isearch-mode-string)
 	     (mapconcat 'isearch-text-char-description isearch-string ""))))))
 
+
+;;
+
 (put 'skk-isearch-wrapper 'isearch-command t)
 (put 'skk-isearch-keyboard-quit 'isearch-command t)
 (put 'skk-isearch-newline 'isearch-command t)
@@ -598,7 +614,8 @@ If the current mode is different from previous, remove it first."
 (put 'skk-isearch-delete-char 'isearch-command t)
 (put 'isearch-other-control-char 'isearch-command t)
 (put 'skk-isearch-skk-mode 'isearch-command t)
-
+
+;;
 (provide 'skk-isearch)
 
 ;;; skk-isearch.el ends here

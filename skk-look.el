@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.3 2000/07/07 22:13:37 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.4 2000/08/02 14:34:49 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:37 $
+;; Last Modified: $Date: 2000/08/02 14:34:49 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -130,7 +130,7 @@
 		      (delete '(skk-look) (copy-sequence skk-search-prog-list))))
 		 (setq skk-henkan-key (car v))
 		 (while skk-current-search-prog-list
-		   (setq v3 (skk-search)
+		   (setq v3 (let (skk-use-numeric-conversion) (skk-search))
 			 v2 (if (not skk-look-expanded-word-only)
 				(skk-nunion v2 (cons (car v) v3))
 			      (if v3

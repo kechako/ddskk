@@ -1,3 +1,18 @@
+1999-12-23  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-update-jisyo-original): Get HENKAN-BUFFER temporary
+	variable only when `skk-update-end-function' is non-nil.
+	(skk-remove-redundant-okurgana): New function.
+	(skk-henkan-in-minibuff): Use `skk-remove-redundant-okurgana'.
+	Doc fixed.  Remove OKURIGANA temporary variable.
+	(skk-version): Remove a `,' between version number and code name.
+
+	* skk-vars.el: Remove unnecessary blanks between parens.
+	
+	* skk-viper.el (skk-viper-normalize-map): Use `static-if' instead
+	of `if'.  Call `skk-viper-normalize-map-function' even if
+	SKK related minor mode map is in minor-mode-map-alist.
+ 
 1999-12-21  Murata Shuuichirou  <mrt@notwork.org>
 
 	* skk-macs.el (skk-color-display-p): Check whether X or not,

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.25 1999/12/20 13:08:23 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.26 1999/12/23 06:33:35 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/20 13:08:23 $
+;; Last Modified: $Date: 1999/12/23 06:33:35 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/12/20 13:08:23 $")
+      (let* ((raw-date "$Date: 1999/12/23 06:33:35 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -91,7 +91,7 @@
             (setq month (substring month (match-end 0))))
         (if (string-match "^0" date)
             (setq date (substring date (match-end 0))))
-        (message "SKK version %s %s, %s of %s, APEL inside"
+        (message "SKK version %s %s %s of %s, APEL inside"
                  skk-branch-name skk-version skk-codename
                  (concat (car (rassoc month skk-month-alist))
                          " " date ", " year))))))
@@ -1538,10 +1538,9 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
        l))))
 
 (defun skk-henkan-in-minibuff ()
-  ;; ミニバッファで辞書登録をし、登録したエントリの文字列を返す。
+  ;; 辞書登録モードに入り、登録した単語の文字列を返す。
   (save-match-data
     (let ((enable-recursive-minibuffers t)
-	  (okurigana skk-henkan-okurigana)
           ;; 変換中に isearch message が出ないようにする。
           skk-isearch-message new-one)
       (add-hook 'minibuffer-setup-hook 'skk-j-mode-on)
@@ -1562,19 +1561,10 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		     (funcall skk-read-from-minibuffer-function))))
         (quit
          (setq new-one "")))
-      ;; 送りありの登録をするとき、送り仮名を消してから [RET] を押さなければ正しく
-      ;; 登録できない。そこで、ユーザが間違えて送り仮名を消し忘れていないかどうか、
-      ;; SKK の側でチェックできる範囲についてはユーザの確認を取る。この部分は
-      ;; `skk-check-okurigana-on-toroku' を non-nil に設定している場合のみ有効。
-      (if (and skk-okuri-char new-one skk-check-okurigana-on-toroku)
-	  (if (and
-	       (string-match (concat okurigana "$") new-one)
-	       (skk-y-or-n-p
-		(format "「%s」 の 「%s」 は送り仮名ですか？" new-one okurigana)
-		(format "You mean \"%s\" in \"%s\" is okurigana ?" okurigana new-one)))
-	      ;; ユーザの指示に従い送り仮名を取り除く。
-	      (setq new-one (substring new-one 0 (match-beginning 0)))))
-      ;;
+      (if (and skk-check-okurigana-on-toroku 
+	       ;; 送りあり変換でも skk-okuri-char だけだと判断できない。
+	       skk-henkan-okurigana new-one)
+	  (setq new-one (skk-remove-redundant-okurgana new-one)))
       (if (string= new-one "")
           (if skk-exit-show-candidates
               ;; ミニバッファに表示した候補が尽きて辞書登録に入ったが、空文字
@@ -1629,6 +1619,24 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
  	(string-match "[a-z]+$" skk-henkan-key)
  	(concat (substring skk-henkan-key 0 (match-beginning 0))
  		"*" skk-henkan-okurigana))))
+
+(defun skk-remove-redundant-okurgana (word)
+  ;; 送りありの登録をするとき、送り仮名を消してから [RET] を押さなければ正しく
+  ;; 登録できない。そこで、ユーザが間違えて送り仮名を消し忘れていないかどうか、
+  ;; SKK の側でチェックできる範囲についてはユーザの確認を取る。この部分は
+  ;; `skk-check-okurigana-on-toroku' を non-nil に設定している場合のみ有効。
+  ;; 変換が行なわれたバッファでコールされる (ミニバッファ、辞書バッファではない)。
+  (save-match-data
+    (if (and (string-match (concat skk-henkan-okurigana "$") word)
+	     (skk-y-or-n-p
+	      (format "辞書登録モードで入力した「%s」の「%s」は送り仮名ですか？"
+		      word skk-henkan-okurigana)
+	      (format "You mean \"%s\" in \"%s\" you typed in dictionary register mode is okurigana?" 
+		      skk-henkan-okurigana word)))
+	;; ユーザの指示に従い送り仮名を取り除く。
+	(progn
+	  (message "")
+	  (substring word 0 (match-beginning 0))))))
 
 (defun skk-setup-minibuffer ()
   ;; カレントバッファの入力モードに従いミニバッファの入力モードを設定する。
@@ -2954,11 +2962,13 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	 (if skk-use-numeric-conversion
 	     (skk-num-compute-henkan-key skk-henkan-key)
 	   skk-henkan-key))
-	(henkan-buffer (current-buffer)))
+	(henkan-buffer (and skk-update-end-function (current-buffer))))
     (if jisyo-buffer
 	(let ((inhibit-quit t) buffer-read-only old-entry okurigana)
 	  (if (> skk-okuri-index-min -1)
 	      (setq word (skk-remove-common word)
+		    ;; skk-henkan-key は skk-remove-common によって変更されてい
+		    ;; る可能性がある。
 		    midasi skk-henkan-key))
 	  (setq okurigana (or skk-henkan-okurigana skk-okuri-char))
 	  (with-current-buffer jisyo-buffer
@@ -3378,6 +3388,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   ;; 例えば、word == 持ってきた であれば、skk-henkan-key := "もt",
   ;; skk-henkan-okurigana := "って", word := "持" のように分解し、word を返す。
   ;; skk-auto-okuri-process の値が non-nil であるときにこの関数を使用する。
+  ;; 変換が行なわれたバッファでコールされる (辞書バッファではない)。
   (if (and (not (skk-numeric-p)) (not skk-abbrev-mode)
            (or skk-henkan-in-minibuff-flag
                (and (<= skk-okuri-index-min skk-henkan-count)
@@ -3391,9 +3402,9 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
         (if (not (and (>= midasi-len 2) (>= word-len 2)))
             nil
           ;; check if both midasi and word end with the same ascii char.
-          (if (and (eq (skk-str-ref midasi (1- midasi-len))
-		       (skk-str-ref word (1- word-len)))
-                   (skk-ascii-char-p (skk-str-ref midasi (1- midasi-len))))
+          (if (and (skk-ascii-char-p (skk-str-ref midasi (1- midasi-len)))
+		   (eq (skk-str-ref midasi (1- midasi-len))
+		       (skk-str-ref word (1- word-len))))
               ;; if so chop off the char from midasi and word.
 	      ;; assume size of an ASCII char is always 1.
               (setq midasi (substring midasi 0 -1)
@@ -3404,56 +3415,57 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 					   midasi-len)
 		word-tail (skk-substring word (1- word-len)
 					 word-len))
-          ;; もう少し展開できそうだが、バイトコンパイラーがオプティマイズしや
-          ;; すいように not を付けるだけにしておく。
           (if (not (and (string= midasi-tail word-tail)
-                        (or (and (skk-string<= "ぁ" midasi-tail)
-                                 (skk-string<= midasi-tail "ん"))
-                            (member midasi-tail '("、" "。" "，" "．")))))
-              nil
-            (setq pos (1- word-len)
-                  new-word new-skk-henkan-key)
-            (while (and cont (> pos 0))
-              (setq char (skk-substring word (1- pos) pos))
-              (if (and (skk-string<= "亜" char) (skk-string<= char "瑤"))
-                  ;; char is the right-most Kanji
-                  (setq cont nil)
-                (setq pos (1- pos))))
-            (setq pos2 (- midasi-len (- word-len pos)))
-            ;; check if midasi and word has the same tail of length
-            (if (not (string= (skk-substring midasi pos2 midasi-len)
-                              (skk-substring word pos word-len)))
-                nil
-              (setq okuri-first (skk-substring word pos (1+ pos)))
-              (setq skk-henkan-okurigana
-                    (if (and (string= okuri-first "っ")
-                             (<= (+ pos 2) word-len))
-                        ;; in this case okuriga consits of two
-                        ;; characters, e.g., 「残った」
-                        (skk-substring word pos (+ pos 2))
-                      okuri-first))
-              (setq new-word (skk-substring word 0 pos)
+			(or (and (skk-string<= "ぁ" midasi-tail)
+				 (skk-string<= midasi-tail "ん"))
+			    (member midasi-tail '("、" "。" "，" "．")))))
+	      nil
+	    ;; 見出し語と単語との末尾が同一のかな文字の場合。
+	    ;; 送りなしを送りありへ
+	    (setq pos (1- word-len)
+		  new-word new-skk-henkan-key)
+	    (while (and cont (> pos 0))
+	      (setq char (skk-substring word (1- pos) pos))
+	      (if (and (skk-string<= "亜" char) (skk-string<= char "瑤"))
+		  ;; char is the right-most Kanji
+		  (setq cont nil)
+		(setq pos (1- pos))))
+	    (setq pos2 (- midasi-len (- word-len pos)))
+	    ;; check if midasi and word has the same tail of length
+	    (if (not (string= (skk-substring midasi pos2 midasi-len)
+			      (skk-substring word pos word-len)))
+		nil
+	      (setq okuri-first (skk-substring word pos (1+ pos)))
+	      (setq skk-henkan-okurigana
+		    (if (and (string= okuri-first "っ")
+			     (<= (+ pos 2) word-len))
+			;; in this case okuriga consits of two
+			;; characters, e.g., 「残った」
+			(skk-substring word pos (+ pos 2))
+		      okuri-first))
+	      (setq new-word (skk-substring word 0 pos)
 		    new-skk-okuri-char (skk-okurigana-prefix okuri-first)
 		    new-skk-henkan-key (concat
 					(skk-substring midasi 0 pos2)
 					new-skk-okuri-char))
-              (if (not skk-henkan-in-minibuff-flag)
-                  (setq word new-word
-                        skk-henkan-key new-skk-henkan-key)
-                ;; ask if register as okuri-ari word.
-                (let (inhibit-quit)	; allow keyboard quit
-                  (if (y-or-n-p
-                       (format
-                        (if skk-japanese-message-and-error
-                            "%s /%s/ を送りありエントリとして登録しますか？"
-                          "Shall I register this as okuri-ari entry: %s /%s/ ? ")
-                        new-skk-henkan-key new-word))
-                      (setq word new-word
+	      (if (not skk-henkan-in-minibuff-flag)
+		  (setq word new-word
+			skk-henkan-key new-skk-henkan-key)
+		;; 辞書登録モードで登録された場合。
+		;; ask if register as okuri-ari word.
+		(let (inhibit-quit)	; allow keyboard quit
+		  (if (y-or-n-p
+		       (format
+			(if skk-japanese-message-and-error
+			    "%s /%s/ を送りありエントリとして登録しますか？"
+			  "Shall I register this as okuri-ari entry: %s /%s/ ? ")
+			new-skk-henkan-key new-word))
+		      (setq word new-word
 			    skk-okuri-char new-skk-okuri-char
-                            skk-henkan-key new-skk-henkan-key)
-                    (setq skk-henkan-okurigana nil
-                          skk-okuri-char nil)
-                    (message "")))))))))
+			    skk-henkan-key new-skk-henkan-key)
+		    (setq skk-henkan-okurigana nil
+			  skk-okuri-char nil)
+		    (message "")))))))))
   ;; 分解した word (送り仮名部分を除いたもの) を返す。
   word)
 

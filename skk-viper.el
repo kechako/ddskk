@@ -6,9 +6,9 @@
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: Murata Shuuichirou <mrt@notwork.org>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.6 1999/12/20 15:52:00 mrt Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.7 1999/12/23 06:33:35 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/20 15:52:00 $
+;; Last Modified: $Date: 1999/12/23 06:33:35 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -226,7 +226,7 @@ viper-read-string-with-history $B$O(B minibuffer-setup-hook $B$r4X?t%m!<%+%k
 ;;;###autoload
 (defun skk-viper-normalize-map ()
   (let ((other-buffer
-	 (if (eq skk-emacs-type 'xemacs)
+	 (static-if (eq skk-emacs-type 'xemacs)
 	     (local-variable-p 'minor-mode-map-alist nil t)
 	   (local-variable-p 'minor-mode-map-alist))))
     ;; for current buffer and buffers to be created in the future.
@@ -248,8 +248,9 @@ viper-read-string-with-history $B$O(B minibuffer-setup-hook $B$r4X?t%m!<%+%k
 		   (list (cons 'skk-latin-mode skk-latin-mode-map)
 			 (cons 'skk-abbrev-mode skk-abbrev-mode-map)
 			 (cons 'skk-j-mode skk-j-mode-map)
-			 (cons 'skk-jisx0208-latin-mode skk-jisx0208-latin-mode-map)))
-		  (funcall skk-viper-normalize-map-function)))
+			 (cons 'skk-jisx0208-latin-mode
+			       skk-jisx0208-latin-mode-map)))))
+	    (funcall skk-viper-normalize-map-function)
 	    (setq buf (cdr buf))))))))
 
 (eval-after-load "viper-cmd"

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.69 2000/08/23 13:33:44 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.70 2000/08/23 13:56:07 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/23 13:33:44 $
+;; Last Modified: $Date: 2000/08/23 13:56:07 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/08/23 13:33:44 $")
+      (let* ((raw-date "$Date: 2000/08/23 13:56:07 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -2554,7 +2554,10 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 (defun skk-make-temp-jisyo ()
   ;; SKK 個人辞書保存のための作業用のファイルを作り、ファイルのモードを
   ;; skk-jisyo のものと同じに設定する。作った作業用ファイルの名前を返す。
-  (let ((tempo-name (skk-make-temp-file "skkdic")))
+  (let ((tempo-name
+	 (skk-make-temp-file (if (featurep 'skk-dos)
+				 "sk"
+			       "skkdic"))))
     (skk-create-file tempo-name)
     ;; temporary file に remote file を指定することなど有り得ない？
     ;;(if (or
@@ -2570,11 +2573,11 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 (defun skk-make-temp-file (prefix)
   (let ((dir
 	 (cond ((skk-file-exists-and-writable-p temporary-file-directory)
-		(expand-file-name temporary-file-directory))
+		temporary-file-directory)
 	       (t (or (file-exists-p "~/tmp") (make-directory "~/tmp"))
 		  (or (file-writable-p "~/tmp") (set-file-modes "~/tmp" 1023))
 		  "~/tmp/"))))
-    (make-temp-name (expand-file-name prefix dir))))
+    (make-temp-name (expand-file-name prefix (expand-file-name dir)))))
 
 (defun skk-make-new-jisyo (tempo-file)
   ;; TEMPO-FILE を新規の skk-jisyo にする。skk-backup-jisyo が non-nil だった

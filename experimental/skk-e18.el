@@ -52,7 +52,6 @@
 
 ;; Variables.
 (defvar auto-fill-function nil)
-(defvar unread-command-events nil)
 
 ;; Macros.
 (defmacro-maybe save-match-data (&rest body)
@@ -112,28 +111,12 @@ be applied to `file-coding-system-for-read'."
 
 ;; Hooks.
 
-(add-hook 'skk-load-hook
-	  (function
-	   (lambda ()
-
-	     (when (eq skk-emacs-type 'nemacs)
-	       (defun skk-hiragana-to-katakana (hiragana)
-		 (save-match-data
-		   (let ((start 0))
-		     (while (string-match "[ぁ-ん]" hiragana start)
-		       (aset hiragana (match-beginning 0) ?\245)
-		       (setq start (match-end 0)))
-		     hiragana)))
-
-	       (defun skk-katakana-to-hiragana (katakana)
-		 (save-match-data
-		   (let ((start 0))
-		     (while (string-match "[ァ-ン]" katakana start)
-		       (aset katakana (match-beginning 0) ?\244)
-		       (setq start (match-end 0)))
-		     katakana)))
-	       ;; end case nemacs
-	       ))))
+;;(add-hook 'skk-load-hook
+;;	  (function
+;;	   (lambda ()
+;;
+;;	       ;; end case nemacs
+;;	       ))))
 
 (provide 'skk-e18)
 

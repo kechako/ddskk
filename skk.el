@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.46 2000/01/29 19:15:33 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.47 2000/01/30 04:08:46 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/29 19:15:33 $
+;; Last Modified: $Date: 2000/01/30 04:08:46 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/29 19:15:33 $")
+      (let* ((raw-date "$Date: 2000/01/30 04:08:46 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -3341,14 +3341,30 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   (skk-kakutei))
 
 (defun skk-hiragana-to-katakana (hiragana)
-  (let ((diff (- ?ア ?あ)))
-    (mapconcat (function (lambda (e) (char-to-string (+ e diff))))
-	       (string-to-int-list hiragana) "")))
+  (static-cond
+   ((not (eq skk-emacs-type 'nemacs))
+    (let ((diff (- ?ア ?あ)))
+      (mapconcat (function (lambda (e) (char-to-string (+ e diff))))
+		 (string-to-int-list hiragana) "")))
+   (t (save-match-data
+	(let ((start 0))
+	  (while (string-match "[ぁ-ん]" hiragana start)
+	    (aset hiragana (match-beginning 0) ?\245)
+	    (setq start (match-end 0)))
+	  hiragana)))))
 
 (defun skk-katakana-to-hiragana (katakana)
-  (let ((diff (- ?ア ?あ)))
-    (mapconcat (function (lambda (e) (char-to-string (- e diff))))
-	       (string-to-int-list katakana) "")))
+  (static-cond
+   ((not (eq skk-emacs-type 'nemacs))
+    (let ((diff (- ?ア ?あ)))
+      (mapconcat (function (lambda (e) (char-to-string (- e diff))))
+		 (string-to-int-list katakana) "")))
+   (t (save-match-data
+	(let ((start 0))
+	  (while (string-match "[ァ-ン]" katakana start)
+	    (aset katakana (match-beginning 0) ?\244)
+	    (setq start (match-end 0)))
+	  katakana)))))
 
 (defun skk-splice-in (org offset spliced)
   ;; ORG := '(A B C), SPLICED := '(X Y), OFFSET := 1

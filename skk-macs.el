@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.15 2000/01/29 19:21:33 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.16 2000/01/30 04:08:45 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/29 19:21:33 $
+;; Last Modified: $Date: 2000/01/30 04:08:45 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -480,7 +480,10 @@
 
 (defsubst skk-unread-event (event)
   ;; Unread single EVENT.
-  (setq unread-command-events (nconc unread-command-events (list event))))
+  (static-cond
+   ((string< (substring emacs-version 0 2) "19")
+    (setq unread-command-char event))
+   (t (setq unread-command-events (nconc unread-command-events (list event))))))
 
 (defsubst skk-get-last-henkan-datum (key)
   (cdr (assq key skk-last-henkan-data)))
@@ -516,7 +519,7 @@
   (let ((l (skk-str-length string)))
     (and (> l 2) (eq (aref string 0) ?\()
 	 ;; second character is ascii or not.
-	 (< ?\37 (aref string 1)) (< (aref string 1) ?\200)
+	 (skk-ascii-char-p (aref string 1))
          (eq (skk-str-ref string (1- l)) ?\)))))
 
 (defsubst skk-eval-string (string)

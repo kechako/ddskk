@@ -1,3 +1,13 @@
+2000-01-30  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* experimental/skk-e18.el (skk-hiragana-to-katakana): Moved to
+	skk.el.
+	(skk-katakana-to-hiragana): Ditto.
+	(unread-command-events): Removed.
+	
+	* skk-macs.el (skk-lisp-prog-p): Use `skk-ascii-char-p'.
+	(skk-unread-event): Add definition for Emacs 18.
+
 2000-01-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk.el: Check `emacs-major-version' instead of `emacs-version'

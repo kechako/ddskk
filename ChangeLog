@@ -1,3 +1,8 @@
+2000-10-19  Tsuyoshi AKIHO  <akiho@media.osaka-cu.ac.jp>
+
+ 	* SKK-MK (SKK_LISPDIR) : "make PREFIX=dir install" で PREFIX のと
+	おりに elisp がインストールされるように修正.
+
 2000-10-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* ccc.el (ccc-apply): New macro.

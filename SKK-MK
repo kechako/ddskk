@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.40 2000/09/06 14:54:05 czkmt Exp $
-;; Last Modified: $Date: 2000/09/06 14:54:05 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.41 2000/09/07 10:08:24 czkmt Exp $
+;; Last Modified: $Date: 2000/09/07 10:08:24 $
 
 ;; Commentary
 ;;
@@ -305,6 +305,7 @@
 		(current-time-string)
 		"\n"))
       (while spec
+	(goto-char (point-min))
 	(while (re-search-forward (concat "^;;[^@]+\\(" (car spec) "\\)")
 				  nil t nil)
 	  (delete-region (match-beginning 1) (match-end 1))
@@ -339,6 +340,21 @@
       (insert-file-contents conf)
       (goto-char (point-min))
       (re-search-forward "^skkserv" nil t)))))
+
+(defvar SKK_SET_JISYO
+  (let* ((set_jisyo (or (getenv "set_jisyo") (getenv "SET_JISYO")))
+	 (flag
+	  (cond ((not (stringp set_jisyo))
+		 'fuzzy)
+		((member (downcase set_jisyo) '("yes" "1" "t" "y"))
+		 t)
+		((member (downcase set_jisyo) '("no" "0" "-1" "nil" "n"))
+		 nil)
+		(t
+		 'fuzzy))))
+    (if (eq flag 'fuzzy)
+	(not (SKK-MK-server-installed-p))
+      flag)))
 
 (defun SKK-MK-compile ()
   (cond ((= 18 emacs-major-version)
@@ -412,9 +428,11 @@
 	(progn
 	  (setq spec '("@AUXDIC@"
 		       (expand-file-name (car SKK_DICTIONARIES) SKK_DATADIR)))
-	  (or (SKK-MK-server-installed-p)
-	      (setq spec '("@DIC@"
-			   (expand-file-name (car SKK_DICTIONARIES) SKK_DATADIR))))
+	  (and SKK_SET_JISYO
+	       (setq spec
+		     (append spec
+			     '("@DIC@"
+			       (expand-file-name (car SKK_DICTIONARIES) SKK_DATADIR)))))
 	  (if SKK_TUTORIALS
 	      (setq spec (append spec '("@TUT@"
 					(expand-file-name
@@ -433,9 +451,11 @@
       (if dics
 	  (progn
 	    (setq spec '("@AUXDIC@" (expand-file-name (car dics) SKK_DATADIR)))
-	    (or (SKK-MK-server-installed-p)
-		(setq spec '("@DIC@"
-			     (expand-file-name (car dics) SKK_DATADIR))))
+	    (and SKK_SET_JISYO
+		 (setq spec
+		       (append spec '("@DIC@"
+				      (expand-file-name
+				       (car dics) SKK_DATADIR)))))
 	    (if SKK_TUTORIALS
 		(setq spec (append spec '("@TUT@"
 					  (expand-file-name
@@ -505,9 +525,8 @@
 	(SKK-MK-make-setup-file
 	 (append
 	  '("@AUXDIC@" (expand-file-name (car SKK_DICTIONARIES) SKK_PACKAGE_DATADIR))
-	  (if (SKK-MK-server-installed-p)
-	      nil
-	    '("@DIC@" (expand-file-name (car SKK_DICTIONARIES) SKK_PACKAGE_DATADIR)))
+	  (if SKK_SET_JISYO
+	      '("@DIC@" (expand-file-name (car SKK_DICTIONARIES) SKK_PACKAGE_DATADIR)))
 	  (if SKK_TUTORIALS
 	      '("@TUT@"
 		(expand-file-name (car SKK_TUTORIALS) SKK_PACKAGE_DATADIR)))))
@@ -531,9 +550,8 @@
 	  (SKK-MK-make-setup-file
 	   (append
 	    (list "@AUXDIC@" dic)
-	    (if (SKK-MK-server-installed-p)
-		nil
-	      (list "@DIC@" dic))
+	    (if SKK_SET_JISYO
+		(list "@DIC@" dic))
 	    (if SKK_TUTORIALS
 		'("@TUT@"
 		  (expand-file-name (car SKK_TUTORIALS) SKK_PACKAGE_DATADIR))))))

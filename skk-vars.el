@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.50 2000/10/29 00:16:50 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.51 2000/10/29 08:56:20 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/29 00:16:50 $
+;; Last Modified: $Date: 2000/10/29 08:56:20 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2447,6 +2447,14 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
      nil nil)
     ;; what's this?
     ("jedict" exact nil nil (not skk-okuri-char) nil nil nil)
+    ;; $BCN7CB"(B
+    ;; "$B"'#I#M#F!N(BInternational Monetary Fund$B!?(BInternational Metalworkers Federation$B!O(B"
+    ;; "$B#I#M#F!J9q:]DL2_4p6b!K!Z(BInternational Monetary Fund$B![(B"
+    ("CHIEZO" exact exact prefix t 
+     ("$B!J(B\\(.+\\)$B!K(B\\|$B!Z(B\\(.+\\)$B![(B\\|$B!N(B\\(.+\\)$B!O(B\\|^\\([^$B!J!Z!N!O![!K(B]+\\)$" .
+      (cond ((match-beginning 1) 1) ((match-beginning 2) 2) 
+	    ((match-beginning 3) 3) ((match-beginning 4) 4)))
+     "$B!?(B\\|$B!"(B\\|, " nil)
     ;; $B!V<-!&E5!&HW!W(B "$B$"$+#3(B $B^@(B", "ethanol"
     ("CHUJITEN" exact exact prefix t ("[$B#0(B-$B#9(B]* *\\([^ ]+\\)$" . 1) nil nil)
     ;; "($BHiIf$J$I$N(B)$B$"$+(B <grime>", "$B!T1Q!U(B ($B%Q%$%W$J$I$N(B)$B$"$+(B <fur>"
@@ -2463,7 +2471,9 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
     ;; "$B$7$?$$!Z;`BN!&;SBN![(B", "$B$7$?$$!Z;YBb![!Z;^Bb![(B",
     ;; "$B$"$$!Z0&![(B", "$B$"$$(B($B$"$p(B)$B!ZMu![(B"
     ;; "$B$"$$(B<gaiji=za52a>$B0%(B<gaiji=za52b>"
-    ("IWAKOKU" exact exact prefix t ("$B!Z(B\\(.+\\)$B![(B" . 1) "$B![!Z(B\\|$B!&(B" nil)
+    ;; "$B$@$7!Z=P$7![!Z=P$7!&!R=P=A!S![!Z!P;3<V!Q![(B"
+    ;; "$B$U$&$-$j!ZIu@Z(B($B$j(B)$B![(B"
+    ("IWAKOKU" exact exact prefix t ("$B!Z(B\\(.+\\)$B![(B" . 1) "$B![!Z(B\\|$B!&(B" "[$B!R!S!P!Q(B()]")
     ;; "$B9$(B", "$B@V(B"
     ("KANWA" exact exact prefix t nil nil nil)
     ;; KOUJIEN: $B9-<-1q(B $BBh(B4$BHG(B($B4dGH(B,EPWING) $B%^%k%A%a%G%#%"HG(B
@@ -2483,8 +2493,32 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
     ;; `$B!R(B' $B$O!"EvMQ4A;zI=$K$J$$4A;z$G!"(B`$B!T(B' $B$O!"EvMQ4A;zI=$K$O$"$k$,!"$=$N2;!"(B
     ;; $B71$,EvMQ4A;zI=$N2;71I=$K$J$$4A;z!#(B
     ("KOKUGO" exact exact prefix t ("$B!Z(B\\([^$B!Z![(B]+\\)$B![(B" . 1) "$B!&(B" "[$B!T!R(B]")
-    ;; $B!V<-!&E5!&HW!W(B "$B9$(B"
-    ("MYPAEDIA" exact exact prefix t nil nil nil)
+    ;; $B!V<-!&E5!&HW!WImB0$N%^%$%Z%G%#%"(B
+    ;;"$BBgOB74;3(B($B;T(B)"
+    ;;"$B%o%7%s%H%s(B(George Washington)"
+    ;;"$B%o%7%s%H%s(B($B=#(B)"
+    ;;"$B%o%7%s%H%s(B Washington"
+    ;;"$B%"%$%s%7%e%?%$%s(B(Albert Einstein)"
+    ;;"$B9aNI='(B($BD.(B)"
+    ;;"$B%+%i%9(B ($B1((B)"
+    ;;"$B%+%i%9(B(Maria Callas)"
+    ;;("MYPAEDIA" exact exact prefix t 
+    ;; ("\\([^ ]+\\)(.+)$\\|.+ (\\([^ ]+\\))$\\|^\\([^ ()]+\\)$" .
+    ;;  (cond ((match-beginning 1) 1) ((match-beginning 2) 2) ((match-beginning 3) 3)))
+    ;; nil nil)
+    ;;  mypaedia-fpw $B$+$i@8@.$7$?(B PC Success $BHG%^%$%Z%G%#%"(B
+    ;; "$BBgOB74;3(B [$B$d$^$H$3$*$j$d$^(B] ($B;T(B)"
+    ;; "$B%"%$%s%7%e%?%$%s(B (Albert Einstein)")
+    ;; "$B%o%7%s%H%s(B (Washington) ($B=#(B)"
+    ;; "$B%o%7%s%H%s(B (Washington)"
+    ;; "$B%o%7%s%H%s(B (George Washington)"
+    ;; "$B9aNI='(B [$B$+$i$9(B] ($BD.(B)"
+    ;; "$B%+%i%9(B ($B1((B) [$B%+%i%9(B]"
+    ;; "$B%+%i%9(B (Maria Callas)"
+    ("MYPAEDIA" exact exact prefix t 
+     ("^\\([^ ]+\\) \\[.+\\] (.+)$\\|^[^ ]+ (\\(.+\\)) \\[.+\\]$\\|^\\([^][() ]+\\)\\( .+\\)?$" .
+      (cond ((match-beginning 1) 1) ((match-beginning 2) 2) ((match-beginning 3) 3)))
+     nil nil)
     ;; $B%K%e!<%"%s%+!<1QOB(B "$B$"$+#2(B $B9$(B"
     ("NEWANC" exact exact prefix t ("[$B#0(B-$B#9(B]* *\\([^ ]+\\)$" . 1) nil nil)
     ;; "$B!!$"$+(B <scud$B#2(B>", "$B!!!V$"$+!W(B <rust>"
@@ -2516,13 +2550,16 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
        $BJ#?t$N8uJd$,F10l(B heading $B$NCf$K=PNO$5$l$J$$$H$-$O!"(Bnil $B$r;XDj$9$k!#(B
   7th: $B@Z$j=P$5$l$?J8;zNs$+$iFCDj$NJ8;zNs$r<h$j=|$/>l9g$K;XDj$9$k(B regexp$B!#(B
        $B<-=q$N=PNO$,<-=qFCM-$N5-9fJ8;z$r4^$`>l9g$K;XDj$9$k!#(B
-$B8=:_BP1~$7$F$$$k<-=qL>$O(B \"ispell\", \"jedict\", \"CHUJITEN\", \"COLLOC\", \"GENIUS\",
-\"GN99EP01\", \"GN99EP02\", \"IWAKOKU\", \"KANWA\", \"KOUJIEN\", \"KOJIEN\", \"MYPAEDIA\"
-\"NEWANC\" $B5Z$S(B \"PLUS\"$B!#(B
+$B8=:_BP1~$7$F$$$k<-=qL>$O(B \"ispell\", \"jedict\", \"CHIEZO\", \"CHUJITEN\",
+\"COLLOC\", \"GENIUS\", \"GN99EP01\", \"GN99EP02\", \"IWAKOKU\", \"KANWA\",
+\"KOUJIEN\", \"KOJIEN\", \"MYPAEDIA\" \"NEWANC\" $B5Z$S(B \"PLUS\"$B!#(B
 `lookup-entry-heading' $B$,<+J,$N;HMQ$9$k<-=q$+$i$I$N$h$&$JJ8;zNs$r<h$j=P$9$N$+(B
 $B3N$+$a$?$$$H$-$O!"(B`skk-lookup-pickup-headings' $B$r;HMQ$9$k!#Nc$($P!"(B
 
  \(skk-lookup-pickup-headings \"$B$3$7$g$&(B\" 'exact\)"
+  ;; for checking.
+  ;; (pp (mapcar (lambda (e)(cons (car e) (length e)))
+  ;;	skk-lookup-option-alist))
   :type '(repeat
 	  (list (string :tag "Dictionary name")
 		(choice :tag "Search method for okuri nasi"
@@ -2551,7 +2588,6 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
 
 (defcustom skk-lookup-default-option-list
   '(exact exact prefix t ("$B!Z(B\\([^$B!Z![(B]+\\)$B![(B" . 1) "$B!&(B" nil)
-  ;; CHIEZO: $B!V<-!&E5!&HW!W(B
   ;; CRCEN: $B;0>JF2(B $B%K%e!<%;%s%A%e%j!<1QOB!&?7%/%i%&%sOB1Q<-E5(B
   ;; KANJIGEN: Super$BE}9g<-=q(B99 Disk2/$B4A;z8;(B : EPWING
   ;; RIKAGAKU: $BM}2=3X<-E5(B
@@ -2586,8 +2622,8 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
   6th: $B@Z$j=P$5$l$?J8;zNs$+$iFCDj$NJ8;zNs$r<h$j=|$/>l9g$K;XDj$9$k(B regexp$B!#(B
        $B<-=q$N=PNO$,<-=qFCM-$N5-9fJ8;z$r4^$`>l9g$K;XDj$9$k!#(B
 
-$B$3$N%*%W%7%g%s$GBP1~$7$F$$$k<-=qL>$O!"(B\"CHIEZO\", \"KANJIGEN\", \"KOKUGO\",
-\"RIKAGAKU\" $B5Z$S(B \"WAEI\".
+$B$3$N%*%W%7%g%s$GBP1~$7$F$$$k<-=qL>$O!"(B\"KANJIGEN\", \"KOKUGO\", \"RIKAGAKU\" $B5Z$S(B
+\"WAEI\".
 `lookup-entry-heading' $B$G<h$j=P$7$?J8;zNs$,2<5-$N$h$&$K$J$k$3$H$rA0Ds$K$7$F$$$k!#(B
 
   \"$B$"!>$+!Z0!2J![!E%/%o(B\"

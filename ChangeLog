@@ -1,5 +1,13 @@
 2000-10-29  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk-vars.el (skk-lookup-option-alist): Doc updated.
+	Created new element "CHIEZO".
+	Specified 7th element of "IWAKOKU" in order to remove "〈", "〉",
+	"｛", "｝", "( and ")".
+	Specified 5th element of "MYPAEDIA" in order to pick up necessary
+	strings between parens and/or blackets.
+	(skk-lookup-default-option-list): Doc updated.
+
 	* experimental/skk-annotation.el (skk-annotation-add): Bug fixed.
 	
 	* experimental/skk-annotation.el (skk-annotation-mode-map): Change

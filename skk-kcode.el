@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.2 2000/01/25 14:55:29 minakaji Exp $
+;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.3 2000/01/28 05:21:42 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/25 14:55:29 $
+;; Last Modified: $Date: 2000/01/28 05:21:42 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -80,6 +80,16 @@
    ((eq skk-emacs-type 'nemacs)
     (concat (char-to-string n1) (char-to-string n2)))
    (t (char-to-string (skk-make-char skk-kcode-charset n1 n2)))))
+
+;; tiny function, but called once in skk-kcode.el.  So not make it inline.
+(defun skk-make-char (charset n1 n2)
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (make-char charset (logand (lognot 128) n1) (logand (lognot 128) n2)))
+   ((memq skk-emacs-type '(mule4 mule3))
+    (make-char charset n1 n2))
+   ((eq skk-emacs-type '(mule2 mule1))
+    (make-character charset n1 n2))))
 
 (defun skk-next-n2-code (n)
   (if (<= (setq n (1+ n)) skk-code-n2-max) n skk-code-n2-min))

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.18 2000/01/25 13:15:24 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.19 2000/01/28 05:21:42 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/25 13:15:24 $
+;; Last Modified: $Date: 2000/01/28 05:21:42 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1100,7 +1100,8 @@ skk-comp.el $B0J30$NJd405!G=$rMxMQ$G$-$k$h$&$K4X?t$r(B funcall $B$9$k7A$K$7$F
   :type 'hook
   :group 'skk-comp)
 
-(defcustom skk-use-color-cursor (and (not (eq system-type 'ms-dos))
+(defcustom skk-use-color-cursor (and (not (eq skk-emacs-type 'nemacs))
+				     (not (eq system-type 'ms-dos))
 				     window-system (fboundp 'x-display-color-p)
 				     (x-display-color-p))
   "*Non-nil $B$G$"$l$P!"(BSKK $B%b!<%I$NF~NO%b!<%I$K1~$8$F%+!<%=%k$K?'$rIU$1$k!#(B"
@@ -1400,7 +1401,8 @@ nil $B$G$"$l$P!"I=<($7$J$$!#(B"
   :type 'boolean
   :group 'skk-cursor)
 
-(defcustom skk-cursor-change-width (and (not (eq system-type 'ms-dos))
+(defcustom skk-cursor-change-width (and (not (eq skk-emacs-type 'nemacs))
+					(not (eq system-type 'ms-dos))
 					window-system)
   "*Non-nil $B$G$"$l$P!"(BOvwrt $B%^%$%J!<%b!<%I;~$K%+!<%=%k$NI}$r=L$a$k!#(B"
   :type 'boolean
@@ -1776,15 +1778,20 @@ SKK $B%5!<%P!<$,;HMQ$9$k%]!<%HHV9f$r=q$-!"@_Dj$r$9$k$3$H$,$G$-$k!#(B
  )
 
 (defconst skk-coding-system-alist
-  (if (memq skk-emacs-type '(xemacs mule4 mule3))
-      '(("euc" . euc-japan)
-        ("ujis" . euc-japan)
-        ("sjis". sjis)
-        ("jis" . junet))
-    '(("euc" . *euc-japan*)
-      ("ujis" . *euc-japan*)
-      ("sjis". *sjis*)
-      ("jis" . *junet*)))
+  (cond ((memq skk-emacs-type '(xemacs mule4 mule3))
+	 '(("euc" . euc-japan)
+	   ("ujis" . euc-japan)
+	   ("sjis". sjis)
+	   ("jis" . junet)))
+	((eq skk-emacs-type 'nemacs)
+	 '(("euc" . 3)
+	   ("ujis" . 3)
+	   ("jis" . 2)
+	   ("sjis". 1)))
+	(t '(("euc" . *euc-japan*)
+	     ("ujis" . *euc-japan*)
+	     ("sjis". *sjis*)
+	     ("jis" . *junet*))))
   "coding-system $B$NJ8;zNsI=8=$H!"%7%s%\%kI=8=$NO"A[%j%9%H!#(B")
 
 (defconst skk-default-jisx0208-latin-vector
@@ -1817,7 +1824,7 @@ SKK $B%5!<%P!<$,;HMQ$9$k%]!<%HHV9f$r=q$-!"@_Dj$r$9$k$3$H$,$G$-$k!#(B
   "$B4A;z0lJ8;z$ND9$5!#(BMule[1-3] $B$G$O(B 3 $B$K$J$k!#(BMule4, XEmacs $B$G$O(B 1$B!#(B")
 
 (defconst skk-hankaku-alist
-  (if (eq skk-emacs-type 'mule2)
+  (if (memq skk-emacs-type '(mule2 mule1 nemacs))
       '((161 . 32)	; ?\ 
 	(170 . 33)	;?\!
 	(201 . 34)	;?\"

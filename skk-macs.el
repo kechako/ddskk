@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.12 2000/01/25 23:55:54 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.13 2000/01/28 05:21:42 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/25 23:55:54 $
+;; Last Modified: $Date: 2000/01/28 05:21:42 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -371,6 +371,7 @@
         skk-katakana nil)
   ;; initialize
   (setq skk-input-mode-string skk-hiragana-mode-string)
+  (static-if (eq skk-emacs-type 'nemacs) (use-local-map skk-current-local-map))
   (force-mode-line-update)
   (remove-hook 'pre-command-hook 'skk-pre-command 'local))
 
@@ -382,6 +383,7 @@
         skk-jisx0208-latin-mode nil
         ;; j's sub mode.
         skk-katakana katakana)
+  (static-if (eq skk-emacs-type 'nemacs) (use-local-map skk-j-mode-map))
   (force-mode-line-update))
 
 (defsubst skk-latin-mode-on ()
@@ -393,6 +395,7 @@
         ;; j's sub mode.
         skk-katakana nil
         skk-input-mode-string skk-latin-mode-string)
+  (static-if (eq skk-emacs-type 'nemacs) (use-local-map skk-latin-mode-map))
   (force-mode-line-update))
 
 (defsubst skk-jisx0208-latin-mode-on ()
@@ -404,6 +407,8 @@
         ;; j's sub mode.
         skk-katakana nil
         skk-input-mode-string skk-jisx0208-latin-mode-string)
+  (static-if (eq skk-emacs-type 'nemacs)
+      (use-local-map skk-jisx0208-latin-mode-map))
   (force-mode-line-update))
 
 (defsubst skk-abbrev-mode-on ()
@@ -415,6 +420,7 @@
         ;; j's sub mode.
         skk-katakana nil
         skk-input-mode-string skk-abbrev-mode-string)
+  (static-if (eq skk-emacs-type 'nemacs) (use-local-map skk-abbrev-mode-map))
   (force-mode-line-update))
 
 (defsubst skk-in-minibuffer-p ()

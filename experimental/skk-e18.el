@@ -42,6 +42,8 @@
   (error
    (error "advice.el is required for This version of SKK.")))
 
+;; skk-vars.el で default variable を nil にしておきましたが、念のた
+;; め、defconst しておきましょう。
 (defconst skk-use-color-cursor nil)
 (defconst skk-cursor-change-width nil)
 
@@ -51,52 +53,6 @@
 ;; Variables.
 (defvar auto-fill-function nil)
 (defvar unread-command-events nil)
-
-(defconst skk-hankaku-alist
-  '((161 . 32)	; ?\ 
-    (170 . 33)	;?\!
-    (201 . 34)	;?\"
-    (244 . 35)	;?\#
-    (240 . 36)	;?\$
-    (243 . 37)	;?\%
-    (245 . 38)	;?\&
-    (199 . 39)	;?\'
-    (202 . 40)	;?\(
-    (203 . 41)	;?\)
-    (246 . 42)	;?\*
-    (220 . 43)	;?\+
-    (164 . 44)	;?\,
-    (221 . 45)	;?\-
-    (165 . 46)	;?\.
-    (191 . 47)	;?\/
-    (167 . 58)	;?\:
-    (168 . 59)	;?\;
-    (227 . 60)	;?\<
-    (225 . 61)	;?\=
-    (228 . 62)	;?\>
-    (169 . 63)	;?\?
-    (247 . 64)	;?\@
-    (206 . 91)	;?\[
-    (239 . 92)	;?\\
-    (207 . 93)	;?\]
-    (176 . 94)	;?^ 
-    (178 . 95)	;?\_
-    (208 . 123)	;?\{
-    (195 . 124)	;?\|
-    (209 . 125)	;?\}
-    (177 . 126)	;?\~
-    (198 . 96))	;?` 
-  "文字コードの 2 番目のバイトとその文字に対応する ascii 文字 \(char\) との連想リスト。
-Mule l もしくは  Mule 2 を使用する場合に skk-latin-region で参照する。
-Mule-2.3 添付の egg.el よりコピーした。")
-
-(skk-deflocalvar skk-current-local-map nil)
-
-(defvar skk-e18-self-insert-keys
-  (append (where-is-internal 'self-insert-command global-map)
-	  (where-is-internal 'canna-self-insert-command global-map)
-	  (where-is-internal 'egg-self-insert-command global-map)
-	  '("\t")))
 
 ;; Macros.
 (defmacro-maybe save-match-data (&rest body)
@@ -108,67 +64,6 @@ Mule-2.3 添付の egg.el よりコピーした。")
                 (list 'store-match-data original)))))
 
 ;; Inline functions.
-(defsubst skk-mode-off ()
-  (setq skk-mode nil
-	skk-abbrev-mode nil
-	skk-latin-mode nil
-	skk-j-mode nil
-	skk-jisx0208-latin-mode nil
-	;; j's sub mode.
-	skk-katakana nil)
-  ;; initialize
-  (setq skk-input-mode-string skk-hiragana-mode-string)
-  (use-local-map skk-current-local-map)
-  (force-mode-line-update)
-  (remove-hook 'pre-command-hook 'skk-pre-command 'local))
-
-(defsubst skk-j-mode-on (&optional katakana)
-  (setq skk-mode t
-	skk-abbrev-mode nil
-	skk-latin-mode nil
-	skk-j-mode t
-	skk-jisx0208-latin-mode nil
-	;; j's sub mode.
-	skk-katakana katakana)
-  (use-local-map skk-j-mode-map)
-  (force-mode-line-update))
-
-(defsubst skk-latin-mode-on ()
-  (setq skk-mode t
-	skk-abbrev-mode nil
-	skk-latin-mode t
-	skk-j-mode nil
-	skk-jisx0208-latin-mode nil
-	;; j's sub mode.
-	skk-katakana nil
-	skk-input-mode-string skk-latin-mode-string)
-  (use-local-map skk-latin-mode-map)
-  (force-mode-line-update))
-
-(defsubst skk-jisx0208-latin-mode-on ()
-  (setq skk-mode t
-	skk-abbrev-mode nil
-	skk-latin-mode nil
-	skk-j-mode nil
-	skk-jisx0208-latin-mode t
-	;; j's sub mode.
-	skk-katakana nil
-	skk-input-mode-string skk-jisx0208-latin-mode-string)
-  (use-local-map skk-jisx0208-latin-mode-map)
-  (force-mode-line-update))
-
-(defsubst skk-abbrev-mode-on ()
-  (setq skk-mode t
-	skk-abbrev-mode t
-	skk-latin-mode nil
-	skk-j-mode nil
-	skk-jisx0208-latin-mode nil
-	;; j's sub mode.
-	skk-katakana nil
-	skk-input-mode-string skk-abbrev-mode-string)
-  (use-local-map skk-abbrev-mode-map)
-  (force-mode-line-update))
-
 ;; Pieces of advice.
 (defadvice byte-code-function-p (around skk-e18-ad activate)
   (cond ((and (consp (ad-get-arg 0)) (consp (cdr (ad-get-arg 0))))
@@ -215,76 +110,6 @@ Mule-2.3 添付の egg.el よりコピーした。")
 be applied to `file-coding-system-for-read'."
     (insert-file-contents filename visit coding-system)))
 
-(defun skk-e18-setup ()
-  (let ((map (if (skk-in-minibuffer-p) minibuffer-local-map
-	       (current-local-map)))
-	(i 0))
-    ;;
-    (mapcar (function
-	     (lambda (skk-map)
-	       (set skk-map (if map (copy-keymap map) (make-sparse-keymap)))))
-	    '(skk-current-local-map
-	      skk-latin-mode-map
-	      skk-j-mode-map
-	      skk-jisx0208-latin-mode-map))
-    ;;
-    (define-key skk-latin-mode-map skk-kakutei-key 'skk-kakutei)
-    ;;
-    (mapcar (function
-	     (lambda (key)
-	       (define-key skk-j-mode-map key 'skk-insert)))
-	    skk-e18-self-insert-keys)
-    ;;
-    (define-key skk-jisx0208-latin-mode-map skk-kakutei-key 'skk-kakutei)
-    (while (< i 128)
-      (and (aref skk-jisx0208-latin-vector i)
-	   (define-key skk-jisx0208-latin-mode-map
-	     (char-to-string i) 'skk-jisx0208-latin-insert))
-      (setq i (1+ i)))
-    (define-key skk-jisx0208-latin-mode-map "\C-q" 'skk-latin-henkan)))
-
-(or skk-mode (skk-e18-setup))
-
-;; Hooks.
-(add-hook
- 'skk-load-hook
- (function
-  (lambda ()
-    ;; Pieces of advice.
-    (defadvice skk-mode (before skk-nemacs-ad activate)
-      (or skk-mode (skk-e18-setup)))
-
-    ;; Functions.
-    (defun skk-emulate-original-map (arg)
-      ;; キー入力に対して、SKK のモードではなく、Emacs のオリジナルのキー割り付けで
-      ;; コマンドを実行する。
-      (let ((prefix-arg arg)
-	    (keys (skk-command-key-sequence (this-command-keys) this-command)))
-	(if (not keys)
-	    ;; no alternative commands.  may be invoked by M-x.
-	    nil
-	  (let (command local-map buf)
-	    (unwind-protect
-		(progn
-		  (setq buf (current-buffer)
-			local-map (current-local-map))
-		  (use-local-map skk-current-local-map)
-		  (setq command (key-binding keys))
-		  (if (eq command this-command)
-		      ;; avoid recursive calling of skk-emulate-original-map.
-		      nil
-		    ;; if no bindings are found, call `undefined'.  it's
-		    ;; original behaviour.
-		    (skk-cancel-undo-boundary)
-		    (command-execute (or command (function undefined)))))
-	      ;; restore skk keymap.
-	      (save-excursion
-		(set-buffer buf)
-		(use-local-map local-map)))))))
-    ;;
-    )))
-
-;;
 (provide 'skk-e18)
 
 ;;; skk-e18.el ends here

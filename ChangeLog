@@ -1,3 +1,26 @@
+2000-01-28  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-make-char): Moved to skk-kcode.el.
+
+	* skk-vars.el (skk-cursor-change-width): Bind default variable to
+	nil for nemacs.
+	(skk-use-color-cursor): Ditto.
+	(skk-hankaku-alist): Define for mule1 and nemacs, too.
+	(skk-coding-system-alist): Define string and number data for
+	nemacs.
+	
+	* experimental/skk-e18.el (skk-j-mode-on): Removed
+	(skk-j-mode-on): Ditto.
+	(skk-latin-mode-on): Ditto.
+	(skk-jisx0208-latin-mode-on): Ditto.
+	(skk-abbrev-mode-on): Ditto.
+ 	(skk-hankaku-alist): Ditto.
+	(skk-emulate-original-map): Ditto.
+	(skk-mode): Remove advice.
+	(skk-e18-setup): Moved to skk.el.
+	(skk-current-local-map): Ditto.
+	(skk-e18-self-insert-keys): Ditto.
+
 2000-01-27  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-e18.el (overlayp): New emulation.

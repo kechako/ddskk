@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.40 2000/01/27 13:40:03 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.41 2000/01/28 05:21:43 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/27 13:40:03 $
+;; Last Modified: $Date: 2000/01/28 05:21:43 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/27 13:40:03 $")
+      (let* ((raw-date "$Date: 2000/01/28 05:21:43 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -120,161 +120,186 @@
   (define-obsolete-function-alias 'skk-isearch-backward 'isearch-backward)
   (define-obsolete-function-alias 'skk-isearch-backward-regexp 'isearch-backward-regexp))
 
-(defun skk-define-menu-bar-map (map)
-  ;; SKK メニューのトップに出現するコマンドのメニューへの定義を行なう。
-  (easy-menu-define
-   skk-menu map
-   "Menu used in SKK mode."
-   '("SKK"
-     ("Convert Region and Echo"
-      ("Gyakubiki"
-       ["to Hiragana" skk-gyakubiki-message
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Hiragana, All Candidates"
-        ;; あれれ、lambda 関数は定義できないのか？？？  動かないぞ...。
-        (call-interactively
-	 (function (lambda (start end) (interactive "r")
-		     (skk-gyakubiki-message start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Katakana" skk-gyakubiki-katakana-message
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Katakana, All Candidates"
-        (call-interactively
-	 (function (lambda (start end) (interactive "r")
-		     (skk-gyakubiki-katakana-message
-		      start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
-      ("Hurigana"
-       ["to Hiragana" skk-hurigana-message
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Hiragana, All Candidates"
-        (call-interactively
-	 (function (lambda (start end) (interactive "r")
-		     (skk-hurigana-message start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Katakana" skk-hurigana-katakana-message
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Katakana, All Candidates"
-        (call-interactively
-	 (function (lambda (start end) (interactive "r")
-		     (skk-hurigana-katakana-message
-		      start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]))
-     ("Convert Region and Replace"
-      ["Ascii" skk-ascii-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-      ("Gyakubiki"
-       ["to Hiragana" skk-gyakubiki-region
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Hiragana, All Candidates"
-        (call-interactively
-	 (function (lambda (start end) (interactive "r")
-		     (skk-gyakubiki-region start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Katakana" skk-gyakubiki-katakana-region
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Katakana, All Candidates"
-        (call-interactively
-	 (function (lambda (start end) (interactive "r")
-		     (skk-gyakubiki-katakana-region
-		      start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
-      ["Hiragana" skk-hiragana-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-      ("Hurigana"
-       ["to Hiragana" skk-hurigana-region
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Hiragana, All Candidates"
-        (call-interactively
-	 (function (lambda (start end) (interactive "r")
-		     (skk-hurigana-region start end 'all-candidates))))
-	(or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Katakana" skk-hurigana-katakana-region
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-       ["to Katakana, All Candidates" (function
-                                       (lambda (start end) (interactive "r")
-                                         (skk-hurigana-katakana-region
-                                          start end 'all-candidates)))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
-      ["Katakana" skk-katakana-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-      ["Romaji" skk-romaji-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-      ["Zenkaku" skk-jisx0208-latin-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
-     ["Count Jisyo Candidates" skk-count-jisyo-candidates
-      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-     ["Save Jisyo" skk-save-jisyo
-      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-     ["Undo Kakutei" skk-undo-kakutei
-      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
-     ["Version" skk-version
-      (or (not (boundp 'skktut-problem-count))
-          (eq skktut-problem-count 0))])))
+(static-cond
+ ((memq skk-emacs-type '(nemacs mule1))
+  (skk-deflocalvar skk-current-local-map nil)
 
-(or skk-latin-mode-map
-    (let ((map (make-sparse-keymap)))
-      ;; .skk で skk-kakutei-key の変更が可能になるように。
-      ;;(define-key map skk-kakutei-key 'skk-kakutei)
-      (skk-define-menu-bar-map map)
-      (setq skk-latin-mode-map map)))
+  (defvar skk-e18-self-insert-keys
+    (append (where-is-internal 'self-insert-command global-map)
+	    (where-is-internal 'canna-self-insert-command global-map)
+	    (where-is-internal 'egg-self-insert-command global-map)
+	    '("\t")))
 
-(or skk-j-mode-map
-    (let ((map (make-sparse-keymap)))
-      (substitute-key-definition 'self-insert-command 'skk-insert map
-				 global-map)
-      ;; for Mule-2.x
-      (substitute-key-definition 'egg-self-insert-command 'skk-insert map
-				 global-map)
-      (substitute-key-definition 'canna-self-insert-command 'skk-insert map
-				 global-map)
-      (substitute-key-definition 'can-n-egg-self-insert-command 'skk-insert map
-				 global-map)
-      ;; .skk で skk-kakutei-key の変更が可能になるように。
-      ;;(define-key map skk-kakutei-key 'skk-kakutei)
-      (skk-define-menu-bar-map map)
-      (setq skk-j-mode-map map)))
-
-(or skk-jisx0208-latin-mode-map
-    (let ((map (make-sparse-keymap))
-	  (i 0))
+  (defun skk-e18-setup ()
+    (setq skk-current-local-map (if (skk-in-minibuffer-p) minibuffer-local-map
+				  (current-local-map)))
+    (let ((i 0) e list)
+      (setq list '(skk-latin-mode-map skk-j-mode-map skk-jisx0208-latin-mode-map))
+      (while (setq e (nth i list))
+	(set e (if skk-current-local-map (copy-keymap skk-current-local-map)
+		 (make-sparse-keymap)))
+	(setq i (1+ i)))
+      ;; Defined in skk-mode.
+      ;; (define-key skk-latin-mode-map skk-kakutei-key 'skk-kakutei)
+      (setq i 0 list skk-e18-self-insert-keys)
+      (while (setq e (nth i list))
+	(define-key skk-j-mode-map e 'skk-insert)
+	(setq i (1+ i)))
+      ;; Defined in skk-mode.
+      ;; (define-key skk-jisx0208-latin-mode-map skk-kakutei-key 'skk-kakutei)
+      (setq i 0)
       (while (< i 128)
 	(and (aref skk-jisx0208-latin-vector i)
-	     (define-key map (char-to-string i) 'skk-jisx0208-latin-insert))
+	     (define-key skk-jisx0208-latin-mode-map
+	       (char-to-string i) 'skk-jisx0208-latin-insert))
 	(setq i (1+ i)))
-      (define-key map "\C-q" 'skk-latin-henkan)
-      (skk-define-menu-bar-map map)
-      (setq skk-jisx0208-latin-mode-map map)))
+      (define-key skk-jisx0208-latin-mode-map "\C-q" 'skk-latin-henkan)))
+  )
+ (t
+  (defun skk-define-menu-bar-map (map)
+    ;; SKK メニューのトップに出現するコマンドのメニューへの定義を行なう。
+    (easy-menu-define
+     skk-menu map
+     "Menu used in SKK mode."
+     '("SKK"
+       ("Convert Region and Echo"
+	("Gyakubiki"
+	 ["to Hiragana" skk-gyakubiki-message
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Hiragana, All Candidates"
+	  ;; あれれ、lambda 関数は定義できないのか？？？  動かないぞ...。
+	  (call-interactively
+	   (function (lambda (start end) (interactive "r")
+		       (skk-gyakubiki-message start end 'all-candidates))))
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Katakana" skk-gyakubiki-katakana-message
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Katakana, All Candidates"
+	  (call-interactively
+	   (function (lambda (start end) (interactive "r")
+		       (skk-gyakubiki-katakana-message
+			start end 'all-candidates))))
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
+	("Hurigana"
+	 ["to Hiragana" skk-hurigana-message
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Hiragana, All Candidates"
+	  (call-interactively
+	   (function (lambda (start end) (interactive "r")
+		       (skk-hurigana-message start end 'all-candidates))))
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Katakana" skk-hurigana-katakana-message
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Katakana, All Candidates"
+	  (call-interactively
+	   (function (lambda (start end) (interactive "r")
+		       (skk-hurigana-katakana-message
+			start end 'all-candidates))))
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]))
+       ("Convert Region and Replace"
+	["Ascii" skk-ascii-region
+	 (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	("Gyakubiki"
+	 ["to Hiragana" skk-gyakubiki-region
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Hiragana, All Candidates"
+	  (call-interactively
+	   (function (lambda (start end) (interactive "r")
+		       (skk-gyakubiki-region start end 'all-candidates))))
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Katakana" skk-gyakubiki-katakana-region
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Katakana, All Candidates"
+	  (call-interactively
+	   (function (lambda (start end) (interactive "r")
+		       (skk-gyakubiki-katakana-region
+			start end 'all-candidates))))
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
+	["Hiragana" skk-hiragana-region
+	 (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	("Hurigana"
+	 ["to Hiragana" skk-hurigana-region
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Hiragana, All Candidates"
+	  (call-interactively
+	   (function (lambda (start end) (interactive "r")
+		       (skk-hurigana-region start end 'all-candidates))))
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Katakana" skk-hurigana-katakana-region
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	 ["to Katakana, All Candidates" (function
+					 (lambda (start end) (interactive "r")
+					   (skk-hurigana-katakana-region
+					    start end 'all-candidates)))
+	  (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
+	["Katakana" skk-katakana-region
+	 (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	["Romaji" skk-romaji-region
+	 (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+	["Zenkaku" skk-jisx0208-latin-region
+	 (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
+       ["Count Jisyo Candidates" skk-count-jisyo-candidates
+	(or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+       ["Save Jisyo" skk-save-jisyo
+	(or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+       ["Undo Kakutei" skk-undo-kakutei
+	(or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
+       ["Version" skk-version
+	(or (not (boundp 'skktut-problem-count))
+	    (eq skktut-problem-count 0))])))
 
-(or skk-abbrev-mode-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map "," 'skk-abbrev-comma)
-      (define-key map "." 'skk-abbrev-period)
-      (define-key map "\C-q" 'skk-jisx0208-latin-henkan)
-      ;; .skk で skk-kakutei-key の変更が可能になるように。
-      ;;(define-key map skk-kakutei-key 'skk-kakutei)
-      (skk-define-menu-bar-map map)
-      (setq skk-abbrev-mode-map map)))
+  (or skk-latin-mode-map
+      (let ((map (make-sparse-keymap)))
+	;; .skk で skk-kakutei-key の変更が可能になるように。
+	;;(define-key map skk-kakutei-key 'skk-kakutei)
+	(skk-define-menu-bar-map map)
+	(setq skk-latin-mode-map map)))
 
-(set-modified-alist
- 'minor-mode-map-alist
- (list (cons 'skk-latin-mode skk-latin-mode-map)
-       (cons 'skk-abbrev-mode skk-abbrev-mode-map)
-       (cons 'skk-j-mode skk-j-mode-map)
-       (cons 'skk-jisx0208-latin-mode skk-jisx0208-latin-mode-map)))
+  (or skk-j-mode-map
+      (let ((map (make-sparse-keymap)))
+	(substitute-key-definition 'self-insert-command 'skk-insert map
+				   global-map)
+	;; for Mule-2.x
+	(substitute-key-definition 'egg-self-insert-command 'skk-insert map
+				   global-map)
+	(substitute-key-definition 'canna-self-insert-command 'skk-insert map
+				   global-map)
+	(substitute-key-definition 'can-n-egg-self-insert-command 'skk-insert map
+				   global-map)
+	;; .skk で skk-kakutei-key の変更が可能になるように。
+	;;(define-key map skk-kakutei-key 'skk-kakutei)
+	(skk-define-menu-bar-map map)
+	(setq skk-j-mode-map map)))
+
+  (or skk-jisx0208-latin-mode-map
+      (let ((map (make-sparse-keymap))
+	    (i 0))
+	(while (< i 128)
+	  (and (aref skk-jisx0208-latin-vector i)
+	       (define-key map (char-to-string i) 'skk-jisx0208-latin-insert))
+	  (setq i (1+ i)))
+	(define-key map "\C-q" 'skk-latin-henkan)
+	(skk-define-menu-bar-map map)
+	(setq skk-jisx0208-latin-mode-map map)))
+
+  (or skk-abbrev-mode-map
+      (let ((map (make-sparse-keymap)))
+	(define-key map "," 'skk-abbrev-comma)
+	(define-key map "." 'skk-abbrev-period)
+	(define-key map "\C-q" 'skk-jisx0208-latin-henkan)
+	;; .skk で skk-kakutei-key の変更が可能になるように。
+	;;(define-key map skk-kakutei-key 'skk-kakutei)
+	(skk-define-menu-bar-map map)
+	(setq skk-abbrev-mode-map map)))
+
+  (set-modified-alist
+   'minor-mode-map-alist
+   (list (cons 'skk-latin-mode skk-latin-mode-map)
+	 (cons 'skk-abbrev-mode skk-abbrev-mode-map)
+	 (cons 'skk-j-mode skk-j-mode-map)
+	 (cons 'skk-jisx0208-latin-mode skk-jisx0208-latin-mode-map)))))
 
 ;; VERSION SPECIFIC MATTERS.
-;; tiny function, but called once in skk-kcode.el.  So not make it inline.
-;; or should I think to move to skk-kcode.el?
-(defun skk-make-char (charset n1 n2)
-  (static-cond
-   ((eq skk-emacs-type 'xemacs)
-    (make-char charset (logand (lognot 128) n1) (logand (lognot 128) n2)))
-   ((memq skk-emacs-type '(mule4 mule3))
-    (make-char charset n1 n2))
-   ((eq skk-emacs-type '(mule2 mule1))
-    (make-character charset n1 n2))))
-
 (defun skk-jisx0208-to-ascii (string)
   (let ((char
 	 (static-cond
@@ -416,6 +441,7 @@ dependent."
 	  (skk-regularize)
           (setq skk-mode-invoked t)))
     ;; 以下は skk-mode に入るたびに毎度コールされるコード。
+    (static-if (eq skk-emacs-type 'nemacs) (skk-e18-setup))
     (and (or skk-use-color-cursor skk-cursor-change-width)
 	 (require 'skk-cursor))
     (and skk-use-viper (require 'skk-viper))
@@ -578,16 +604,36 @@ dependent."
     (if (not keys)
         ;; no alternative commands.  may be invoked by M-x.
         nil
-      (let (skk-mode skk-latin-mode skk-j-mode skk-abbrev-mode skk-jisx0208-latin-mode
-                     command)
-        (setq command (key-binding keys))
-        (if (eq command this-command)
-            ;; avoid recursive calling of skk-emulate-original-map.
-            nil
-          ;; if no bindings are found, call `undefined'.  it's
-          ;; original behaviour.
-          (skk-cancel-undo-boundary)
-          (command-execute (or command (function undefined))))))))
+      (static-if (not (memq skk-emacs-type '(nemacs mule1)))
+	  (let (skk-mode skk-latin-mode skk-j-mode skk-abbrev-mode 
+			 skk-jisx0208-latin-mode command)
+	    ;; have to search key binding after binding 4 minor mode flags to nil.
+	    (setq command (key-binding keys))
+	    (if (eq command this-command)
+		;; avoid recursive calling of skk-emulate-original-map.
+		nil
+	      ;; if no bindings are found, call `undefined'.  it's
+	      ;; original behaviour.
+	      (skk-cancel-undo-boundary)
+	      (command-execute (or command (function undefined)))))
+	(let (command local-map buf)
+	  (unwind-protect
+	      (progn
+		(setq buf (current-buffer)
+		      local-map (current-local-map))
+		(use-local-map skk-current-local-map)
+		(setq command (key-binding keys))
+		(if (eq command this-command)
+		    ;; avoid recursive calling of skk-emulate-original-map.
+		    nil
+		  ;; if no bindings are found, call `undefined'.  it's
+		  ;; original behaviour.
+		  (skk-cancel-undo-boundary)
+		  (command-execute (or command (function undefined)))))
+	    ;; restore skk keymap.
+	    (save-excursion
+	      (set-buffer buf)
+	      (use-local-map local-map))))))))
 
 (defun skk-command-key-sequence (key command)
   ;; KEY から universal arguments を取り除き、COMMAND を実行するキーを返す。

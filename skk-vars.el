@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.27 2000/07/18 15:34:17 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.28 2000/08/07 13:00:31 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/18 15:34:17 $
+;; Last Modified: $Date: 2000/08/07 13:00:31 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -917,8 +917,16 @@ left $B$G$"$l$P:8C<$KI=<($9$k!#(B
 2 $B$D$N%k!<%k%j%9%H$K=EJ#$9$k%-!<$N@_Dj$,$"$k>l9g$O!"(B
 skk-rom-kana-rule-list $B$NDj5A$,M%@h$5$l$k!#(B"
   :type '(repeat
-	  (list string string
-		(choice function string (cons string string))))
+	  (list :tag "Rule"
+		(string :tag "1 (string)")
+		(choice :tag "2 (choice)"
+			string
+			(const nil))
+		(choice :tag "3 (choice)"
+			(symbol :tag "Function")
+			string
+			(cons (string :tag "3-1 (string)")
+			      (string :tag "3-2 (string)")))))
   :group 'skk)
 
 (defcustom skk-rom-kana-rule-list
@@ -969,8 +977,16 @@ skk-mode $B5/F0;~$K(B skk-rule-tree $B$H$$$&LZ$N7A$K%3%s%Q%$%k$5$l$k!#(B
 $B9T$J$C$?>l9g!"$=$N@_Dj$rH?1G$5$;$k$K$O(B M-x skk-restart $B$r<B9T$9$kI,MW(B
 $B$,$"$k!#(B"
   :type '(repeat
-	  (list string string
-		(choice function string (cons string string))))
+	  (list :tag "Rule"
+		(string :tag "1 (string)")
+		(choice :tag "2 (choice)"
+			string
+			(const nil))
+		(choice :tag "3 (choice)"
+			(symbol :tag "Function")
+			string
+			(cons (string :tag "3-1 (string)")
+			      (string :tag "3-2 (string)")))))
   :group 'skk)
 
 (defcustom skk-kana-input-search-function
@@ -1037,7 +1053,7 @@ skk.el $B$N%m!<%I8e(B ($B$b$7$/$O(B skk-load-hook $B$rMxMQ$7$F(B)$B!"(B
 $B$H$9$k$+!"$b$7$/$O!"(Bskk-jisx0208-latin-vector $B$N(B 32 $BHVL\(B (0 $BHV$+$i?t$($F(B) $B$NCM$r(B \" \"
 $B$H$9$k$h$&$J(B skk-jisx0208-latin-vector $B$rD>@\=q$-!"(Bsetq $B$GBeF~$9$k!#(B32 $B$O!"(B? ($BH>3Q%9(B
 $B%Z!<%9$N(B char type) $B$rI>2A$7$?$H$-$NCM!#(B"
-  :type 'vector
+  :type 'sexp
   :group 'skk)
 
 (defcustom skk-use-face (or window-system
@@ -1310,7 +1326,7 @@ SKK abbrev $B%b!<%I$G!"!V1QJ8;z(B + $B%"%9%?%j%9%/!W$K$FJQ49$r9T$J$&$H!"(Blo
 $B%^;z%W%l%U%#%C%/%9$r(B \"z\", \"c\",\"f\" $B$KJQ99$r4uK>$9$k>l9g$b$"$k$G$"$m$&!#(B
 skk-auto-okuri-process $B$NCM$,(B non-nil $B$N$H$-!"$"$k$$$O%5JQJd=uJQ49$,9T$J$o$l$k(B
 $B$H$-;2>H$5$l$k!#(B"
-  :type 'vector
+  :type 'sexp
   :group 'skk)
 
 (defcustom skk-henkan-overlay-priority 600
@@ -1462,13 +1478,9 @@ MODE-SYMBOL $B$OF~NO%b!<%I$rI=$o$9%7%s%\%k$G!"(B
 
 nil $B$O!"(BSKK $B%b!<%I%*%U$rI=$o$9!#(B
 PROMPT-STRING $B$O!"3:Ev$N(B SKK $B%b!<%I$KBP$7=P$9%W%m%s%W%H$NJ8;zNs!#(B"
-  :type '(repeat (cons (choice :tag "Mode symbol"
-			       (const hiragana)
-			       (const katakana)
-			       (const jisx0208-latin)
-			       (const latin)
-			       (const nil))
-		       (string :tag "Prompt string")))
+  :type '(repeat
+	  (cons (symbol :tag "Mode Name")
+		(string :tag "Prompt for this mode")))
   :group 'skk-isearch)
 
 (defcustom skk-isearch-start-mode nil
@@ -1683,17 +1695,20 @@ integer `1' $B$rBeF~$9$k!#(B
 ;;; SKK-SERVER.EL related.
 (defcustom skk-server-host (getenv "SKKSERVER")
   "*SKK $B<-=q%5!<%P!<$rAv$i$;$F$$$k%[%9%HL>!#(B"
-  :type 'string
+  :type '(choice (string :tag "Name of the Host")
+		 (const nil))
   :group 'skk-server)
 
 (defcustom skk-server-prog (getenv "SKKSERV")
   "*SKK $B<-=q%5!<%P!<%W%m%0%i%`L>!#%U%k%Q%9$G=q$/!#(B"
-  :type 'file
+  :type '(choice (file :tag "File Name of the Program")
+		 (const nil))
   :group 'skk-server)
 
 (defcustom skk-server-jisyo (getenv "SKK_JISYO")
   "*SKK $B<-=q%5!<%P!<%W%m%0%i%`$KEO$9<-=qL>!#%U%k%Q%9$G=q$/!#(B"
-  :type 'file
+  :type '(choice (file :tag "File Name of the Dictionary")
+		 (const nil))
   :group 'skk-server)
 
 (defcustom skk-server-portnum nil
@@ -2481,7 +2496,7 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
    "$B$q(B"  "$B$r(B"  "$B$s(B"]
   "*skk-kana-rom-vector $B$N(B prefix $B$KBP1~$9$k$+$JJ8;z$N%Y%/%H%k!#(B
 $B$"$k(B prefix $B$,$I$N$+$JJ8;z$KBP1~$9$k$+$N%^%C%W$r:n$k$?$a$K;2>H$9$k!#(B"
-  :type 'vector
+  :type 'sexp
   :group 'skk-lookup)
 
 ;;;; SKK-LOOKUP related internal variables.

@@ -1,5 +1,14 @@
 1999-12-18  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-jisx0201.el (skk-setup-modeline): If `skk-status-indicator'
+	is left and the face `modeline' is not proportional, use the same
+	number of columns to display each SKK status, except for
+	`skk-jisx0201-mode'.
+
+	* skk.el (skk-setup-modeline): Ditto.
+
+1999-12-18  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* skk-cursor.el: (abort-recursive-edit): Advise under XEmacs.
 	(skk-mode): Call `skk-cursor-set-properly'.
 	(skk-auto-fill-mode): Seems this advice is not needed -- though

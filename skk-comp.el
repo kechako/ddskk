@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-comp.el,v 1.4.2.4.2.2 1999/12/05 05:59:25 minakaji Exp $
+;; Version: $Id: skk-comp.el,v 1.4.2.4.2.3 1999/12/13 06:03:56 furue Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/05 05:59:25 $
+;; Last Modified: $Date: 1999/12/13 06:03:56 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -97,11 +97,13 @@
       (setq skk-completion-stack (cons c-word skk-completion-stack)) )
     ;; 辞書バッファの外。
     (if (not c-word)
-	(if skk-japanese-message-and-error
-	    (error "\"%s\" で補完すべき見出し語は%sありません"
-		   skk-completion-word (if first "" "他に") )
-	  (error "No %scompletions for \"%s\""
-		 (if first "" "more ") skk-completion-word ))
+	(progn
+	  (setq skk-completion-depth (1+ skk-completion-depth))
+	  (if skk-japanese-message-and-error
+	      (error "\"%s\" で補完すべき見出し語は%sありません"
+		     skk-completion-word (if first "" "他に") )
+	    (error "No %scompletions for \"%s\""
+		   (if first "" "more ") skk-completion-word )) )
       (delete-region skk-henkan-start-point (point))
       (insert c-word) )))
 
@@ -123,6 +125,7 @@
 	(progn
 	  (delete-region skk-henkan-start-point (point))
 	  (insert c-word) )
+      (setq skk-completion-depth (1- skk-completion-depth))
       (skk-error "\"%s\"で補完すべき見出し語は他にありません"
                  "No more previous completions for \"%s\""
                  skk-completion-word ))))

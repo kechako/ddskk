@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.28 2000/08/07 13:00:31 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.29 2000/08/11 15:17:51 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/07 13:00:31 $
+;; Last Modified: $Date: 2000/08/11 15:17:51 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1363,6 +1363,13 @@ skk-toggle-kutouten はこれをトグルで切り換える。
         \(function \(lambda \(\) skk-henkan-key\)\) \)
 と指定する。"
   :type 'function
+  :group 'skk)
+
+(defcustom skk-use-kana-keyboard t "\
+*Non-nil なら仮名入力用の設定をロードする。
+SKK 使用中にこの変数の値を切り替えることで  ローマ字入力 ←→ 仮名入力 のトグル
+ができる。"
+  :type 'boolean
   :group 'skk)
 
 (defvar skk-latin-mode-map nil "*ASCII モードのキーマップ。")

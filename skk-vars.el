@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.45 2000/10/24 03:45:08 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.46 2000/10/24 15:14:25 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/24 03:45:08 $
+;; Last Modified: $Date: 2000/10/24 15:14:25 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2433,8 +2433,8 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
 (defcustom skk-lookup-option-alist
   '(
     ;; "[spla -> splat]"
-    ("ispell" exact nil nil (not skk-okuri-char)
-     ("-> \\([^ ]+\\)]$" . 1) nil)
+    ("ispell" exact nil nil (not skk-okuri-char) ("-> \\([^ ]+\\)]$" . 1)
+     nil nil)
     ;; what's this?
     ("jedict" exact nil nil (not skk-okuri-char) nil nil nil)
     ;; $B!V<-!&E5!&HW!W(B "$B$"$+#3(B $B^@(B", "ethanol"
@@ -2472,7 +2472,7 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
     ;; KOKUGO: $B;0>JF2(B $BF|K\8l<-E5!J8=Be9q8l!"30Mh8l!K(B
     ;; `$B!R(B' $B$O!"EvMQ4A;zI=$K$J$$4A;z$G!"(B`$B!T(B' $B$O!"EvMQ4A;zI=$K$O$"$k$,!"$=$N2;!"(B
     ;; $B71$,EvMQ4A;zI=$N2;71I=$K$J$$4A;z!#(B
-    ("KOKUGO" exact exact prefix t ("$B!Z(B\\([^$B!Z![(B]+\\)$B![(B" . 1) "$B!&(B" nil "[$B!T!R(B]")
+    ("KOKUGO" exact exact prefix t ("$B!Z(B\\([^$B!Z![(B]+\\)$B![(B" . 1) "$B!&(B" "[$B!T!R(B]")
     ;; $B!V<-!&E5!&HW!W(B "$B9$(B"
     ("MYPAEDIA" exact exact prefix t nil nil nil)
     ;; $B%K%e!<%"%s%+!<1QOB(B "$B$"$+#2(B $B9$(B"

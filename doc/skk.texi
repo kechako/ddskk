@@ -7,13 +7,13 @@
 @c          Yukiyoshi Kameyama <kameyama@@kuis.kyoto-u.ac.jp>
 @c          Mikio Nakajima <minakaji@osaka.email.ne.jp>
 @c  Maintainer: SKK Development Team <skk@ring.gr.jp>
-@c  Version: $Id: skk.texi,v 1.60.2.1 2000/10/31 03:56:36 minakaji Exp $
+@c  Version: $Id: skk.texi,v 1.60.2.2 2000/11/11 23:43:52 minakaji Exp $
 @c  Keywords: japanese
-@c  Last Modified: $Date: 2000/10/31 03:56:36 $
+@c  Last Modified: $Date: 2000/11/11 23:43:52 $
 @c
 @set EDITION 1.5
 @set SKK-VERSION 10.62
-@set UPDATED $Date: 2000/10/31 03:56:36 $
+@set UPDATED $Date: 2000/11/11 23:43:52 $
 @c @set UPDATED-MONTH Oct 1998
 
 @direntry
@@ -5074,7 +5074,7 @@ A:$B13(B  S:$B5q(B  D:$B5r(B  F:$B5u(B  J:$B5s(B  K:$B5v(B  L:$B5t
 @kindex C-g
 
 $BAw$j$"$j$NJQ49Cf$K(B @kbd{C-g} $B$rF~NO$9$k$H!""'%b!<%I$rH4$1!"$=$N8+=P$78l(B
-$B$HAw$j2>L>$r8=:_$N%P%C%U%!$KA^F~$7!""#%b!<%I$KF~$j$^$9!#(B
+$B$HAw$j2>L>$r8=:_$N%P%C%U%!$KA^F~$7!""&%b!<%I$KF~$j$^$9!#(B
 
 @example
 @kbd{N a K u}
@@ -5089,7 +5089,7 @@ A:$B13(B  S:$B5q(B  D:$B5r(B  F:$B5u(B  J:$B5s(B  K:$B5v(B  L:$B5t
 
 @group
 ------ Buffer: foo ------
-$B$J$/(B
+$B"&$J$/(B
 ------ Buffer: foo ------
 @end group
 @end example

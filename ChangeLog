@@ -1,3 +1,7 @@
+2000-11-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* doc/skk.texi (送りあり変換中のC-g): Doc fixed.
+
 2000-11-06  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-server.el: Add 2000 year to Copyright notice.

@@ -1,5 +1,9 @@
 1999-11-22  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* doc/.cvsignore: Add skk.info-4.
+
+1999-11-22  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* skk-isearch.el (skk-isearch-search-string): Use `>' instead of
 	`/='.
 

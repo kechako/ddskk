@@ -2,6 +2,22 @@
 
 	* SKK-MK (SKK-MK-generate-autoloads-el): Provide skk-autoloads.
 
+	* skk-cursor.el (skk-cursor-current-color): No longer check if
+	`skk-jisx0201-mode' is bound.
+
+	* skk-jisx0201.el: Move variables to skk-vars.el.
+	(skk-setup-modeline): No longer redefine this function.
+
+	* skk-vars.el (skk-use-jisx0201-input-method): New user option.
+	(skk-cursor-jisx0201-color, skk-jisx0201-mode-string,
+	skk-jisx0201-mode-map, skk-jisx0201-base-rule-tree,
+	skk-jisx0201-roman-rule-tree, skk-jisx0201-roman,
+	skk-jisx0201-current-rule-tree, skk-jisx0201-mode): From
+	skk-jisx0201.el.
+
+	* skk.el (skk-regularize): Require skk-jisx0201 if
+	`skk-use-jisx0201-input-method' is non-nil.
+
 2000-08-16  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK (SKK-MK-generate-autoloads-el): Always generate autoloads

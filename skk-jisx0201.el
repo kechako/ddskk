@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.12 1999/12/30 09:00:36 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.13 1999/12/30 11:27:16 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 1999/12/30 09:00:36 $
+;; Last Modified: $Date: 1999/12/30 11:27:16 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -38,13 +38,26 @@
 ;; ◎ひらがな/カタカナ両モード内での▽モードにおいて、
 ;;   ・"C-q" を押すと､見出し語として入力されたひらがな/カタカナをﾊﾝｶｸｶﾀｶﾅに変換します｡
 ;;
-;; skk-jisx0201-rule-list に JISX0201.1976 Japanese Roman (latin-jisx0201) 
-;; の文字列を定義しています。いわゆる半角カタカナだけで良ければ、
-;; .emacs か .skk に
+;; skk-jisx0201-roman-rule-list に JISX0201.1976 Japanese Roman (latin-jisx0201) 
+;; の文字列を定義しています。ただし JISX0201.1976 Japanese Roman 入力は今のところ
+;; Emacs 20.3 以降とXEmacs 21 以降でしか出来ていません。ｶﾅ と roman を切り替える key
+;; はとりあえず C-c C-q にしてあります。
 ;;
-;;   (setq skk-jisx0201-rule-list nil)
+;; <業務連絡>
+;; このファイルを編集するときは、できれば XEmacs を使ってください。Emacs 20 は
+;; デフォルトでは JISX0201.1976 Japanese Roman を自動的に US-ASCII に変換するよ
+;; うになっているからです。Emacs 20.3 以降でこのファイルを編集する場合は、この
+;; ファイルを開く前に
 ;;
-;; と書いて下さい。
+;; (setq standard-translation-table-for-decode (make-translation-table nil))
+;;
+;; を評価してください。
+;; (Emacs 20.2 ではとある変数を設定すればいいのですがその変数名を失念しました。
+;; Mule 2.3 については分かりません。)
+;;
+;; <業務連絡 その2>
+;; やっぱり JISX0201.1976 Japanese Kana と JISX0201.1976 Japanese Roman の入力
+;; モードは別々の方がいいと思います。
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
@@ -148,7 +161,7 @@ skk-use-color-cursor が non-nil のときに使用される。"
     ("[" nil "｢")
     ("]" nil "｣")
     ("l" nil skk-latin-mode)
-    ;; ("q" nil skk-toggle-kana)
+    ("q" nil skk-toggle-katakana)
     ("L" nil skk-jisx0208-latin-mode)
     ("Q" nil skk-set-henkan-point-subr)
     ("X" nil skk-purge-from-jisyo)
@@ -158,12 +171,11 @@ skk-use-color-cursor が non-nil のときに使用される。"
     ("\\" nil skk-input-by-code-or-menu))
   "*SKK JISX0201 モードのベースのルール。")
 
-(defvar skk-jisx0201-rule-list
-  '(
-    ("!" nil "!")
+(defvar skk-jisx0201-roman-rule-list
+  '(("!" nil "!")
     ("\"" nil "\"")
     ("#" nil "#")
-    ;;("$" nil "$")
+    ("$" nil "$")
     ("%" nil "%")
     ("&" nil "&")
     ("'" nil "'")
@@ -171,11 +183,11 @@ skk-use-color-cursor が non-nil のときに使用される。"
     ("\)" nil ")")
     ("*" nil "*")
     ("+" nil "+")
-    ;;("," nil ",")
+    ("," nil ",")
     ("-" nil "-")
-    ;;("." nil ".")
-    ;;("/" nil "/")
-    ;;("0" nil "0")
+    ("." nil ".")
+    ("/" nil "/")
+    ("0" nil "0")
     ("1" nil "1")
     ("2" nil "2")
     ("3" nil "3")
@@ -218,43 +230,141 @@ skk-use-color-cursor が non-nil のときに使用される。"
     ("X" nil "X")
     ("Y" nil "Y")
     ("Z" nil "Z")
-    ;;("[" nil "[")
+    ("[" nil "[")
     ("\\" nil "\\")
-    ;;("]" nil "]")
+    ("]" nil "]")
     ("^" nil "^")
     ("_" nil "_")
     ("`" nil "`")
-    ;;("a" nil "a")
-    ;;("b" nil "b")
-    ;;("c" nil "c")
-    ;;("d" nil "d")
-    ;;("e" nil "e")
-    ;;("f" nil "f")
-    ;;("g" nil "g")
-    ;;("h" nil "h")
-    ;;("i" nil "i")
-    ;;("j" nil "j")
-    ;;("k" nil "k")
-    ;;("l" nil "l")
-    ;;("m" nil "m")
-    ;;("n" nil "n")
-    ;;("o" nil "o")
-    ;;("p" nil "p")
-    ;;("q" nil "q")
-    ;;("r" nil "r")
-    ;;("s" nil "s")
-    ;;("t" nil "t")
-    ;;("u" nil "u")
-    ;;("v" nil "v")
-    ;;("w" nil "w")
-    ;;("x" nil "x")
-    ;;("y" nil "y")
-    ;;("z" nil "z")
+    ("a" nil "a")
+    ("b" nil "b")
+    ("c" nil "c")
+    ("d" nil "d")
+    ("e" nil "e")
+    ("f" nil "f")
+    ("g" nil "g")
+    ("h" nil "h")
+    ("i" nil "i")
+    ("j" nil "j")
+    ("k" nil "k")
+    ("l" nil "l")
+    ("m" nil "m")
+    ("n" nil "n")
+    ("o" nil "o")
+    ("p" nil "p")
+    ("q" nil "q")
+    ("r" nil "r")
+    ("s" nil "s")
+    ("t" nil "t")
+    ("u" nil "u")
+    ("v" nil "v")
+    ("w" nil "w")
+    ("x" nil "x")
+    ("y" nil "y")
+    ("z" nil "z")
     ("{" nil "{")
     ("|" nil "|")
     ("}" nil "}")
     ("~" nil "~")
-    )
+    (" " nil " ")))
+
+(defvar skk-jisx0201-rule-list
+  '(
+    ("!" nil "!")
+    ("\"" nil "\"")
+    ("#" nil "#")
+    ;;("$" nil "$")
+    ("%" nil "%")
+    ("&" nil "&")
+    ("'" nil "'")
+    ("\(" nil "(")
+    ("\)" nil ")")
+    ("*" nil "*")
+    ("+" nil "+")
+    ;;("," nil ",")
+    ("-" nil "-")
+    ;;("." nil ".")
+    ;;("/" nil "/")
+    ;;("0" nil "0")
+    ("1" nil "1")
+    ("2" nil "2")
+    ("3" nil "3")
+    ("4" nil "4")
+    ("5" nil "5")
+    ("6" nil "6")
+    ("7" nil "7")
+    ("8" nil "8")
+    ("9" nil "9")
+    (":" nil ":")
+    (";" nil ";")
+    ("<" nil "<")
+    ("=" nil "=")
+    (">" nil ">")
+    ("?" nil "?")
+    ("@" nil "@")
+    ("A" nil "A")
+    ("B" nil "B")
+    ("C" nil "C")
+    ("D" nil "D")
+    ("E" nil "E")
+    ("F" nil "F")
+    ("G" nil "G")
+    ("H" nil "H")
+    ("I" nil "I")
+    ("J" nil "J")
+    ("K" nil "K")
+    ("L" nil "L")
+    ("M" nil "M")
+    ("N" nil "N")
+    ("O" nil "O")
+    ("P" nil "P")
+    ("Q" nil "Q")
+    ("R" nil "R")
+    ("S" nil "S")
+    ("T" nil "T")
+    ("U" nil "U")
+    ("V" nil "V")
+    ("W" nil "W")
+    ("X" nil "X")
+    ("Y" nil "Y")
+    ("Z" nil "Z")
+    ;;("[" nil "[")
+    ;;("\\" nil "\")
+    ;;("]" nil "]")
+    ("^" nil "^")
+    ("_" nil "_")
+    ("`" nil "`")
+    ;;("a" nil "a")
+    ;;("b" nil "b")
+    ;;("c" nil "c")
+    ;;("d" nil "d")
+    ;;("e" nil "e")
+    ;;("f" nil "f")
+    ;;("g" nil "g")
+    ;;("h" nil "h")
+    ;;("i" nil "i")
+    ;;("j" nil "j")
+    ;;("k" nil "k")
+    ;;("l" nil "l")
+    ;;("m" nil "m")
+    ;;("n" nil "n")
+    ;;("o" nil "o")
+    ;;("p" nil "p")
+    ;;("q" nil "q")
+    ;;("r" nil "r")
+    ;;("s" nil "s")
+    ;;("t" nil "t")
+    ;;("u" nil "u")
+    ;;("v" nil "v")
+    ;;("w" nil "w")
+    ;;("x" nil "x")
+    ;;("y" nil "y")
+    ;;("z" nil "z")
+    ("{" nil "{")
+    ("|" nil "|")
+    ("}" nil "}")
+    ("~" nil "~")
+    (" " nil " "))
 "*SKK JISX0201 モードの追加のルール。")
 
 (defvar skk-jisx0201-mode-map nil
@@ -280,6 +390,10 @@ skk-use-color-cursor が non-nil のときに使用される。"
 skk-mode の起動時に毎回 skk-rom-kana-base-rule-list と
 skk-rom-kana-rule-list から木の形にコンパイルされる。")
 
+(defvar skk-jisx0201-base-rule-tree nil)
+(defvar skk-jisx0201-roman-rule-tree nil)
+(skk-deflocalvar skk-jisx0201-roman nil)
+
 (skk-deflocalvar skk-jisx0201-current-rule-tree nil
   "ローマ字 -> JISX0201 変換の状態遷移規則を表わすツリーの現時点の状態。
 ローマ字入力の初期では skk-jisx0201-rule-tree と同一の状態で、文字入力が進むに
@@ -296,6 +410,8 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 (defsubst skk-jisx0201-mode-on ()
   (setq skk-mode t
         skk-jisx0201-mode t
+	skk-jisx0201-roman nil
+	skk-jisx0201-rule-tree skk-jisx0201-base-rule-tree
         skk-abbrev-mode nil
         skk-latin-mode nil
         skk-j-mode nil
@@ -306,11 +422,12 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 
 ;; advices.
 (defadvice skk-regularize (before skk-jisx0201-ad activate)
-  (setq skk-jisx0201-rule-tree
+  (setq skk-jisx0201-base-rule-tree
 	(skk-compile-rule-list skk-jisx0201-base-rule-list skk-jisx0201-rule-list)))
 
 (defadvice skk-mode (after skk-jisx0201-ad activate)
-  (define-key skk-jisx0201-mode-map skk-kakutei-key 'skk-kakutei))
+  (define-key skk-jisx0201-mode-map skk-kakutei-key 'skk-kakutei)
+  (setq skk-jisx0201-mode nil))
 
 (defadvice skk-kakutei (after skk-jisx0201-ad activate)
   (and skk-jisx0201-mode (skk-jisx0201-mode-on)))
@@ -376,6 +493,24 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
   (skk-kakutei)
   (skk-jisx0201-mode-on))
 
+(defun skk-toggle-jisx0201 (arg)
+  "半角カナモードとローマ字モードを切り替える。"
+  (interactive "P")
+  (or skk-jisx0201-roman-rule-tree
+      (setq skk-jisx0201-roman-rule-tree
+	    (skk-compile-rule-list skk-jisx0201-roman-rule-list)))
+  (cond ((and skk-henkan-on (not skk-henkan-active))
+	 (skk-jisx0201-henkan arg))
+	(t
+	 (cond (skk-jisx0201-roman
+		(setq skk-jisx0201-rule-tree skk-jisx0201-base-rule-tree)
+		(setq skk-jisx0201-roman nil))
+	       (t
+		(or skk-jisx0201-base-rule-tree
+		    (setq skk-jisx0201-base-rule-tree skk-jisx0201-rule-tree))
+		(setq skk-jisx0201-rule-tree skk-jisx0201-roman-rule-tree)
+		(setq skk-jisx0201-roman t))))))
+
 (defun skk-jisx0201-string-conversion (str func)
   (let ((buf (get-buffer-create " *SKK JIS X 0201 work*")))
     (save-excursion
@@ -408,7 +543,8 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
    (let ((ch last-command-char))
      (cond (
 	    ;; start writing a midasi key.
-	    (or (and (memq ch skk-set-henkan-point-key)
+	    (or (and (not skk-jisx0201-roman)
+		     (memq ch skk-set-henkan-point-key)
 		     (or skk-okurigana
 			 (not (skk-get-prefix skk-jisx0201-current-rule-tree))
 			 (not (skk-select-branch skk-jisx0201-current-rule-tree ch))))
@@ -472,7 +608,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 	      (setq data (skk-get-kana next)
 		    queue (nconc (string-to-char-list (skk-get-nextstate next))
 				 (cdr queue))
-		    skk-jisx0201-current-rule-tree nil ))
+		    skk-jisx0201-current-rule-tree nil))
 	  ;; can not go down SKK-JISX0201-CURRENT-RULE-TREE
 	  (let ((d (skk-get-kana skk-jisx0201-current-rule-tree)))
 	    (if d
@@ -771,6 +907,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 
 (define-key skk-jisx0201-mode-map skk-kakutei-key 'skk-kakutei)
 (define-key skk-jisx0201-mode-map "\C-q" 'skk-toggle-katakana)
+(define-key skk-jisx0201-mode-map "\C-c\C-q" 'skk-toggle-jisx0201)
 (define-key skk-j-mode-map "\C-q" 'skk-toggle-katakana)
 
 (provide 'skk-jisx0201)

@@ -29,7 +29,7 @@
 ;;     o Nemacs 3.3.2 based on Emacs 18.59
 ;;
 ;; に限られています。
-;; daredevil SKK は advice.el を必要とします。Emacs 18 で利用できる
+;; Daredevil SKK は advice.el を必要とします。Emacs 18 で利用できる
 ;; advice.el は
 ;;
 ;;     ftp://ftp.cs.buffalo.edu/pub/Emacs/
@@ -41,6 +41,10 @@
     (require 'advice)
   (error
    (error "advice.el is required for This version of SKK.")))
+
+(defconst skk-use-color-cursor nil)
+(defconst skk-cursor-change-width nil)
+
 (require 'skk-macs)
 (require 'skk-vars)
 
@@ -49,7 +53,12 @@
 (defvar unread-command-events nil)
 
 (skk-deflocalvar skk-current-local-map nil)
-(skk-deflocalvar skk-emacs-local-map nil)
+
+(defvar skk-e18-self-insert-keys
+  (append (where-is-internal 'self-insert-command global-map)
+	  (where-is-internal 'canna-self-insert-command global-map)
+	  (where-is-internal 'egg-self-insert-command global-map)
+	  '("\t")))
 
 ;; Macros.
 (defmacro save-match-data (&rest body)
@@ -61,18 +70,6 @@
                 (list 'store-match-data original)))))
 
 ;; Inline functions.
-(defsubst skk-lisp-prog-p (word)
-  ;; word が Lisp プログラムであれば、t を返す。
-  (let ((l (length word)))
-    (and (> l 2)
-	 (eq (aref word 0) 40)		; ?\(
-	 (< (aref word 1) 128)
-	 (eq (aref word (1- l)) 41))))	; ?\)
-
-(defsubst skk-in-minibuffer-p ()
-  ;; カレントバッファがミニバッファかどうかをチェックする。
-  (eq (selected-window) (minibuffer-window)))
-
 (defsubst skk-mode-off ()
   (setq skk-mode nil
 	skk-abbrev-mode nil
@@ -134,6 +131,12 @@
   (use-local-map skk-abbrev-mode-map)
   (force-mode-line-update))
 
+(defsubst skk-str-length (str)
+  (length (string-to-char-list str)))
+
+(defsubst skk-str-ref (str pos)
+  (nth pos (string-to-char-list str)))
+
 ;; Pieces of advice.
 (defadvice byte-code-function-p (around skk-e18-ad activate)
   (cond ((and (consp object) (consp (cdr object)))
@@ -145,11 +148,23 @@
   (when ad-return-value
     (setq ad-return-value (match-end 0))))
 
+(defadvice search-backward (after skk-e18-ad activate)
+  (when ad-return-value
+    (setq ad-return-value (match-beginning 0))))
+
 (defadvice re-search-forward (after skk-e18-ad activate)
   (when ad-return-value
     (setq ad-return-value (match-end 0))))
 
+(defadvice re-search-backward (after skk-e18-ad activate)
+  (when ad-return-value
+    (setq ad-return-value (match-beginning 0))))
+
 ;; Other functions.
+(defun-maybe window-minibuffer-p (&optional window)
+"Returns non-nil if WINDOW is a minibuffer window."
+  (eq (selected-window) (minibuffer-window)))
+
 (defun-maybe float (arg)
   arg)
 
@@ -162,34 +177,33 @@
 (defun-maybe number-to-string (num)
   (format "%d" num))
 
-(defun skk-e18-define-j-mode-map (map)
-  (mapcar (function
-	   (lambda (key)
-	     (define-key map key 'skk-insert)))
-	  '("!" "#" "$" "%" "&" "'" "*" "+" "," "-" "." "/"
-	    "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"
-	    ":" ";" "<" "=" ">" "?" "@"
-	    "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M"
-	    "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"
-	    "\ " "\"" "\(" "\)" "\[" "\\" "\]" "\{" "\}" "\t" "^" "_" "`"
-	    "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m"
-	    "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"
-	    "|" "~")))
+(when (eq skk-emacs-type 'mule1)
+  (defun insert-file-contents-as-coding-system
+    (coding-system filename &optional visit beg end replace)
+    "Like `insert-file-contents', q.v., but CODING-SYSTEM the first arg will
+be applied to `file-coding-system-for-read'."
+    (insert-file-contents filename visit coding-system)))
 
 (defun skk-e18-setup ()
   (let ((map (if (skk-in-minibuffer-p) minibuffer-local-map
 	       (current-local-map)))
 	(i 0))
     ;;
-    (setq skk-current-local-map (if map (copy-keymap map)))
+    (mapcar (function
+	     (lambda (skk-map)
+	       (set skk-map (if map (copy-keymap map) (make-sparse-keymap)))))
+	    '(skk-current-local-map
+	      skk-latin-mode-map
+	      skk-j-mode-map
+	      skk-jisx0208-latin-mode-map))
     ;;
-    (setq skk-latin-mode-map (if map (copy-keymap map) (make-sparse-keymap)))
     (define-key skk-latin-mode-map skk-kakutei-key 'skk-kakutei)
     ;;
-    (setq skk-j-mode-map (if map (copy-keymap map) (make-sparse-keymap)))
-    (skk-e18-define-j-mode-map skk-j-mode-map)
+    (mapcar (function
+	     (lambda (key)
+	       (define-key skk-j-mode-map key 'skk-insert)))
+	    skk-e18-self-insert-keys)
     ;;
-    (setq skk-jisx0208-latin-mode-map (if map (copy-keymap map) (make-sparse-keymap)))
     (define-key skk-jisx0208-latin-mode-map skk-kakutei-key 'skk-kakutei)
     (while (< i 128)
       (and (aref skk-jisx0208-latin-vector i)
@@ -244,8 +258,7 @@
 		   (t (or (file-exists-p "~/tmp") (make-directory "~/tmp"))
 		      (or (file-writable-p "~/tmp") (set-file-modes "~/tmp" 1023))
 		      "~/tmp"))))
-	(make-temp-name
-	 (expand-file-name prefix dir))))
+	(make-temp-name (expand-file-name prefix dir))))
     ;;
     )))
 
@@ -253,8 +266,16 @@
  'skk-kcode-load-hook
  (function
   (lambda ()
-    (defun skk-make-string (n1 n2)
-      (concat (char-to-string n1) (char-to-string n2))))))
+    ;;
+    (when (eq skk-emacs-type 'nemacs)
+      (defun skk-make-string (n1 n2)
+	(concat (char-to-string n1) (char-to-string n2))))
+
+    (when (eq skk-emacs-type 'mule1)
+      (defun skk-make-char (charset n1 n2)
+	(make-character charset n1 n2)))
+    ;;
+    )))
 
 ;;
 (provide 'skk-e18)

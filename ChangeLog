@@ -22,7 +22,7 @@
 	(skk-detect-emacs): Ditto.
 
 	* skk-vars.el (skk-emacs-type): Ditto.
-	(skk-background-mode): Avoide an error under Emacs 18.
+	(skk-background-mode): Avoid an error under Emacs 18.
 	(skk-cursor-default-color): Ditto.
 	(skk-isearch-overriding-local-map): Ditto.
 

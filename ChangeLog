@@ -2,8 +2,6 @@
 
 	* CVS_00readme: Use overlays instead of text properties.
 
-	* SKK-MK: Tiny bug fix for Emacs 18.
-
 2000-09-10  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* Makefile (snapshot): Bug fixed.

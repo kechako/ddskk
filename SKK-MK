@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.28 2000/07/08 22:12:29 minakaji Exp $
-;; Last Modified: $Date: 2000/07/08 22:12:29 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.29 2000/08/11 15:16:37 czkmt Exp $
+;; Last Modified: $Date: 2000/08/11 15:16:37 $
 
 ;; Commentary
 ;;
@@ -313,7 +313,7 @@
 	 (compile-elisp-modules '(skk-e18 skk-isearch) "./experimental"))
 	(t
 	 (SKK-MK-generate-autoloads-el)))
-  (compile-elisp-modules SKK_MODULES "."))
+  (compile-elisp-modules SKK_MODULES (expand-file-name ".")))
 
 (defun SKK-MK-compile-info ()
   (and SKK_INFOS

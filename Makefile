@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-# Version: $Id: Makefile,v 1.13.4.5 2000/01/23 13:38:46 czkmt Exp $
-# Last Modified: $Date: 2000/01/23 13:38:46 $
+# Version: $Id: Makefile,v 1.13.4.6 2000/01/23 17:12:58 czkmt Exp $
+# Last Modified: $Date: 2000/01/23 17:12:58 $
 
 VERSION = 11.2
 
@@ -33,7 +33,7 @@ what-where-package:
 	$(EMACS) $(FLAGS) -f SKK-MK-what-where-package
 
 clean:
-	-$(RM) skk-autoloads.el *.elc experimental/*.elc ./doc/skk.info* `find . -name '*~'` 
+	-$(RM) skk-autoloads.el *.elc experimental/*.elc experimental/skk-isearch.el ./doc/skk.info* `find . -name '*~'` 
 
 tar: clean
 	-$(RM) ../ddskk-$(VERSION).tar.gz

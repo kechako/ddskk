@@ -47,6 +47,7 @@ LISPDIR=%s\n" PREFIX LISPDIR))))
 
 (defun install-nicola-ddskk ()
   (config-nicola-ddskk)
+  (require 'cl)
   (require 'pcustom)
   (install-elisp-modules nicola-ddskk-modules "./" NICOLA-DDSKK_DIR)
   (delete-file "./nicola-ddskk-autoloads.el"))

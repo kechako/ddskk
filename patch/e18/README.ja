@@ -1,6 +1,6 @@
 -*- text -*-
 
-     $Id: README.ja,v 1.1.2.2 2000/09/12 11:00:26 czkmt Exp $
+     $Id: README.ja,v 1.1.2.3 2000/09/12 11:02:58 czkmt Exp $
 
 $B$3$N%G%#%l%/%H%j$K$O!"(BEmacs 18 $B>e$G(B Daredevil SKK $B$rMxMQ$9$k:]$K!"I,MW(B
 $B$J$b$N!"$*$h$S$"$k$HJXMx$J$b$N$r<}O?$7$^$9!#(B
@@ -15,7 +15,7 @@ Daredevil SKK $B$K1w$1$k(B Emacs 18 (Nemacs 3.3.2 $B$^$?$O(B Mule 1.1) $BBP
 
 1. $B$$$=$,$7$$?M$N$?$a$N;H$$J}(B
 
- main/patch/e18% nemacs -batch -q -l ./advice.el -f batch-byte-compile ./advice.el
+ main/patch/e18% nemacs -batch -q -f batch-byte-compile ./advice.el
  main/patch/e18% cp advice.el* cl.elc /usr/local/emacs/lisp/
  main/patch/e18% cd ../..
  main% make install EMACS=nemacs

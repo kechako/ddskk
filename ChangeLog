@@ -1,5 +1,7 @@
 2000-03-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk-vars.el (skk-codename): Specify station name only.
+
 	* Makefile (snapshot): New entry.
 
 2000-03-11  Mikio Nakajima  <minakaji@osaka.email.ne.jp>

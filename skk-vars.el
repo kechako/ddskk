@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.22 2000/02/06 04:32:54 okada Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.23 2000/03/12 07:25:15 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/02/06 04:32:54 $
+;; Last Modified: $Date: 2000/03/12 07:25:15 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -59,7 +59,7 @@
 (defconst skk-major-version (string-to-int (substring skk-version 0 2)))
 (defconst skk-minor-version (string-to-int (substring skk-version 3)))
 (defconst skk-branch-name "Daredevil")
-(defconst skk-codename "Makiochi (Hankyu, Osaka)")
+(defconst skk-codename "Makiochi")
 (defconst skk-ml-address "skk@ring.gr.jp")
 (defconst skk-ml-command-address "skk-request@ring.gr.jp")
 (defconst skk-background-mode

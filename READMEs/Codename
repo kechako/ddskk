@@ -1,7 +1,7 @@
 -*- outline -*-
 
-                       $Date: 1999/11/28 04:54:23 $ 
-	               $Id: Codename,v 1.1.2.3 1999/11/28 04:54:23 minakaji Exp $
+                       $Date: 2000/03/12 07:25:17 $ 
+	               $Id: Codename,v 1.1.2.4 2000/03/12 07:25:17 minakaji Exp $
 
 * Rule
 
@@ -9,9 +9,7 @@
 
 ** Codename $B$H(B cvs TAG
 
-$B$3$N(B 2 $B$D$O!"I,$:(B sync $B$7$F2<$5$$(B ($BC"$7!"(Btag $B$K$O6uGrJ8;z$r4^$a$k$3$H(B
-$B$,$G$-$J$$$h$&$J$N$G!"(BTAG $BIU$1$9$k$N$O!"(BCodename $B$N$&$A!"1XL>$NItJ,$@(B
-$B$1$G7k9=$G$9(B)$B!#(B
+$B$3$N(B 2 $B$D$O!"I,$:(B sync $B$7$F2<$5$$!#(B
 
    $ cd (working-copy directory)
    $ cvs tag (Codename) .
@@ -40,7 +38,7 @@
 
 skk-vars.el $B$NCf$N(B
 
- (defconst skk-codename "Mino-o (Hankyu, Osaka)")
+ (defconst skk-codename "Mino-o")
 
 $B$N$h$&$K$J$C$F$$$k$H$3$m$G$9!#(B"$B1XL>(B ($B1?Aw2q<RL>(B, $BETF;I\8)L>(B)" $B$N$h$&$K(B
 $BIU$1$F2<$5$$!#$3$3$rJQ99$9$k$3$H$G(B M-x skk-version $B$G(B Codename $B$r4^$a(B
@@ -84,10 +82,10 @@ o $B0[$J$kO)@~$GF1$81X$rFsEYDL2a$7$F$bF1$8(B Codename $B$O(B 2 $BEY=P$5$J$$
 $BI~It(B                Hattori
 $B>1Fb(B                Syounai
 $B;09q(B                Mikuni
-$B==;0(B                Jyuusou
+$B==;0(B                Juso
 $BCfDE(B                Nakatsu
 $BG_ED(B                Umeda
-   
+ 
 * Next, where shall we go?
 
 [End of Codename]

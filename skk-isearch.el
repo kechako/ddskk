@@ -5,9 +5,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.5 1999/11/24 14:32:56 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.6 1999/11/27 22:27:04 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/24 14:32:56 $
+;; Last Modified: $Date: 1999/11/27 22:27:04 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -378,8 +378,8 @@ If the conversion is in progress and no string is fixed, just return nil."
     string))
 
 (defun skk-isearch-mode-message ()
-  "Prepend the skk isearch mode string to `isearch-message'.  If the current
-mode is different from previous, remove it first."
+  "Prepend the skk isearch mode string to `isearch-message'.
+If the current mode is different from previous, remove it first."
   (let ((mode-string (skk-isearch-mode-string)))
     (if (string= mode-string skk-isearch-last-mode-string)
 	nil

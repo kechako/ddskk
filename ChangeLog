@@ -1,5 +1,10 @@
 2000-09-29  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* READMEs/FAQ.txt: Fixed a description about 「検索する辞書を増や
+	したいのですが」.
+	Sync up with a description about 「Wnn でも Canna でも郵便番号辞書
+	が使えるけれど、SKK では使えないの ?」
+
 	* READMEs/FAQ.txt: Add a description about 「検索する辞書を増やし
 	たいのですが」.
 

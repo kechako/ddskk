@@ -1,5 +1,12 @@
 1999-12-07  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-vars.el (skk-check-okurigana-on-toroku): New variable.
+	* skk.el (skk-henkan-in-minibuff): If
+	`skk-check-okurigana-on-toroku' is non-nil, prompt user to check
+	okurigana.
+
+1999-12-07  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* skk-cursor.el (completing-read): Fix the advice.
 	(read-from-minibuffer): Ditto.
 

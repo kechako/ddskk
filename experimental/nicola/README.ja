@@ -1,6 +1,6 @@
 -*- mode: outline -*-
 
-	$Id: README.ja,v 1.1.2.5 2000/10/09 00:16:27 czkmt Exp $
+	$Id: README.ja,v 1.1.2.6 2000/10/10 10:34:17 czkmt Exp $
 
 
 このディレクトリには SKK の仮名入力対応コードを置いています。
@@ -105,7 +105,6 @@ http://www.eva.hi-ho.ne.jp/%7Eminoura/kbd/keymap.html
 
    http://www.remus.dti.ne.jp/%7Eczkmt/update/elisp/
 
-
    % make install (XEmacs では make install-package)
 
 ** NICOLA-DDSKK のインストール
@@ -135,24 +134,24 @@ http://www.eva.hi-ho.ne.jp/%7Eminoura/kbd/keymap.html
 ** カスタマイズ
 
    skk-kanagaki-keyboard-type に対応したファイルに書かれている変数によっ
-   て、キー入力と挿入される文字のルールを変更できます。
+   て、キー入力と挿入される文字のルールを変更します。
 
    例えば skk-kanagaki-keyboard-type が omelet-jis であれば、
    skk-omelet-jis.el に書かれている以下の変数を設定します。
 
    `skk-kanagaki-omelet-jis-base-rule-list'
 
-        これは、各文字キーの入力を SKK にどう解釈させるかを決定します。
-        標準設定では、多くの文字キーは関数 `skk-nicola-insert' を呼び
-        出します。
+        この変数は、各文字キーの入力を SKK にどう解釈させるかを決定し
+        ます。標準設定では、多くの文字キーは関数 `skk-nicola-insert'
+        を呼び出します。
 
    `skk-omelet-jis-plain-rule-list'
    `skk-omelet-jis-rshift-rule-list'
    `skk-omelet-jis-lshift-rule-list'
 
         これらの変数は、関数 `skk-nicola-insert' が文字を挿入する際の
-        ルールを決定します。順に単独打鍵、同側シフト入力、反対側シフト
-        入力のルールです。
+        ルールを決定します。順に単独打鍵、右シフト入力、左シフト入力の
+        ルールです。
 
    これらの設定をファイル ~/.skk に記述してから SKK を起動すれば、設定
    が反映されます。

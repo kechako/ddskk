@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.15 1999/12/16 17:16:25 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.16 1999/12/17 14:23:56 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/16 17:16:25 $
+;; Last Modified: $Date: 1999/12/17 14:23:56 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -276,13 +276,13 @@ Optional argument PREFIX is apppended if given."
 		    backward-delete-char
 		    backward-or-forward-delete-char
 		    delete-backward-char))
-	keys )
+	keys)
     (while commands
       (setq keys (where-is-internal (car commands) (current-global-map))
-	    commands (cdr commands) )
+	    commands (cdr commands))
       (while keys
 	(define-key map (car keys) 'skk-isearch-delete-char)
-	(setq keys (cdr keys)) )))
+	(setq keys (cdr keys)))))
 
   ;; C-x map for skk.
   (define-key map "\C-x" (make-sparse-keymap))
@@ -527,6 +527,17 @@ If the current mode is different from previous, remove it first."
   (when (string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
 		      isearch-message)
     (setq isearch-message (substring isearch-message (match-end 0)))))
+
+(defadvice isearch-search (before skk-isearch-ad activate preactivate)
+  "`isearch-message' を適切に設定する。"
+  (unless (or isearch-nonincremental
+	      (string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
+			    isearch-message))
+    (setq isearch-message
+	  (concat
+	   (skk-isearch-mode-string)
+	   (mapconcat 'isearch-text-char-description isearch-string "")))))
+
 
 (put 'skk-isearch-wrapper 'isearch-command t)
 (put 'skk-isearch-keyboard-quit 'isearch-command t)

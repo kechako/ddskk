@@ -1,3 +1,13 @@
+1999-11-18  TSUMURA Tomoaki  <tsumura@kuis.kyoto-u.ac.jp>
+
+	* skk-cursor.el (skk-change-cursor-when-ovwrt): Renamed to
+	`skk-cursor-change-when-ovwrt'.
+
+	* skk-viper.el (skk-cursor-set-properly): Use
+	`skk-cursor-change-when-ovwrt'.
+
+	* skk.el (skk-mode): Put off setting `skk-mode-invoked'.
+
 1999-11-14  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-abbrev.el (skk-completion-original): Bug fixed.

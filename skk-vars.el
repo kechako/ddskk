@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.54 2000/11/06 11:23:03 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.55 2002/03/02 04:11:41 ueno Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/11/06 11:23:03 $
+;; Last Modified: $Date: 2002/03/02 04:11:41 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -631,9 +631,10 @@ nil $B$G$"$l$P!"Aw$j2>L>$r4^$a$?8+=P$78l$r$=$N$^$^;D$7!""#%b!<%I$KF~$k!#Nc$($P!
   :type 'boolean
   :group 'skk-okurigana)
 
-(defcustom skk-henkan-show-candidates-keys '(?a ?s ?d ?f ?j ?k ?l)
+(defcustom skk-henkan-show-candidates-keys
+  '(?a ?s ?d ?f ?j ?k ?l ?q ?w ?e ?r ?u ?i ?o ?z ?c ?v ?b ?n ?m ?,)
   "*$B%a%K%e!<7A<0$G8uJd$rA*Br$9$k$H$-$NA*Br%-!<$N%j%9%H!#(B
-\"x\", \" \" $B5Z$S(B \"C-g\" $B0J30$N(B 7 $B$D$N%-!<(B (char type) $B$r4^$`I,MW$,$"(B
+\"x\", \" \" $B5Z$S(B \"C-g\" $B0J30$N(B 7 $B$NG\?t8D$N%-!<(B (char type) $B$r4^$`I,MW$,$"(B
 $B$k!#(B\"x\", \" \" $B5Z$S(B \"C-g\" $B$O8uJdA*Br;~$K$=$l$>$lFCJL$J;E;v$K3d$jEv(B
 $B$F$i$l$F$$$k$N$G!"$3$N%j%9%H$NCf$K$O4^$a$J$$$3$H!#(B"
   :type '(repeat character)
@@ -1116,6 +1117,11 @@ hilit-lookup-face-create $B$J$I$rMxMQ$9$k!#?'$rIU$1$k>l9g$NG[?'$O!"(Bcanna.el 
 canna:attribute-alist $B$,NI$$Nc$+$b$7$l$J$$!#(B"
   :type 'face
   :group 'skk-decoration)
+
+(defcustom skk-henkan-show-candidates-rows 1
+  "*$BJQ498uJd72$NI=<(9T?t!#(B"
+  :type 'integer
+  :group 'skk-misc)
 
 ;;; SKK-AUTO.EL related.
 (defcustom skk-okuri-search-function 'skk-okuri-search-subr-original

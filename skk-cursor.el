@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.24 1999/12/19 12:37:50 minakaji Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.25 2000/01/17 04:25:38 furue Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/19 12:37:50 $
+;; Last Modified: $Date: 2000/01/17 04:25:38 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -58,9 +58,9 @@
   (cond ((not skk-mode) skk-cursor-default-color)
 	(skk-jisx0208-latin-mode
 	 skk-cursor-jisx0208-latin-color )
-	(skk-abbrev-mode skk-cursor-abbrev-color)
 	(skk-katakana skk-cursor-katakana-color)
 	(skk-j-mode skk-cursor-hiragana-color)
+	(skk-abbrev-mode skk-cursor-abbrev-color)
 	((and (boundp 'skk-jisx0201-mode)
 	      skk-jisx0201-mode)
 	 skk-cursor-jisx0201-color)
@@ -234,13 +234,6 @@
 ;;(defadvice insert-file (after skk-cursor-ad activate)
 ;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
 ;;  (and skk-mode (skk-cursor-set-properly)) )
-
-(defadvice keyboard-quit (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (and skk-mode
-       (not skk-henkan-on)
-       (not skk-henkan-active)
-       (skk-cursor-set-properly)))
 
 (static-when (featurep 'xemacs)
   (defadvice abort-recursive-edit (before skk-cursor-ad activate preactivate)

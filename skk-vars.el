@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.2 1999/11/14 15:10:07 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.3 1999/11/22 09:47:21 kawamura Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/14 15:10:07 $
+;; Last Modified: $Date: 1999/11/22 09:47:21 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -29,6 +29,10 @@
 ;;
 
 ;;; Code:
+
+;; APEL
+(require 'path-util)
+
 (eval-when-compile
   (defmacro skk-deflocalvar (var default-value &optional documentation)
     (` (progn

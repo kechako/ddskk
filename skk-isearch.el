@@ -5,9 +5,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.3 1999/11/22 17:15:35 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.4 1999/11/24 13:54:48 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/22 17:15:35 $
+;; Last Modified: $Date: 1999/11/24 13:54:48 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -194,6 +194,7 @@ kakutei'ed and erase the buffer contents."
   (require 'skk)
   (let ((initial (skk-isearch-initial-mode)))
     (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
+      (skk-erase-prefix 'clean)
       (skk-isearch-initialize-working-buffer)
       (skk-isearch-set-initial-mode initial)))
   ;; setup variables and keymap

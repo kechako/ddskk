@@ -1,3 +1,17 @@
+2000-08-11  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK (SKK-MK-compile): Expand "." before passing it to
+	`compile-elisp-modules'.
+
+	* skk-tut.el (skktut-setup-question-buffer,
+	skktut-setup-answer-buffer): Don't bind a key for a non-existent
+	command `skktut-error-command'.
+
+	* skk-vars.el (skk-use-kana-keyboard): New user option.
+
+	* skk.el (skk-mode): Require `skk-kanagaki' if
+	`skk-use-kana-keyboard' is non-nil.
+
 2000-08-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-kanagaki.el: Add comments.

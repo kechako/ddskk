@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.35 2000/01/24 12:37:40 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.36 2000/01/25 13:16:04 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/24 12:37:40 $
+;; Last Modified: $Date: 2000/01/25 13:16:04 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/24 12:37:40 $")
+      (let* ((raw-date "$Date: 2000/01/25 13:16:04 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -114,10 +114,11 @@
 (define-obsolete-function-alias 'skk-ascii-henkan 'skk-latin-henkan)
 (define-obsolete-function-alias 'skk-convert-ad-to-gengo 'skk-ad-to-gengo)
 (define-obsolete-function-alias 'skk-convert-gengo-to-ad 'skk-gengo-to-ad)
-(define-obsolete-function-alias 'skk-isearch-forward 'isearch-forward)
-(define-obsolete-function-alias 'skk-isearch-forward-regexp 'isearch-forward-regexp)
-(define-obsolete-function-alias 'skk-isearch-backward 'isearch-backward)
-(define-obsolete-function-alias 'skk-isearch-backward-regexp 'isearch-backward-regexp)
+(unless (memq skk-emacs-type '(nemacs mule1))
+  (define-obsolete-function-alias 'skk-isearch-forward 'isearch-forward)
+  (define-obsolete-function-alias 'skk-isearch-forward-regexp 'isearch-forward-regexp)
+  (define-obsolete-function-alias 'skk-isearch-backward 'isearch-backward)
+  (define-obsolete-function-alias 'skk-isearch-backward-regexp 'isearch-backward-regexp))
 
 (defun skk-define-menu-bar-map (map)
   ;; SKK メニューのトップに出現するコマンドのメニューへの定義を行なう。

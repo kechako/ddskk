@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.15 1999/11/30 13:25:04 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.16 1999/12/04 08:40:23 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/30 13:25:04 $
+;; Last Modified: $Date: 1999/12/04 08:40:23 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/30 13:25:04 $")
+      (let* ((raw-date "$Date: 1999/12/04 08:40:23 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -127,30 +127,34 @@
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Hiragana, All Candidates"
         ;; あれれ、lambda 関数は定義できないのか？？？  動かないぞ...。
-        (function (lambda (start end) (interactive "r")
-                    (skk-gyakubiki-message start end 'all-candidates) ))
+        (call-interactively
+	 (function (lambda (start end) (interactive "r")
+		     (skk-gyakubiki-message start end 'all-candidates) )))
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Katakana" skk-gyakubiki-katakana-message
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Katakana, All Candidates"
-        (function (lambda (start end) (interactive "r")
-                    (skk-gyakubiki-katakana-message
-                     start end 'all-candidates ) ))
+        (call-interactively
+	 (function (lambda (start end) (interactive "r")
+		     (skk-gyakubiki-katakana-message
+		      start end 'all-candidates ) )))
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        )
       ("Hurigana"
        ["to Hiragana" skk-hurigana-message
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Hiragana, All Candidates"
-        (function (lambda (start end) (interactive "r")
-                    (skk-hurigana-message start end 'all-candidates) ))
+        (call-interactively
+	 (function (lambda (start end) (interactive "r")
+		     (skk-hurigana-message start end 'all-candidates) )))
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Katakana" skk-hurigana-katakana-message
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Katakana, All Candidates"
-        (function (lambda (start end) (interactive "r")
-                    (skk-hurigana-katakana-message
-                     start end 'all-candidates) ))
+        (call-interactively
+	 (function (lambda (start end) (interactive "r")
+		     (skk-hurigana-katakana-message
+		      start end 'all-candidates) )))
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        )
       )
@@ -161,15 +165,17 @@
        ["to Hiragana" skk-gyakubiki-region
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Hiragana, All Candidates"
-        (function (lambda (start end) (interactive "r")
-                    (skk-gyakubiki-region start end 'all-candidates) ))
+        (call-interactively
+	 (function (lambda (start end) (interactive "r")
+		     (skk-gyakubiki-region start end 'all-candidates) )))
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Katakana" skk-gyakubiki-katakana-region
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Katakana, All Candidates"
-        (function (lambda (start end) (interactive "r")
-                    (skk-gyakubiki-katakana-region
-                     start end 'all-candidates ) ))
+        (call-interactively
+	 (function (lambda (start end) (interactive "r")
+		     (skk-gyakubiki-katakana-region
+		      start end 'all-candidates ) )))
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        )
       ["Hiragana" skk-hiragana-region
@@ -178,9 +184,10 @@
        ["to Hiragana" skk-hurigana-region
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Hiragana, All Candidates"
-        (function (lambda (start end) (interactive "r")
-                    (skk-hurigana-region start end 'all-candidates) ))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (call-interactively
+	 (function (lambda (start end) (interactive "r")
+		     (skk-hurigana-region start end 'all-candidates) )))
+	(or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Katakana" skk-hurigana-katakana-region
         (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
        ["to Katakana, All Candidates" (function
@@ -207,7 +214,7 @@
           (eq skktut-problem-count 0)) ]
      )))
 
-(or skk-latin-mode-map 
+(or skk-latin-mode-map
     (let ((map (make-sparse-keymap)))
       ;; .skk で skk-kakutei-key の変更が可能になるように。
       ;;(define-key map skk-kakutei-key 'skk-kakutei)

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.77 2000/10/05 16:23:27 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.78 2000/10/08 13:10:20 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/05 16:23:27 $
+;; Last Modified: $Date: 2000/10/08 13:10:20 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/10/05 16:23:27 $")
+      (let* ((raw-date "$Date: 2000/10/08 13:10:20 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -2730,7 +2730,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 		    'skk-count-jisyo-candidates-original)
 		(read-file-name
 		 (format "Jisyo file: (default: %s) " skk-jisyo)
-		 "~/" skk-jisyo 'confirm))
+		 default-directory skk-jisyo 'confirm))
 	       ((eq skk-count-jisyo-candidates-function
 		    'skk-rdbms-count-jisyo-candidates)
 		;; データベースファイルを直接ファイル名で指定できる
@@ -2746,7 +2746,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   ;; (interactive "f辞書ファイル: ")
   (let ((count (funcall skk-count-jisyo-candidates-function file-or-table)))
     (if (interactive-p)
-	(message "%d candidates" count)
+	(message (if (= count 1) "%d candidate" "%d candidates") count)
       count)))
 
 (defun skk-count-jisyo-candidates-original (file)

@@ -5,7 +5,7 @@ Jamie Zawinski <jwz@lucid.com> 氏による bytecompiler です。
 SKK と Nemacs もしくは、Mule-1.x との組み合わせで使用されることを前
 提としております。
 
-インストールは添付の README ファイルなどをご覧下さい。また、
+インストールは添付の README.en ファイルなどをご覧下さい。また、
 Mule-1.x で使用される場合は、bytecomp_el-mule-1_1_pl04.patch を当て
 て下さい。
 

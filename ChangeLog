@@ -1,7 +1,6 @@
 1999-12-18  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
-	* skk-cursor.el: Don't always call `skk-cursor-set-properly'.
-	(abort-recursive-edit): Advise under XEmacs.
+	* skk-cursor.el: (abort-recursive-edit): Advise under XEmacs.
 	(skk-mode): Call `skk-cursor-set-properly'.
 	(skk-auto-fill-mode): Seems this advice is not needed -- though
 	I'm not sure.

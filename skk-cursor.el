@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.20 1999/12/18 08:05:45 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.21 1999/12/18 08:58:35 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/18 08:05:45 $
+;; Last Modified: $Date: 1999/12/18 08:58:35 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -295,10 +295,7 @@
      (let ((skk-j-mode t)
 	   skk-latin-mode skk-abbrev-mode skk-jisx0208-latin-mode
 	   skk-katakana )
-       (and (memq this-command '(skk-mode skk-auto-fill-mode
-					  select-input-method
-					  toggle-input-method))
-	    (skk-cursor-set-properly) )))
+       (skk-cursor-set-properly) ))
 
 (provide 'skk-cursor)
 ;;; Local Variables:

@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.15 2000/01/15 08:59:41 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.16 2000/01/15 10:04:10 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/01/15 08:59:41 $
+;; Last Modified: $Date: 2000/01/15 10:04:10 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -63,8 +63,9 @@
 (eval-when-compile (require 'skk-macs) (require 'skk-vars) (require 'static))
 
 (static-cond ((eq skk-emacs-type 'mule2)
-	      (defvar fence-mode-map (make-keymap))
-	      (require 'jisx0201))
+	      (eval-and-compile
+		(defvar fence-mode-map (make-keymap))
+		(require 'jisx0201)))
 	     (t
 	      (require 'japan-util)))
 

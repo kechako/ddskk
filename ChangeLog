@@ -1,5 +1,9 @@
 1999-12-18  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* experimental/skk-hankaku-mode.el: Hey, is she still there? She's
+	coming home. :-)
+	No longer in the repository.
+
 	* skk-cursor.el (minibuffer-setup-hook): Fix the behaviour under
 	XEmacs.
 

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.61 2000/08/02 23:41:29 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.62 2000/08/04 18:19:38 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/02 23:41:29 $
+;; Last Modified: $Date: 2000/08/04 18:19:38 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/08/02 23:41:29 $")
+      (let* ((raw-date "$Date: 2000/08/04 18:19:38 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -131,6 +131,7 @@
   (defvar skk-e18-self-insert-keys
     (append (where-is-internal 'self-insert-command global-map)
 	    (where-is-internal 'canna-self-insert-command global-map)
+	    (where-is-internal 'canna-henkan-region-or-self-insert global-map)
 	    (where-is-internal 'egg-self-insert-command global-map)
 	    '("\t")))
 
@@ -268,6 +269,8 @@
 				   global-map)
 	(substitute-key-definition 'canna-self-insert-command 'skk-insert map
 				   global-map)
+	(substitute-key-definition 'canna-henkan-region-or-self-insert
+				   'skk-insert map global-map)
 	(substitute-key-definition 'can-n-egg-self-insert-command 'skk-insert map
 				   global-map)
 	;; .skk で skk-kakutei-key の変更が可能になるように。

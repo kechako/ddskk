@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.7 2000/07/21 08:52:10 minakaji Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.8 2000/08/04 18:19:37 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/21 08:52:10 $
+;; Last Modified: $Date: 2000/08/04 18:19:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -367,6 +367,8 @@ The English version is SKK.tut.E."
 				 global-map)
       (substitute-key-definition 'canna-self-insert-command 'skk-insert map
 				 global-map)
+      (substitute-key-definition 'canna-henkan-region-or-self-insert 'skk-insert
+				 map global-map)
       (substitute-key-definition 'can-n-egg-self-insert-command 'skk-insert map
 				 global-map)
       (define-key map "x" 'skk-previous-candidate)

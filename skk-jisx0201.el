@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.21 2000/07/17 20:59:17 minakaji Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.22 2000/08/04 18:19:37 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/07/17 20:59:17 $
+;; Last Modified: $Date: 2000/08/04 18:19:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -384,6 +384,8 @@ skk-use-color-cursor が non-nil のときに使用される。"
 				 map global-map)
       (substitute-key-definition 'canna-self-insert-command
 				 'skk-jisx0201-insert map global-map)
+      (substitute-key-definition 'canna-henkan-region-or-self-insert 'skk-insert
+				 map global-map)
       (substitute-key-definition 'can-n-egg-self-insert-command
 				 'skk-jisx0201-insert map global-map)
       ;;(define-key map "\C-q" 'skk-jisx0201-henkan)

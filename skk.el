@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.81 2000/10/15 20:34:52 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.82 2000/10/19 08:46:42 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:52 $
+;; Last Modified: $Date: 2000/10/19 08:46:42 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -2455,6 +2455,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
               (sit-for 1)))
       (with-current-buffer jisyo-buffer
 	(if (and skk-share-private-jisyo
+		 (file-exists-p skk-emacs-id-file)
 		 ;; 個人辞書が他の emacs 上の skk により更新されたかをチェック
 		 (with-temp-buffer
 		   (insert-file-contents skk-emacs-id-file)

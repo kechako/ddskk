@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.5 1999/12/03 10:51:47 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.6 1999/12/04 09:54:30 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 1999/12/03 10:51:47 $
+;; Last Modified: $Date: 1999/12/04 09:54:30 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -655,7 +655,8 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
 	(progn
 	  (setq skk-jisx0201-mode nil)
 	  (skk-j-mode-on 'katakana) )
-      (skk-jisx0201-mode-on) )))
+      (skk-jisx0201-mode-on) ))
+  (and skk-use-color-cursor (skk-cursor-set-properly)) )
 
 (defun skk-jisx0201-henkan (arg)
   "▽モードであれば、リージョンのひらがな/カタカナをﾊﾝｶｸｶﾀｶﾅに変換する。

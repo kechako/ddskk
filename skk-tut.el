@@ -1,13 +1,13 @@
-; SKK tutorial for SKK version 10.46 and later versions
+; SKK tutorial for Daredevil SKK version 11.1 and later versions
 ;; Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
 ;;               1998, 1999
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.2 1999/11/28 04:53:37 minakaji Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.3 1999/11/28 13:53:41 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/28 04:53:37 $
+;; Last Modified: $Date: 1999/11/28 13:53:41 $
 
 ;; This file is part of Daredevil SKK.
 

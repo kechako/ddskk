@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.12 1999/11/28 08:14:46 kawamura Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.13 1999/11/28 13:53:41 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/28 08:14:46 $
+;; Last Modified: $Date: 1999/11/28 13:53:41 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/28 08:14:46 $")
+      (let* ((raw-date "$Date: 1999/11/28 13:53:41 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -1014,11 +1014,11 @@ skk-convert-okurigana-into-katakana $B$NCM$r(B non-nil $B$K$9$k!#(B
 
 ;; convert skk-rom-kana-rule-list to skk-rule-tree.
 ;; The rule tree follows the following syntax:
-;; <branch-list>    ::= nil | (<tree> . <branch-list>)
-;; <tree>         ::= (<char> <prefix> <nextstate> <kana> <branch-list>)
-;; <kana>         ::= (<$B$R$i$,$JJ8;zNs(B> . <$B%+%?%+%JJ8;zNs(B>) | nil
-;; <char>         ::= <$B1Q>.J8;z(B>
-;; <nextstate>    ::= <$B1Q>.J8;zJ8;zNs(B> | nil
+;; <branch-list>  := nil | (<tree> . <branch-list>)
+;; <tree>         := (<char> <prefix> <nextstate> <kana> <branch-list>)
+;; <kana>         := (<$B$R$i$,$JJ8;zNs(B> . <$B%+%?%+%JJ8;zNs(B>) | nil
+;; <char>         := <$B1Q>.J8;z(B>
+;; <nextstate>    := <$B1Q>.J8;zJ8;zNs(B> | nil
 ;;;###autoload
 (defun skk-compile-rule-list (&rest l)
   ;; rule-list $B$rLZ$N7A$K%3%s%Q%$%k$9$k!#(B
@@ -3657,36 +3657,37 @@ picture-mode $B$+$i=P$?$H$-$K$=$N%P%C%U%!$G(B SKK $B$r@5>o$KF0$+$9$?$a$N=hM}!
 (defadvice save-buffers-kill-emacs (before skk-ad activate)
   (run-hooks 'skk-before-kill-emacs-hook) )
 
-(if (eq skk-emacs-type 'xemacs)
+(defadvice minibuffer-keyboard-quit (around skk-ad activate)
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
     ;; XEmacs has minibuffer-keyboard-quit that has nothing to do with delsel.
-    (defadvice minibuffer-keyboard-quit (around skk-ad activate)
-      (skk-remove-minibuffer-setup-hook
-       'skk-j-mode-on 'skk-setup-minibuffer
-       (function (lambda ()
-		   (add-hook 'pre-command-hook 'skk-pre-command nil 'local) )))
-      (cond ((not skk-mode) ad-do-it)
-	    ((not skk-henkan-on)
-	     (cond ((skk-get-prefix skk-current-rule-tree)
-		    (skk-erase-prefix 'clean) )
-		    (t ad-do-it) ))
-            (skk-henkan-active
-             (setq skk-henkan-count 0)
-             (if (and skk-delete-okuri-when-quit skk-henkan-okurigana)
-                 (let ((count (/ (length skk-henkan-okurigana) skk-kanji-len)))
-                   (skk-previous-candidate)
-                   ;; $B$3$3$G$O(B delete-backward-char $B$KBhFs0z?t$rEO$5$J$$J}$,%Y%?!<!)(B
-                   (delete-backward-char count) )
-               (skk-previous-candidate) ))
-            (t (skk-erase-prefix 'clean)
-	       (and (> (point) skk-henkan-start-point)
-		    (delete-region (point) skk-henkan-start-point) )
-               (skk-kakutei) )))
-  (defadvice minibuffer-keyboard-quit (around skk-ad activate)
+    (skk-remove-minibuffer-setup-hook
+     'skk-j-mode-on 'skk-setup-minibuffer
+     (function (lambda ()
+		 (add-hook 'pre-command-hook 'skk-pre-command nil 'local) )))
+    (cond ((not skk-mode) ad-do-it)
+	  ((not skk-henkan-on)
+	   (cond ((skk-get-prefix skk-current-rule-tree)
+		  (skk-erase-prefix 'clean) )
+		 (t ad-do-it) ))
+	  (skk-henkan-active
+	   (setq skk-henkan-count 0)
+	   (if (and skk-delete-okuri-when-quit skk-henkan-okurigana)
+	       (let ((count (/ (length skk-henkan-okurigana) skk-kanji-len)))
+		 (skk-previous-candidate)
+		 ;; $B$3$3$G$O(B delete-backward-char $B$KBhFs0z?t$rEO$5$J$$J}$,%Y%?!<!)(B
+		 (delete-backward-char count) )
+	     (skk-previous-candidate) ))
+	  (t (skk-erase-prefix 'clean)
+	     (and (> (point) skk-henkan-start-point)
+		  (delete-region (point) skk-henkan-start-point) )
+	     (skk-kakutei) )))
+   (t
     ;; for delsel.el
     (if (and skk-mode
 	     (not (and delete-selection-mode transient-mark-mode mark-active)) )
 	(keyboard-quit)
-      ad-do-it )))
+      ad-do-it ))))
 
 (run-hooks 'skk-load-hook)
 

@@ -1,3 +1,9 @@
+1999-11-28  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-study.el: Force emacs-lisp-mode.
+	(skk-study-check-alist-format-1): Use `skk-str-length' instead of
+	`length' for okuri-ari and okuri-nasi entries.
+
 1999-11-28  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/INSTALL: Change outline mode and add descriptions about

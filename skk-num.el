@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-num.el,v 1.6.2.4.2.4 2000/07/07 22:13:38 minakaji Exp $
+;; Version: $Id: skk-num.el,v 1.6.2.4.2.5 2000/08/27 18:34:48 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:38 $
+;; Last Modified: $Date: 2000/08/27 18:34:48 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -73,16 +73,16 @@
                       "#[.0-9]+" "#[0-9]+"))
           (n 0)
           (workkey key)
-          num convnum string convlist current)
+          num convnum string convlist current beg)
       (save-match-data
         (while (and (setq num (nth n skk-num-list))
-                    (string-match numexp workkey))
-          (setq convnum (save-match-data
+                    (setq beg (string-match numexp workkey)))
+	  (setq convnum (save-match-data
 			  (skk-num-exp num (string-to-number
 					    (substring workkey
-						       (1+ (match-beginning 0))
+						       (1+ beg)
 						       (match-end 0)))))
-                string (substring workkey 0 (match-beginning 0))
+                string (substring workkey 0 beg)
                 workkey (substring workkey (match-end 0))
                 n (1+ n))
           (if (not (and (stringp convnum) (string= convnum "")

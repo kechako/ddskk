@@ -139,7 +139,7 @@
 
 ;; Pieces of advice.
 (defadvice byte-code-function-p (around skk-e18-ad activate)
-  (cond ((and (consp object) (consp (cdr object)))
+  (cond ((and (consp (ad-get-arg 0)) (consp (cdr (ad-get-arg 0))))
 	 ad-do-it)
 	(t
 	 nil)))

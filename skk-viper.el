@@ -1,14 +1,14 @@
 ;; skk-viper.el --- SKK related code for Viper
-;; Copyright (C) 1996, 1997, 1998, 1999
+;; Copyright (C) 1996, 1997, 1998, 1999, 2000
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>, Murata Shuuichirou <mrt@astec.co.jp>
 ;;
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>,
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: Murata Shuuichirou <mrt@notwork.org>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.9 2000/04/03 08:46:22 mrt Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.10 2000/07/07 22:13:40 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/04/03 08:46:22 $
+;; Last Modified: $Date: 2000/07/07 22:13:40 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -40,11 +40,11 @@
        (defadvice (, viper) (, arg) (,@ body)))))
 
 (setq skk-kana-cleanup-command-list
-      (cons 
+      (cons
        (if skk-viper-use-vip-prefix
 	   'vip-del-backward-char-in-insert
-	 'viper-del-backward-char-in-insert )
-       skk-kana-cleanup-command-list ))
+	 'viper-del-backward-char-in-insert)
+       skk-kana-cleanup-command-list))
 
 (setq skk-use-viper t)
 (save-match-data
@@ -57,7 +57,7 @@
 ;; yatex $B$_$?$$$K(B Window $B$r3+$$$F%P%$%H%3%s%Q%$%k$9$k$h$&$K$b$G$-$k$1$I!"(B
 ;; no-window $B$N(B make $B%3%^%s%I$rJL$K:n$i$J$-$c$J$i$J$$$7!"LLE]$@$J(B...$B!#(B
 (when (skk-color-display-p)
-  (if skk-use-color-cursor 
+  (if skk-use-color-cursor
       (progn
 	(defvar skk-viper-saved-cursor-color viper-insert-state-cursor-color)
 	;; $B62$m$7$d!A!"I,;&$N%P%C%U%!%m!<%+%k(B...$B!#(B
@@ -71,8 +71,8 @@
 			    (eq vip-current-state 'vi-state)))
 	      (progn
 		(ad-set-arg 0 skk-cursor-default-color)
-		ad-do-it )
-	    ad-do-it 
+		ad-do-it)
+	    ad-do-it
 	    (cond ((not skk-mode)
 		   (setq viper-insert-state-cursor-color
 			 skk-viper-saved-cursor-color))
@@ -83,11 +83,11 @@
 	;; cover to VIP/Viper functions.
 	(let ((funcs
 	       (if skk-viper-use-vip-prefix
-		   '(vip-Append vip-Insert vip-insert vip-intercept-ESC-key 
+		   '(vip-Append vip-Insert vip-insert vip-intercept-ESC-key
 				vip-open-line)
-		 '(viper-Append viper-Insert viper-hide-replace-overlay 
-				viper-insert viper-intercept-ESC-key 
-				viper-open-line ))))
+		 '(viper-Append viper-Insert viper-hide-replace-overlay
+				viper-insert viper-intercept-ESC-key
+				viper-open-line))))
 	  (while funcs
 	    (eval
 	     (`
@@ -106,7 +106,7 @@
 	;;  (add-hook 'viper-post-command-hooks 'skk-set-cursor-properly 'append 'local))
 
 	(if (boundp 'viper-insert-state-cursor-color)
-	    (let ((funcs '(skk-abbrev-mode skk-jisx0208-latin-mode 
+	    (let ((funcs '(skk-abbrev-mode skk-jisx0208-latin-mode
 					   skk-latin-mode skk-toggle-kana)))
 	      (while funcs
 		(eval
@@ -119,12 +119,12 @@
 
 	(defadvice skk-mode (after skk-viper-cursor-ad activate)
 	  "viper-insert-state-cursor-color $B$r(B SKK $B$NF~NO%b!<%I$N%+!<%=%k?'$H9g$o$;$k!#(B"
-	  (setq viper-insert-state-cursor-color 
+	  (setq viper-insert-state-cursor-color
 		(if skk-mode (skk-cursor-current-color)
-		  skk-viper-saved-cursor-color ))
+		  skk-viper-saved-cursor-color))
 	  ;; insert mode $B$K$J$C$?$i(B Viper $BB&$G%+!<%=%k$rJQ99$9$k!#(B
 	  ;;(viper-change-cursor-color viper-insert-state-cursor-color)
-	  )
+	 )
 	(defadvice skk-kakutei (after skk-viper-cursor-ad activate)
 	  (setq viper-insert-state-cursor-color skk-cursor-hiragana-color)))))
 
@@ -148,18 +148,20 @@ viper-read-string-with-history $B$O(B minibuffer-setup-hook $B$r4X?t%m!<%+%k
 (skk-viper-advice-select
  viper-forward-word-kernel vip-forward-word-kernel
  (around skk-ad activate)
- ("SKK $B%b!<%I$,%*%s$G!"%]%$%s%H$ND>8e$NJ8;z$,(B JISX0208 $B$@$C$?$i(B forward-word $B$9$k!#(B"
-  (if (and skk-mode (skk-jisx0208-p (following-char)))
+ ("SKK $B%b!<%I$,%*%s$G!"%]%$%s%H$ND>8e$NJ8;z$,(B JISX0208/JISX0213 $B$@$C$?$i(B forward-word $B$9$k!#(B"
+  (if (and skk-mode (or (skk-jisx0208-p (following-char))
+			(skk-jisx0213-p (following-char))))
       (forward-word val)
-    ad-do-it )))
+    ad-do-it)))
 
 (skk-viper-advice-select
  viper-backward-word-kernel vip-backward-word-kernel
  (around skk-ad activate)
- ("SKK $B%b!<%I$,%*%s$G!"%]%$%s%H$ND>A0$NJ8;z$,(B JISX0208 $B$@$C$?$i(B backward-word $B$9$k!#(B"
-  (if (and skk-mode (skk-jisx0208-p (preceding-char)))
+ ("SKK $B%b!<%I$,%*%s$G!"%]%$%s%H$ND>A0$NJ8;z$,(B JISX0208/JISX0213 $B$@$C$?$i(B backward-word $B$9$k!#(B"
+  (if (and skk-mode (or (skk-jisx0208-p (preceding-char))
+			(skk-jisx0213-p (preceding-char))))
       (backward-word val)
-    ad-do-it )))
+    ad-do-it)))
 
 ;; please sync with advice to delete-backward-char
 (skk-viper-advice-select
@@ -185,7 +187,7 @@ viper-read-string-with-history $B$O(B minibuffer-setup-hook $B$r4X?t%m!<%+%k
 		 (progn
 		   (backward-char count)
 		   (delete-char count))
-	       ad-do-it )
+	       ad-do-it)
 	     ;; XXX assume skk-prefix has no multibyte chars.
 	     (if (> (length skk-prefix) count)
 		 (setq skk-prefix (substring skk-prefix 0 (- (length skk-prefix) count)))
@@ -213,14 +215,14 @@ viper-read-string-with-history $B$O(B minibuffer-setup-hook $B$r4X?t%m!<%+%k
 (skk-viper-advice-select
  viper-join-lines vip-join-lines
  (after skk-ad activate)
- ("$B%9%Z!<%9$NN>B&$NJ8;z%;%C%H$,(B JISX0208 $B$@$C$?$i%9%Z!<%9$r<h$j=|$/!#(B" ;
+ ("$B%9%Z!<%9$NN>B&$NJ8;z%;%C%H$,(B JISX0208/JISX0213 $B$@$C$?$i%9%Z!<%9$r<h$j=|$/!#(B" ;
   (save-match-data
-    (and (skk-jisx0208-p
-	  (char-after (progn (skip-chars-forward " ") (point))))
-	 (skk-jisx0208-p
-	  (char-before (progn (skip-chars-backward " ") (point))))
+    (let ((char-after (char-after (progn (skip-chars-forward " ") (point))))
+	  (char-before (char-before (progn (skip-chars-backward " ") (point)))))
+    (and (or (skk-jisx0208-p char-after) (skk-jisx0213-p char-after))
+	 (or (skk-jisx0208-p char-before) (skk-jisx0213-p char-before))
 	 (while (looking-at " ")
-	   (delete-char 1))))))
+	   (delete-char 1)))))))
 
 ;;; Functions.
 ;;;###autoload

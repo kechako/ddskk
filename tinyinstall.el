@@ -1,13 +1,13 @@
 ;;; tinyinstall.el --- Emacs Lisp package install utility
 
-;; Copyright (C) 1996,1997,1998,1999 Free Software Foundation, Inc.
+;; Copyright (C) 1996,1997,1998,1999,2000 Free Software Foundation, Inc.
 
 ;; Author: MORIOKA Tomohiko <morioka@jaist.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Created: 1996/08/18
 ;; Keywords: install, byte-compile, directory detection
-;; Version: $Id: tinyinstall.el,v 1.3.4.2 2000/01/23 13:41:56 czkmt Exp $
-;; Last Modified: $Date: 2000/01/23 13:41:56 $
+;; Version: $Id: tinyinstall.el,v 1.3.4.3 2000/07/07 22:13:43 minakaji Exp $
+;; Last Modified: $Date: 2000/07/07 22:13:43 $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -32,6 +32,8 @@
 				   (match-beginning 0)(match-end 0))))
   "Major version number of this version of Emacs.")
 
+(defvar data-directory exec-directory) ; For Emacs 18.
+
 (or (fboundp 'member)
     (defun member (elt list)
       "Return non-nil if ELT is an element of LIST.  Comparison done with EQUAL.
@@ -41,8 +43,9 @@ The value is actually the tail of LIST whose car is ELT."
       list))
 
 (defvar install-prefix
-  (cond ((or (<= emacs-major-version 18)	; running-emacs-18
-	     (featurep 'xemacs))		; running-xemacs
+  (cond ((<= emacs-major-version 18)	; running-emacs-18
+	 (expand-file-name "../.." exec-directory))
+	((featurep 'xemacs)		; running-xemacs
 	 (expand-file-name "../../.." exec-directory))
 	((memq system-type '(ms-dos windows-nt))
 	 (expand-file-name ".." exec-directory))

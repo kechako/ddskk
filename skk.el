@@ -1,13 +1,13 @@
-;;; skk.el --- SKK (Simple Kana to Kanji conversion program) Daredevil branch 
+;;; skk.el --- SKK (Simple Kana to Kanji conversion program) Daredevil branch
 ;; Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
 ;;               1998, 1999, 2000
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.57 2000/04/28 09:13:44 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.58 2000/07/07 22:13:41 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/04/28 09:13:44 $
+;; Last Modified: $Date: 2000/07/07 22:13:41 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -26,7 +26,7 @@
 
 ;;; Commentary:
 ;;
-;; SKK-MODE is a mode for inputting Japanese to a current buffer which is 
+;; SKK-MODE is a mode for inputting Japanese to a current buffer which is
 ;; composed of four minor modes described below.
 ;;
 ;;      +----------------------+-------- skk-mode -----+----------------------+
@@ -37,7 +37,7 @@
 ;;                  (C-j wakes up skk-j-mode)   (ZEN'KAKU EIMOJI)
 ;;
 ;; skk-j-mode-map     skk-latin-mode-map  skk-jisx0208-latin-mode-map skk-abbrev-mode-map
-;; skk-katakana: nil 
+;; skk-katakana: nil
 ;;   HIRAKANA
 ;;
 ;;  skk-j-mode-map
@@ -50,7 +50,7 @@
       (message "This version of SKK may not work on Emacs 18..."))
      ((not (or (featurep 'mule) (boundp 'NEMACS)))
       (error "This version of SKK requires MULE features")))
-;; APEL 9.22 or later required.
+;; APEL 10.2 or later required.
 (eval-when-compile (require 'static))
 (require 'poe)
 (require 'poem) ; requires pces.
@@ -68,6 +68,9 @@
   (error
    (defalias 'easy-menu-define 'ignore)))
 (eval-and-compile (require 'skk-vars) (require 'skk-macs))
+
+;; aliases.
+(defalias 'skk-toggle-kana 'skk-toggle-characters)
 
 ;; inline functions to hook.
 (defsubst skk-after-point-move ()
@@ -87,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/04/28 09:13:44 $")
+      (let* ((raw-date "$Date: 2000/07/07 22:13:41 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -95,10 +98,11 @@
             (setq month (substring month (match-end 0))))
         (if (string-match "^0" date)
             (setq date (substring date (match-end 0))))
-        (message "SKK version %s %s %s of %s, APEL inside"
+        (message "SKK version %s %s %s of %s, %s"
                  skk-branch-name skk-version skk-codename
                  (concat (car (rassoc month skk-month-alist))
-                         " " date ", " year))))))
+                         " " date ", " year)
+		 (apel-version))))))
 
 ;;; normal functions.
 ;;;; aliases
@@ -332,7 +336,7 @@ An input mode for Japanese, converting romanized phonetic strings to kanji.
 A minor mode, it should not affect the use of any major mode or
 orthogonal minor modes.
 
-In the initial SKK mode, hiragana submode, the mode line indicator is 
+In the initial SKK mode, hiragana submode, the mode line indicator is
 \"かな\".  Lowercase romaji entry is automatically converted to
 hiragana where possible.  The lowercase characters `q' and `l' change
 submodes of SKK, and `x' is used as a prefix indicating a small kana.
@@ -353,13 +357,13 @@ information, both the beginning and the end of the stem must be marked.
 For non-inflected words \(eg, nouns\) consisting entirely of kanji, the
 simplest way to invoke conversion is to enter the reading of the kanji,
 the first character only in uppercase.  A leading \"▽\" indicates that
-kanji conversion is in progress.  After entering the reading, press 
+kanji conversion is in progress.  After entering the reading, press
 space.  This invokes dictionary lookup, and the hiragana reading will be
 redisplayed in kanji as the first candidate.  Pressing space again gives
 the next candidate.  Further presses of space produce further candidates,
 as well as a list of the next few candidates in the minibuffer.  Eg,
-\"Benri\" => \"▽べんり\", and pressing space produces \"▼便利\" \(the solid 
-triangle indicates that conversion is in progress\).  Backspace steps 
+\"Benri\" => \"▽べんり\", and pressing space produces \"▼便利\" \(the solid
+triangle indicates that conversion is in progress\).  Backspace steps
 through the candidate list in reverse.
 
 A candidate can be accepted by pressing `\C-j', or by entering a
@@ -374,7 +378,7 @@ kanji string is signaled by capitalizing the next mora.  Eg, \"TuyoI\"
 point will be indicated with an asterisk \"*\", and trailing characters
 will be displayed until a candidate is recognized.  It will be
 immediately displayed \(pressing space is not necessary\).  Space and
-backspace are used to step forward and backward through the list of 
+backspace are used to step forward and backward through the list of
 candidates.
 
 For more information, see the `skk' topic in Info.  \(Japanese only.\)
@@ -483,8 +487,8 @@ dependent."
     (add-hook 'pre-command-hook 'skk-pre-command nil 'local)
     (make-local-hook 'post-command-hook)
     (add-hook 'post-command-hook 'skk-after-point-move nil 'local)
-    (and (eq skk-status-indicator 'left)
-	 (setq skk-input-mode-string skk-hiragana-mode-string))
+    ;;(and (eq skk-status-indicator 'left)
+    ;;     (setq skk-input-mode-string skk-hiragana-mode-string))
     (skk-j-mode-on)
     (static-if (eq skk-emacs-type 'xemacs) (easy-menu-add skk-menu))
     (run-hooks 'skk-mode-hook)))
@@ -556,7 +560,7 @@ dependent."
 		    ;; following two are SKK adviced.
 		    ;;viper-del-backward-char-in-insert
 		    ;;vip-del-backward-char-in-insert
-		   ))
+		  ))
 	(map (if (and (boundp 'overriding-local-map)
 		      (keymapp 'overriding-local-map))
 		 overriding-local-map
@@ -572,7 +576,7 @@ dependent."
 
 (defun skk-setup-init-file ()
   ;; skk-byte-compile-init-file が non-nil の場合で、skk-init-file をバイトコ
-  ;; ンパイルしたファイルが存在しないか、そのバイトコンパイル済ファイルより 
+  ;; ンパイルしたファイルが存在しないか、そのバイトコンパイル済ファイルより
   ;; skk-init-file の方が新しいときは、skk-init-file をバイトコンパイルする。
   ;;
   ;; skk-byte-compile-init-file が nil の場合で、skk-init-file をバイトコンパ
@@ -747,17 +751,16 @@ dependent."
 (defun skk-abbrev-mode (arg)
   "ascii 文字をキーにした変換を行うための入力モード。"
   (interactive "*P")
-  (and skk-henkan-on (not skk-henkan-active)
-       (skk-error "既に▽モードに入っています" "Already in ▽ mode"))
-  (skk-kakutei)
+  (cond (skk-henkan-active
+	 (skk-kakutei))
+	;;((and skk-henkan-on (not skk-henkan-active))
+	(skk-henkan-on
+	 (skk-error "既に▽モードに入っています" "Already in ▽ mode")))
   (skk-set-henkan-point-subr)
   (skk-abbrev-mode-on))
 
-(defun skk-toggle-kana (arg)
-  "ひらがなモードとカタカナモードをトグルで切り替える。
-カタカナモードで変換を行なうときに、送り仮名をカタカナに変換したくないときは、
-skk-convert-okurigana-into-katakana の値を non-nil にする。
-
+(defun skk-toggle-characters (arg)
+  "■モードで、ひらがなモードとカタカナモードをトグルで切り替える。
 ▽モードでは、skk-henkan-start-point (▽の直後) とカーソルの間の文字列を
 
     ひらがな <=> カタカナ
@@ -767,29 +770,32 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
   (interactive "P")
   (cond ((and skk-henkan-on (not skk-henkan-active))
          (let (char)
+           (skk-set-marker skk-henkan-end-point (point))
            (skk-save-point
              (goto-char skk-henkan-start-point)
              ;; "ー" では文字種別が判別できないので、ポイントを進める。
              (while (looking-at "ー")
                (forward-char 1))
              (setq char (skk-what-char-type)))
-           (skk-set-marker skk-henkan-end-point (point))
            (cond ((eq char 'hiragana)
-                  (skk-katakana-henkan arg))
+                  (skk-katakana-region
+		   skk-henkan-start-point skk-henkan-end-point))
                  ((eq char 'katakana)
-                  (skk-hiragana-henkan arg))
+                  (skk-hiragana-region
+		   skk-henkan-start-point skk-henkan-end-point))
                  ((eq char 'jisx0208-latin)
-                  (skk-jisx0208-latin-henkan arg))
+                  (skk-latin-region
+		   skk-henkan-start-point skk-henkan-end-point))
                  ((eq char 'ascii)
-                  (skk-latin-henkan arg)))))
+                  (skk-jisx0208-latin-region
+		   skk-henkan-start-point skk-henkan-end-point)))))
         ((and (skk-in-minibuffer-p) (not skk-j-mode))
          ;; ミニバッファへの初突入時。
-         (skk-j-mode-on))
+         (skk-j-mode-on)
+	 ;; ここで skk-katakana フラグを立てておかなくて良いのか？
+	)
         (t (setq skk-katakana (not skk-katakana))))
-  (skk-kakutei)
-  (setq skk-input-mode-string (if skk-katakana skk-katakana-mode-string
-				skk-hiragana-mode-string))
-  (force-mode-line-update))
+  (skk-kakutei))
 
 (defun skk-misc-for-picture ()
   ;; picture-mode へ入ったときに SKK 起動前の状態に戻す。
@@ -831,7 +837,7 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
   ;;
   ;; メリット; 必ず skk-kana-input を通るので、unfixed prefix + トリガーキーの
   ;; 文字処理を行なってから指定の関数呼び出しに入ることができる。
-  ;; 
+  ;;
   ;; デメリット; コールされた関数内で、独自に挿入文字を決定することはできるが、
   ;; skk-rom-kana-\\(base-\\)*rule-list 内で定義が行なえない (既に文字の代わり
   ;; に関数名が指定されているから。該当関数内で、skk-kana-input をコールすると、
@@ -840,7 +846,7 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
   ;;
   ;; また、skk-input-vector を廃し、skk-rom-kana-\\(base-\\)*rule-list に挿入
   ;; すべき文字定義を集中させたことから、可能な限りこれを崩したくない。
-  ;; 
+  ;;
   ;; 上記の考察から、下記のように方針を決めた。
   ;;
   ;; (1)挿入文字の定義は、skk-rom-kana-\\(base-\\)*rule-list 以外では行なわな
@@ -1171,7 +1177,7 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
 		   ;; 挿入することはあまりなく、問題も小さいと考えられる。
                    ;;skk-abbrev-comma
                    ;;skk-abbrev-period
-		  )))
+		 )))
       (progn
         (cancel-undo-boundary)
 	(if (null skk-current-rule-tree)
@@ -1525,9 +1531,12 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	   (while (> 7 count)
 	     (setq e (nth count candidates))
 	     (if e
-		 (setq v (cons (if (not (skk-lisp-prog-p e))
-				   e
-				 (or (skk-eval-string e) e))
+		 (setq v (cons (cond ((and (skk-numeric-p) (consp e))
+				      (cdr e))
+				     ((not (skk-lisp-prog-p e))
+				      e)
+				     ((skk-eval-string e))
+				     (t e))
 			       v)
 		       count (1+ count))
 	       (setq count 7)))
@@ -1619,7 +1628,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
             (if (= skk-henkan-count -1)
                 (progn
                   ;; 送りありの変換で辞書登録に入り、空文字を登録した後、その
-                  ;; まま再度送りなしとして変換した場合は 
+                  ;; まま再度送りなしとして変換した場合は
                   ;; skk-henkan-okurigana, skk-okuri-char の値を nil にしなけ
                   ;; れば、それぞれの値に古い送り仮名が入ったままで検索に失敗
                   ;; する。
@@ -1630,7 +1639,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
               ;; skk-henkan-count が -1 でなければ、カレントバッファでは最後の
               ;; 候補を表示したままなので (表示関連では何もしなくても、もう既
               ;; に望みの状態になっている) 何もしない。
-             ))
+            ))
         ;; ミニバッファで変換した文字列がある (空文字列でない) とき。
         ;; 末尾の空白を取り除く。
         (and (string-match "[ 　]+$" new-one)
@@ -1651,7 +1660,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
       (if (not (string= new-one "")) new-one))))
 
 (defun skk-compute-henkan-key2 ()
-  ;; skk-henkan-okurigana が non-nil なら skk-henkan-key から、かつて 
+  ;; skk-henkan-okurigana が non-nil なら skk-henkan-key から、かつて
   ;; skk-henkan-key2 と呼ばれていたものを作る。
   ;; skk-henkan-key2 とは、「漢字部分の読み + "*" + 送り仮名」の形式の文字列を
   ;; 言う。
@@ -1678,7 +1687,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	(progn
 	  (message "")
 	  (setq word (substring word 0 (match-beginning 0))))))
-  word )
+  word)
 
 (defun skk-setup-minibuffer ()
   ;; カレントバッファの入力モードに従いミニバッファの入力モードを設定する。
@@ -1761,6 +1770,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 
 (defun skk-kakutei (&optional word)
   "現在表示されている語で確定し、辞書の更新を行う。
+カレントバッファで SKK モードになっていなかったら SKK モードに入る。
 オプショナル引数の WORD を渡すと、現在表示されている候補とは無関係に WORD で確
 定する。"
   ;; read only でエラーになるようにすると read only バッファで SKK が起動でき
@@ -1768,44 +1778,43 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   (interactive)
   (let ((inhibit-quit t)
 	converted kakutei-word)
-    (if skk-mode
-	(skk-j-mode-on skk-katakana)
-      ;; カレントバッファでまだ skk-mode がコールされていなかったら、コールす
-      ;; る。
-      (skk-mode 1))
     (if (not skk-henkan-on)
 	nil
-      (if (not skk-henkan-active)
-	  nil
-	(setq kakutei-word
-	      ;; 確定辞書の語で確定したときは、辞書にその語を書き込む必要もな
-	      ;; いし、更新する必要もないと思っていたが、補完を行なうときは、
-	      ;; 個人辞書を参照する (確定辞書は参照しない) ので、多少資源と時
-	      ;; 間を無駄にしても、個人辞書に確定辞書のエントリを書き込んで更
-	      ;; 新もしておく。
-	      (or word (skk-get-current-candidate-simply (skk-numeric-p))))
-	(if (or
-	     (and (not skk-search-excluding-word-pattern-function) kakutei-word)
-	     (and
-	      kakutei-word skk-search-excluding-word-pattern-function
-	      (not
-	       (funcall skk-search-excluding-word-pattern-function kakutei-word))))
-	    (progn
-	      (skk-update-jisyo kakutei-word)
-	      (if (skk-numeric-p)
-		  (progn
-		    (setq converted (skk-get-current-candidate-simply))
-		    (skk-num-update-jisyo kakutei-word converted))))))
-      (skk-kakutei-cleanup-buffer))
-    ;; KAKUTEI-WORD などの情報が必要であれば、skk-last-henkan-data から得られ
-    ;; る。必要なデータがそれらの変数に限定されないので、引数にしない。
-    (and skk-kakutei-end-function (funcall skk-kakutei-end-function))
-    (skk-kakutei-initialize (if (skk-numeric-p) (cons kakutei-word converted)
-			      kakutei-word))
+      (if skk-henkan-active
+	  (progn
+	    (setq kakutei-word
+		  ;; 確定辞書の語で確定したときは、辞書にその語を書き込む必要もな
+		  ;; いし、更新する必要もないと思っていたが、補完を行なうときは、
+		  ;; 個人辞書を参照する (確定辞書は参照しない) ので、多少資源と時
+		  ;; 間を無駄にしても、個人辞書に確定辞書のエントリを書き込んで更
+		  ;; 新もしておく。
+		  (or word (skk-get-current-candidate-simply (skk-numeric-p))))
+	    (if (or
+		 (and (not skk-search-excluding-word-pattern-function) kakutei-word)
+		 (and
+		  kakutei-word skk-search-excluding-word-pattern-function
+		  (not
+		   (funcall skk-search-excluding-word-pattern-function kakutei-word))))
+		(progn
+		  (skk-update-jisyo kakutei-word)
+		  (if (skk-numeric-p)
+		      (progn
+			(setq converted (skk-get-current-candidate-simply))
+			(skk-num-update-jisyo kakutei-word converted)))))))
+      (if skk-mode
+	  (progn
+	    (skk-kakutei-cleanup-buffer)
+	    ;; KAKUTEI-WORD などの情報が必要であれば、skk-last-henkan-data
+	    ;; から得られる。必要なデータがそれらの変数に限定されないので、
+	    ;; 引数にしない。
+	    (and skk-kakutei-end-function (funcall skk-kakutei-end-function))
+	    (skk-kakutei-initialize
+	     (if (skk-numeric-p) (cons kakutei-word converted) kakutei-word)))))
     (skk-do-auto-fill)
-    (setq skk-input-mode-string (if skk-katakana skk-katakana-mode-string
-				  skk-hiragana-mode-string))
-    (force-mode-line-update)))
+    (if skk-mode
+	(skk-j-mode-on skk-katakana)
+      ;; カレントバッファでまだ skk-mode がコールされていなかったら、コールする。
+      (skk-mode 1))))
 
 (defun skk-kakutei-cleanup-buffer ()
   ;; 確定直後のバッファの整形を行なう。
@@ -1844,7 +1853,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	       ;; (cons 'kakutei-henkan (eq this-command 'skk-kakutei-henkan))
 	       ;; 上記以外の henkan data を skk-last-henkan-data に残したかったら、
 	       ;; skk-kakutei-end-function を利用する。
-	       ))))
+	      ))))
   (setq skk-abbrev-mode nil
         skk-exit-show-candidates nil
         skk-henkan-active nil
@@ -1936,7 +1945,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	      (skk-emulate-original-map arg)
 	    ;; What's to be here?
 	    ;;(skk-self-insert arg)
-	   ))
+	  ))
       (if (not normal)
 	  (progn			; special char
 	    (insert-and-inherit last-char)
@@ -1970,7 +1979,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 			       (= (skk-char-octet p 0) 35) ;?#
 			       (<= 48 (skk-char-octet p 1)) ; ?0
 			       (<= (skk-char-octet p 1) 57))  ; ?9
-			 )))))
+			)))))
 	    (if skk-process-okuri-early
 		(progn
 		  (skk-set-marker skk-henkan-end-point (point))
@@ -2073,12 +2082,14 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	 (skk-henkan)
 	 (if (and skk-abbrev-mode skk-henkan-active)
 	     (progn
-	       (skk-j-mode-on)
+	       ;; こうしておかないと変換後、次に入力される文字もまた
+	       ;; SKK abbrev-mode 入力になってしまう。
+	       (skk-j-mode-on skk-katakana)
 	       (setq skk-abbrev-mode t))))))))
 
 (defun skk-auto-start-henkan (str)
-  ;; skk-auto-start-henkan-keyword-list の要素の文字列を挿入したときに自動的に 
-  ;; (スペースを打鍵しなくとも) 変換を開始する。エー×イソフト社の MSDOS 用 の 
+  ;; skk-auto-start-henkan-keyword-list の要素の文字列を挿入したときに自動的に
+  ;; (スペースを打鍵しなくとも) 変換を開始する。エー×イソフト社の MSDOS 用 の
   ;; FEP、WX2+ 風。
   (and (member str skk-auto-start-henkan-keyword-list)
        (skk-save-point
@@ -2142,7 +2153,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 		    (while (and (> (point) limit) (bolp))
 		      ;; 1 行上の行末へ。
 		      (backward-char 1)
-		      ;; ポイントが判別できない文字種別の上にある間は 
+		      ;; ポイントが判別できない文字種別の上にある間は
 		      ;; backward 方向へポイントを戻す。
 		      ;;(while (and (> (point) limit)
 		      ;;            (looking-at unknown-chars-regexp))
@@ -2345,7 +2356,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 		  ;; で参照される skk-henkan-key をセットする
 		  (setq skk-henkan-key (car list))
 		  (skk-update-jisyo-1
-		   ;; okurigana    word 
+		   ;; okurigana    word
 		   (nth 1 list) (nth 2 list)
 		   (skk-search-jisyo-file-1 (nth 1 list) 0 'delete)
 		   ;; purge
@@ -2499,7 +2510,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   (let ((tempo-name (skk-make-temp-file "skkdic")))
     (skk-create-file tempo-name)
     ;; temporary file に remote file を指定することなど有り得ない？
-    ;;(if (or 
+    ;;(if (or
     ;;     ;; XEmacs has efs.el
     ;;     (eq skk-emacs-type 'xemacs)
     ;;     ;; ange-ftp.el does not have a wrapper to set-file-modes.
@@ -2595,9 +2606,9 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 		;; (format "Jisyo table: (default: %s) "
 		;;	 skk-rdbms-private-jisyo-table))
 		skk-rdbms-private-jisyo-table))))
-  ;; mule@emacs19.31 だと下記のようにすると (`ァ' が原因のよう) 何故か 
+  ;; mule@emacs19.31 だと下記のようにすると (`ァ' が原因のよう) 何故か
   ;; default-directory の末尾に改行が付く。
-  ;; 通常は気が付かないが、rsz-mini.el を使って resize-minibuffer-mode を 
+  ;; 通常は気が付かないが、rsz-mini.el を使って resize-minibuffer-mode を
   ;; non-nil にしていると不要な 2 行目が出現する。
   ;; (interactive "f辞書ファイル: ")
   (let ((count (funcall skk-count-jisyo-candidates-function file-or-table)))
@@ -3045,7 +3056,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                  (null (member word entry2)) (null (member word entry4)))
             (setq entry1 (delete word entry1))
           ;; その他の場合は何もしない。
-         )))
+        )))
     (if (null entry1)
         ;; entry1 が null であれば、もう何もすることはない。
         nil
@@ -3505,7 +3516,9 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   word)
 
 (defun skk-okurigana-prefix (okurigana)
-  (cond ((string= okurigana "ん")
+  (cond ((not (and (skk-string<= "ぁ" okurigana) (skk-string<= okurigana "ん")))
+	 nil)
+	((string= okurigana "ん")
 	 "n")
 	((string= okurigana "っ")
 	 (aref skk-kana-rom-vector
@@ -3623,7 +3636,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   "▼モードであれば、候補の表示をやめて▽モードに戻す (見出し語は残す)。
 ▽モードであれば、見出し語を削除する。
 上記のどちらのモードでもなければ keyboard-quit と同じ動作をする。"
-  (cond 
+  (cond
    ;; SKK is not invoked in the current buffer.
    ((not skk-mode) ad-do-it)
    ;; ■ mode (Kakutei input mode).

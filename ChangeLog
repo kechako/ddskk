@@ -1,3 +1,198 @@
+2000-06-24  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-viper.el (viper-forward-word-kernel): Add check whether
+	following character is Japanese JISX0213 or not.
+	(viper-backward-word-kernel): Ditto.
+	(viper-join-lines): Ditto.
+
+	* skk-macs.el (skk-jisx0213-p): New inline function.
+
+	* doc/skk.texi (Makefileの編集とインストール): Change required
+	APEL version 9.22 to 10.2.
+
+	* skk.el (skk-version): Use `apel-version'.
+
+2000-06-23  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-vars.el (skk-last-input-mode): Removed.
+
+	* skk-cursor.el (skk-cursor-current-color): Add comment.
+
+	* skk-macs.el (skk-abbrev-mode-on): Do not initialize
+	`skk-katakana'.
+
+	* skk.el (skk-abbrev-mode): Do not set `skk-last-input-mode'.
+	(skk-kakutei): Do not refer to `skk-last-input-mode'.
+	(skk-start-henkan): Keep `skk-katakana'.
+
+2000-06-23  Takao KAWAMURA  <kawamura@debian.org>
+
+	* skk-lookup.el (skk-lookup-agent-list): Set
+	`skk-lookup-search-agents' correctly.
+
+2000-06-22  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-obsolete.el (skk-obsolete-function-alist): Add 
+	`(skk-toggle-kana . skk-toggle-characters)' and 
+	`(skk-current-insert-mode . skk-current-input-mode)' pairs.
+
+        * skk-abbrev.el: Remove unnecessary spaces between parens.
+        * skk-auto.el: Ditto.
+        * skk-comp.el: Ditto.
+        * skk-develop.el: Ditto.
+        * skk-gadget.el: Ditto.
+        * skk-isearch.el: Ditto.
+        * skk-kakasi.el: Ditto.
+        * skk-kcode.el: Ditto.
+        * skk-look.el: Ditto.
+        * skk-lookup.el: Ditto.
+        * skk-obsolete.el: Ditto.
+        * skk-server.el: Ditto.
+        * skk-study.el: Ditto.
+        * skk-tut.el: Ditto.
+        * skk-vars.el: Ditto.
+        * skk-viper.el: Ditto.
+        * skk-xm20_4.el: Ditto.
+        * skk.el: Ditto.
+        * vip.el: Ditto.
+	* experimental/skk-dcomp.el: Ditto.
+	* experimental/tut-code/skk-def.el: Ditto.
+	* experimental/tut-code/skk-tutcdef.el: Ditto.
+	* experimental/tut-code/skk-tutcode.el: Ditto.
+
+	* skk-cursor.el (skk-cursor-current-color): Check if
+	`skk-abbrev-mode' is nil or not in a upper region of the function.
+
+	* skk-isearch.el (skk-isearch-mode-cleanup): Use 
+	`skk-current-input-mode'.
+
+	* skk-vars.el (skk-last-input-mode): New internal variable.
+
+	* skk.el (skk-toggle-kana): Renamed to `skk-toggle-characters'.
+	Bug and doc fixed.
+	Call *-region function intead of *-henkan not to call
+	`skk-kakutei'.
+	Do not setup `skk-input-mode-string'.
+	Do not call `force-mode-line-update'.
+	(skk-kakutei): Check if `skk-mode' is nil or non-nil in a lower
+	region of the function in order not to initialize internal
+	variables before calling
+	`skk-search-excluding-word-pattern-function'.
+	Do not call `force-mode-line-update'.	
+	(skk-mode): Do not setup `skk-input-mode-string'.
+	(skk-abbrev-mode): Set current input mode to
+	`skk-last-input-mode'.
+	Call `skk-kakutei' only when `skk-henkan-active' is non-nil.
+
+	* skk-lookup.el (skk-lookup-search): Add temporary variable V.
+
+	* skk-macs.el (skk-j-mode-on): Setup `skk-input-mode-string'.
+	(skk-current-insert-mode): Renamed to `skk-current-input-mode'.
+
+	* READMEs/MEMO.txt: New file.
+
+2000-06-21  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+	
+	* skk-lookup.el (skk-lookup-process-okurigana): When
+	`skk-henkan-okuri-strictly' is nil check prefix of OKURIGANA is
+	equal to `skk-okuri-char' or not. 
+	(skk-lookup-search): Call `skk-lookup-process-henkan-key-function'
+	to process HENKAN-KEY when
+	`skk-lookup-process-henkan-key-function' is non-nil.
+
+	* skk-vars.el (skk-lookup-kana-vector): New user variable.
+	(skk-lookup-process-henkan-key-function): Ditto.
+	(skk-lookup-prefix-and-kana-map): New internal variable.
+
+	* skk-tut.el (skktut-init-variables-alist): Bug fixed.
+
+	* skk.el (skk-okurigana-prefix): Return nil when OKURIGANA is not
+	hirakana string.
+
+2000-06-20  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-CFG: Remove unnecessary comments.
+
+	* skk-num.el: Remove unnecessary spaces between parens.
+
+2000-06-19  YOSHIZAWA Masahiro <manbou@ceres.dti.ne.jp>
+
+	* SKK-MK (SKK-MK-install-package): Missing quote.
+
+2000-06-19  TSUKAMOTO Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK (SKK_MODULES): Do not install skk-study.el under Emacs
+	18.
+
+	* tinyinstall.el (data-directory): Give it the same value as
+	`exec-directory', under Emacs 18.
+
+2000-06-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-num.el (skk-num-update-jisyo): Not to show debug message.
+	Bind `skk-use-numeric-conversion' to nil temporarily.
+	Set buffer to ` *.skk-jisyo*'.
+	
+	* Makefile (clean): Add leim-list.el as a target.
+
+	* skk.el (skk-henkan-show-candidate-subr): Bug fixed.
+
+	* skk-num.el (skk-num-recompute): Setup `skk-num-recompute-key' in
+	a upper region of the function code.
+
+	* skk-vars.el (skk-lookup-search-agents): Change its default value
+	to nil and remove require tag.
+	(skk-num-recompute-key): Change to global internal variable.
+
+	* skk-lookup.el: All variables and constants are moved to
+	skk-vars.el.
+	(skk-lookup-search): Not to search if `skk-num-list' or
+	`skk-num-recompute-key is non-nil.
+	Do not convert `skk-henkan-key' by `skk-num-compute-henkan-key'.
+	(skk-lookup-agent-list): Initialize `skk-lookup-search-agents'
+	when it has a null value.
+
+2000-06-18  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-lookup.el (skk-lookup-process-okurigana): Bug fixed.
+
+2000-06-17  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-MK (SKK-MK-install): Bug fixed.
+	(SKK-MK-install-package): Ditto.
+	(SKK-MK-install): Copy skk-setup.el to leim-list.el and install
+	both of them. 
+	(SKK-MK-install-package): Ditto.
+
+	* skk-lookup.el (skk-lookup-process-okurigana): Return nil if
+	STRING is a null string.
+
+	* skk-leim.el: Remove unnecessary spaces between parens.
+
+	* skk-setup.el.in: Register SKK as an input method if Emacs has
+	`register-input-method'.
+	Add `skk-tut-file' setup strings.
+
+	* SKK-MK (SKK-MK-make-setup-file): Change its argument
+	`DICTIONARY' to `SPEC'.
+	(SKK-MK-install-package): Do not use multiple let scopes.
+	Use `SKK-MK-compile-info'.
+	Use new `SKK-MK-make-setup-file'.
+	(SKK-MK-install): Ditto.
+	Make `SKK-MK-make-setup-file' to setup as to tutorial file.
+	
+2000-06-03  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-MK (SKK-MK-install): Bug fixed.
+	(SKK-MK-install-package): Ditto.
+
+2000-05-31  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-cursor.el: Add `keyboard-quit' to FUNCS list.
+	Remove duplicate `kill-buffer' from FUNCS list.
+
+	* experimental/GUIDELINE: Renewed.
+
 2000-05-15  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-lookup.el (skk-lookup-option-alist): Typo fixed. 

@@ -1,13 +1,13 @@
 ;;; skk-server.el --- SKK サーバーのためのプログラム
 ;; Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996,
-;;               1997, 1998, 1999
+;;               1997, 1998, 1999, 2000
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-server.el,v 1.3.2.4.2.4 2000/03/21 21:54:43 minakaji Exp $
+;; Version: $Id: skk-server.el,v 1.3.2.4.2.5 2000/07/07 22:13:39 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/03/21 21:54:43 $
+;; Last Modified: $Date: 2000/07/07 22:13:39 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -39,7 +39,7 @@
     (let (status)
       (if (not (or skk-server-host skk-servers-list))
           (skk-error "Lack of host information of SKK server"
-                     "SKK サーバーのホスト情報がありません" ))
+                     "SKK サーバーのホスト情報がありません"))
       (setq status (process-status "skkservd"))
       (or (eq status skk-network-open-status) (setq status (skk-open-server)))
       (if (eq status skk-network-open-status)
@@ -145,7 +145,7 @@
 		  (set-process-kanji-code proc 0))
 		 (t
 		  (set-process-coding-system proc code code)))))))
-    status ))
+    status))
 
 (defun skk-open-server-1 ()
   ;; skk-open-server のサブルーチン。
@@ -167,7 +167,7 @@
 					       skk-server-portnum)))
 	  (setq skk-server-prog nil))))
   (while (and (not (eq (process-status "skkservd") skk-network-open-status))
-	      skk-servers-list )
+	      skk-servers-list)
     (let ((elt (car skk-servers-list))
 	  arg)
       (setq skk-server-host (car elt)

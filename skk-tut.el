@@ -1,13 +1,13 @@
 ; SKK tutorial for Daredevil SKK version 11.1 and later versions
 ;; Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
-;;               1998, 1999
+;;               1998, 1999, 2000
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.3 1999/11/28 13:53:41 minakaji Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.4 2000/07/07 22:13:39 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/28 13:53:41 $
+;; Last Modified: $Date: 2000/07/07 22:13:39 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -36,67 +36,67 @@
 ;;;###autoload
 (defgroup skk-tut nil "SKK tutorial conversion related customization."
   :prefix "skk-tut-"
-  :group 'skk )
+  :group 'skk)
 
 ;; User variables.  prefix should be `skk-tut-'.
-(defcustom skk-tut-file 
+(defcustom skk-tut-file
   (cond
    ((and skk-package-data-directory
-	 (file-exists-p (expand-file-name "SKK.tut" skk-package-data-directory)) )
-    (expand-file-name "SKK.tut" skk-package-data-directory) )
-   (t "/usr/local/share/skk/SKK.tut") )
+	 (file-exists-p (expand-file-name "SKK.tut" skk-package-data-directory)))
+    (expand-file-name "SKK.tut" skk-package-data-directory))
+   (t "/usr/local/share/skk/SKK.tut"))
   "*SKK $B%A%e!<%H%j%"%k$N%U%!%$%kL>!#(B
 The English version is SKK.tut.E."
   :type 'file
-  :group 'skk-tut )
+  :group 'skk-tut)
 
 (defvar skk-tut-file-alist
   (` (("Japanese" . (, skk-tut-file))
-      ("English" . (, (concat skk-tut-file ".E"))) ))
-  "*Alist of `(LANGUAGE . TUTORIAL-FILE)' pairs." )
+      ("English" . (, (concat skk-tut-file ".E")))))
+  "*Alist of `(LANGUAGE . TUTORIAL-FILE)' pairs.")
 
 (defcustom skk-tut-use-face t
-  "*Non-nil $B$G$"$l$P!"%A%e!<%H%j%"%k$G(B face $B$rMxMQ$7$?I=<($r9T$J$&!#(B" 
+  "*Non-nil $B$G$"$l$P!"%A%e!<%H%j%"%k$G(B face $B$rMxMQ$7$?I=<($r9T$J$&!#(B"
   :type 'boolean
-  :group 'skk-tut )
+  :group 'skk-tut)
 
 (defface skk-tut-section-face
   '((((class color) (background light))
      (:foreground "yellow" :background "dodgerblue"))
     (((class color) (background dark))
      (:foreground "yellow" :background "slateblue"))
-    (((class grayscale)) (:bold t) (:italic t)) )
-  "*$B%A%e!<%H%j%"%kCf$N%;%/%7%g%s$NI=<(ItJ,$N(B face$B!#(B" 
-  :group 'skk-faces )
+    (((class grayscale)) (:bold t) (:italic t)))
+  "*$B%A%e!<%H%j%"%kCf$N%;%/%7%g%s$NI=<(ItJ,$N(B face$B!#(B"
+  :group 'skk-faces)
 
 (defface skk-tut-do-it-face
   '((((class color) (background light)) (:foreground "DarkGoldenrod"))
     (((class color) (background dark)) (:foreground "LightGoldenrod"))
-    (((class grayscale)) (:bold t)) )
+    (((class grayscale)) (:bold t)))
   "*$B%A%e!<%H%j%"%kCf$N;X<(9`L\$NI=<(ItJ,$N(B face$B!#(B"
-  :group 'skk-faces )
+  :group 'skk-faces)
 
 (defface skk-tut-question-face
   '((((class color) (background light)) (:foreground "Blue"))
     (((class color) (background dark)) (:foreground "LightSkyBlue"))
-    (((class grayscale)) (:underline t)) )
+    (((class grayscale)) (:underline t)))
   "*$B%A%e!<%H%j%"%kCf$NLdBj$NI=<(ItJ,$N(B face$B!#(B"
-  :group 'skk-faces )
+  :group 'skk-faces)
 
 (defface skk-tut-key-bind-face
   '((((class color) (background light)) (:foreground "Firebrick"))
     (((class color) (background dark)) (:foreground "OrangeRed"))
-    (((class grayscale)) (:bold t)) )
+    (((class grayscale)) (:bold t)))
   "*$B%A%e!<%H%j%"%kCf$N%-!<%P%$%s%I$NI=<(ItJ,$N(B face$B!#(B"
-  :group 'skk-faces )
+  :group 'skk-faces)
 
 (defface skk-tut-hint-face
   '((((class color) (background light)) (:foreground "CadetBlue"))
     (((class color) (background dark)) (:foreground "Aquamarine"))
-    (((class grayscale)) (:italic t)) )
+    (((class grayscale)) (:italic t)))
   "*$B%A%e!<%H%j%"%kCf$N%R%s%H$NI=<(ItJ,$N(B face$B!#(B
 $B8=:_$N$H$3$m!"(BSKK.tut.E $B$G$7$+;HMQ$5$l$F$$$J$$!#(B"
-  :group 'skk-faces )
+  :group 'skk-faces)
 
 ;; internal variables and constants.
 ;; prefix should be `skktut-'.
@@ -112,13 +112,13 @@ The English version is SKK.tut.E."
     (kill-buffer . around) (other-frame . before)
     (save-buffers-kill-emacs . around)
     ;;(select-frame . before)
-    )
-  "SKK $B%A%e!<%H%j%"%k$G(B advice $B$,IU$1$i$l$k4X?t$H(B advice class $B$N%(!<%j%9%H!#(B" )
+   )
+  "SKK $B%A%e!<%H%j%"%k$G(B advice $B$,IU$1$i$l$k4X?t$H(B advice class $B$N%(!<%j%9%H!#(B")
 
 (defconst skktut-question-numbers 37 "SKK $B%A%e!<%H%j%"%k$NLdBj?t!#(B")
 
 (defconst skktut-tut-jisyo "~/skk-tut-jisyo"
-  "SKK $B%A%e!<%H%j%"%kMQ$N%@%_!<<-=q!#(B" )
+  "SKK $B%A%e!<%H%j%"%kMQ$N%@%_!<<-=q!#(B")
 
 (defconst skktut-init-variables-alist
   '((skk-cursor-abbrev-color . "royalblue")
@@ -139,7 +139,7 @@ The English version is SKK.tut.E."
     (skk-date-ad . 1)
     (skk-cursor-default-color . (if (eq skk-emacs-type 'xemacs)
 				    (frame-property (selected-frame) 'cursor-color)
-				  (cdr (assq 'cursor-color (frame-parameters (selected-frame)))) ))
+				  (cdr (assq 'cursor-color (frame-parameters (selected-frame))))))
     (skk-delete-implies-kakutei . t)
     (skk-delete-okuri-when-quit . nil)
     (skk-downcase-alist . nil)
@@ -168,10 +168,10 @@ The English version is SKK.tut.E."
 					 (save-match-data
 					   (and (string-match
 						 "^h\\([bcdfghjklmnpqrstvwxz]\\)$"
-						 skk-prefix )
+						 skk-prefix)
 						(member (char-to-string (preceding-char))
-							'("$B$*(B" "$B%*(B") )
-						(cons '("$B%*(B" . "$B$*(B") (match-string 1 skk-prefix)) )))))
+							'("$B$*(B" "$B%*(B"))
+						(cons '("$B%*(B" . "$B$*(B") (match-string 1 skk-prefix)))))))
     (skk-katakana-mode-string . " $B%+%J(B")
     (skk-kcode-load-hook . nil)
     (skk-keep-record . nil)
@@ -312,7 +312,7 @@ The English version is SKK.tut.E."
 				   ("Q" nil skk-set-henkan-point-subr)
 				   ("X" nil skk-purge-from-jisyo) ("/" nil skk-abbrev-mode)
 				   ("$" nil skk-display-code-for-char-at-point)
-				   ("@" nil skk-today) ("\\" nil skk-input-by-code-or-menu) ))
+				   ("@" nil skk-today) ("\\" nil skk-input-by-code-or-menu)))
     (skk-rom-kana-rule-list . '(("hh" "h" ("$B%C(B" . "$B$C(B"))))
     (skk-save-jisyo-function . 'skk-save-jisyo-original)
     (skk-search-excluding-word-pattern-function . nil)
@@ -324,7 +324,7 @@ The English version is SKK.tut.E."
     (skk-update-jisyo-function . 'skk-update-jisyo-original)
     (skk-use-color-cursor . (and window-system (fboundp 'x-display-color-p) (x-display-color-p)))
     (skk-cursor-change-width . t)
-    (skk-use-face . (or window-system (skk-terminal-face-p)))
+    (skk-use-face . window-system)
     (skk-use-look . nil)
     (skk-use-numeric-conversion . t)
     (skk-use-rdbms . nil)
@@ -336,11 +336,11 @@ The English version is SKK.tut.E."
     (skk-mode-invoked . t)
     (skk-rule-tree
      .
-     (skk-compile-rule-list skk-rom-kana-base-rule-list skk-rom-kana-rule-list) ))
-  "skk.el $B$N%f!<%6!<JQ?t$N%j%9%H!#(B" )
+     (skk-compile-rule-list skk-rom-kana-base-rule-list skk-rom-kana-rule-list)))
+  "skk.el $B$N%f!<%6!<JQ?t$N%j%9%H!#(B")
 
 (defvar skktut-japanese-tut nil
-  "Non-nil $B$G$"$l$P!"%A%e!<%H%j%"%k$,F|K\8l$G$"$k$3$H$r<($9!#(B" )
+  "Non-nil $B$G$"$l$P!"%A%e!<%H%j%"%k$,F|K\8l$G$"$k$3$H$r<($9!#(B")
 (defvar skktut-right-answer nil "$B@52r$NJ8;zNs!#(B")
 (defvar skktut-question-count 1 "$B%A%e!<%H%j%"%k$N8=:_$NLdBjHV9f!#(B")
 (defvar skktut-tutorial-end nil "$B%A%e!<%H%j%"%k$N=*N;$r<($9%U%i%0!#(B")
@@ -351,18 +351,18 @@ The English version is SKK.tut.E."
 (defvar skktut-original-window-configuration nil)
 (defvar skktut-working-window-configuration nil)
 (defvar skktut-skk-mode-on nil
-  "Non-nil $B$G$"$l$P!"(Bskk-tutorial $B$r5/F0$7$?$H$-$K(B SKK $B$,4{$K5/F0$5$l$F$$$?$3$H$r<($9!#(B" )
+  "Non-nil $B$G$"$l$P!"(Bskk-tutorial $B$r5/F0$7$?$H$-$K(B SKK $B$,4{$K5/F0$5$l$F$$$?$3$H$r<($9!#(B")
 
 (defvar skktut-latin-mode-map nil
-  "SKK $B%A%e!<%H%j%"%k(B ASCII $B%b!<%I%-!<%^%C%W!#(B" )
+  "SKK $B%A%e!<%H%j%"%k(B ASCII $B%b!<%I%-!<%^%C%W!#(B")
 
 (or skktut-latin-mode-map
     (let ((map (make-sparse-keymap)))
       (define-key map "\C-j" 'skk-kakutei)
-      (setq skktut-latin-mode-map map) ))
+      (setq skktut-latin-mode-map map)))
 
 (defvar skktut-j-mode-map nil
-  "SKK $B%A%e!<%H%j%"%k$+$J(B/$B%+%J%b!<%I%-!<%^%C%W!#(B" )
+  "SKK $B%A%e!<%H%j%"%k$+$J(B/$B%+%J%b!<%I%-!<%^%C%W!#(B")
 
 (or skktut-j-mode-map
     (let ((map (make-sparse-keymap)))
@@ -377,23 +377,23 @@ The English version is SKK.tut.E."
       (define-key map "x" 'skk-previous-candidate)
       (define-key map "\C-j" 'skk-kakutei)
       (define-key map "\t" 'skk-insert)
-      (setq skktut-j-mode-map map) ))
+      (setq skktut-j-mode-map map)))
 
 (defvar skktut-jisx0208-latin-mode-map nil
-  "SKK $B%A%e!<%H%j%"%kA43Q1Q?t;z%b!<%I%-!<%^%C%W!#(B" )
+  "SKK $B%A%e!<%H%j%"%kA43Q1Q?t;z%b!<%I%-!<%^%C%W!#(B")
 
 (or skktut-jisx0208-latin-mode-map
     (let ((map (make-sparse-keymap))
-	  (i 0) )
+	  (i 0))
       (while (< i 128)
 	(if (aref skk-jisx0208-latin-vector i)
-	    (define-key map (char-to-string i) 'skk-jisx0208-latin-insert) )
-	(setq i (1+ i)) )
+	    (define-key map (char-to-string i) 'skk-jisx0208-latin-insert))
+	(setq i (1+ i)))
       (define-key map "\C-j" 'skk-kakutei)
-      (setq skktut-jisx0208-latin-mode-map map) ))
+      (setq skktut-jisx0208-latin-mode-map map)))
 
 (defvar skktut-abbrev-mode-map nil
-  "SKK $B%A%e!<%H%j%"%k(B Abbrev $B%b!<%I%-!<%^%C%W!#(B" )
+  "SKK $B%A%e!<%H%j%"%k(B Abbrev $B%b!<%I%-!<%^%C%W!#(B")
 
 (or skktut-abbrev-mode-map
     (let ((map (make-sparse-keymap)))
@@ -403,7 +403,7 @@ The English version is SKK.tut.E."
       (define-key map "\C-j" 'skk-kakutei)
       (define-key map " " 'skk-start-henkan)
       (define-key map "\t" 'skk-try-completion)
-      (setq skktut-abbrev-mode-map map) ))
+      (setq skktut-abbrev-mode-map map)))
 
 ;; -- macros
 (defmacro skktut-message (japanese english &rest arg)
@@ -411,42 +411,42 @@ The English version is SKK.tut.E."
   ;; $B$r%(%3!<%(%j%"$KI=<($9$k!#(B
   ;; ARG $B$O(B message $B4X?t$NBh#20z?t0J9_$N0z?t$H$7$FEO$5$l$k!#(B
   (append (list 'message (list 'if 'skktut-japanese-tut japanese english))
-          arg ))
+          arg))
 
 (defmacro skktut-error (japanese english &rest arg)
   ;; skktut-japanese-tut $B$,(B non-nil $B$@$C$?$i(B JAPANESE $B$r(B nil $B$G$"$l$P(B ENGLISH
   ;; $B$r%(%3!<%(%j%"$KI=<($7!"%(%i!<$rH/@8$5$;$k!#(B
   ;; ARG $B$O(B error $B4X?t$NBh#20z?t0J9_$N0z?t$H$7$FEO$5$l$k!#(B
   (append (list 'error (list 'if 'skktut-japanese-tut japanese english))
-          arg ))
+          arg))
 
 (defmacro skktut-yes-or-no-p (japanese english)
-  (list 'yes-or-no-p (list 'if 'skktut-japanese-tut japanese english)) )
+  (list 'yes-or-no-p (list 'if 'skktut-japanese-tut japanese english)))
 
 ;; advices.
 (defadvice skk-abbrev-mode (before skktut-ad disable)
   "SKK $B%A%e!<%H%j%"%kMQ%"%I%P%$%9IU!#(B"
   (and (> 12 skktut-question-count)
-       (skktut-error "$B$3$N%-!<$O$^$@;H$($^$;$s(B" "Cannot use this key yet" ) ))
+       (skktut-error "$B$3$N%-!<$O$^$@;H$($^$;$s(B" "Cannot use this key yet")))
 
 (defadvice skk-insert (before skktut-ad disable)
   "SKK $B%A%e!<%H%j%"%kMQ%"%I%P%$%9IU!#(B"
   (and (memq last-command-char skk-set-henkan-point-key)
        (> 12 skktut-question-count)
        (skktut-error "$B$+$J(B/$B%+%J%b!<%I$G$O!"1QBgJ8;z$O$^$@;H$($^$;$s(B"
-		     "Cannot use upper case character in kana/katakana mode" ) ))
+		     "Cannot use upper case character in kana/katakana mode")))
 
 (defadvice skk-kakutei (before skktut-ad disable)
   "SKK $B%A%e!<%H%j%"%kMQ%"%I%P%$%9IU!#(B"
   (and (interactive-p)
        (= skktut-question-count 1)
-       (skktut-error "$B$3$N%-!<$O$^$@;H$($^$;$s(B" "Cannot use this key yet" ) ))
+       (skktut-error "$B$3$N%-!<$O$^$@;H$($^$;$s(B" "Cannot use this key yet")))
 
 (defadvice skk-mode (before skktut-ad disable)
   "SKK $B%A%e!<%H%j%"%kMQ%"%I%P%$%9IU!#(B"
   (and (interactive-p)
        (= skktut-question-count 1)
-       (skktut-error "$B$3$N%-!<$O$^$@;H$($^$;$s(B" "Cannot use this key yet" ) ))
+       (skktut-error "$B$3$N%-!<$O$^$@;H$($^$;$s(B" "Cannot use this key yet")))
 
 (defadvice kill-buffer (around skktut-ad disable)
   "SKK $B%A%e!<%H%j%"%kMQ%"%I%P%$%9IU!#(B"
@@ -454,30 +454,30 @@ The English version is SKK.tut.E."
 	     (null (member (ad-get-arg 0) (list skktut-working-buffer
 						skktut-question-buffer
 						skktut-answer-buffer
-						skktut-jisyo-buffer ))))
-	 ad-do-it )
+						skktut-jisyo-buffer))))
+	 ad-do-it)
 	((skktut-yes-or-no-p "$B%A%e!<%H%j%"%k$r$d$a$^$9$+(B? "
-			     "Quit tutorial? " )
+			     "Quit tutorial? ")
 	 (skk-tutorial-quit 'now)
 	 ;; already killed.
 	 ;;ad-do-it
-	 )))
+	)))
 
 (defadvice other-frame (before skktut-ad disable)
   "SKK $B%A%e!<%H%j%"%kMQ%"%I%P%$%9IU!#(B"
-  (skktut-before-move-to-other-frame) )
+  (skktut-before-move-to-other-frame))
 
 ;;(defadvice select-frame (before skktut-ad disable)
 ;;(defadvice select-frame (before skktut-ad activate)
 ;;  "SKK $B%A%e!<%H%j%"%kMQ%"%I%P%$%9IU!#(B"
-;;  (skktut-before-move-to-other-frame) )
+;;  (skktut-before-move-to-other-frame))
 
 (defadvice save-buffers-kill-emacs (around skktut-ad disable)
   "SKK $B%A%e!<%H%j%"%kMQ%"%I%P%$%9IU!#(B"
   (if (skktut-yes-or-no-p "Tutorial $B$b(B Emacs $B$b=*N;$7$^$9!#$h$m$7$$$G$9$M!)(B "
-			  "Quit tutorial and kill emacs? " )
+			  "Quit tutorial and kill emacs? ")
       (progn (skk-tutorial-quit 'now)
-	     ad-do-it )))
+	     ad-do-it)))
 
 ;; interactive commands. prefix should be `skk-tutorial'.
 ;;;###autoload
@@ -487,12 +487,12 @@ C-u M-x skk-tutorial $B$9$k$H!"%A%e!<%H%j%"%k%U%!%$%k$NA*Br$,2DG=!#(B"
   (interactive "P")
   (if query-language
       (let* ((lang (completing-read "Language: " skk-tut-file-alist))
-	     (file (cdr (assoc lang skk-tut-file-alist))) )
+	     (file (cdr (assoc lang skk-tut-file-alist))))
 	(if (not (file-exists-p (expand-file-name file)))
 	    (error "No file found as %s" file)
 	  (setq skk-tut-file file)
 	  (message "SKK tutorial language set to %s until you exit Emacs"
-		   lang ))))
+		   lang))))
   (let ((inhibit-quit t))
     (if (not (and (boundp 'skk-major-version) (boundp 'skk-minor-version)
                   (or (> skk-major-version 10)
@@ -507,7 +507,7 @@ C-u M-x skk-tutorial $B$9$k$H!"%A%e!<%H%j%"%k%U%!%$%k$NA*Br$,2DG=!#(B"
       (skktut-enable-tutmap)
       (add-hook 'before-make-frame-hook 'skktut-before-move-to-other-frame)
       (add-hook 'minibuffer-setup-hook 'skktut-localize-and-init-variables)
-      (skktut-make-windows) )))
+      (skktut-make-windows))))
 
 (defun skk-tutorial-again (&optional now)
   "SKK $B%A%e!<%H%j%"%k$r:G=i$+$i$d$jD>$9!#(B
@@ -515,23 +515,23 @@ C-u M-x skk-tutorial-again $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A
  (interactive "P")
   (if (or now
 	  (skktut-yes-or-no-p "$B:G=i$+$i(B Tutorial $B$r$d$jD>$7$^$9!#$h$m$7$$$G$9$M!)(B "
-			      "Quit tutorial and start from question 1 again? " ))
+			      "Quit tutorial and start from question 1 again? "))
       (progn (skk-tutorial-quit 'now)
-             (skk-tutorial) )))
+             (skk-tutorial))))
 
 (defun skk-tutorial-quit (&optional now)
   "SKK $B%A%e!<%H%j%"%k$r$d$a$k!#(B
 C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$K$d$a$k!#(B"
   (interactive "P")
   (if (or now (skktut-yes-or-no-p "$BK\Ev$K%A%e!<%H%j%"%k$r$d$a$^$9$+(B? "
-                                  "Really quit tutorial? " ))
+                                  "Really quit tutorial? "))
       (let ((inhibit-quit t))
         (delete-other-windows)
         ;; $B:FEY%A%e!<%H%j%"%k$r;H$($k$h$&$K!"FbItJQ?t$r=i4|2=$7$F$*$/!#(B
         (setq skktut-japanese-tut nil
               skktut-question-count 1
               skktut-right-answer nil
-              skktut-tutorial-end nil )
+              skktut-tutorial-end nil)
         (remove-hook 'minibuffer-setup-hook 'skktut-localize-and-init-variables)
         (remove-hook 'before-make-frame-hook 'skktut-before-move-to-other-frame)
 	(skktut-disable-tutmap)
@@ -539,7 +539,7 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
 	(save-excursion
 	  (set-buffer skktut-jisyo-buffer)
 	  (set-buffer-modified-p nil)
-	  (kill-buffer skktut-jisyo-buffer) )
+	  (kill-buffer skktut-jisyo-buffer))
         (kill-buffer skktut-working-buffer)
         (kill-buffer skktut-answer-buffer)
         (kill-buffer skktut-question-buffer)
@@ -552,7 +552,7 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
         ;; $B%A%e!<%H%j%"%k5/F0D>A0$K3+$$$F$$$?%P%C%U%!$G!"(Bskk-mode $B$r5/F0$7$F(B
         ;; $B$$$?$i!"$=$N>uBV$K$7$F!"%A%e!<%H%j%"%k$r=*N;$9$k!#(B
         (or skktut-skk-mode-on
-            (skk-mode -1) ))))
+            (skk-mode -1)))))
 
 ;; the following commands are also interactive, but users may not call
 ;; them by name.  So prefix should be `skktut-'.
@@ -567,18 +567,18 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
       (skip-chars-backward " \t")
       (setq user-ans (buffer-substring-no-properties (point-min) (point)))
       (if (string-match "^>* *" user-ans)
-	  (setq user-ans (substring user-ans (match-end 0))) )
+	  (setq user-ans (substring user-ans (match-end 0))))
       (if (not (string= skktut-right-answer user-ans))
 	  (progn
 	    (skktut-message "$BEz$,0c$$$^$9!#$b$&0lEY$d$C$F$_$F2<$5$$(B"
 			    "Wrong.  Try again")
-	    (ding) )
+	    (ding))
 	(setq skktut-question-count (1+ skktut-question-count))
 	;; buffer independent.
 	(skktut-get-question-page skktut-question-count)
 	(if (>= skktut-question-count (1+ skktut-question-numbers))
 	    (skk-tutorial-quit 'now)
-	  (skktut-next-answer-buffer) )))))
+	  (skktut-next-answer-buffer))))))
 
 (defun skktut-skip-question (arg)
   (interactive "p")
@@ -587,17 +587,17 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
   (skktut-erase-buffer)
   (setq skktut-question-count (+ skktut-question-count arg))
   (cond ((> 1 skktut-question-count)
-	 (setq skktut-question-count 1) )
+	 (setq skktut-question-count 1))
 	;; overrun
 	((> skktut-question-count skktut-question-numbers)
-	 (setq skktut-question-count skktut-question-numbers) )
+	 (setq skktut-question-count skktut-question-numbers))
 	((and (>= skktut-question-count 3) (not skk-j-mode))
-	 (skk-mode 1) ))
+	 (skk-mode 1)))
   ;; buffer independent.
   (skktut-get-question-page skktut-question-count)
   (if skktut-tutorial-end
       (skk-tutorial-quit 'now)
-    (skktut-next-answer-buffer) ))
+    (skktut-next-answer-buffer)))
 
 ;; internal functions.  prefix should be `skktut-'.
 (defun skktut-make-windows ()
@@ -610,25 +610,25 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
   (enlarge-window (- (window-height (selected-window)) 20))
   ;; not make it current buffer but visible.
   (display-buffer skktut-question-buffer)
-  (setq skktut-working-window-configuration (current-window-configuration)) )
+  (setq skktut-working-window-configuration (current-window-configuration)))
 
 (defun skktut-enable-advice ()
   (let ((alist skktut-adviced-alist)
-	 e )
+	 e)
     (while alist
-      (setq e (car alist) )
+      (setq e (car alist))
       (ad-enable-advice (car e) (cdr e) 'skktut-ad)
       (ad-activate (car e))
-      (setq alist (cdr alist)) )))
+      (setq alist (cdr alist)))))
 
 (defun skktut-disable-advice ()
   (let ((alist skktut-adviced-alist)
-	 e )
+	 e)
     (while alist
-      (setq e (car alist) )
+      (setq e (car alist))
       (ad-disable-advice (car e) (cdr e) 'skktut-ad)
       (ad-activate (car e))
-      (setq alist (cdr alist)) )))
+      (setq alist (cdr alist)))))
 
 (defun skktut-enable-tutmap ()
   (let ((inhibit-quit t))
@@ -638,39 +638,39 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
      (list (cons 'skk-latin-mode skktut-latin-mode-map)
 	   (cons 'skk-abbrev-mode skktut-abbrev-mode-map)
 	   (cons 'skk-j-mode skktut-j-mode-map)
-	   (cons 'skk-jisx0208-latin-mode skktut-jisx0208-latin-mode-map) ))
+	   (cons 'skk-jisx0208-latin-mode skktut-jisx0208-latin-mode-map)))
     ;; for minor-mode-map-alist localized by Viper.
     (if (not (featurep 'viper))
 	nil
       (if (if (eq skk-emacs-type 'xemacs)
 	      (local-variable-p 'minor-mode-map-alist nil t)
-	    (local-variable-p 'minor-mode-map-alist) )
-	  (setq-default minor-mode-map-alist minor-mode-map-alist) ))))
+	    (local-variable-p 'minor-mode-map-alist))
+	  (setq-default minor-mode-map-alist minor-mode-map-alist)))))
 
 (defun skktut-disable-tutmap ()
   (let ((inhibit-quit t)
 	(minor-mode-list
-	 '(skk-abbrev-mode skk-latin-mode skk-j-mode skk-jisx0208-latin-mode) )
-	minor-mode e )
+	 '(skk-abbrev-mode skk-latin-mode skk-j-mode skk-jisx0208-latin-mode))
+	minor-mode e)
     (while minor-mode-list
       (setq minor-mode (car minor-mode-list)
-	    minor-mode-list (cdr minor-mode-list) )
+	    minor-mode-list (cdr minor-mode-list))
       ;; fail safe.
       (while (setq e (assq minor-mode minor-mode-map-alist))
-	(setq minor-mode-map-alist (delq e minor-mode-map-alist)) ))
+	(setq minor-mode-map-alist (delq e minor-mode-map-alist))))
     (set-modified-alist
      'minor-mode-map-alist
      (list (cons 'skk-latin-mode skk-latin-mode-map)
 	   (cons 'skk-abbrev-mode skk-abbrev-mode-map)
 	   (cons 'skk-j-mode skk-j-mode-map)
-	   (cons 'skk-jisx0208-latin-mode skk-jisx0208-latin-mode-map) )))
+	   (cons 'skk-jisx0208-latin-mode skk-jisx0208-latin-mode-map))))
   ;; for minor-mode-map-alist localized by Viper.
-  (and (default-value skk-use-viper) (skk-viper-normalize-map)) )
+  (and (default-value skk-use-viper) (skk-viper-normalize-map)))
 
 (defun skktut-pre-setup-tutorial ()
   (setq skktut-original-window-configuration (current-window-configuration)
 	skktut-skk-mode-on skk-mode
-	skktut-question-count 1 ))
+	skktut-question-count 1))
 
 (defun skktut-setup-jisyo-buffer ()
   ;; setup skktut-tut-jisyo buffer.
@@ -679,7 +679,7 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
     (buffer-disable-undo (current-buffer))
     (skktut-localize-and-init-variables)
     (setq case-fold-search nil
-	  buffer-file-name (expand-file-name skktut-tut-jisyo) )
+	  buffer-file-name (expand-file-name skktut-tut-jisyo))
     (insert (concat ";; okuri-ari entries.\n"
 		    "$B$[$C(Bs /$BM_(B/\n"
 		    "$B$D$+(Bt /$B;H(B/\n"
@@ -733,8 +733,8 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
 		    "$B$X$s$+$s(B /$BJQ49(B/\n"
 		    "$B$[$/(B /$BKL(B/\n"
 		    "$B$_$g$&$8(B /$BL>;z(B/\n"
-		    "$B$h$&$$(B /$BMF0W(B/$BMQ0U(B/\n" ))
-    (skk-setup-jisyo-buffer) ))
+		    "$B$h$&$$(B /$BMF0W(B/$BMQ0U(B/\n"))
+    (skk-setup-jisyo-buffer)))
 
 (defun skktut-setup-working-buffer ()
   (save-match-data
@@ -748,12 +748,12 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
       (setq skktut-japanese-tut (looking-at ";; SKK Japanese"))
       (while (re-search-forward "^>> \\((.+)\\)$" nil t nil)
         (setq sexp (buffer-substring-no-properties (match-beginning 1)
-						   (match-end 1) ))
+						   (match-end 1)))
         (delete-region (match-beginning 1) (match-end 1))
 	;; insert evaluated string instead of lisp program.
-        (insert (eval (car (read-from-string sexp)))) )
+        (insert (eval (car (read-from-string sexp)))))
       (goto-char (point-min))
-      (if skk-tut-use-face (skktut-colored)) )))
+      (if skk-tut-use-face (skktut-colored)))))
 
 (defun skktut-setup-question-buffer ()
   (save-excursion
@@ -766,7 +766,7 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
     (local-set-key "\C-xt" 'skk-tutorial-again)
     (local-set-key "\C-xj" 'skktut-error-command)
     (local-set-key "\C-xn" 'skktut-next-question)
-    (local-set-key "\C-xs" 'skktut-skip-question) ))
+    (local-set-key "\C-xs" 'skktut-skip-question)))
 
 (defun skktut-setup-answer-buffer ()
   (save-excursion
@@ -781,56 +781,56 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
     (local-set-key "\C-xn" 'skktut-next-question)
     (local-set-key "\C-xs" 'skktut-skip-question)
     (auto-fill-mode -1)
-    (skktut-next-answer-buffer) ))
+    (skktut-next-answer-buffer)))
 
 (defun skktut-localize-and-init-variables ()
   ;; $B%f!<%6!<$,(B skk.el $B$NJQ?t$r%+%9%?%^%$%:$7$F$$$k2DG=@-$,$"$k$N$G!"%+%l%s%H(B
   ;; $B%P%C%U%!$N(B skk.el $B$NJQ?t$r%P%C%U%!%m!<%+%k2=$7!"=i4|2=$9$k!#(B
   (let ((alist skktut-init-variables-alist)
-	v )
+	v)
     (while alist
       (setq v (car (car alist)))
       (make-local-variable v)
       (set v (eval (cdr (car alist))))
-      (setq alist (cdr alist)) )))
+      (setq alist (cdr alist)))))
 
 (defun skktut-erase-buffer ()
   (let ((inhibit-read-only t)
-	buffer-read-only )
+	buffer-read-only)
     (set-text-properties (point-min) (point-max) nil)
-    (erase-buffer) ))
+    (erase-buffer)))
 
 (defun skktut-before-move-to-other-frame ()
   (if (skktut-yes-or-no-p "Tutorial $B$r=*N;$7$^$9!#$h$m$7$$$G$9$M!)(B "
-			  "Quit tutorial?" )
+			  "Quit tutorial?")
       (skk-tutorial-quit 'now)
     (skktut-error "Tutorial $B$r=*N;$;$:$KB>$N%U%l!<%`$K0\$k$3$H$O$G$-$^$;$s!#(B"
-                  "Quit tutorial or you cannot move to other frame" )))
+                  "Quit tutorial or you cannot move to other frame")))
 
 (defun skktut-colored ()
   ;; face $B$r(B Text Property $B$K$7$F$*$/$H%F%-%9%H$r%3%T!<$7$?$H$-$K0l=o$K%3%T!<$G(B
   ;; $B$-$k$N$G9%ET9g!#(B
   (while (re-search-forward "$B"'(B\\([^$B![(B $B$!(B-$B$s%!(B-$B%s(B]+\\)" nil t nil)
     (put-text-property (match-beginning 1) (match-end 1) 'face
-                       'highlight ))
+                       'highlight))
   (goto-char (point-min))
   (while (re-search-forward "^==.+==$" nil t nil)
     (put-text-property (match-beginning 0) (match-end 0)
-                       'face skk-tut-section-face ))
+                       'face skk-tut-section-face))
   (goto-char (point-min))
   (while (re-search-forward "^!!.+" nil t nil)
     (put-text-property (match-beginning 0) (match-end 0)
-                       'face skk-tut-do-it-face ))
+                       'face skk-tut-do-it-face))
   (goto-char (point-min))
   (while (re-search-forward "^>> \\(.+\\)$" nil t nil)
     (put-text-property (match-beginning 1) (match-end 1)
-                       'face skk-tut-question-face ))
+                       'face skk-tut-question-face))
   (if skktut-japanese-tut
       nil
     (goto-char (point-min))
     (while (re-search-forward "Hint: .*$" nil t nil)
       (put-text-property (match-beginning 0) (match-end 0)
-                         'face skk-tut-hint-face ))))
+                         'face skk-tut-hint-face))))
 
 (defun skktut-next-answer-buffer ()
   (save-match-data
@@ -843,15 +843,15 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
       (setq skktut-right-answer
 	    (buffer-substring-no-properties
 	     (+ 3 (point))
-	     (skk-save-point (end-of-line) (point)) )))
+	     (skk-save-point (end-of-line) (point)))))
     ;; not to save point.
     (let ((cbuf (current-buffer))
-	  p )
+	  p)
       (unwind-protect
 	  (let ((plist (cons (if (eq skk-emacs-type 'xemacs)
 				 'end-open
-			       'rear-nonsticky )
-			     '(t intangible t read-only t) )))
+			       'rear-nonsticky)
+			     '(t intangible t read-only t))))
 	    ;; secondary make a new answer buffer.
 	    (set-buffer skktut-answer-buffer)
 	    (skktut-erase-buffer)
@@ -862,15 +862,15 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
 	     (if skktut-japanese-tut
 		 (concat "* $BEz$,$G$-$?$i(B `C-x n'; $BESCf$G$d$a$k$K$O(B `C-x q'"
 			 (if (= skktut-question-count 37) " *"
-			   "; $B%9%-%C%W$9$k$K$O(B`C-x s' *" ))
+			   "; $B%9%-%C%W$9$k$K$O(B`C-x s' *"))
 	       (concat "* For next question `C-x n'; to quit `C-x q'"
 		       (if (= skktut-question-count 37) " *"
-			 "; to skip this question `C-x s' *" ))))
+			 "; to skip this question `C-x s' *"))))
 	    (if skk-tut-use-face
-		(put-text-property p (point) 'face skk-tut-key-bind-face) )
+		(put-text-property p (point) 'face skk-tut-key-bind-face))
 	    (add-text-properties p (point) plist)
 	    (goto-char (+ (point-min) 3)))
-	(set-buffer cbuf) ))))
+	(set-buffer cbuf)))))
 
 (defun skktut-get-question-page (page)
   (save-excursion
@@ -886,7 +886,7 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
 	      (end-of-line)
 	      (save-excursion
 		(eval-region pos (point) nil)
-		(forward-char 1) )))
+		(forward-char 1))))
         (if (not skktut-tutorial-end)
             (progn
               (setq pos (point))
@@ -904,7 +904,7 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
 			      (number-to-string (- skktut-question-numbers page))
 			      "$BLd!K(B"))
 		(set-buffer-modified-p nil)
-		(force-mode-line-update 'all) )))))))
+		(force-mode-line-update 'all))))))))
 
 ;; The following two functions are tricky, since they are executed by
 ;; `eval-region' in skktut-working-buffer.
@@ -915,12 +915,12 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
 	(widen)
         (search-forward "\n>> ")
 	(if (re-search-forward "$B!V(B.*$B!W(B" (skk-save-point (end-of-line) (point)) t)
-	    (delete-region (match-beginning 0) (match-end 0)) )
+	    (delete-region (match-beginning 0) (match-end 0)))
 	(setq p (point))
 	(insert (concat "$B!V$-$g$&$O!"(B" (skk-current-date) "$B$G$9!#!W(B"))
 	(narrow-to-region (point-min) (point))
 	(if skk-tut-use-face
-	    (put-text-property p (point) 'face skk-tut-question-face) )))))
+	    (put-text-property p (point) 'face skk-tut-question-face))))))
 
 (defun skktut-end-tutorial ()
   (switch-to-buffer skktut-question-buffer)
@@ -932,7 +932,7 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
      (if skktut-japanese-tut
 	 (concat "SKK $B%A%e!<%H%j%"%k$O$3$l$G=*$j$G$9!#(B\n\n"
 		 (format "%s SKK $B$K4X$9$k<ALd!"%3%a%s%H!"(Bbug report $BEy$O(B\n\n"
-			 skk-branch-name )
+			 skk-branch-name)
 		 (format "\t%s\n\n" skk-ml-address)
 		 "$BKx$*Aw$j2<$5$$!#$J$*!"$3$N%"%I%l%9$O(B SKK Ring Server Openlab Mailing list\n"
 		 "$B$N%"%I%l%9$G$9!#$I$J$?$G$bEj9F$O$G$-$^$9$,!"%a%s%P!<$K$7$+G[Aw$5$l$J$$$N$G!"(B\n"
@@ -940,37 +940,37 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
                  "SKK Ring Server Openlab ML $B$X;22C4uK>$N>l9g$O(B\n\n"
 		 (format "\t%s\n\n" skk-ml-command-address)
 		 "$B$XK\J8$K(B($BI=Bj$K$G$O$"$j$^$;$s(B) subscribe $B$H5-$7$?%a!<%k$r$*Aw$j$/$@$5$$!#(B\n\n"
-		 "!! $B:G8e$K(B <return> $B%-!<$r2!$7$F$/$@$5$$!#(B" )
+		 "!! $B:G8e$K(B <return> $B%-!<$r2!$7$F$/$@$5$$!#(B")
        (concat "Now we end the SKK tutorial.\n\n"
-	       (format 
+	       (format
 		"Please send comments, questions and bug reports on %s SKK to:\n\n"
-		skk-branch-name )
+		skk-branch-name)
 	       (format "\t%s\n\n" skk-ml-address)
 	       "This is the address of the SKK Ring Server Openlab Mailing list.\n"
 	       "Anyone can post, but responces will be sent only to the ML members.\n"
                "So, if you are not a ML member, please say so in your mail.\n"
                "If you are interested in joining the SKK Ring Server Openlab ML,\n"
                (format "send mail to %s with the following command\n"
-		       skk-ml-command-address )
+		       skk-ml-command-address)
                "in the body of your email message (not in subject):\n\n"
 	       "\tsubscribe\n\n"
-	       "!! Hit <return> key when you are ready." )))
+	       "!! Hit <return> key when you are ready.")))
     (if skk-tut-use-face
 	(save-match-data
 	  (goto-char (point-min))
 	  (re-search-forward "^!!.+" nil t nil)
 	  (put-text-property (match-beginning 0) (match-end 0)
-			     'face skk-tut-do-it-face )))
+			     'face skk-tut-do-it-face)))
     (while (not skktut-tutorial-end)
       (condition-case nil
 	  (let* ((event (skk-read-event))
-		 (char (event-to-character event)) )
+		 (char (event-to-character event)))
 	    (skktut-message "<return> $B%-!<$r2!$7$F$/$@$5$$(B" "Hit <return> key")
 	    (if (and char (eq ?\C-m char))
 		(setq skktut-tutorial-end t)
 	      ;;(skk-unread-event event)
-	      ))
-	(error nil) ))))
+	     ))
+	(error nil)))))
 
 (provide 'skk-tut)
 ;;; skk-tut.el ends here

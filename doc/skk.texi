@@ -6,13 +6,13 @@
 @c          Yukiyoshi Kameyama <kameyama@@kuis.kyoto-u.ac.jp>
 @c          Mikio Nakajima <minakaji@osaka.email.ne.jp>
 @c  Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-@c  Version: $Id: skk.texi,v 1.9.2.1.2.4 2000/04/26 00:41:37 minakaji Exp $
+@c  Version: $Id: skk.texi,v 1.9.2.1.2.5 2000/07/07 22:13:48 minakaji Exp $
 @c  Keywords: japanese
-@c  Last Modified: $Date: 2000/04/26 00:41:37 $
+@c  Last Modified: $Date: 2000/07/07 22:13:48 $
 @c
 @set EDITION 1.4
 @set SKK-VERSION 10.51
-@set UPDATED $Date: 2000/04/26 00:41:37 $
+@set UPDATED $Date: 2000/07/07 22:13:48 $
 @c @set UPDATED-MONTH Oct 1998
 
 @direntry
@@ -282,7 +282,7 @@ is Elib?, ,Elib, elib.info, Elib - The Emacs Lisp Library}.}の中のいく
 
 @enumerate
 @item
-まず APELをインストールする。Daredevil SKKでは、APEL 9.22以降での動作を
+まず APELをインストールする。Daredevil SKKでは、APEL 10.2以降での動作を
 確認しているが、APELはEmacsの進化に合わせて日進月歩しているので、できる
 だけ新しいバージョンをインストールすることをお勧めする。APELは、
 @samp{ftp://ftp.m17n.org/pub/mule/apel/}

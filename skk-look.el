@@ -1,11 +1,11 @@
 ;;; skk-look.el --- UNIX look command interface for SKK
-;; Copyright (C) 1998, 1999 Mikio Nakajima <minakaji@osaka.email.ne.jp>
+;; Copyright (C) 1998, 1999, 2000 Mikio Nakajima <minakaji@osaka.email.ne.jp>
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.2 1999/12/05 05:59:26 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.3 2000/07/07 22:13:37 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/05 05:59:26 $
+;; Last Modified: $Date: 2000/07/07 22:13:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -74,7 +74,7 @@
 ;; <Dictionary>
 ;; ftp://ftp.u-aizu.ac.jp:/pub/SciEng/nihongo/ftp.cc.monash.edu.au/
 ;; に置いてある edict を利用すると手軽に英和辞書ができます。
-;; 
+;;
 ;;   % jgawk -f skk-10/lisp/look/edict2skk.awk edict > temp
 ;;   % skkdic-expr temp | skkdic-sort > SKK-JISYO.E2J
 ;;   % rm temp
@@ -100,16 +100,16 @@
 (and skk-look-command
      (null (member '(skk-look) skk-search-prog-list))
      (let ((pl skk-search-prog-list)
-	   (n 0) dic mark )
+	   (n 0) dic mark)
        (while pl
 	 (setq dic (car pl))
 	 (if (memq (nth 1 dic) '(skk-jisyo skk-rdbms-private-jisyo-table))
 	     (setq mark n
 		   pl nil)
 	   (setq pl (cdr pl)
-		 n (1+ n) )))
+		 n (1+ n))))
        (skk-splice-in skk-search-prog-list (1+ mark)
-		      '((skk-look)) )))
+		      '((skk-look)))))
 
 ;; program
 ;;;###autoload
@@ -120,14 +120,14 @@
   (and skk-abbrev-mode
        (eq (skk-str-ref skk-henkan-key (1- (length skk-henkan-key))) ?*)
        (let ((args (substring skk-henkan-key 0 (1- (length skk-henkan-key))))
-	     v )
+	     v)
 	 (setq v (skk-look-1 args))
 	 (if (not skk-look-recursive-search)
 	     v
 	   (let (skk-henkan-key v2 v3)
 	     (while v
 	       (let ((skk-current-search-prog-list
-		      (delete '(skk-look) (copy-sequence skk-search-prog-list)) ))
+		      (delete '(skk-look) (copy-sequence skk-search-prog-list))))
 		 (setq skk-henkan-key (car v))
 		 (while skk-current-search-prog-list
 		   (setq v3 (skk-search)
@@ -135,29 +135,29 @@
 				(skk-nunion v2 (cons (car v) v3))
 			      (if v3
 				  (skk-nunion v2 (cons (car v) v3))
-				v2 )))))
-	       (setq v (cdr v)) )
-	     v2 )))))
+				v2)))))
+	       (setq v (cdr v)))
+	     v2)))))
 
 (defun skk-look-1 (args)
   ;; core search engine
-  (with-temp-buffer 
+  (with-temp-buffer
     (let (opt)
       (setq args (list args))
       (and skk-look-dictionary (nconc args (list skk-look-dictionary)))
       (and skk-look-dictionary-order (setq opt "d"))
       (and skk-look-ignore-case (setq opt (concat "f" opt)))
       (and skk-look-use-alternate-dictionary
-	   (setq opt (concat "a" opt)) )
+	   (setq opt (concat "a" opt)))
       (and opt (setq args (cons (concat "-" opt) args)))
       (and skk-look-termination-character
 	   (setq args
-		 (cons (list "-t" skk-look-termination-character) args) ))
+		 (cons (list "-t" skk-look-termination-character) args)))
       (and
        (= 0 (apply 'call-process skk-look-command nil t nil args))
        (> (buffer-size) 0)
        (split-string (buffer-substring-no-properties (point-min) (1- (point-max)))
-		     "\n" )))))
+		     "\n")))))
 
 ;;;###autoload
 (defun skk-look-completion ()
@@ -165,17 +165,17 @@
       (let ((stacked skk-completion-stack))
 	;; look は複数の候補を吐くので、一旦貯めておいて、一つづつ complete する。
 	(setq skk-look-completion-words
-	      (delete skk-completion-word (skk-look-1 skk-completion-word)) )
+	      (delete skk-completion-word (skk-look-1 skk-completion-word)))
 	(while stacked
 	  (setq skk-look-completion-words
 		(delete (car stacked) skk-look-completion-words)
-		stacked (cdr stacked) ))))
+		stacked (cdr stacked)))))
   (prog1
       (car skk-look-completion-words)
-    (setq skk-look-completion-words (cdr skk-look-completion-words)) ))
+    (setq skk-look-completion-words (cdr skk-look-completion-words))))
 
 (defadvice skk-kakutei-initialize (after skk-look-ad activate)
-  (setq skk-look-completion-words nil) )
+  (setq skk-look-completion-words nil))
 
 (provide 'skk-look)
 ;;; skk-look.el ends here

@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.21 2000/04/26 00:41:34 minakaji Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.22 2000/07/07 22:13:37 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/04/26 00:41:34 $
+;; Last Modified: $Date: 2000/07/07 22:13:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -44,7 +44,7 @@
 ;;              (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
 ;;              (and (boundp 'skk-mode-invoked) skk-mode-invoked
 ;;                   (skk-color-display-p)
-;;                   (skk-set-cursor-properly) ))))
+;;                   (skk-set-cursor-properly)))))
 ;;
 ;; 3. invoke if current buffer has japanese characters.
 ;; ...
@@ -224,7 +224,7 @@ kakutei'ed and erase the buffer contents."
 (defun skk-isearch-mode-cleanup ()
   "Hook function called when skk isearch is done."
   ;; remember the current skk mode for next use.
-  (let ((mode (skk-current-insert-mode)))
+  (let ((mode (skk-current-input-mode)))
     (and skk-isearch-use-previous-mode
 	 (setq skk-isearch-mode
 	       (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
@@ -336,7 +336,7 @@ Optional argument PREFIX is apppended if given."
                   (append (if (= (length (this-command-keys)) 0)
                               (list last-command-event)
                             (this-command-keys))
-                          nil ))
+                          nil))
 	    (condition-case error
 		;; setup last-command-event and this-command because
 		;; some command refers them.

@@ -1,11 +1,11 @@
 ;;; skk-leim.el --- SKK related code for LEIM
-;; Copyright (C) 1997, 1999
+;; Copyright (C) 1997, 1999, 2000
 ;; Murata Shuuichirou <mrt@astec.co.jp>
 ;;
 ;; Author: Murata Shuuichirou <mrt@mickey.ai.kyutech.ac.jp>
-;; Version: $Id: skk-leim.el,v 1.5.2.3.2.1 2000/01/17 00:48:48 ksakai Exp $
+;; Version: $Id: skk-leim.el,v 1.5.2.3.2.2 2000/07/07 22:13:37 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/17 00:48:48 $
+;; Last Modified: $Date: 2000/07/07 22:13:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -30,30 +30,30 @@
 ;;;###autoload
 (defun skk-activate (&optional name)
   (setq inactivate-current-input-method-function 'skk-inactivate)
-  (skk-mode 1) )
+  (skk-mode 1))
 
 ;;;###autoload
 (defun skk-auto-fill-activate (&optional name)
   (setq inactivate-current-input-method-function 'skk-auto-fill-inactivate)
-  (skk-auto-fill-mode 1) )
+  (skk-auto-fill-mode 1))
 
 ;;;###autoload
 (defun skk-inactivate ()
-  (skk-mode -1) )
+  (skk-mode -1))
 
 ;;;###autoload
 (defun skk-auto-fill-inactivate ()
-  (skk-auto-fill-mode -1) )
+  (skk-auto-fill-mode -1))
 
 (register-input-method
  "japanese-skk" "Japanese"
  'skk-activate nil
- "Simple Kana to Kanji conversion program" )
+ "Simple Kana to Kanji conversion program")
 
 (register-input-method
  "japanese-skk-auto-fill" "Japanese"
  'skk-auto-fill-activate nil
- "Simple Kana to Kanji conversion program with auto-fill" )
+ "Simple Kana to Kanji conversion program with auto-fill")
 
 (provide 'skk-leim)
 ;;; skk-leim.el ends here

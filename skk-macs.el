@@ -1,12 +1,12 @@
-;;; skk-macs.el --- Macros and inline functions commonly use in 
+;;; skk-macs.el --- Macros and inline functions commonly use in
 ;;                  Daredevil SKK package programs.
-;; Copyright (C) 1999 Mikio Nakajima <minakaji@osaka.email.ne.jp>
+;; Copyright (C) 1999, 2000 Mikio Nakajima <minakaji@osaka.email.ne.jp>
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.21 2000/03/19 14:03:15 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.22 2000/07/07 22:13:38 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/03/19 14:03:15 $
+;; Last Modified: $Date: 2000/07/07 22:13:38 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -117,7 +117,7 @@
        (defvar (, var) (, default-value)
 	       (, (format "%s\n\(buffer local\)" documentation)))
        (make-variable-buffer-local '(, var))
-    )))
+       )))
 
 (defmacro skk-with-point-move (&rest form)
   ;; ポイントを移動するがフックを実行してほしくない場合に使う。
@@ -232,7 +232,7 @@
     ;; Can I use this for mule1?
     (= (char-leading-char char) 0))
    (t (and (< ?\37 char) (< char ?\200)))))
- 
+
 (defsubst skk-str-ref (str pos)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule5 mule4))
@@ -250,6 +250,10 @@
     (= (char-leading-char char) lc-jp))
    (t
     (and (<= char ?\200) (<= ?\377 char)))))
+
+(defsubst skk-jisx0213-p (char)
+  (and (featurep 'jisx0213)
+    (memq (char-charset char) '(japanese-jisx0213-1 japanese-jisx0213-2))))
 
 (defsubst skk-char-octet (ch &optional n)
   (static-cond
@@ -375,7 +379,7 @@
         skk-latin-mode nil
         skk-j-mode nil
         skk-jisx0208-latin-mode nil
-        ;; j's sub mode.
+        ;; sub mode of skk-j-mode.
         skk-katakana nil)
   ;; initialize
   (setq skk-input-mode-string skk-hiragana-mode-string)
@@ -390,8 +394,10 @@
         skk-latin-mode nil
         skk-j-mode t
         skk-jisx0208-latin-mode nil
-        ;; j's sub mode.
+        ;; sub mode of skk-j-mode.
         skk-katakana katakana)
+  (setq skk-input-mode-string (if skk-katakana skk-katakana-mode-string
+				skk-hiragana-mode-string))
   (static-if (memq skk-emacs-type '(nemacs mule1))
       (use-local-map
        (append skk-j-mode-map
@@ -406,7 +412,7 @@
         skk-latin-mode t
         skk-j-mode nil
         skk-jisx0208-latin-mode nil
-        ;; j's sub mode.
+        ;; sub mode of skk-j-mode.
         skk-katakana nil
         skk-input-mode-string skk-latin-mode-string)
   (static-if (memq skk-emacs-type '(nemacs mule1))
@@ -423,7 +429,7 @@
         skk-latin-mode nil
         skk-j-mode nil
         skk-jisx0208-latin-mode t
-        ;; j's sub mode.
+        ;; sub mode of skk-j-mode.
         skk-katakana nil
         skk-input-mode-string skk-jisx0208-latin-mode-string)
   (static-if (memq skk-emacs-type '(nemacs mule1))
@@ -440,8 +446,14 @@
         skk-latin-mode nil
         skk-j-mode nil
         skk-jisx0208-latin-mode nil
-        ;; j's sub mode.
-        skk-katakana nil
+	;; skk-abbrev-mode は一時的な ascii 文字による変換なので、変換後は元の
+	;; 入力モード (かなモードかカナモード) に戻ることが期待される。
+	;; skk-katakana は minor-mode フラグではなく、skk-j-mode マイナーモード
+	;; の中でこのフラグにより入力文字を決定するポインタを変更するだけなので
+	;; skk-abbrev-mode マイナーモード化するのに skk-katakana フラグを初期化
+	;; しなければならない必然性はない。
+        ;; sub mode of skk-j-mode.
+        ;;skk-katakana nil
         skk-input-mode-string skk-abbrev-mode-string)
   (static-if (memq skk-emacs-type '(nemacs mule1))
       (use-local-map
@@ -475,7 +487,7 @@
     (and auto-fill-hook (run-hooks 'auto-fill-hook)))
    (t (and auto-fill-function (funcall auto-fill-function)))))
 
-(defsubst skk-current-insert-mode ()
+(defsubst skk-current-input-mode ()
   (cond (skk-abbrev-mode 'abbrev)
 	(skk-latin-mode 'latin)
 	(skk-jisx0208-latin-mode 'jisx0208-latin)

@@ -1,12 +1,12 @@
 ;;; skk-cursor.el --- SKK cursor control.
-;; Copyright (C) 1996, 1997, 1998, 1999
-;; Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
+;; Copyright (C) 1996, 1997, 1998, 1999, 2000
+;; Masatake YAMATO <masata-y@is.aist-nara.ac.jp> 
 
-;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
+;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.25 2000/01/17 04:25:38 furue Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.26 2000/07/07 22:13:36 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/17 04:25:38 $
+;; Last Modified: $Date: 2000/07/07 22:13:36 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -56,13 +56,16 @@
 (defun skk-cursor-current-color ()
   ;; カレントバッファの SKK のモードから、カーソルの色を取得する。
   (cond ((not skk-mode) skk-cursor-default-color)
+	;; skk-start-henkan の中では、skk-j-mode フラグを立てながら、
+	;; skk-abbrev-mode フラグも立てている (変換後、直後に入力する文字が
+	;; 元の入力モードにて行なわれるように)。従い、skk-abbrev-mode フラ
+	;; グのチェックの優先度を上げる。
+	(skk-abbrev-mode skk-cursor-abbrev-color)
 	(skk-jisx0208-latin-mode
 	 skk-cursor-jisx0208-latin-color )
 	(skk-katakana skk-cursor-katakana-color)
 	(skk-j-mode skk-cursor-hiragana-color)
-	(skk-abbrev-mode skk-cursor-abbrev-color)
-	((and (boundp 'skk-jisx0201-mode)
-	      skk-jisx0201-mode)
+	((and (boundp 'skk-jisx0201-mode) skk-jisx0201-mode)
 	 skk-cursor-jisx0201-color)
 	(t skk-cursor-latin-color)))
 
@@ -100,11 +103,10 @@
 ;; CLASS は after.
 (let ((funcs '(
 	       ;; cover to original Emacs functions.
-	       kill-buffer
 	       bury-buffer
 	       delete-frame
 	       delete-window
-	       ;;execute-extended-command 
+	       ;;execute-extended-command
 	       kill-buffer
 	       other-window
 	       overwrite-mode
@@ -113,22 +115,22 @@
 	       select-window
 	       switch-to-buffer
 	       ;; cover to SKK functions.
-	       skk-auto-fill-mode 
-	       skk-gyakubiki-katakana-message 
-	       skk-gyakubiki-katakana-region 
-	       skk-gyakubiki-message 
-	       skk-hiragana-region 
-	       skk-hurigana-katakana-region 
-	       skk-hurigana-message 
-	       skk-hurigana-region 
-	       skk-jisx0201-region 
-	       skk-jisx0208-latin-region 
-	       skk-katakana-region 
-	       skk-latin-region 
-	       skk-mode 
-	       skk-romaji-message 
-	       skk-romaji-region 
-	       skk-save-jisyo 
+	       skk-auto-fill-mode
+	       skk-gyakubiki-katakana-message
+	       skk-gyakubiki-katakana-region
+	       skk-gyakubiki-message
+	       skk-hiragana-region
+	       skk-hurigana-katakana-region
+	       skk-hurigana-message
+	       skk-hurigana-region
+	       skk-jisx0201-region
+	       skk-jisx0208-latin-region
+	       skk-katakana-region
+	       skk-latin-region
+	       skk-mode
+	       skk-romaji-message
+	       skk-romaji-region
+	       skk-save-jisyo
 	       skk-toggle-kana)))
   (while funcs
     (eval
@@ -142,14 +144,15 @@
 ;;入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。
 ;; CLASS は after.
 ;; skk-mode が nil か non-nil かの判定付き。
-(let ((funcs '(goto-line 
-	       insert-file 
-	       recenter 
+(let ((funcs '(goto-line
+	       insert-file
+	       keyboard-quit
+	       recenter
 	       yank
-	       yank-pop 
+	       yank-pop
 	       ;; cover to hilit functions.
-	       hilit-recenter 
-	       hilit-yank 
+	       hilit-recenter
+	       hilit-yank
 	       hilit-yank-pop)))
   (while funcs
     (eval
@@ -180,11 +183,11 @@
 ;; skk-abbrev-mode のときだけカーソルをセット。
 (let ((funcs '(
 	       ;; cover to original Emacs functions.
-	       newline 
+	       newline
 	       ;; cover to SKK functions.
-	       skk-delete-backward-char 
-	       skk-insert 
-	       skk-start-henkan 
+	       skk-delete-backward-char
+	       skk-insert
+	       skk-start-henkan
 	       )))
   (while funcs
     (eval
@@ -248,7 +251,7 @@
 (defadvice skk-jisx0208-latin-mode (after skk-cursor-ad activate)
   "カーソル色を skk-cursor-jisx0208-latin-color に変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (skk-cursor-set-properly skk-cursor-jisx0208-latin-color))
- 
+
 (defadvice skk-abbrev-mode (after skk-cursor-ad activate)
   "応じカーソル色を skk-cursor-abbrev-color に変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (skk-cursor-set-properly skk-cursor-abbrev-color))
@@ -257,7 +260,7 @@
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (if (interactive-p) (skk-cursor-set-properly)))
 
-(add-hook 'minibuffer-setup-hook 'skk-cursor-setup-minibuffer) 
+(add-hook 'minibuffer-setup-hook 'skk-cursor-setup-minibuffer)
 (add-hook 'minibuffer-exit-hook
 	  (function
 	   (lambda ()

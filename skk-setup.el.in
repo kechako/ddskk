@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-setup.el.in,v 1.1.2.1 2000/04/26 00:41:34 minakaji Exp $
+;; Version: $Id: skk-setup.el.in,v 1.1.2.2 2000/07/07 22:13:39 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/04/26 00:41:34 $
+;; Last Modified: $Date: 2000/07/07 22:13:39 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -33,20 +33,32 @@
 (global-set-key "\C-xj" 'skk-auto-fill-mode)
 (global-set-key "\C-xt" 'skk-tutorial)
 (add-hook 'isearch-mode-hook
-	  (function (lambda ()
-		      (and (boundp 'skk-mode) skk-mode
-			   (skk-isearch-mode-setup) ))))
+	  (lambda () (and (boundp 'skk-mode) skk-mode
+			  (skk-isearch-mode-setup))))
 
 (add-hook 'isearch-mode-end-hook
-     	  (function
-     	   (lambda ()
-     	     (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
-     	     (and (boundp 'skk-mode-invoked) skk-mode-invoked
-                  (skk-color-display-p)
-     		  (skk-set-cursor-properly) ))))
+	  (lambda ()
+	    (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
+	    (if (and (not (featurep 'skk-cursor2))
+		     (boundp 'skk-mode-invoked) skk-mode-invoked
+		     (skk-color-display-p))
+		(skk-set-cursor-properly)))
 
 ;;(defvar skk-large-jisyo "@DIC@")
 ;;(defvar skk-aux-large-jisyo "@DIC@")
+;;(defvar skk-tut-file "@TUT@")
+
+(if (fboundp 'register-input-method)
+    (progn
+      (register-input-method
+       "japanese-skk" "Japanese"
+       'skk-activate nil
+       "Simple Kana to Kanji conversion program")
+      
+      (register-input-method
+       "japanese-skk-auto-fill" "Japanese"
+       'skk-auto-fill-activate nil
+       "Simple Kana to Kanji conversion program with auto-fill")))
 
 (provide 'skk-setup)
 ;;; Local Variables:

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.16 1999/12/30 02:06:57 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.17 2000/01/23 13:40:37 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/30 02:06:57 $
+;; Last Modified: $Date: 2000/01/23 13:40:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -43,6 +43,7 @@
 
 (eval-and-compile
   (defconst skk-emacs-type (cond ((string-match "XEmacs" emacs-version) 'xemacs)
+				 ((and (boundp 'NEMACS)) 'nemacs)
 				 ((and (boundp 'mule-version)
 				       (string< "4.0" mule-version) 'mule4))
 				 ((and (boundp 'mule-version)
@@ -66,6 +67,8 @@
                          (make-color-specifier "white"))) 3))
         'dark
       'light))
+   ((eq skk-emacs-type 'nemacs)
+    nil)
    ((and window-system (x-display-color-p))
     (let ((bg-resource (x-get-resource ".backgroundMode"
                                        "BackgroundMode"))
@@ -211,7 +214,7 @@ HENKAN-BUFFER, MIDASI, OKURIGANA, ENTRY $B$N(B 4 $B0z?t$rH<$J$C$F%3!<%k$5$l$k
 $B<h$j=P$7$?$$$H$-$O!"(BHENKAN-BUFFER $B$rMxMQ$9$k!#(B"
   :type '(choice function (const nil))
   :group 'skk)
- 
+
 (defcustom skk-update-end-function nil
   "*$B8D?M<-=q$N99?7=*N;;~$K%3!<%k$5$l$k4X?t!#(B
 HENKAN-BUFFER, MIDASI, OKURIGANA, WORD, PURGE $B$N(B 5 $B0z?t$rH<$J$C$F%3!<%k$5$l$k!#(B
@@ -221,12 +224,12 @@ skk-kakutei-initialize $B$,%3!<%k$5$l$kA0$K$3$N4X?t$,%3!<%k$5$l$k$N$G!":G8e$N3N
 $B$K4X$9$k%U%i%0N`$O!"$3$N4X?t$NCf$+$i;2>H$9$k$3$H$,$G$-$k!#(B"
   :type '(choice function (const nil))
   :group 'skk)
-  
+
 (defcustom skk-kakutei-end-function nil
   "*$B3NDj;~$K%3!<%k$5$l$k4X?t!#(B
 KAKUTEI-WORD $B0z?t$rH<$J$C$F!"JQ49$r9T$J$C$?%P%C%U%!$G%3!<%k$5$l$k!#(B
 skk-kakutei-initialize $B$,%3!<%k$5$l$kA0$K$3$N4X?t$,%3!<%k$5$l$k$N$G!":G8e$N3NDj(B
-$B$K4X$9$k%U%i%0N`$O!"$3$N4X?t$NCf$+$i;2>H$9$k$3$H$,$G$-$k!#(B" 
+$B$K4X$9$k%U%i%0N`$O!"$3$N4X?t$NCf$+$i;2>H$9$k$3$H$,$G$-$k!#(B"
   :type '(choice function (const nil))
   :group 'skk)
 
@@ -274,7 +277,7 @@ skk-search-prog-list $B$NCM$r@_Dj$9$k$3$H$K$h$j!"8!:wBP>]$N<-=q$NJQ99!"8!:w$N=g
 Non-nil $B$G!"$+$D(B skk-search-prog-list $B$NMWAG$NCf$K$3$NJQ?t$,;HMQ$5$l$F$$$l$P!"(B
 $B;XDj$5$l$?<-=q$r8!:w$N$?$a%P%C%U%!$KFI$_9~$_!"8!:w$r9T$J$&!#(B
 skk-search-prog-list $B$NCM$r@_Dj$9$k$3$H$K$h$j!"8!:wBP>]$N<-=q$NJQ99!"8!:w$N=g(B
-$B=x$NJQ99$,2DG=!#(B" 
+$B=x$NJQ99$,2DG=!#(B"
   :type '(choice file (const nil))
   :group 'skk)
 
@@ -286,7 +289,7 @@ SKK $B%5!<%P!<$r;H$$8!:w$r9T$&!#(B
 SKK $B%5!<%P!<$,(B active $B$G$J$1$l$P!";XDj$5$l$?<-=q$r%P%C%U%!$KFI$_9~$`!#(B
 skk-search-prog-list $B$NCM$r@_Dj$9$k$3$H$K$h$j!"8!:wBP>]$N<-=q$NJQ99!"8!:w$N=g(B
 $B=x$NJQ99$,2DG=!#(B
-$B$3$NCM$r@_Dj$9$k$3$H$K$h$j!"(Bskk-server.el $B$,(B autoload $B$5$l$k!#(B" 
+$B$3$NCM$r@_Dj$9$k$3$H$K$h$j!"(Bskk-server.el $B$,(B autoload $B$5$l$k!#(B"
   :type '(choice file (const nil))
   :group 'skk)
 
@@ -305,7 +308,7 @@ skk-search-prog-list $B$NCM$r@_Dj$9$k$3$H$K$h$j!"8!:wBP>]$N<-=q$NJQ99!"8!:w$N=g
   "*$B8!:w4X?t!"8!:wBP>]$N<-=q$r7hDj$9$k$?$a$N%j%9%H!#(B
 $BJQ49$7$?8uJd$rJV$9(B S $B<0$r%j%9%H$N7A$KI=5-$7$?$b$N!#(B
 skk-search $B4X?t$,(B skk-search-prog-list $B$N(B car $B$+$i8eJ}8~$X=gHV$K(B S $B<0$NI>2A$r(B
-$B9T$$JQ49$r9T$J$&!#(B" 
+$B9T$$JQ49$r9T$J$&!#(B"
   :type '(repeat
 	  (list (function :tag "Search funcition")
 		(choice :tag "Dictionary" file (const nil))
@@ -320,7 +323,7 @@ skk-search $B4X?t$,(B skk-search-prog-list $B$N(B car $B$+$i8eJ}8~$X=gHV$K
 			     "~/_skk-jis")
 			    (t
 			     "~/.skk-jisyo")))
-  "*SKK $B$N%f!<%6!<<-=q!#(B" 
+  "*SKK $B$N%f!<%6!<<-=q!#(B"
   :type 'file
   :group 'skk)
 
@@ -329,14 +332,14 @@ skk-search $B4X?t$,(B skk-search-prog-list $B$N(B car $B$+$i8eJ}8~$X=gHV$K
 				    "~/_skk-bak")
 				   (t
 				    "~/.skk-jisyo.BAK")))
-  "*SKK $B$N%f!<%6!<<-=q$N%P%C%/%"%C%W%U%!%$%k!#(B" 
+  "*SKK $B$N%f!<%6!<<-=q$N%P%C%/%"%C%W%U%!%$%k!#(B"
   :type 'file
   :group 'skk)
 
 (defcustom skk-jisyo-code nil
   "*Non-nil $B$G$"$l$P!"$=$NCM$G<-=q%P%C%U%!$N4A;z%3!<%I$r@_Dj$9$k!#(B
 Mule $B$G$O!"(B*euc-japan*, *sjis*, *junet*$B!#(B
-$B$^$?!"(B\"euc\", \"ujis\", \"sjis\", \"jis\" $B$J$I$NJ8;zNs$K$h$C$F$b;XDj$,2DG=!#(B" 
+$B$^$?!"(B\"euc\", \"ujis\", \"sjis\", \"jis\" $B$J$I$NJ8;zNs$K$h$C$F$b;XDj$,2DG=!#(B"
   :type '(choice symbol string)
   :group 'skk)
 
@@ -352,7 +355,7 @@ Mule $B$G$O!"(B*euc-japan*, *sjis*, *junet*$B!#(B
 				   "~/.skk-record")))
   "*$B%f!<%6!<<-=q$NE}7W$r<h$k%U%!%$%k!#(B
 $B<-=q%;!<%V$N;~9o!"C18l$NEPO??t!"3NDj$r9T$C$?2s?t!"3NDjN(!"A4BN$N8l?t$N(B
-$B>pJs$r<}$a$k!#(B" 
+$B>pJs$r<}$a$k!#(B"
   :type 'file
   :group 'skk)
 
@@ -362,42 +365,42 @@ Mule $B$G$O!"(B*euc-japan*, *sjis*, *junet*$B!#(B
   :group 'skk)
 
 (defcustom skk-previous-candidate-char ?x
-  "*skk-previous-candidate $B$r3dEv$F$?%-!<%-%c%i%/%?!#(B" 
+  "*skk-previous-candidate $B$r3dEv$F$?%-!<%-%c%i%/%?!#(B"
   :type 'character
   :group 'skk)
 
 (defcustom skk-try-completion-char ?\011 ; TAB 
-  "*$B8+=P$78l$NJd40F0:n$r9T$J$&%-!<%-%c%i%/%?!#(B" 
+  "*$B8+=P$78l$NJd40F0:n$r9T$J$&%-!<%-%c%i%/%?!#(B"
   :type 'character
   :group 'skk)
 
 (defcustom skk-next-completion-char ?.
-  "*$B8+=P$78l$NJd40F0:n$G!"<!$N8uJd$r=PNO$9$k%-!<%-%c%i%/%?!#(B" 
+  "*$B8+=P$78l$NJd40F0:n$G!"<!$N8uJd$r=PNO$9$k%-!<%-%c%i%/%?!#(B"
   :type 'character
   :group 'skk)
 
 (defcustom skk-previous-completion-char ?,
-  "*$B8+=P$78l$NJd40F0:n$G!"A0$N8uJd$r=PNO$9$k%-!<%-%c%i%/%?!#(B" 
+  "*$B8+=P$78l$NJd40F0:n$G!"A0$N8uJd$r=PNO$9$k%-!<%-%c%i%/%?!#(B"
   :type 'character
   :group 'skk)
 
 (defcustom skk-start-henkan-char ?\040	; SPC
-  "*$B4A;zJQ49$r3+;O$9$k%-!<%-%c%i%/%?!#(B" 
+  "*$B4A;zJQ49$r3+;O$9$k%-!<%-%c%i%/%?!#(B"
   :type 'character
   :group 'skk)
 
 (defcustom skk-start-henkan-with-completion-char ?\240 ; M-SPC
-  "*$B8+=P$78l$rJd40$7$J$,$i"'%b!<%I$KF~$k%-!<%-%c%i%/%?!#(B" 
+  "*$B8+=P$78l$rJd40$7$J$,$i"'%b!<%I$KF~$k%-!<%-%c%i%/%?!#(B"
   :type 'character
   :group 'skk)
 
 (defcustom skk-backward-and-set-henkan-point-char ?\321 ; M-Q
-  "*$B%]%$%s%H$rLa$7$F"&%b!<%I$KF~$k%-!<%-%c%i%/%?!#(B" 
+  "*$B%]%$%s%H$rLa$7$F"&%b!<%I$KF~$k%-!<%-%c%i%/%?!#(B"
   :type 'character
   :group 'skk)
 
 (defcustom skk-use-viper nil
-  "*Non-nil $B$G$"$l$P!"(BVIPER $B$KBP1~$9$k!#(B" 
+  "*Non-nil $B$G$"$l$P!"(BVIPER $B$KBP1~$9$k!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -437,7 +440,7 @@ Emacs 19 $B%Y!<%9$N(B Mule $B$J$i$P!"2<5-$N%U%)!<%`$rI>2A$9$k$3$H$G!"C18lEPO?
                        \(setq skk-henkan-okuri-strictly t\) \)\)\)\)\)
 
 $B$3$N%*%W%7%g%sMxMQ;~$O!"(Bskk-process-okuri-early $B$NCM$O(B nil $B$G$J$1$l$P$J$i$J$$(B
-\($B%a%K%e!<%P!<$rMxMQ$7$F%+%9%?%^%$%:$7$?>l9g$O<+F0E*$KD4@0$5$l$k(B\)$B!#(B" 
+\($B%a%K%e!<%P!<$rMxMQ$7$F%+%9%?%^%$%:$7$?>l9g$O<+F0E*$KD4@0$5$l$k(B\)$B!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -458,7 +461,7 @@ Emacs 19 $B%Y!<%9$N(B Mule $B$J$i$P!"2<5-$N%U%)!<%`$rI>2A$9$k$3$H$G!"C18lEPO?
 \($B%a%K%e!<%P!<$rMxMQ$7$F%+%9%?%^%$%:$7$?>l9g$O<+F0E*$KD4@0$5$l$k(B\)$B!#(B"
   :type 'boolean
   :group 'skk)
- 
+
 (defcustom skk-auto-okuri-process nil
   "*Non-nil $B$G$"$l$P!"Aw$j2>L>ItJ,$r<+F0G'<1$7$FJQ49$r9T$&!#(B
 $BNc$($P!"(B
@@ -473,7 +476,7 @@ Emacs 19 $B%Y!<%9$N(B Mule $B$J$i$P!"2<5-$N%U%)!<%`$rI>2A$9$k$3$H$G!"C18lEPO?
 $B$F$$$J$$$N$G!"(Bskk-jisyo $B$K$3$N%(%s%H%j$,$J$1$l$P$J$i$J$$(B\)$B!#(B
 
 $B$3$N%*%W%7%g%sMxMQ;~$O!"(Bskk-process-okuri-early $B$NCM$O(B nil $B$G$J$1$l$P$J$i$J$$(B
-\($B%a%K%e!<%P!<$rMxMQ$7$F%+%9%?%^%$%:$7$?>l9g$O<+F0E*$KD4@0$5$l$k(B\)$B!#(B" 
+\($B%a%K%e!<%P!<$rMxMQ$7$F%+%9%?%^%$%:$7$?>l9g$O<+F0E*$KD4@0$5$l$k(B\)$B!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -500,12 +503,12 @@ nil $B$G$"$l$P!"Aw$j2>L>$NF~NO$,40N;$7$?;~E@$GJQ49$,3+;O$9$k!#Nc$($P!"(B
 
 $B$3$N%*%W%7%g%s$r(B on $B$K$7$F(B skk-mode $B$r5/F0$9$k$H!"N>N)$G$-$J$$%*%W%7%g%s$G$"$k(B
 skk-kakutei-early, skk-auto-okuri-process, skk-henkan-okuri-strictly $B$O(B nil $B$K(B
-$B%;%C%H$5$l$k!#(B" 
+$B%;%C%H$5$l$k!#(B"
   :type 'boolean
   :group 'skk)
 
 (defcustom skk-egg-like-newline nil
-  "*Non-nil $B$G$"$l$P!""'%b!<%I$G2~9T$r%?%$%W$7$F$b3NDj$9$k$N$_$G2~9T$7$J$$!#(B" 
+  "*Non-nil $B$G$"$l$P!""'%b!<%I$G2~9T$r%?%$%W$7$F$b3NDj$9$k$N$_$G2~9T$7$J$$!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -525,7 +528,7 @@ nil $B$G$"$l$P!"Nc$($P(B
 $B$=$N4V$O!"JQ498uJd$rA*$S$J$*$9$3$H$J$I$,2DG=!#(B
 
 $B$3$N%*%W%7%g%sMxMQ;~$O!"(Bskk-process-okuri-early $B$NCM$O(B nil $B$G$J$1$l$P$J$i$J$$(B
-\($B%a%K%e!<%P!<$rMxMQ$7$F%+%9%?%^%$%:$7$?>l9g$O<+F0E*$KD4@0$5$l$k(B\)$B!#(B" 
+\($B%a%K%e!<%P!<$rMxMQ$7$F%+%9%?%^%$%:$7$?>l9g$O<+F0E*$KD4@0$5$l$k(B\)$B!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -552,7 +555,7 @@ skk-backward-and-set-henkan-point $B$NF0:n$K1F6A$9$k!#(B"
   :group 'skk)
 
 (defcustom skk-convert-okurigana-into-katakana nil
-  "*Non-nil $B$G$"$l$P!"%+%?%+%J%b!<%I$GJQ49$7$?$H$-$KAw$j2>L>$b%+%?%+%J$KJQ49$9$k!#(B" 
+  "*Non-nil $B$G$"$l$P!"%+%?%+%J%b!<%I$GJQ49$7$?$H$-$KAw$j2>L>$b%+%?%+%J$KJQ49$9$k!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -564,11 +567,11 @@ skk-backward-and-set-henkan-point $B$NF0:n$K1F6A$9$k!#(B"
 
 nil $B$G$"$l$P!"Aw$j2>L>$r4^$a$?8+=P$78l$r$=$N$^$^;D$7!""#%b!<%I$KF~$k!#Nc$($P!"(B
 
-    \"$B"&$J(B*$B$/(B -> $B"'5c$/(B -> \"C-g\" -> $B$J$/(B\"" 
+    \"$B"&$J(B*$B$/(B -> $B"'5c$/(B -> \"C-g\" -> $B$J$/(B\""
   :type 'boolean
   :group 'skk)
 
-(defcustom skk-check-okurigana-on-toroku nil
+(defcustom skk-check-okurigana-on-touroku nil
   "*Non-nil $B$G$"$l$P!"Aw$j$"$j$NEPO?;~$K!"M>7W$J2>L>$r%A%'%C%/$9$k!#(B
 $BNc$($P!"(B
 
@@ -600,7 +603,7 @@ left $B$G$"$l$P:8C<$KI=<($9$k!#(B
   :group 'skk)
 
 (defcustom skk-latin-mode-string " SKK"
-  "*SKK $B$,(B latin (ascii) $B%b!<%I$G$"$k$H$-$K%b!<%I%i%$%s$KI=<($5$l$kJ8;zNs!#(B" 
+  "*SKK $B$,(B latin (ascii) $B%b!<%I$G$"$k$H$-$K%b!<%I%i%$%s$KI=<($5$l$kJ8;zNs!#(B"
   :type 'string
   :group 'skk)
 
@@ -625,12 +628,12 @@ left $B$G$"$l$P:8C<$KI=<($9$k!#(B
   :group 'skk)
 
 (defcustom skk-echo t
-  "*Non-nil $B$G$"$l$P!"2>L>J8;z$N%W%l%U%#%C%/%9$rI=<($9$k!#(B" 
+  "*Non-nil $B$G$"$l$P!"2>L>J8;z$N%W%l%U%#%C%/%9$rI=<($9$k!#(B"
   :type 'boolean
   :group 'skk)
 
 (defcustom skk-use-numeric-conversion t
-  "*Non-nil $B$G$"$l$P!"?tCMJQ49$r9T$&!#(B" 
+  "*Non-nil $B$G$"$l$P!"?tCMJQ49$r9T$&!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -881,8 +884,7 @@ left $B$G$"$l$P:8C<$KI=<($9$k!#(B
     ("/" nil skk-abbrev-mode)
     ("$" nil skk-display-code-for-char-at-point)
     ("@" nil skk-today)
-    ("\\" nil skk-input-by-code-or-menu)
-   )
+    ("\\" nil skk-input-by-code-or-menu))
   ;; $B%3%s%9%?%s%H$K$7$F$7$^$o$J$$$N$O!"%m!<%^;zF~NO$H$OA4$/JL$N@_Dj$r(B
   ;; $B$9$k?M$b$$$k$+$i$G$9!#(B
   "*$B%-!<F~NO$KBP$9$kJQ49J8;z$r8=$o$9%*!<%H%^%H%s>uBVA+0\5,B'!#(B
@@ -902,7 +904,7 @@ left $B$G$"$l$P:8C<$KI=<($9$k!#(B
 $B$3$NJQ?t$NDj5A$r%Y!<%9$K(B skk-rom-kana-rule-list $B$,DI2C$5$l!"(Bskk-mode
 $B5/F0;~$K(B skk-rule-tree $B$H$$$&LZ$N7A$K%3%s%Q%$%k$5$l$k!#(B
 2 $B$D$N%k!<%k%j%9%H$K=EJ#$9$k%-!<$N@_Dj$,$"$k>l9g$O!"(B
-skk-rom-kana-rule-list $B$NDj5A$,M%@h$5$l$k!#(B" 
+skk-rom-kana-rule-list $B$NDj5A$,M%@h$5$l$k!#(B"
   :type '(repeat
 	  (list string string
 		(choice function string (cons string string))))
@@ -954,7 +956,7 @@ skk-mode $B5/F0;~$K(B skk-rule-tree $B$H$$$&LZ$N7A$K%3%s%Q%$%k$5$l$k!#(B
 
 $B$H$$$&MWAG$r2C$($k!#(Bskk-mode $B$N5/F08e(B skk-rom-kana-rule-list $B$NJQ99$r(B
 $B9T$J$C$?>l9g!"$=$N@_Dj$rH?1G$5$;$k$K$O(B M-x skk-restart $B$r<B9T$9$kI,MW(B
-$B$,$"$k!#(B" 
+$B$,$"$k!#(B"
   :type '(repeat
 	  (list string string
 		(choice function string (cons string string))))
@@ -977,12 +979,12 @@ skk-rom-kana-base-rule-list $B$H(B skk-rom-kana-rule-list $B$NMWAG$rA4$F8!:w
 $B;2>H$N$3$H!#(B
 
 $B%G%#%U%)%k%H$G$O!"(B\"$B$*(B\" $B$N8e$N(B \"h\" + $B;R2;$NF~NO$r(B \"$B$*$*(B\" + $BB3$/;R(B
-$B2;=hM}MQ$N(B unfixed prefix $B$KJQ49$7$F$$$k!#(B" 
+$B2;=hM}MQ$N(B unfixed prefix $B$KJQ49$7$F$$$k!#(B"
   :type 'function
   :group 'skk)
 
 (defcustom skk-okuri-char-alist nil
-  "*$B$"$kAw$j2>L>$rJL$NAw$j2>L>$KJQ49$9$k%k!<%k$r5-=R$9$k%(!<%j%9%H!#(B" 
+  "*$B$"$kAw$j2>L>$rJL$NAw$j2>L>$KJQ49$9$k%k!<%k$r5-=R$9$k%(!<%j%9%H!#(B"
   :type '(repeat (cons string string))
   :group 'skk)
 
@@ -992,7 +994,7 @@ skk-rom-kana-base-rule-list $B$H(B skk-rom-kana-rule-list $B$NMWAG$rA4$F8!:w
 skk-set-henkan-point $B$NCf$G$3$l$r>.J8;z$KJQ49$9$k:n6H$r9T$J$&!#$3$N%(!<(B
 $B%j%9%H$KBgJ8;z(B -> $B>.J8;z$NJQ49%k!<%k$r=q$$$F$*$/$3$H$G!"%-!<F~NO$N%+%9(B
 $B%?%^%$%:$r9T$J$&$3$H$,$G$-$k!#$3$N%(!<%j%9%H$,(B null $B$N>l9g$O!"C1$K(B
-downcase $B$5$l$k!#(B" 
+downcase $B$5$l$k!#(B"
   :type '(repeat (cons character character))
   :group 'skk)
 
@@ -1023,16 +1025,16 @@ skk.el $B$N%m!<%I8e(B ($B$b$7$/$O(B skk-load-hook $B$rMxMQ$7$F(B)$B!"(B
 
 $B$H$9$k$+!"$b$7$/$O!"(Bskk-jisx0208-latin-vector $B$N(B 32 $BHVL\(B (0 $BHV$+$i?t$($F(B) $B$NCM$r(B \" \"
 $B$H$9$k$h$&$J(B skk-jisx0208-latin-vector $B$rD>@\=q$-!"(Bsetq $B$GBeF~$9$k!#(B32 $B$O!"(B? ($BH>3Q%9(B
-$B%Z!<%9$N(B char type) $B$rI>2A$7$?$H$-$NCM!#(B" 
+$B%Z!<%9$N(B char type) $B$rI>2A$7$?$H$-$NCM!#(B"
   :type 'vector
   :group 'skk)
 
-(defcustom skk-use-face (or window-system 
+(defcustom skk-use-face (or window-system
 			    ;; $BJQ?tL>$_$?$$$J4X?t$@$J(B...$B!#(B
 			    ;; XEmacs does not have this funciton...
 			    (fboundp 'frame-face-alist)
 			    (fboundp 'selected-frame))
-  "*Non-nil $B$G$"$l$P!"(BEmacs $B$N(B face $B$N5!G=$r;HMQ$7$FJQ49I=<($r9T$J$&!#(B" 
+  "*Non-nil $B$G$"$l$P!"(BEmacs $B$N(B face $B$N5!G=$r;HMQ$7$FJQ49I=<($r9T$J$&!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -1049,7 +1051,7 @@ highlight, underline, bold, italic, bold-italic $B$NB>!"?7$?$K(B face $B$r:n
 $B$N$h$&$K$9$k$N$,<j7Z!#(Bforeground $B$H(B background $B$N?';XDj$@$1$G$J$$6E$C$?(B face
 $B$r:n$k>l9g$O!"(Bskk-make-face $B$G$OBP1~$G$-$J$$$N$G!"(BEmacs $B$N(B hilit19.el $B$N(B
 hilit-lookup-face-create $B$J$I$rMxMQ$9$k!#?'$rIU$1$k>l9g$NG[?'$O!"(Bcanna.el $B$N(B
-canna:attribute-alist $B$,NI$$Nc$+$b$7$l$J$$!#(B" 
+canna:attribute-alist $B$,NI$$Nc$+$b$7$l$J$$!#(B"
   :type 'face
   :group 'skk)
 
@@ -1106,7 +1108,7 @@ skk-comp.el $B0J30$NJd405!G=$rMxMQ$G$-$k$h$&$K4X?t$r(B funcall $B$9$k7A$K$7$F
   "*Non-nil $B$G$"$l$P!"(B2 $B$D$NJ8;zNs$r$^$H$a$FA^F~$7!"$=$NJ8;zNs$N4V$K%+!<%=%k$r0\F0$9$k!#(B
 $BNc$($P!"(B\"$B!V(B\" $B$rF~NO$7$?$H$-$K(B \"$B!W(B\" $B$r<+F0E*$KA^F~$7!"N>$+$.$+$C$3$N4V$K(B
 $B%+!<%=%k$r0\F0$9$k!#(B
-$BA^F~$9$kJ8;zNs$O!"(Bskk-auto-paren-string-alist $B$G;XDj$9$k!#(B" 
+$BA^F~$9$kJ8;zNs$O!"(Bskk-auto-paren-string-alist $B$G;XDj$9$k!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -1122,13 +1124,13 @@ skk-comp.el $B0J30$NJd405!G=$rMxMQ$G$-$k$h$&$K4X?t$r(B funcall $B$9$k7A$K$7$F
 $B$K(B cdr $B$NJ8;zNs$r<+F0E*$KA^F~$5$l!"%+!<%=%k$O$=$N(B 2 $B$D$NJ8;zNs$N4V$K0\(B
 $BF0$9$k!#(B
 skk-special-midashi-char-list $B$NMWAG$K$J$C$F$$$kJ8;z$O!"(B
-skk-auto-paren-string-alist $B$K4^$a$F$b:o=|$5$l$k!#(B " 
+skk-auto-paren-string-alist $B$K4^$a$F$b:o=|$5$l$k!#(B "
   :type '(repeat (cons string string))
-  :group 'skk) 
+  :group 'skk)
 
 (defcustom skk-japanese-message-and-error nil
   "*Non-nil $B$G$"$l$P!"(BSKK $B$N%a%C%;!<%8$H%(%i!<$rF|K\8l$GI=<($9$k!#(B
-nil $B$G$"$l$P!"1Q8l$GI=<($9$k!#(B" 
+nil $B$G$"$l$P!"1Q8l$GI=<($9$k!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -1150,7 +1152,7 @@ nil $B$G$"$l$P!"1Q8l$GI=<($9$k!#(B"
 
 (defcustom skk-jisyo-save-count 50
   "*$B?tCM$G$"$l$P!"$=$N2s?t<-=q$,99?7$5$l$?$H$-$K<-=q$r<+F0E*$K%;!<%V$9$k!#(B
-nil $B$G$"$l$P!"<-=q$N%*!<%H%;!<%V$r9T$J$o$J$$!#(B" 
+nil $B$G$"$l$P!"<-=q$N%*!<%H%;!<%V$r9T$J$o$J$$!#(B"
   :type '(choice integer (const nil))
   :group 'skk)
 
@@ -1164,27 +1166,27 @@ nil $B$G$"$l$P!"<-=q$N%*!<%H%;!<%V$r9T$J$o$J$$!#(B"
 
 $B$K(B skk-init-file $B$r%P%$%H%3%s%Q%$%k$9$k!#(B
 nil $B$G$"$l$P!"(Bskk-init-file $B$H$=$N%P%$%H%3%s%Q%$%k:Q$_%U%!%$%k$rHf3S$7$F(B 
-skk-init-file $B$NJ}$,?7$7$$$H$-$O!"$=$N%P%$%H%3%s%Q%$%k:Q%U%!%$%k$r>C$9!#(B" 
+skk-init-file $B$NJ}$,?7$7$$$H$-$O!"$=$N%P%$%H%3%s%Q%$%k:Q%U%!%$%k$r>C$9!#(B"
   :type 'boolean
   :group 'skk)
 
 (defcustom skk-count-private-jisyo-candidates-exactly nil
   "*Non-nil $B$G$"$l$P!"(BEmacs $B$r=*N;$9$k$H$-$K@53N$K8D?M<-=q$N8uJd?t$r?t$($k!#(B
 nil $B$G$"$l$P!"(B1 $B9T$KJ#?t$N8uJd$,$"$C$F$b(B 1 $B8uJd$H$7$F?t$($k!#(B
-$B7W;;7k2L$O!"(Bskk-record-file $B$KJ]B8$5$l$k!#(B" 
+$B7W;;7k2L$O!"(Bskk-record-file $B$KJ]B8$5$l$k!#(B"
   :type 'boolean
   :group 'skk)
 
 (defcustom skk-compare-jisyo-size-when-saving t
   "*Non-nil $B$G$"$l$P!"(Bskk-jisyo $B$N%;!<%V;~$K%U%!%$%k%5%$%:$N%A%'%C%/$r9T$J$&!#(B
 $BA02s%;!<%V$7$?(B skk-jisyo $B$H:#2s%;!<%V$7$h$&$H$9$k<-=q$H$N%5%$%:Hf3S$r9T$J$$!"(B
-$B8e<T$NJ}$,Bg$-$$$H$-$K%f!<%6!<$K%;!<%V$rB3$1$k$+$I$&$+$N3NG'$r5a$a$k!#(B" 
+$B8e<T$NJ}$,Bg$-$$$H$-$K%f!<%6!<$K%;!<%V$rB3$1$k$+$I$&$+$N3NG'$r5a$a$k!#(B"
   :type 'boolean
   :group 'skk)
 
 (defcustom skk-auto-start-henkan t
   "*$BC18l$dJ8@a$N6h@Z$j$r<($9J8;z$NBG80$K$h$j<+F0E*$KJQ49$r3+;O$9$k!#(B
-skk-auto-start-henkan-keyword-list $B$K$h$jC18l$dJ8@a$N6h@Z$j$r<($9J8;z$r;XDj$9$k!#(B" 
+skk-auto-start-henkan-keyword-list $B$K$h$jC18l$dJ8@a$N6h@Z$j$r<($9J8;z$r;XDj$9$k!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -1195,7 +1197,7 @@ skk-auto-start-henkan-keyword-list $B$K$h$jC18l$dJ8@a$N6h@Z$j$r<($9J8;z$r;XDj$9
   ;; $B$"$^$j%-!<%o!<%I$,B?$/$J$k$H!"DL>o$NJQ49$r:$Fq$K$9$k!)(B
   "*$B<+F0JQ49$r3+;O$9$k%-!<%o!<%I!#(B
 skk-auto-start-henkan $B$,(B non-nil $B$N$H$-!"$3$N%j%9%H$NMWAG$NJ8;z$rA^F~(B
-$B$9$k$H!"(BSPC $B$r2!$9$3$H$J$/<+F0E*$KJQ49$r3+;O$9$k!#(B" 
+$B$9$k$H!"(BSPC $B$r2!$9$3$H$J$/<+F0E*$KJQ49$r3+;O$9$k!#(B"
   :type '(repeat string)
   :group 'skk)
 
@@ -1236,24 +1238,24 @@ SKK $B$G$OJQ49!"3NDj$r9T$J$C$?J8;zNs$OA4$F8D?M<-=q$K<h$j9~$^$l$k$,!"$3$N(B
   :group 'skk)
 
 (defcustom skk-update-jisyo-function 'skk-update-jisyo-original
-  "*skk-update-jisyo $B$G;HMQ$9$k4X?t!#(B" 
+  "*skk-update-jisyo $B$G;HMQ$9$k4X?t!#(B"
   :type 'function
   :group 'skk)
 
 (defcustom skk-save-jisyo-function 'skk-save-jisyo-original
-  "*skk-save-jisyo $B$G;HMQ$9$k4X?t!#(B" 
+  "*skk-save-jisyo $B$G;HMQ$9$k4X?t!#(B"
   :type 'function
   :group 'skk)
 
 (defcustom skk-count-jisyo-candidates-function
   'skk-count-jisyo-candidates-original
-  "*skk-count-jisyo-candidates $B$G;HMQ$9$k4X?t!#(B" 
+  "*skk-count-jisyo-candidates $B$G;HMQ$9$k4X?t!#(B"
   :type 'function
   :group 'skk)
 
 (defcustom skk-public-jisyo-to-be-searched-function
   'skk-public-jisyo-to-be-searched-original
-  "*skk-public-jisyo-has-entry-p $B$G;HMQ$9$k4X?t!#(B" 
+  "*skk-public-jisyo-has-entry-p $B$G;HMQ$9$k4X?t!#(B"
   :type 'function
   :group 'skk)
 
@@ -1273,7 +1275,7 @@ SKK abbrev $B%b!<%I$G!"!V1QJ8;z(B + $B%"%9%?%j%9%/!W$K$FJQ49$r9T$J$&$H!"(Blo
 
 $B$3$N>uBV$G3NDj$9$k$H!"(B`confere*' $B$r8+=P$78l!"(B`conference' $B$r8uJd$H$9$k%(%s%H%j(B
 $B$,8D?M<-=q$KDI2C$5$l$k!#(B`skk-search-excluding-word-pattern-function' $B$K$h(B
-$B$j!"3NDj$7$F$b$3$N$h$&$J%(%s%H%j$rDI2C$7$J$$$h$&$K@_Dj$9$k$3$H$,$G$-$k!#(B" 
+$B$j!"3NDj$7$F$b$3$N$h$&$J%(%s%H%j$rDI2C$7$J$$$h$&$K@_Dj$9$k$3$H$,$G$-$k!#(B"
   :type 'boolean
   :group 'skk)
 
@@ -1296,7 +1298,7 @@ SKK abbrev $B%b!<%I$G!"!V1QJ8;z(B + $B%"%9%?%j%9%/!W$K$FJQ49$r9T$J$&$H!"(Blo
 $B$N$+$r;XDj$9$k$3$H$,$G$-$k!#!V$8!W!"!V$A!W!"!V$U!W$NJ8;z$K$D$$$F!"BP1~$9$k%m!<(B
 $B%^;z%W%l%U%#%C%/%9$r(B \"z\", \"c\",\"f\" $B$KJQ99$r4uK>$9$k>l9g$b$"$k$G$"$m$&!#(B
 skk-auto-okuri-process $B$NCM$,(B non-nil $B$N$H$-!"$"$k$$$O%5JQJd=uJQ49$,9T$J$o$l$k(B
-$B$H$-;2>H$5$l$k!#(B" 
+$B$H$-;2>H$5$l$k!#(B"
   :type 'vector
   :group 'skk)
 
@@ -1305,7 +1307,7 @@ skk-auto-okuri-process $B$NCM$,(B non-nil $B$N$H$-!"$"$k$$$O%5JQJd=uJQ49$,9T$
 $BNc$($P!"(BViper $B$G(B R $B%3%^%s%I$K$h$j(B replace $B$r9T$J$&$H$-$K!"(B
 viper-replace-overlay $B$H$$$&(B priority 400 $B$N(B overlay $B$r=E$M$i$l$k$,!"(B
 skk-henkan-overlay-priority $B$N%G%#%U%)%k%HCM$O$3$N(B overlay $B$h$j(B
-priority $B$,9b$$$N$G!"M%@h$7$FI=<($5$l$k!#(B" 
+priority $B$,9b$$$N$G!"M%@h$7$FI=<($5$l$k!#(B"
   :type 'integer
   :group 'skk)
 
@@ -1317,7 +1319,7 @@ priority $B$,9b$$$N$G!"M%@h$7$FI=<($5$l$k!#(B"
 
 $B$H$$$&(B cons cell$B!#%7%s%\%k$NItJ,$O!"(B`jp' $B$b$7$/$O(B `en' $B$H$7!"(B
 skk-toggle-kutouten $B$O$3$l$r%H%0%k$G@Z$j49$($k!#(B
-$B%G%#%U%)%k%H$N6gFIE@$N%?%$%W$O!"(B`skk-kutouten-type' $B$G;XDj$9$k!#(B" 
+$B%G%#%U%)%k%H$N6gFIE@$N%?%$%W$O!"(B`skk-kutouten-type' $B$G;XDj$9$k!#(B"
   :type '(repeat (cons (choice (const jp) (const en))
 		       (cons string string) ))
   :group 'skk)
@@ -1343,18 +1345,21 @@ skk-toggle-kutouten $B$O$3$l$r%H%0%k$G@Z$j49$($k!#(B
 
 ;;; SKK-CURSOR.EL related.
 (defcustom skk-cursor-default-color
-  (if (eq skk-emacs-type 'xemacs)
-      (frame-property (selected-frame) 'cursor-color)
-    (cdr (assq 'cursor-color (frame-parameters (selected-frame)))))
+  (cond ((eq skk-emacs-type 'xemacs)
+	 (frame-property (selected-frame) 'cursor-color))
+	((eq skk-emacs-type 'nemacs)
+	 nil)
+	(t
+	 (cdr (assq 'cursor-color (frame-parameters (selected-frame))))))
   "*SKK $B%b!<%I$N%*%U$r<($9%+!<%=%k?'!#(B
-skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B" 
+skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
   :group 'skk-cursor)
 
 (defcustom skk-cursor-hiragana-color (if (eq skk-background-mode 'light)
 					 "coral4"
 				       "pink")
   "*$B$+$J%b!<%I$r<($9%+!<%=%k?'!#(B
-skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B" 
+skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
   :type 'string
   :group 'skk-cursor)
 
@@ -1362,13 +1367,13 @@ skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
 					 "forestgreen"
 				       "green")
   "*$B%+%?%+%J%b!<%I$r<($9%+!<%=%k?'!#(B
-skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B" 
+skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
   :type 'string
   :group 'skk-cursor)
 
 (defcustom skk-cursor-jisx0208-latin-color "gold"
   "*$BA43Q1Q;z%b!<%I$r<($9%+!<%=%k?'!#(B
-skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B" 
+skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
   :type 'string
   :group 'skk-cursor)
 
@@ -1376,25 +1381,25 @@ skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
 				      "ivory4"
 				    "gray")
   "*$B%"%9%-!<%b!<%I$r<($9%+!<%=%k?'!#(B
-skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B" 
+skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
   :type 'string
   :group 'skk-cursor)
 
 (defcustom skk-cursor-abbrev-color "royalblue"
   "*abbrev $B%b!<%I$r<($9%+!<%=%k?'!#(B
-skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B" 
+skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
   :type 'string
   :group 'skk-cursor)
 
 (defcustom skk-cursor-report-set-error t
   "*Non-nil $B$G$"$l$P!"%+%i!<%^%C%W@Z$l$,5/$-$?>l9g!"%(%i!<%a%C%;!<%8$rI=<($9$k!#(B
-nil $B$G$"$l$P!"I=<($7$J$$!#(B" 
+nil $B$G$"$l$P!"I=<($7$J$$!#(B"
   :type 'boolean
   :group 'skk-cursor)
 
 (defcustom skk-cursor-change-width (and (not (eq system-type 'ms-dos))
 					window-system)
-  "*Non-nil $B$G$"$l$P!"(BOvwrt $B%^%$%J!<%b!<%I;~$K%+!<%=%k$NI}$r=L$a$k!#(B" 
+  "*Non-nil $B$G$"$l$P!"(BOvwrt $B%^%$%J!<%b!<%I;~$K%+!<%=%k$NI}$r=L$a$k!#(B"
   :type 'boolean
   :group 'skk-cursor)
 
@@ -1507,7 +1512,7 @@ regexp isearch $B$N:]!"$3$N@55,I=8=$K%^%C%A$9$kJ8;z$,8!:wJ8;zNs$N4V$K4^$^$l$F$$
 ;;; SKK-KAKASI.EL related.
 (defcustom skk-use-kakasi (exec-installed-p "kakasi")
 
-  "*Non-nil $B$G$"$l$P(B KAKASI $B$r;H$C$?JQ49$r9T$J$&!#(B" 
+  "*Non-nil $B$G$"$l$P(B KAKASI $B$r;H$C$?JQ49$r9T$J$&!#(B"
   :type 'boolean
   :group 'skk-kakasi)
 
@@ -1553,9 +1558,12 @@ nil $B$G$"$l$P!"71Na<0(B \"($B!VF|K\<0!W$H$b8@$&$h$&$@(B)\" $B$rMQ$$$k!#(B
   :group 'skk-kcode)
 
 (defcustom skk-kcode-charset
-  (if (memq skk-emacs-type '(xemacs mule4 mule3))
-      'japanese-jisx0208
-    lc-jp)
+  (cond ((memq skk-emacs-type '(xemacs mule4 mule3))
+	 'japanese-jisx0208)
+	((eq skk-emacs-type 'nemacs)
+	 nil) ;; ??
+	(t
+	 lc-jp))
   "*skk-input-by-code-or-menu $B$G;H$o$l$kJ8;z%;%C%H!#(B"
   :type 'symbol
   :group 'skk-kcode)
@@ -1635,7 +1643,7 @@ integer `1' $B$rBeF~$9$k!#(B
     3 -> $B4A?t;z$XJQ49(B \($B0L<h$j$r$9$k(B\)
     4 -> $B$=$N?t;z$=$N$b$N$r%-!<$K$7$F<-=q$r:F8!:w(B
     5 -> $B4A?t;z(B ($B<j7A$J$I$G;HMQ$9$kJ8;z$r;HMQ(B) $B$XJQ49(B ($B0L<h$j$r$9$k(B)
-    9 -> $B>-4}$G;HMQ$9$k?t;z(B \(\"$B#3;M(B\" $B$J$I(B\) $B$KJQ49(B" 
+    9 -> $B>-4}$G;HMQ$9$k?t;z(B \(\"$B#3;M(B\" $B$J$I(B\) $B$KJQ49(B"
   :type '(repeat (cons (choice :tag "Index"
 			       (integer 0) (integer 1) (integer 2) (integer 3)
 			       (integer 4) (integer 5) (integer 9))
@@ -2067,7 +2075,7 @@ cancel-undo-boundary $B$,%3!<%k$5$l$k!#(B")
   "skk-search-prog-list $B$N8=:_$NCM$rJ]B8$9$k%j%9%H!#(B
 $B:G=i$NJQ49;~$O(B skk-search-prog-list $B$NA4$F$NCM$rJ];}$7!"JQ49$r7+$jJV$9$?$S$K(B 1
 $B$D$E$DC;$/$J$C$F$f$/!#(B")
-  
+
 ;; for skk-undo-kakutei
 (skk-deflocalvar skk-last-henkan-data nil
   "$B:G8e$K9T$J$C$?JQ49$K4X$9$k%G!<%?$N%(!<%j%9%H!#(B
@@ -2152,6 +2160,8 @@ CANONICAL should be found in `skk-isearch-mode-canonical-alist'. ")
 		     ;;   (or (= lc lc-jp) (= lc lc-cn)))
 		     (string-match word-across-newline
 				   (char-to-string char)))))
+	((eq skk-emacs-type 'nemacs)
+	 nil)
 	(t (error "No appropriate function as: %s"
 		  'skk-isearch-breakable-character-p-function)))
   "Function to test if we can insert a newline around CHAR when filling.")
@@ -2252,8 +2262,8 @@ This map should be derived from isearch-mode-map.")
   (not (fboundp 'viper-normalize-minor-mode-map-alist)))
 
 (defconst skk-viper-normalize-map-function
-  (if skk-viper-use-vip-prefix 
-      'vip-normalize-minor-mode-map-alist 
+  (if skk-viper-use-vip-prefix
+      'vip-normalize-minor-mode-map-alist
     'viper-normalize-minor-mode-map-alist)
   "Viper $B$,(B minor-mode-map-alist $B$rD4@0$9$k$?$a$N4X?t!#(B")
 

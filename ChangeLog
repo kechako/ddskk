@@ -37,7 +37,7 @@
 	* SKK-MK (SKK-MK-install-package): delete 'skk-autoloads from
 	SKK_MODULES.
 
-	* skk-isearch.el (skk-isearch-mode-message): 整形 doc string.
+	* skk-isearch.el (skk-isearch-mode-message): Adjust doc string.
 
 1999-11-24  FURUE Hideyuki <furue@kke.co.jp>
 

@@ -1,3 +1,19 @@
+2000-08-07  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-kanagaki.el: New file.
+
+	* skk-vars.el (skk-rom-kana-base-rule-list,
+	skk-rom-kana-rule-list, skk-jisx0208-latin-vector,
+	skk-kana-rom-vector, skk-isearch-mode-string-alist,
+	skk-server-host, skk-server-prog, skk-server-jisyo,
+	skk-lookup-kana-vector): Fix the custom type descriptions.
+
+	* skk.el (skk-mode): Don't use `skk-previous-candidate-char' under
+	skk-kanagaki.
+	(skk-henkan-show-candidates): Work even if the last event
+	is not invoked by a character key.
+	(skk-previous-candidate): Ditto.
+
 2000-08-04  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-jisx0201.el, skk-tut.el, skk.el: Replace

@@ -2,6 +2,9 @@
 
 	* READMEs/PROPOSAL : tm ML => APEL ML.
 
+	* skk.el (skk-okurigana-prefix): Don't use `skk-char-octet' under
+	Nemacs.
+
 2000-08-16  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK (SKK-MK-generate-autoloads-el): Provide skk-autoloads.

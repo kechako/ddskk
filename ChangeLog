@@ -1,3 +1,12 @@
+1999-12-27  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-vars.el (skk-background-mode): Don't call `x-color-values'
+	if it is not defined.
+	(skk-init-file, skk-jisyo, skk-backup-jisyo, skk-record-file):
+	Let the default values appropriate for MS-DOS.
+	(skk-use-color-cursor, skk-cursor-change-width): nil by default
+	under MS-DOS.
+
 1999-12-26  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-vars.el (skk-rule-tree): Doc fixed.

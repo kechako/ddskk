@@ -1,5 +1,8 @@
 2000-08-11  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
+	* Makefile (tar, snapshot): Fix the problem that the resulting tar
+	ball contains "..".
+
 	* SKK-MK (SKK-MK-compile): Expand "." before passing it to
 	`compile-elisp-modules'.
 

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-setup.el.in,v 1.1.2.2 2000/07/07 22:13:39 minakaji Exp $
+;; Version: $Id: skk-setup.el.in,v 1.1.2.3 2000/07/08 15:21:40 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:39 $
+;; Last Modified: $Date: 2000/07/08 15:21:40 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -42,7 +42,7 @@
 	    (if (and (not (featurep 'skk-cursor2))
 		     (boundp 'skk-mode-invoked) skk-mode-invoked
 		     (skk-color-display-p))
-		(skk-set-cursor-properly)))
+		(skk-set-cursor-properly))))
 
 ;;(defvar skk-large-jisyo "@DIC@")
 ;;(defvar skk-aux-large-jisyo "@DIC@")

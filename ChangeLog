@@ -1,3 +1,7 @@
+2000-07-09  YOSHIZAWA Masahiro <manbou@ceres.dti.ne.jp>
+	
+	* skk-setup.el.in (isearch-mode-end-hook): Bug fixed.
+
 2000-07-08  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* experimental/skk-cursor3.el: New experimental program.

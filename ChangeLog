@@ -153,7 +153,7 @@
 	* skk.el: Don't refer to `skk-branch-name' before "skk-vars" is
 	loaded.
 	Require "skk-e18" under Emacs 18.
-	If loading "easymenu" failed, ignore `easy-menu-define'.
+	If loading "easymenu" fails, ignore `easy-menu-define'.
 	(skk-setup-delete-backward-char): If `overriding-local-map' is not
 	used, use the return value of `current-global-map' instead.
 

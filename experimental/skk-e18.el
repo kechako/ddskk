@@ -2,9 +2,9 @@
 ;; Copyright (C) 2000 Tsukamoto Tetsuo
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
-;; Version: $Id: skk-e18.el,v 1.1.2.23 2000/09/12 08:57:37 czkmt Exp $
+;; Version: $Id: skk-e18.el,v 1.1.2.24 2000/09/12 09:32:37 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/12 08:57:37 $
+;; Last Modified: $Date: 2000/09/12 09:32:37 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -30,9 +30,10 @@
 ;;     o Nemacs 3.3.2 based on Emacs 18.59
 ;;
 ;; に限られています。
-;; Daredevil SKK は advice.el を必要とします。Emacs 18 で利用できる
-;; advice.el Daredevil SKK のアーカイブの patch/e18/ というディレクトリに収録さ
-;; れています。
+;;
+;; Daredevil SKK  は advice.el を必要とします。 Emacs 18 で利用できる advice.el
+;; は Daredevil SKK のアーカイブの  patch/e18/ というディレクトリに収録されてい
+;; ます。
 
 ;;; Code:
 (condition-case nil

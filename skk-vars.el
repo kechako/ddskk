@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.35 2000/09/07 10:08:52 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.36 2000/09/09 04:27:52 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/07 10:08:52 $
+;; Last Modified: $Date: 2000/09/09 04:27:52 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1838,7 +1838,7 @@ SKK サーバーが使用するポート番号を書き、設定をすることができる。
   (cond ((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
 	 '(("euc" . euc-japan)
 	   ("ujis" . euc-japan)
-	   ("sjis". sjis)
+	   ("sjis". shift_jis)
 	   ("jis" . junet)))
 	((eq skk-emacs-type 'nemacs)
 	 '(("euc" . 3)

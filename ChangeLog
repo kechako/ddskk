@@ -1,3 +1,45 @@
+2000-01-23  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* Makefile (clean): Delete experimental/*.elc.
+
+	* SKK-MK : Require "skk-e18" if `emacs-major-version' is 18.
+	(SKK-MK-texinfo-coding-system): Modify for Emacs 18.
+	(SKK_MODULES): Ditto.
+	(SKK-MK-compile): Ditto.
+	(SKK-MK-install): Ditto.
+	(SKK_INFOS): Creating info files is not yet supported under Emacs
+	18.
+	(SKK-MK-compile-info): Do nothing if `SKK_INFOS' is nil.
+	(SKK-MK-generate-autoloads-el): Make sure the point is eobp before
+	the last comment is inserted.
+
+	* experimental/skk-e18.el: New file.
+
+	* skk-macs.el (skk-emacs-type): Modify for Nemacs.
+	(skk-detect-emacs): Ditto.
+	* skk-server.el: Require "static" at the compile time.
+	(skk-open-server): Use `static-cond'.
+	Call `process-kanji-code' under Nemacs.
+
+	* skk-vars.el (skk-emacs-type): Modify for Nemacs.
+	(skk-cursor-default-color): Default to nil under Nemacs.
+	(skk-background-mode): Ditto.
+	(skk-kcode-charset): Ditto -- It's OK. Don't use this variable.
+	(skk-isearch-breakable-character-p-function): Ditto.
+	(skk-check-okurigana-on-touroku): Rename from
+	`skk-check-okurigana-on-toroku'.
+
+	* skk.el: Don't refer to `skk-branch-name' before "skk-vars" is
+	loaded.
+	Require "skk-e18" under Emacs 18.
+	If loading "easymenu" failed, ignore `easy-menu-define'.
+	(skk-setup-delete-backward-char): If `overriding-local-map' is not
+	used, use the return value of `current-global-map' instead.
+
+	* tinyinstall.el: (emacs-major-version): New variable for Emacs
+	18.
+	(member): New function for Emacs 18.
+
 2000-01-19  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK: Typo.

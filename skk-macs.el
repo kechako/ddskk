@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.28 2000/10/19 12:11:31 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.29 2000/10/20 14:50:44 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/19 12:11:31 $
+;; Last Modified: $Date: 2000/10/20 14:50:44 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -30,7 +30,7 @@
 ;;; Code:
 ;;;; macros
 (eval-when-compile
-  (require 'static) (require 'skk-vars)
+  (require 'advice) (require 'static) (require 'skk-vars)
   (defconst skk-emacs-type
     (cond ((featurep 'xemacs) 'xemacs)
 	  ((and (boundp 'NEMACS)) 'nemacs)

@@ -1,7 +1,7 @@
 -*- outline -*-
 
-                       $Date: 1999/11/10 14:09:21 $ 
-	               $Id: Codename,v 1.1.2.1 1999/11/10 14:09:21 minakaji Exp $
+                       $Date: 1999/11/17 12:28:38 $ 
+	               $Id: Codename,v 1.1.2.2 1999/11/17 12:28:38 minakaji Exp $
 
 * Rule
 
@@ -9,7 +9,9 @@
 
 ** Codename と cvs TAG
 
-この 2 つは、必ず sync して下さい。
+この 2 つは、必ず sync して下さい (但し、tag には空白文字を含めること
+ができないようなので、TAG 付けするのは、Codename のうち、駅名の部分だ
+けで結構です)。
 
    $ cd (working-copy directory)
    $ cvs tag (Codename) .

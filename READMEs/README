@@ -1,0 +1,39 @@
+-*- text -*-
+             $Date: 1999/11/17 12:28:39 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
+	     $Id: README,v 1.2.4.1 1999/11/17 12:28:39 minakaji Exp $
+
+Daredevil SKK is a branch of SKK (Simple Kana to Kanji conversion
+program, an input method of Japanese).  It forked from the maintrunk,
+SKK version 10.56.  It consists of a simple core and many optional
+programs which provide extensive features, however, our target is to
+more simplify core, and more expand its optional features.
+
+If you want to join developing Daredevil SKK, you can access its
+sources via a cvs server on the Ring Server Openlab.  See
+PROPOSAL.branch to learn briefly how to access the cvs server.
+
+If you want to join the SKK Ring Server Openlab Mailing list, see
+a description below.
+
+Daredevil SKK is under the GNU General Public License.  See COPYING
+for its details.
+
+Thank you.
+
+<How to join SKK Ring Server Openlab Mailing list>
+
+<Subscribe request>
+
+  To: skk-request@ring.gr.jp
+  Mail body (not subject): subscribe 
+
+<unsubscribe request>
+
+  To: skk-request@ring.gr.jp
+  Mail body (not subject): unsubscribe 
+
+<Post>
+  To: skk@ring.gr.jp
+
+Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
+http://www.asahi-net.or.jp/~gy2m-nkjm/

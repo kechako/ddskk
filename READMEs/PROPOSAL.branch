@@ -1,7 +1,7 @@
 -*- outline -*-
 
-             $Date: 1999/11/16 13:02:38 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
-	     $Id: PROPOSAL.branch,v 1.1.2.4 1999/11/16 13:02:38 minakaji Exp $
+             $Date: 1999/11/17 12:28:39 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
+	     $Id: PROPOSAL.branch,v 1.1.2.5 1999/11/17 12:28:39 minakaji Exp $
 
 * CVS $B%@%$%8%'%9%H(B
 
@@ -132,7 +132,8 @@ ChangeLog $B$N99?7$r$*K:$l$J$/(B ($B1Q8l$G=q$$$F$$$^$9$,!"1Q8l$,6lDK$J$iF|K\
 Daredevil SKK $B$K?7$?$J5!G=$r2C$($??M$O!"$3$N%U%!%$%k$HF1$8%G%#%l%/%H%j(B
 $B$K$"$k(B Codename $B$H$$$&%U%!%$%k$NCf?H$r;2>H$7$F(B tag $BIU$1$7$F2<$5$$!#(B
 maintrunk $B$K$O(B tag $BIU$1$7$J$$$G2<$5$$!#(Bmaintrunk $B$N(B tag $BIU$1%k!<%k$O$^(B
-$B$@9M$($F$$$^$;$s!#(B
+$B$@9M$($F$$$^$;$s(B ($BC"$7!"(Btag $B$K$O6uGrJ8;z$r4^$a$k$3$H$,$G$-$J$$$h$&$J$N(B
+$B$G!"(BTAG $BIU$1$9$k$N$O!"(BCodename $B$N$&$A!"1XL>$NItJ,$@$1$G7k9=$G$9(B)$B!#(B
 
      $ cvs tag (Codename) .
 

@@ -1,3 +1,10 @@
+1999-11-22  Takao KAWAMURA  <kawamura@debian.org>
+
+	* SKK-MK (SKK_MODULES): Bound `lookup-byte-compile' to t when
+	(require 'lookup) is executed.
+
+	* skk-vars.el: Added (require 'path-util).
+
 1999-11-22  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/CVS_digest: Add descriptions abount only DES based crypt

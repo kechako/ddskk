@@ -1,3 +1,21 @@
+2000-09-12  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-e18.el: Modify the error message.
+
+	* patch/e18: New repository.
+
+	* patch/e18/advice.el: New file.
+
+	* patch/e18/bytecomp-2.07: New repository.
+
+	* patch/e18/bytecomp-2.07/{README.en, README.ja, byte-optimize.el,
+	bytecomp-runtime.el, bytecomp.el, bytecomp_el-mule-1_1_pl04.patch,
+	disass.el, eval.c.patch, make-docfile.c}: New files.
+
+	* skk-isearch.el (skk-isearch-find-keys-define): Simplify.
+	(skk-isearch-delete-char): Do not show white-space regular
+	expressions.
+
 2000-09-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/skk-faq.txt (http): Update.
@@ -7,7 +25,7 @@
 	* experimental/tut-code/skk-def.el: Update comments for daredevil.
 	* experimental/tut-code/skk-tutcdef.el: Ditto.
 	* experimental/tut-code/skk-tutcode.el: Ditto.
-	
+
 2000-09-11  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (skk-isearch-find-keys-define): Use `dolist'.

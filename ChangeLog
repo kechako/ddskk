@@ -1,3 +1,14 @@
+1999-11-22  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-isearch.el (skk-isearch-setup-keymap): Define
+	`skk-kakutei-key' instead of "\C-j" if the symbol value is already
+	set. Define backward-deleting keys to run
+	`skk-isearch-delete-char', not merely writing "\177".
+	(skk-isearch-newline): Do not call `isearch-printing-char' if no
+	ASCII approximation to `last-command-char' is returned.
+
+	* skk.el (skk-setup-modeline): Use `static-cond'.
+
 1999-11-22  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (skk-katakana-region): Use `skk-search-and-replace'.

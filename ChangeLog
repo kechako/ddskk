@@ -1,3 +1,8 @@
+1999-11-22  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/CVS_digest: Add descriptions abount only DES based crypt
+	is available for a passwd of the cvs account.
+
 1999-11-21  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-mode.el (skk-mode): Set cursor color if `skk-mode-invoked'

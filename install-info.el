@@ -52,7 +52,7 @@ itself.
 
 If optional fifth arg DELETE is non-nil, delete existing entries for INFO-FILE
 from DIR-FILE; don't insert any new entries."
-  (let ((buf (get-buffer-create " * tmp*"))
+  (let ((buf (generate-new-buffer " *tmp*"))
 	entries)
     ;;
     (if (stringp info-file)
@@ -70,7 +70,8 @@ from DIR-FILE; don't insert any new entries."
     (when (stringp section)
       (setq section (list section)))
     ;;
-    (with-current-buffer buf
+    (save-excursion
+      (set-buffer buf)
       (erase-buffer)
       (install-info-insert-file-contents info-file))
     ;;
@@ -78,7 +79,8 @@ from DIR-FILE; don't insert any new entries."
      ((and entry section)
       (setq entries (install-info-entries entry section)))
      (entry
-      (with-current-buffer buf
+      (save-excursion
+	(set-buffer buf)
 	(goto-char (point-min))
 	(while (re-search-forward "^INFO-DIR-SECTION " nil t)
 	  (end-of-line)
@@ -88,7 +90,8 @@ from DIR-FILE; don't insert any new entries."
 	(setq section (list "Miscellaneous")))
       (setq entries (install-info-entries section entry)))
      (section
-      (with-current-buffer buf
+      (save-excursion
+	(set-buffer buf)
 	(goto-char (point-min))
 	(while (re-search-forward "^START-INFO-DIR-ENTRY" nil t)
 	  (forward-line 1)
@@ -111,7 +114,8 @@ from DIR-FILE; don't insert any new entries."
 	(error "warning; no info dir entry in %s" info-file))
       (setq entries (install-info-entries section entry)))
      (t
-      (with-current-buffer buf
+      (save-excursion
+	(set-buffer buf)
 	(goto-char (point-min))
 	(while (re-search-forward "^INFO-DIR-SECTION " nil t)
 	  (let (sec entry)
@@ -168,7 +172,9 @@ from DIR-FILE; don't insert any new entries."
     ;;
     (if delete
 	(install-info-delete-entries entries dir-file)
-      (install-info-add-entries (nreverse entries) dir-file))))
+      (install-info-add-entries (nreverse entries) dir-file))
+    ;;
+    (kill-buffer buf)))
 
 (defun install-info-entries (section entry)
   (let (entries)
@@ -180,8 +186,9 @@ from DIR-FILE; don't insert any new entries."
 
 (defun install-info-delete-entries (entries dir)
   (setq dir (expand-file-name dir))
-  (let ((buf (get-buffer-create " *dir*")))
-    (with-current-buffer buf
+  (let ((buf (generate-new-buffer " *dir*")))
+    (save-excursion
+      (set-buffer buf)
       (erase-buffer)
       (if (not (file-exists-p dir))
 	  (error "%s is non-existent" dir)
@@ -202,12 +209,14 @@ from DIR-FILE; don't insert any new entries."
 		  (when (eq 0 (forward-line 1))
 		    (beginning-of-line)))
 		(delete-region start (point)))))))
-      (install-info-write-region (point-min) (point-max) dir))))
+      (install-info-write-region (point-min) (point-max) dir))
+    (kill-buffer buf)))
 
 (defun install-info-add-entries (entries dir)
   (setq dir (expand-file-name dir))
-  (let ((buf (get-buffer-create " *dir*")))
-    (with-current-buffer buf
+  (let ((buf (generate-new-buffer " *dir*")))
+    (save-excursion
+      (set-buffer buf)
       (erase-buffer)
       (if (file-exists-p dir)
 	  (install-info-insert-file-contents dir)
@@ -264,7 +273,8 @@ File: dir,	Node: Top	This is the top of the INFO tree
 	    (unless (bolp)
 	      (newline 1))
 	    (insert (format "\n%s\n%s\n" sec en))))))
-      (install-info-write-region (point-min) (point-max) dir))))
+      (install-info-write-region (point-min) (point-max) dir))
+    (kill-buffer buf)))
 
 (defun install-info-compressed-p (file)
   (if (not (featurep 'jka-compr))

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.13 1999/11/28 13:53:41 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.14 1999/11/29 12:51:43 mrt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/28 13:53:41 $
+;; Last Modified: $Date: 1999/11/29 12:51:43 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/28 13:53:41 $")
+      (let* ((raw-date "$Date: 1999/11/29 12:51:43 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -2243,8 +2243,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   ;;"SKK の辞書バッファをセーブする。
   ;;オプショナル引数の QUIET が non-nil であれば、辞書セーブ時のメッセージを出さな
   ;;い。"
-  (let* ((skk-jisyo (expand-file-name skk-jisyo))
-         (jisyo-buffer (skk-get-jisyo-buffer skk-jisyo 'nomsg)))
+  (let ((jisyo-buffer (skk-get-jisyo-buffer skk-jisyo 'nomsg)))
     (if (or (not jisyo-buffer) (not (buffer-modified-p jisyo-buffer)))
         (if (not quiet) 
             (progn
@@ -2319,14 +2318,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
          "送りなしエントリのヘッダーがありません ！ SKK 辞書のセーブを中止します"
          "Header line for okuri-nasi entries is missing!  Stop saving SKK jisyo" )))
     (write-region-as-coding-system
-     (cond ((and skk-jisyo-code
-		 (or (coding-system-p skk-jisyo-code)
-		     (and (fboundp 'find-coding-system)
-			  (find-coding-system skk-jisyo-code) )))
-	    skk-jisyo-code )
-	   ((and skk-jisyo-code (stringp skk-jisyo-code))
-	    (cdr (assoc skk-jisyo-code skk-coding-system-alist)) )
-	   (t (cdr (assoc "euc" skk-coding-system-alist))) )
+     (skk-find-coding-system skk-jisyo-code)
      1 (point-max) file nil 'nomsg )))
 
 (defun skk-check-size-and-do-save-jisyo (new-file)
@@ -2512,7 +2504,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	       ;; が、とりあえず語数だけ数えて入れておく。
 	       (skk-rdbms-count-jisyo-candidates skk-rdbms-private-jisyo-table) )
 	      (skk-count-private-jisyo-candidates-exactly
-	       (skk-count-jisyo-candidates (expand-file-name skk-jisyo)) )
+	       (skk-count-jisyo-candidates (expand-file-name (if (consp skk-jisyo) (car skk-jisyo) skk-jisyo))) )
 	       ;; 1 行 1 候補とみなす。
 	      (t (with-current-buffer (skk-get-jisyo-buffer skk-jisyo 'nomsg)
 		   (- (count-lines (point-min) (point-max)) 2) ))))))
@@ -2592,8 +2584,10 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   ;; オプショナル引数の NOMSG を指定するとファイル読み込みの際のメッセージを
   ;; 表示しない。
   (if file
-      (let ((inhibit-quit t)
-            (jisyo-buf (concat " *" (file-name-nondirectory file)
+      (let* ((inhibit-quit t)
+	     (code (skk-find-coding-system (if (consp file) (cdr file) skk-jisyo-code)))
+	     (file (if (consp file) (car file) file))
+             (jisyo-buf (concat " *" (file-name-nondirectory file)
                                "*" )))
         ;; 辞書バッファとしてオープンされているなら、何もしない。
         (or (get-buffer jisyo-buf)
@@ -2622,16 +2616,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                                "Inserting contents of %s ..."
                                (file-name-nondirectory file) ))
 	      (let (enable-character-translation enable-character-unification)
-		(insert-file-contents-as-coding-system
-		 (cond ((and skk-jisyo-code
-			     (or (coding-system-p skk-jisyo-code)
-				 (and (fboundp 'find-coding-system)
-				      (find-coding-system skk-jisyo-code) )))
-			skk-jisyo-code )
-		       ((and skk-jisyo-code (stringp skk-jisyo-code))
-			(cdr (assoc skk-jisyo-code skk-coding-system-alist)) )
-		       (t (cdr (assoc "euc" skk-coding-system-alist))) )
-		 file ))
+		(insert-file-contents-as-coding-system code file) )
               (or nomsg
                   (skk-message
                    "SKK 辞書 %s をバッファに読み込んでいます...完了！"

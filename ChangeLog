@@ -1,3 +1,13 @@
+1999-12-20  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (kill-buffer): Doc fixed.
+	(minibuffer-keyboard-quit): Add advice only for XEmacs.
+	
+	* READMEs/PROPOSAL (分割したファイルに必須の記述): Modify for
+	Daredevil.
+	
+	* READMEs/README.win (Message-ID): Ditto.
+
 1999-12-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el: Eliminate all spaces which existed between

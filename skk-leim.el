@@ -3,9 +3,9 @@
 ;; Murata Shuuichirou <mrt@astec.co.jp>
 ;;
 ;; Author: Murata Shuuichirou <mrt@mickey.ai.kyutech.ac.jp>
-;; Version: $Id: skk-leim.el,v 1.5.2.3.2.3 2000/07/17 20:59:17 minakaji Exp $
+;; Version: $Id: skk-leim.el,v 1.5.2.3.2.4 2000/08/15 11:02:46 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/17 20:59:17 $
+;; Last Modified: $Date: 2000/08/15 11:02:46 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -30,11 +30,19 @@
 ;;;###autoload
 (defun skk-activate (&optional name)
   (setq inactivate-current-input-method-function 'skk-inactivate)
+  (or (and (boundp 'skk-mode-invoked) skk-mode-invoked)
+      (defadvice skk-setup-modeline (around skk-leim-ad activate)
+	"SKK が Emacs の Input Method として呼び出されたときは、この関数は何もせ
+ず、インジケータは Emacs の機構によって制御される。"))
   (skk-mode 1))
 
 ;;;###autoload
 (defun skk-auto-fill-activate (&optional name)
   (setq inactivate-current-input-method-function 'skk-auto-fill-inactivate)
+  (or (and (boundp 'skk-mode-invoked) skk-mode-invoked)
+      (defadvice skk-setup-modeline (around skk-leim-ad activate)
+	"SKK が Emacs の Input Method として呼び出されたときは、この関数は何もせ
+ず、インジケータは Emacs の機構によって制御される。"))
   (skk-auto-fill-mode 1))
 
 ;;;###autoload
@@ -88,15 +96,26 @@
     (if skk-katakana skk-katakana-mode-string skk-hiragana-mode-string)
     1)))
 
-;; (register-input-method
-;;  "japanese-skk" "Japanese"
-;;  'skk-activate nil
-;;  "Simple Kana to Kanji conversion program")
-;;
-;; (register-input-method
-;;  "japanese-skk-auto-fill" "Japanese"
-;;  'skk-auto-fill-activate nil
-;;  "Simple Kana to Kanji conversion program with auto-fill")
+;;;###autoload
+(if (fboundp 'register-input-method)
+    (progn
+      (require 'advice)
+      (defadvice activate-input-method (before skk-leim-ad activate)
+	(remove-hook 'isearch-mode-hook
+		     (lambda () (and (boundp 'skk-mode) skk-mode
+				     (skk-isearch-mode-setup))))
+	(remove-hook 'isearch-mode-end-hook
+		     (lambda ()
+		       (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup)))))
+      (register-input-method
+       "japanese-skk" "Japanese"
+       'skk-activate "かな"
+       "Simple Kana to Kanji conversion program")
+  
+      (register-input-method
+       "japanese-skk-auto-fill" "Japanese"
+       'skk-auto-fill-activate "かな"
+       "Simple Kana to Kanji conversion program with auto-fill")))
 
 (provide 'skk-leim)
 ;;; skk-leim.el ends here

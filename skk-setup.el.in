@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-setup.el.in,v 1.1.2.5 2000/07/17 20:59:17 minakaji Exp $
+;; Version: $Id: skk-setup.el.in,v 1.1.2.6 2000/08/15 11:02:46 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/17 20:59:17 $
+;; Last Modified: $Date: 2000/08/15 11:02:46 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -64,26 +64,6 @@
 		     (skk-color-display-p))
 		(skk-set-cursor-properly)))
 	  'append)
-
-(if (fboundp 'register-input-method)
-    (progn
-      (defadvice toggle-input-method (before skk-setup-ad activate)
-	(remove-hook 'isearch-mode-hook
-		     (lambda () (and (boundp 'skk-mode) skk-mode
-				     (skk-isearch-mode-setup))))
-	(remove-hook 'isearch-mode-end-hook
-		     (lambda ()
-		       (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))))
-	(setq skk-status-indicator nil))
-      (register-input-method
-       "japanese-skk" "Japanese"
-       'skk-activate "かな"
-       "Simple Kana to Kanji conversion program")
-  
-      (register-input-method
-       "japanese-skk-auto-fill" "Japanese"
-       'skk-auto-fill-activate "かな"
-       "Simple Kana to Kanji conversion program with auto-fill")))
 
 (provide 'skk-setup)
 ;;; Local Variables:

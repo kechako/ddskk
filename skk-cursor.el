@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.33 2000/10/13 13:38:08 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.34 2000/10/14 15:00:31 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/13 13:38:08 $
+;; Last Modified: $Date: 2000/10/14 15:00:31 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -131,6 +131,7 @@
       ;; cover to SKK functions.
       skk-abbrev-mode
       skk-auto-fill-mode
+      skk-j-mode-on
       skk-jisx0201-mode
       skk-jisx0208-latin-mode
       skk-kakutei
@@ -148,12 +149,6 @@
 	  "Set cursor color which represents skk mode."
 	  (set-buffer-local-cursor-color (skk-cursor-current-color)))))
       (setq funcs (cdr funcs))))
-
-  ;; Hooks
-  (add-hook 'minibuffer-setup-hook 
-	    (lambda ()
-	      (set-buffer-local-cursor-color (skk-cursor-current-color)))
-	    'append)
   )
 ;;; Hooks
 ;;(add-hook 'isearch-mode-end-hook 'update-buffer-local-frame-params 'append)

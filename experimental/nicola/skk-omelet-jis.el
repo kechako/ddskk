@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/06 11:34:49 $
+;; Last Modified: $Date: 2000/10/09 00:16:29 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -32,9 +32,9 @@
 
 ;; omelet 独自 JIS 配列
 
-(defconst skk-kanagaki-omelet-jis-base-rule-list
-  '(("1" nil skk-nicola-insert)  ("2" nil skk-nicola-insert)
-    ("3" nil skk-nicola-insert)  ("4" nil skk-nicola-insert)
+(defvar skk-kanagaki-omelet-jis-base-rule-list
+  '(("1" nil skk-nicola-insert) ("2" nil skk-nicola-insert)
+    ("3" nil skk-nicola-insert) ("4" nil skk-nicola-insert)
     ("5" nil skk-nicola-insert)
     ;;
     ("6" nil skk-nicola-insert) ("7" nil skk-nicola-insert)
@@ -46,28 +46,27 @@
     ("e" nil skk-nicola-insert) ("r" nil skk-nicola-insert)
     ("t" nil skk-nicola-insert)
     ;;
-    ("y" nil skk-nicola-insert)  ("u" nil skk-nicola-insert)
-    ("i" nil skk-nicola-insert)  ("o" nil skk-nicola-insert)
-    ("p" nil skk-nicola-insert)  ("@" nil skk-nicola-insert)
+    ("y" nil skk-nicola-insert) ("u" nil skk-nicola-insert)
+    ("i" nil skk-nicola-insert) ("o" nil skk-nicola-insert)
+    ("p" nil skk-nicola-insert) ("@" nil skk-nicola-insert)
     ("[" nil skk-nicola-insert)
     ;;
     ("a" nil skk-nicola-insert) ("s" nil skk-nicola-insert)
     ("d" nil skk-nicola-insert) ("f" nil skk-nicola-insert)
     ("g" nil skk-nicola-insert)
     ;;
-    ("h" nil skk-nicola-insert)  ("j" nil skk-nicola-insert)
-    ("k" nil skk-nicola-insert)  ("l" nil skk-nicola-insert)
+    ("h" nil skk-nicola-insert) ("j" nil skk-nicola-insert)
+    ("k" nil skk-nicola-insert) ("l" nil skk-nicola-insert)
     (";" nil skk-nicola-insert)
     ;;(":" nil skk-nicola-delete-backward-char)
-    (":" nil skk-nicola-insert)
-    ("]" nil skk-nicola-insert)
+    (":" nil skk-nicola-insert) ("]" nil skk-nicola-insert)
     ;;
     ("z" nil skk-nicola-insert) ("x" nil skk-nicola-insert)
     ("c" nil skk-nicola-insert) ("v" nil skk-nicola-insert)
     ("b" nil skk-nicola-insert)
     ;;
-    ("n" nil skk-nicola-insert)  ("m" nil skk-nicola-insert)
-    ("," nil skk-nicola-insert)  ("." nil skk-nicola-insert)
+    ("n" nil skk-nicola-insert) ("m" nil skk-nicola-insert)
+    ("," nil skk-nicola-insert) ("." nil skk-nicola-insert)
     ("/" nil skk-nicola-insert)
     ;;
     ("!" nil "!") ("\"" nil "\"") ("#" nil "#") ("%" nil "%")
@@ -119,7 +118,7 @@
 
 ")
 
-(defconst skk-omelet-jis-plain-rule-list
+(defvar skk-omelet-jis-plain-rule-list
   '((?1 "1") (?2 "2") (?3 "3") (?4 "4") (?5 "5")
     ;;
     (?6 "6") (?7 "7") (?8 "8") (?9 "9") (?0 "0") (?- "−") (?^ "々") (?\\ "￥")
@@ -147,7 +146,7 @@
     ) "\
 単独打鍵時の入力ルール。")
 
-(defconst skk-omelet-jis-rshift-rule-list
+(defvar skk-omelet-jis-rshift-rule-list
   '((?1 "！") (?2 "“") (?3 "”") (?4 "＃") (?5 "％")
     ;;
     (?6 "［") (?7 "］") (?8 "（") (?9 "）") (?0 "『") (?- "』")
@@ -176,7 +175,7 @@
     ) "\
 右親指キーが押されたときの入力ルール。")
 
-(defconst skk-omelet-jis-lshift-rule-list
+(defvar skk-omelet-jis-lshift-rule-list
   '((?1 "？") (?2 "／") (?3 "〜") (?4 "「") (?5 "」")
     ;;
     (?6 "［") (?7 "］") (?8 "【") (?9 "】") (?0 "｛") (?- "｝") (?^ "＝")

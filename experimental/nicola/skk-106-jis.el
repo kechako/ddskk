@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/06 11:34:47 $
+;; Last Modified: $Date: 2000/10/09 00:16:28 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -41,7 +41,7 @@
 
 ;; 日本語 106 キーボード (旧 JIS 配列) のルール
 
-(defconst skk-kanagaki-106-jis-base-rule-list
+(defvar skk-kanagaki-106-jis-base-rule-list
   '(("1" nil ("ヌ" . "ぬ")) ("2" nil ("フ" . "ふ")) ("3" nil ("ア" . "あ"))
     ("4" nil ("ウ" . "う")) ("5" nil ("エ" . "え")) ("6" nil ("オ" . "お"))
     ("7" nil ("ヤ" . "や")) ("8" nil ("ユ" . "ゆ")) ("9" nil ("ヨ" . "よ"))

@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/06 11:34:48 $
+;; Last Modified: $Date: 2000/10/09 00:16:28 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -32,7 +32,7 @@
 
 ;; NICOLA JIS 配列
 
-(defconst skk-kanagaki-nicola-jis-base-rule-list
+(defvar skk-kanagaki-nicola-jis-base-rule-list
   '(("1" nil skk-nicola-insert)  ("2" nil skk-nicola-insert)
     ("3" nil skk-nicola-insert)  ("4" nil skk-nicola-insert)
     ("5" nil skk-nicola-insert)
@@ -119,7 +119,7 @@
 
 ")
 
-(defconst skk-nicola-jis-plain-rule-list
+(defvar skk-nicola-jis-plain-rule-list
   '((?1 "1") (?2 "2") (?3 "3") (?4 "4") (?5 "5")
     ;;
     (?6 "6") (?7 "7") (?8 "8") (?9 "9") (?0 "0") (?- "−") (?^ "＾") (?\\ "￥")
@@ -145,7 +145,7 @@
     ) "\
 単独打鍵時の入力ルール。")
 
-(defconst skk-nicola-jis-rshift-rule-list
+(defvar skk-nicola-jis-rshift-rule-list
   '((?1 "？") (?2 "／") (?3 "〜") (?4 "「") (?5 "」")
     ;;
     (?6 "＆") (?7 "’") (?8 "｛") (?9 "｝") (?0 "‘") (?- "＝") (?^ "￣")
@@ -174,7 +174,7 @@
     ) "\
 右親指キーが押されたときの入力ルール。")
 
-(defconst skk-nicola-jis-lshift-rule-list
+(defvar skk-nicola-jis-lshift-rule-list
   '((?1 "！") (?2 "”") (?3 "＃") (?4 "＄") (?5 "％")
     ;;
     (?6 "［") (?7 "］") (?8 "（") (?9 "）") (?0 "『") (?- "』") (?^ "“")

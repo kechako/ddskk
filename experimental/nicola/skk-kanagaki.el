@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/10/07 10:46:56 $
+;; Last Modified: $Date: 2000/10/09 00:16:28 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -348,6 +348,7 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
 
 ;; Internal constants and variables.
 
+(defvar skk-kanagaki-base-rule-list nil)
 (defvar skk-kanagaki-rule-tree nil)
 (defvar skk-kanagaki-rom-kana-rule-tree nil)
 
@@ -469,7 +470,8 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
     (if (not (keymapp (global-key-binding "\e[")))
 	(global-unset-key "\e[")))
   ;; $BI,MW$J%b%8%e!<%k$r%m!<%I!#(B
-  (require (intern (format "skk-%s" skk-kanagaki-keyboard-type)))
+  (when skk-kanagaki-keyboard-type
+    (require (intern (format "skk-%s" skk-kanagaki-keyboard-type))))
   ;; $B%-!<%P%$%s%I!#$?$@$7$3$l$O!"$h$jE,@Z$J%-!<Dj5A$r8+$D$1$k$^$G$N;CDjE*=hCV!#(B
   (let ((list
 	 '((skk-kanagaki-set-henkan-point-key . skk-set-henkan-point-subr)
@@ -500,11 +502,13 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
   (define-key skk-j-mode-map skk-kanagaki-start-henkan-key
     'skk-kanagaki-insert)
   ;;
+  (unless skk-kanagaki-base-rule-list
+    (setq skk-kanagaki-base-rule-list
+	  (symbol-value (intern (format "skk-kanagaki-%s-base-rule-list"
+				       skk-kanagaki-keyboard-type)))))
   (setq skk-kanagaki-rule-tree
 	(skk-compile-rule-list
-	 (symbol-value (intern (format "skk-kanagaki-%s-base-rule-list"
-				       skk-kanagaki-keyboard-type)))
-	 skk-kanagaki-rule-list))
+	 skk-kanagaki-base-rule-list skk-kanagaki-rule-list))
   (setq skk-kanagaki-rom-kana-rule-tree skk-rule-tree))
 
 (defadvice skk-insert (around skk-kanagaki-ad activate compile)

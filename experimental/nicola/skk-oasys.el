@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/13 09:46:34 $
+;; Last Modified: $Date: 2000/10/09 00:16:29 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -38,7 +38,7 @@
 
 ;; OASYS 風配列
 
-(defconst skk-kanagaki-oasys-base-rule-list
+(defvar skk-kanagaki-oasys-base-rule-list
   '(("1" nil skk-nicola-insert)  ("2" nil skk-nicola-insert)
     ("3" nil skk-nicola-insert)  ("4" nil skk-nicola-insert)
     ("5" nil skk-nicola-insert)
@@ -134,7 +134,7 @@
 
 ")
 
-(defconst skk-oasys-plain-rule-list
+(defvar skk-oasys-plain-rule-list
   '((?1 "１") (?2 "２") (?3 "３") (?4 "４") (?5 "５")
     ;;
     (?6 "６") (?7 "７") (?8 "８") (?9 "９") (?0 "０") (?- "−")
@@ -161,7 +161,7 @@
     ) "\
 単独打鍵時の入力ルール。")
 
-(defconst skk-oasys-rshift-rule-list
+(defvar skk-oasys-rshift-rule-list
   '((?1 "？") (?2 "／") (?3 "〜") (?4 "「") (?5 "」")
     ;;
     (?6 "［") (?7 "］") (?8 "（") (?9 "）") (?0 "『") (?- "』") (?^ "　")
@@ -190,7 +190,7 @@
     ) "\
 右親指キーが押されたときの入力ルール。")
 
-(defconst skk-oasys-lshift-rule-list
+(defvar skk-oasys-lshift-rule-list
   '((?1 "？") (?2 "／") (?3 "〜") (?4 "「") (?5 "」")
     ;;
     (?6 "［") (?7 "］") (?8 "（") (?9 "）") (?0 "『") (?- "』")

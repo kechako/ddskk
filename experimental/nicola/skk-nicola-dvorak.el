@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/06 11:34:48 $
+;; Last Modified: $Date: 2000/10/09 00:16:28 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -31,7 +31,7 @@
 
 ;; NICOLA Dvorak 配列
 
-(defconst skk-kanagaki-nicola-dvorak-base-rule-list
+(defvar skk-kanagaki-nicola-dvorak-base-rule-list
   '(("`" nil skk-nicola-insert)
     ;;
     ("1" nil skk-nicola-insert)  ("2" nil skk-nicola-insert)
@@ -115,7 +115,7 @@ ANSI Dvorak 配列キーボードで NICOLA 入力するための基本ルール。")
 
 ")
 
-(defconst skk-nicola-dvorak-plain-rule-list
+(defvar skk-nicola-dvorak-plain-rule-list
   '((?` "｀")
     ;;
     (?1 "1") (?2 "2") (?3 "3") (?4 "4") (?5 "5")
@@ -146,7 +146,7 @@ ANSI Dvorak 配列キーボードで NICOLA 入力するための基本ルール。")
     ) "\
 単独打鍵時の入力ルール。")
 
-(defconst skk-nicola-dvorak-lshift-rule-list
+(defvar skk-nicola-dvorak-lshift-rule-list
   '((?` "￣")
     ;;
     (?1 "！") (?2 "＠") (?3 "＃") (?4 "＄") (?5 "％")
@@ -177,7 +177,7 @@ ANSI Dvorak 配列キーボードで NICOLA 入力するための基本ルール。")
     ) "\
 左親指キーが押されたときの入力ルール。")
 
-(defconst skk-nicola-dvorak-rshift-rule-list
+(defvar skk-nicola-dvorak-rshift-rule-list
   '((?` "ヵ")
     ;;
     (?1 "？") (?2 "／") (?3 "〜") (?4 "「") (?5 "」")

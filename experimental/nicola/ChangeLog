@@ -1,3 +1,15 @@
+2000-10-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* README.ja: Update.
+
+	* skk-nicola.el (skk-nicola-turn-on-j-mode): Check the value of
+	`skk-use-color-cursor' as well as the return value of
+	`skk-color-display-p'.
+
+	* skk-106-jis.el, skk-nicola-dvorak.el, skk-nicola-jis.el,
+	skk-nicola-us.el, skk-oasys.el, skk-omelet-dvorak.el,
+	skk-omelet-jis.el, skk-omelet-us.el: Don't use `defconst'.
+
 2000-10-07  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-kanagaki.el (skk-adjust-user-option): Don't use `mapcar'.

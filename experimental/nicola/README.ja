@@ -1,6 +1,6 @@
 -*- mode: outline -*-
 
-	$Id: README.ja,v 1.1.2.4 2000/09/10 12:06:43 czkmt Exp $
+	$Id: README.ja,v 1.1.2.5 2000/10/09 00:16:27 czkmt Exp $
 
 
 このディレクトリには SKK の仮名入力対応コードを置いています。
@@ -45,7 +45,7 @@ o Emacs 20.6 以降
 
 o XEmacs 21.1.12
 
-o XEmacs 21.2.35
+o XEmacs 21.2.36
 
 
 NICOLA-DDSKK は、Nemacs と Mule 1.1 をサポートしません。その理由として
@@ -132,6 +132,30 @@ http://www.eva.hi-ho.ne.jp/%7Eminoura/kbd/keymap.html
 
    と記入。
 
+** カスタマイズ
+
+   skk-kanagaki-keyboard-type に対応したファイルに書かれている変数によっ
+   て、キー入力と挿入される文字のルールを変更できます。
+
+   例えば skk-kanagaki-keyboard-type が omelet-jis であれば、
+   skk-omelet-jis.el に書かれている以下の変数を設定します。
+
+   `skk-kanagaki-omelet-jis-base-rule-list'
+
+        これは、各文字キーの入力を SKK にどう解釈させるかを決定します。
+        標準設定では、多くの文字キーは関数 `skk-nicola-insert' を呼び
+        出します。
+
+   `skk-omelet-jis-plain-rule-list'
+   `skk-omelet-jis-rshift-rule-list'
+   `skk-omelet-jis-lshift-rule-list'
+
+        これらの変数は、関数 `skk-nicola-insert' が文字を挿入する際の
+        ルールを決定します。順に単独打鍵、同側シフト入力、反対側シフト
+        入力のルールです。
+
+   これらの設定をファイル ~/.skk に記述してから SKK を起動すれば、設定
+   が反映されます。
 
 * 使用法
 
@@ -170,13 +194,14 @@ http://www.eva.hi-ho.ne.jp/%7Eminoura/kbd/keymap.html
 * 問題点
 
 親指シフト入力は、 まだ NICOLA-SKK と挙動の異なる部分があります。 問題
-は多くありますが、徐々に改良する予定です。
+は多くありますが、徐々に改良する予定です。また、omelet 及び NICOLA-SKK
+との互換性を十分考慮していない部分があります。
 
-日本語 106 キーボードで仮名入力する場合、 キーシンボルの割当ての関係で
-「ー」か「ろ」のいずれかが犠牲にならなければなりません。デフォルトでは、
-「ー」を犠牲にしてあります (SHIFT と共に押せば入力できるようにしてあり
-ます)。これを刻印通りの入力にするには、 xmodmap を使うなどしてキーシン
-ボルの割当てを変更する必要があります。
+日本語 106 キーボードで仮名入力する場合、 キー配列の関係で「ー」か「ろ」
+のいずれかが犠牲にならなければなりません。デフォルトでは、「ー」を犠牲
+にしてあります (SHIFT と共に押せば入力できるようにしてあります)。これ
+を刻印通りの入力にするには、 xmodmap を使うなどしてキー配列を変更する
+必要があります。
 
 
 # Local Variables:

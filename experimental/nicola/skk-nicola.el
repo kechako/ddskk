@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/10/07 10:46:56 $
+;; Last Modified: $Date: 2000/10/09 00:16:28 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -255,21 +255,24 @@ keycode 131 = underscore\n"))
     (define-key help-map skk-nicola-2nd-help-key
       'skk-nicola-2nd-help))
   ;;
-  (setq skk-nicola-plain-rule
-	(symbol-value
-	 (intern
-	  (format "skk-%s-plain-rule-list"
-		  skk-kanagaki-keyboard-type))))
-  (setq skk-nicola-lshift-rule
-	(symbol-value
-	 (intern
-	  (format "skk-%s-lshift-rule-list"
-		  skk-kanagaki-keyboard-type))))
-  (setq skk-nicola-rshift-rule
-	(symbol-value
-	 (intern
-	  (format "skk-%s-rshift-rule-list"
-		  skk-kanagaki-keyboard-type))))
+  (unless skk-nicola-plain-rule
+    (setq skk-nicola-plain-rule
+	  (symbol-value
+	   (intern
+	    (format "skk-%s-plain-rule-list"
+		    skk-kanagaki-keyboard-type)))))
+  (unless skk-nicola-lshift-rule
+    (setq skk-nicola-lshift-rule
+	  (symbol-value
+	   (intern
+	    (format "skk-%s-lshift-rule-list"
+		    skk-kanagaki-keyboard-type)))))
+  (unless skk-nicola-rshift-rule
+    (setq skk-nicola-rshift-rule
+	  (symbol-value
+	   (intern
+	    (format "skk-%s-rshift-rule-list"
+		    skk-kanagaki-keyboard-type)))))
   ;;
   (remove-hook 'skk-mode-hook 'skk-niola-setup))
 
@@ -392,7 +395,7 @@ keycode 131 = underscore\n"))
 				(when skk-nicola-use-space-as-rshift
 				  (list " ")))))
 	       (skk-j-mode-on)
-	       (when (skk-color-display-p)
+	       (when (and skk-use-color-cursor (skk-color-display-p))
 		 ;; 新しい skk-cursor 対策
 		 (static-cond
 		  ((eq skk-emacs-type 'xemacs)

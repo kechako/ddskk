@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.27 2000/09/11 15:54:16 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.28 2000/09/12 08:56:50 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/11 15:54:16 $
+;; Last Modified: $Date: 2000/09/12 08:56:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -285,20 +285,15 @@ Optional argument PREFIX is apppended if given."
 ;;
 
 (defun skk-isearch-find-keys-define (map commands command)
-  (let (keys prefs)
-    (dolist (c commands)
-      (setq keys (where-is-internal c (current-global-map)))
-      (dolist (key keys)
-	(catch 'tag
-	  (let ((len (length key)))
-	    (cond ((> len 2)
-		   (throw 'tag nil))
-		  ((= len 2)
-		   (unless (member (aref key 0) prefs)
-		     (define-key map (vector (aref key 0))
-		       (make-sparse-keymap))
-		     (setq prefs (cons (aref key 0) prefs)))))
-	    (define-key map key command)))))))
+  (do ((commands commands (cdr commands))
+       prefs)
+      ((null commands))
+    (dolist (key (where-is-internal (car commands) (current-global-map)))
+      (when (and (= (length key) 2) (not (member (aref key 0) prefs)))
+	(define-key map (vector (aref key 0)) (make-sparse-keymap))
+	(setq prefs (cons (aref key 0) prefs)))
+      (unless (> (length key) 2)
+	(define-key map key command)))))
 
 ;; XXX should be more generic
 (defun skk-isearch-setup-keymap (map)
@@ -461,12 +456,19 @@ If the current mode is different from previous, remove it first."
 		  (skk-erase-prefix 'clean))
 		(setq skk-isearch-incomplete-message (buffer-string))
 		(skk-isearch-incomplete-message))))))
-      (let ((str (skk-isearch-mode-string)))
+      (let ((prompt (skk-isearch-mode-string)))
 	(dolist (cmd isearch-cmds)
-	  (or (string-match (concat "^" (regexp-quote str))
-			    (car (cdr cmd)))
-	      (setcdr cmd (cons (concat str (car cmd))
-				(cdr (cdr cmd))))))
+	  (unless (string-match (concat "^" (regexp-quote prompt)) (cadr cmd))
+	    (let ((msg
+		   (or (do ((alist skk-isearch-mode-string-alist (cdr alist))
+			    (msg nil
+				 (and (string-match
+				       (concat "^" (regexp-quote (cdar alist)))
+				       (cadr cmd))
+				      (substring (cadr cmd) (match-end 0)))))
+			   ((or msg (null alist)) msg))
+		       (cadr cmd))))
+	      (setcdr cmd (cons (concat prompt msg) (cddr cmd))))))
 	(isearch-delete-char))))
 
 (defun skk-isearch-kakutei (isearch-function)

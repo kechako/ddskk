@@ -30,9 +30,8 @@
   (require 'cl))
 
 (eval-and-compile
-  (condition-case nil
-      (require 'jka-compr)
-    (error)))
+  (ignore-errors
+    (require 'jka-compr)))
 
 ;; Macros.
 (defmacro install-info-compressed-name-p (filename)
@@ -49,6 +48,28 @@
 (defmacro install-info-forward-line (n)
   (` (unless (eq 0 (forward-line (, n)))
        (insert "\n"))))
+
+;; Functions.
+(defun install-info-groups (section entry)
+  (let (groups)
+    (dolist (sec section)
+      (setq groups
+	    (nconc groups (list (cons sec entry)))))
+    groups))
+
+(defun install-info-insert-file-contents (file &optional visit beg end replace)
+  (let ((coding-system-for-read 'raw-text))
+    (funcall (if (install-info-compressed-name-p file)
+		 'jka-compr-insert-file-contents
+	       'insert-file-contents)
+	     file visit beg end replace)))
+
+(defun install-info-write-region (start end file &optional append visit)
+  (let ((coding-system-for-write 'raw-text))
+    (funcall (if (install-info-compressed-name-p file)
+		 'jka-compr-write-region
+	       'write-region)
+	     start end file append visit)))
 
 (defun install-info (info-file dir-file &optional entry section delete)
   "Install or delete dir entries from INFO-FILE in the Info directory file
@@ -193,13 +214,6 @@ from DIR-FILE; don't insert any new entries."
     ;;
     (kill-buffer buf)))
 
-(defun install-info-groups (section entry)
-  (let (groups)
-    (dolist (sec section)
-      (setq groups
-	    (nconc groups (list (cons sec entry)))))
-    groups))
-
 (defun install-info-delete-groups (groups dir)
   (setq dir (expand-file-name dir))
   (let ((buf (get-buffer-create " *install-info-dir*")))
@@ -230,8 +244,16 @@ from DIR-FILE; don't insert any new entries."
     (save-excursion
       (set-buffer buf)
       (erase-buffer)
-      (if (file-exists-p dir)
-	  (install-info-insert-file-contents dir)
+      (when (file-exists-p dir)
+	(install-info-insert-file-contents dir))
+      (goto-char (point-min))
+      (unless (let ((case-fold-search t))
+		(re-search-forward
+		 "^\037\\(.\\|\n\\).*Node:.*Top\\(.\\|\n\\)*\n\\* Menu:"
+		 nil t))
+	(unless (= 0 (buffer-size))
+	  (install-info-write-region (point-min) (point-max) (concat dir "~")))
+	(erase-buffer)
 	(insert "This is the file .../info/dir, which contains the
 topmost node of the Info hierarchy, called (dir)Top.
 The first time you invoke Info you start off looking at this node.
@@ -247,9 +269,12 @@ File: dir,	Node: Top	This is the top of the INFO tree
   to select it.
 
 * Menu:
-
 "))
-      (dolist (group groups)
+      (dolist (group
+	       (sort groups
+		     (function
+		      (lambda (g1 g2)
+			(string-lessp (car g1) (car g2))))))
 	(let ((sec (car group))
 	      (entry (cdr group)))
 	  (goto-char (point-min))
@@ -258,7 +283,7 @@ File: dir,	Node: Top	This is the top of the INFO tree
 	    (install-info-forward-line 1)
 	    (dolist (en entry)
 	      (let ((key (when (string-match ")" en)
-			   (setq key (substring en 0 (match-beginning 0))))))
+			   (substring en 0 (match-beginning 0)))))
 		(save-excursion
 		  (while (not (eolp))
 		    (cond
@@ -290,24 +315,10 @@ File: dir,	Node: Top	This is the top of the INFO tree
 	    (unless (bolp)
 	      (newline 1))
 	    (insert (format "\n%s\n" sec))
-	    (dolist (en entry)
+	    (dolist (en (sort entry 'string-lessp))
 		(insert (format "%s\n" en)))))))
       (install-info-write-region (point-min) (point-max) dir))
     (kill-buffer buf)))
-
-(defun install-info-insert-file-contents (file &optional visit beg end replace)
-  (let ((coding-system-for-read 'raw-text))
-    (funcall (if (install-info-compressed-name-p file)
-		 'jka-compr-insert-file-contents
-	       'insert-file-contents)
-	     file visit beg end replace)))
-
-(defun install-info-write-region (start end file &optional append visit)
-  (let ((coding-system-for-write 'raw-text))
-    (funcall (if (install-info-compressed-name-p file)
-		 'jka-compr-write-region
-	       'write-region)
-	     start end file append visit)))
 
 ;;
 

@@ -1,3 +1,17 @@
+2000-08-02  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-e18.el (frame-width): Call `screen-width'.
+
+	* skk-look.el (skk-look): Bind `skk-use-numeric-conversion' to
+	nil.
+
+	* skk.el (skk-search): When `skk-use-numeric-conversion' is
+	non-nil, also do non-numeric conversion after numeric conversion.
+	(skk-henkan-show-candidate-subr): If Emacs has MULE 4.0 or
+	greater, call `string-bytes' instead of `string-width'.
+	When candidates are displayed using a normal window, assign one
+	line to each candidate.
+
 2000-07-21  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-tut.el (skktut-init-variables-alist): Set

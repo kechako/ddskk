@@ -1,3 +1,8 @@
+2000-02-05  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-e18.el (insert-and-inherit): Sync with APEL.
+	(number-to-string): Ditto.
+
 2000-01-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-dos.el (require): Fix.

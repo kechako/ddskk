@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.25 2000/08/21 02:22:51 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.26 2000/08/31 14:05:34 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/08/21 02:22:51 $
+;; Last Modified: $Date: 2000/08/31 14:05:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -771,9 +771,16 @@
 	(progn
 	  (setq skk-jisx0201-mode nil)
 	  (skk-j-mode-on 'katakana)
-	  (setq skk-input-mode-string skk-katakana-mode-string))
+	  (setq skk-input-mode-string skk-katakana-mode-string)
+	  (static-when (eq skk-emacs-type 'xemacs)
+	    (let ((cons (rassq 'skk-input-mode-string mode-line-format)))
+	      (and cons
+		   (setcar cons skk-xmas-katakana-extent)))))
       (skk-jisx0201-mode-on)
-      (setq skk-input-mode-string skk-jisx0201-mode-string)))
+      (setq skk-input-mode-string skk-jisx0201-mode-string)
+      (static-when (eq skk-emacs-type 'xemacs)
+	(let ((cons (rassq 'skk-input-mode-string mode-line-format)))
+	  (and cons (setcar cons skk-xmas-jisx0201-extent))))))
   (and skk-use-color-cursor (skk-cursor-set-properly)))
 
 (defun skk-jisx0201-henkan (arg)

@@ -1,5 +1,7 @@
 2000-09-10  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* READMEs/skk-faq.txt: Updated.
+
 	* skk-setup.el.in (isearch-mode-end-hook): Remove
 	skk-set-cursor-properly from the hook.
 

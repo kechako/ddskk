@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.92 2000/11/09 08:22:06 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.93 2000/11/10 13:45:18 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/11/09 08:22:06 $
+;; Last Modified: $Date: 2000/11/10 13:45:18 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -1807,16 +1807,18 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   ;; `skk-check-okurigana-on-touroku' を non-nil に設定している場合のみ有効。
   ;; 変換が行なわれたバッファでコールされる (ミニバッファ、辞書バッファではない)。
   (save-match-data
-    (if (and (string-match (concat skk-henkan-okurigana "$") word)
-	     (skk-y-or-n-p
-	      (format "辞書登録モードで入力した「%s」の「%s」は送り仮名ですか？"
-		      word skk-henkan-okurigana)
-	      (format "You mean \"%s\" in \"%s\" you typed in dictionary register mode is okurigana?"
-		      skk-henkan-okurigana word)))
-	;; ユーザの指示に従い送り仮名を取り除く。
+    (let* ((len (skk-str-length word))
+	   (str (skk-substring word (1- len) len)))
+      (if (and (string-match (concat "^[ぁ-ん]$") str)
+	       (skk-y-or-n-p
+		(format "辞書登録モードで入力した「%s」の「%s」は送り仮名ですか？"
+			word str)
+		(format "You mean \"%s\" in \"%s\" you've registered is okurigana?"
+			str word)))
+	  ;; ユーザの指示に従い送り仮名を取り除く。
 	(progn
 	  (message "")
-	  (setq word (substring word 0 (match-beginning 0))))))
+	  (setq word (skk-substring word 0 (1- len)))))))
   word)
 
 (defun skk-setup-minibuffer ()

@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.9 1999/12/07 07:03:08 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.10 1999/12/18 18:11:24 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 1999/12/07 07:03:08 $
+;; Last Modified: $Date: 1999/12/18 18:11:24 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -723,12 +723,22 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
 			  (strs (cdr el)))
 		      (if (string= (symbol-value sym) (cdr strs))
 			  (set sym (car strs)) ))))
-		 '((skk-latin-mode-string . ("--SKK:" . " SKK"))
-		   (skk-hiragana-mode-string . ("--かな:" . " かな"))
-		   (skk-katakana-mode-string . ("--カナ:" . " カナ"))
-		   (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
-		   (skk-abbrev-mode-string . ("--aあ:" . " aあ"))
-		   (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201")) ))
+		 (cond
+		  ((and (fboundp 'face-proportional-p)
+			(face-proportional-p 'modeline))
+		   '((skk-latin-mode-string . ("--SKK:" . " SKK"))
+		     (skk-hiragana-mode-string . ("--かな:" . " かな"))
+		     (skk-katakana-mode-string . ("--カナ:" . " カナ"))
+		     (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
+		     (skk-abbrev-mode-string . ("--aあ:" . " aあ"))
+		     (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201")) ))
+		  (t
+		   '((skk-latin-mode-string . ("--SKK::" . " SKK"))
+		     (skk-hiragana-mode-string . ("--かな:" . " かな"))
+		     (skk-katakana-mode-string . ("--カナ:" . " カナ"))
+		     (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
+		     (skk-abbrev-mode-string . ("--aあ::" . " aあ"))
+		     (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201")) ))))
 	 (cond ((featurep 'xemacs)
 		(or (memq 'skk-input-mode-string default-modeline-format)
 		    (setq-default default-modeline-format

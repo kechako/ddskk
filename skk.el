@@ -1,13 +1,13 @@
 ;;; skk.el --- SKK (Simple Kana to Kanji conversion program) Daredevil branch 
 ;; Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
-;;               1998, 1999
+;;               1998, 1999, 2000
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.56 2000/04/09 13:42:21 kawamura Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.57 2000/04/28 09:13:44 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/04/09 13:42:21 $
+;; Last Modified: $Date: 2000/04/28 09:13:44 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/04/09 13:42:21 $")
+      (let* ((raw-date "$Date: 2000/04/28 09:13:44 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1449,68 +1449,69 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		(and (skk-numeric-p) (skk-num-uniq)))
 	      (and (skk-numeric-p) (skk-num-convert*7))
 	      (setq henkan-list (nthcdr (+ 4 (* loop 7)) skk-henkan-list))))
-       (setq n (skk-henkan-show-candidate-subr candidate-keys henkan-list))
-       (if (> n 0)
-           (condition-case nil
-               (let* ((event (skk-read-event))
-                      (char (event-to-character event))
-                      num)
-		 (static-if (eq skk-emacs-type 'xemacs)
-		     (message ""))	; clear out candidates in echo area
-                 (if (null char)
-                     (skk-unread-event event)
-                   (setq key-num-alist (nthcdr (- 7 n) key-num-alist1))
-                   (and key-num-alist
-			(setq num (cdr (or (assq char key-num-alist)
-					   (if (skk-lower-case-p char)
-					       (assq (upcase char) key-num-alist)
-					     (assq (downcase char) key-num-alist))))))
-                   (cond (num
-                          (setq new-one (nth num henkan-list)
-                                skk-henkan-count (+ 4 (* loop 7) num)
-                                skk-kakutei-flag t
-                                loop nil))
-                         ((eq char ?\040) ; SPC
-                          (if (or skk-current-search-prog-list
-                                  (nthcdr 7 henkan-list))
-                              (setq loop (1+ loop))
-                            ;; 候補が尽きた。この関数から抜ける。
-                            (let ((last-showed-index (+ 4 (* loop 7))))
-                              (setq skk-exit-show-candidates
-                                    ;; cdr 部は、辞書登録に入る前に最後に表示し
-                                    ;; た候補群の中で最初の候補を指すインデクス
-                                    (cons loop last-showed-index))
-                              ;; 辞書登録に入る。skk-henkan-count は
-                              ;; skk-henkan-list の最後の候補の次 (存在しない
-                              ;; --- nil)を指す。
-                              (setq skk-henkan-count (+ last-showed-index n)
-                                    loop nil))))
-                         ((eq char skk-previous-candidate-char)	; ?x
-                          (if (= loop 0)
-                              ;; skk-henkan-show-candidates を呼ぶ前の状態に戻
-                              ;; す。
-                              (progn
-                                (setq skk-henkan-count 4)
-                                (skk-unread-event (character-to-event
-						   skk-previous-candidate-char))
-                                ;; skk-henkan まで一気に throw する。
-                                (throw 'unread nil))
-                            ;; 一つ前の候補群をエコーエリアに表示する。
-                            (setq reverse t)))
-			 ;; これがないと quit できない。何故？
-			 ((and (eq skk-emacs-type 'xemacs)
-			       (eq char (quit-char)))
-			  (signal 'quit nil))
-                         (t (skk-message "\"%c\" は有効なキーではありません！"
-                                         "\"%c\" is not valid here!"
-                                         char)
-                            (sit-for 1)))))
-             (quit
-              ;; skk-previous-candidate へ
-              (setq skk-henkan-count 0)
-              (skk-unread-event (character-to-event skk-previous-candidate-char))
-              ;; skk-henkan まで一気に throw する。
-              (throw 'unread nil)))))	; end of while loop
+       (save-window-excursion
+	 (setq n (skk-henkan-show-candidate-subr candidate-keys henkan-list))
+	 (if (> n 0)
+	     (condition-case nil
+		 (let* ((event (skk-read-event))
+			(char (event-to-character event))
+			num)
+		   (static-if (eq skk-emacs-type 'xemacs)
+		       (message ""))	; clear out candidates in echo area
+		   (if (null char)
+		       (skk-unread-event event)
+		     (setq key-num-alist (nthcdr (- 7 n) key-num-alist1))
+		     (and key-num-alist
+			  (setq num (cdr (or (assq char key-num-alist)
+					     (if (skk-lower-case-p char)
+						 (assq (upcase char) key-num-alist)
+					       (assq (downcase char) key-num-alist))))))
+		     (cond (num
+			    (setq new-one (nth num henkan-list)
+				  skk-henkan-count (+ 4 (* loop 7) num)
+				  skk-kakutei-flag t
+				  loop nil))
+			   ((eq char ?\040) ; SPC
+			    (if (or skk-current-search-prog-list
+				    (nthcdr 7 henkan-list))
+				(setq loop (1+ loop))
+			      ;; 候補が尽きた。この関数から抜ける。
+			      (let ((last-showed-index (+ 4 (* loop 7))))
+				(setq skk-exit-show-candidates
+				      ;; cdr 部は、辞書登録に入る前に最後に表示し
+				      ;; た候補群の中で最初の候補を指すインデクス
+				      (cons loop last-showed-index))
+				;; 辞書登録に入る。skk-henkan-count は
+				;; skk-henkan-list の最後の候補の次 (存在しない
+				;; --- nil)を指す。
+				(setq skk-henkan-count (+ last-showed-index n)
+				      loop nil))))
+			   ((eq char skk-previous-candidate-char) ; ?x
+			    (if (= loop 0)
+				;; skk-henkan-show-candidates を呼ぶ前の状態に戻
+				;; す。
+				(progn
+				  (setq skk-henkan-count 4)
+				  (skk-unread-event (character-to-event
+						     skk-previous-candidate-char))
+				  ;; skk-henkan まで一気に throw する。
+				  (throw 'unread nil))
+			      ;; 一つ前の候補群をエコーエリアに表示する。
+			      (setq reverse t)))
+			   ;; これがないと quit できない。何故？
+			   ((and (eq skk-emacs-type 'xemacs)
+				 (eq char (quit-char)))
+			    (signal 'quit nil))
+			   (t (skk-message "\"%c\" は有効なキーではありません！"
+					   "\"%c\" is not valid here!"
+					   char)
+			      (sit-for 1)))))
+	       (quit
+		;; skk-previous-candidate へ
+		(setq skk-henkan-count 0)
+		(skk-unread-event (character-to-event skk-previous-candidate-char))
+		;; skk-henkan まで一気に throw する。
+		(throw 'unread nil)))))) ; end of while loop
      (if (consp new-one)
          (cdr new-one)
        new-one))))
@@ -1534,7 +1535,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	(n 0) str cand message-log-max)
     (if (not (car workinglst))
         nil
-      (setq workinglst (skk-truncate-message workinglst))
+      ;;(setq workinglst (skk-truncate-message workinglst))
       (setq n 1
             ;; 最初の候補の前に空白をくっつけないように最初の候補だけ先に取り
             ;; 出す。
@@ -1546,56 +1547,30 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
         (setq cand (if (consp cand) (cdr cand) cand)
               str (concat str "  " (nth n keys) ":" cand)
               n (1+ n)))
-      (message "%s  [残り %d%s]"
-               str (length (nthcdr n candidates))
-               (make-string (length skk-current-search-prog-list) ?+)))
+      (setq str (format
+		 "%s  [残り %d%s]"
+		 str (length (nthcdr n candidates))
+		 (make-string (length skk-current-search-prog-list) ?+)))
+      (if (> (frame-width) (string-width str))
+	  (message str)
+	(let ((buff (get-buffer-create "*候補*"))
+	      (case-fold-search t))
+	  (save-excursion
+	    (set-buffer buff)
+	    (erase-buffer)
+	    (insert str)
+	    (goto-char (point-min))
+	    (while (and (move-to-column (frame-width))
+			(not (eobp))
+			(>= (frame-width) (current-column)))
+	      (re-search-backward
+	       (concat "  " (mapconcat 'identity keys ":\\|  ") ":") nil t nil)
+	      (delete-char 2)
+	      (insert "\n")
+	      (forward-line 1)))
+	  (display-buffer buff))))
     ;; 表示する候補数を返す。
     n))
-
-(defun skk-truncate-message (l)
-  (let* (
-	 ;; L に入っているそれぞれの要素 (候補) の文字列の幅のリスト。
-	 (width-list
-	  (mapcar
-	   (function (lambda (e) (string-width (if (consp e) (cdr e) e))))
-	   l))
-	 ;; 候補数。
-	 (candidates-num (length l))
-	 ;; 候補以外にエコーエリアに表示される部品の文字列の幅。
-	 ;; (string-width "  [残り 100+]") -> 13
-	 ;; ` F:'などの候補の選択のために表示される width 3 の文字列が候補数分ある。
-	 ;; エコーエリアの最初の候補は空白が前に付いていないので 1-。
-	 (parts-len (+ 13 (1- (* 3 candidates-num))))
-	 ;; で、トータルでどれだけの幅になるか。
-	 (message-width (apply '+ parts-len width-list))
-	 (diff (- (window-width) message-width))
-	 (count 0) (plus 0) max)
-    (if (> diff 0)
-	;; window-width に収まっていれば何もしない。
-	l
-      ;; それぞれの候補の最大幅を仮決めする。
-      (setq max (/ (float (- (window-width) parts-len)) candidates-num))
-      (while width-list
-	(if (> (car width-list) max)
-	    (setq count (1+ count))
-	  (setq plus (+ (- max (car width-list)) plus)))
-	(setq width-list (cdr width-list)))
-      ;; 最大幅に満たない長さを集めて最大幅を修正。
-      (setq max (truncate (/ (+ plus (- (window-width) parts-len))
-			     candidates-num)))
-      (mapcar
-       (function
-	(lambda (e)
-	  ;; 最大幅以上の文字列を
-	  (cond ((and (stringp e) (> (string-width e) max))
-		 ;; 最大幅に収まるように短かくする。
-		 (concat (truncate-string e (- max 3)) "..."))
-		((and (consp e) (> (string-width (cdr e)) max))
-		 (cons (car e)
-		       (concat (truncate-string (cdr e) (- max 3))
-			       "...")))
-		(t e))))
-       l))))
 
 (defun skk-henkan-in-minibuff ()
   ;; 辞書登録モードに入り、登録した単語の文字列を返す。

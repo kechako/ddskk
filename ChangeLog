@@ -1,3 +1,11 @@
+2000-04-28  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-truncate-message): Removed.
+	(skk-henkan-show-candidate-subr): Pop up another buffer to display
+	long string that cannot displayed wholly in the echo area.
+	(skk-henkan-show-candidates): Use `save-window-excursion' for the
+	purpose above.
+
 2000-04-27  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/README.win: Change file name descriptions `Readme' to

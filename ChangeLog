@@ -1,5 +1,10 @@
 2000-09-11  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
+	* skk-isearch.el (skk-isearch-find-keys-define): Use `dolist'.
+	(skk-isearch-delete-char): Ditto.
+	(skk-isearch-setup-keymap): Use `do'.
+	(skk-isearch-search-string-regexp): Ditto.
+
 	* skk-vars.el (skk-num-list): Remove autoload cookie.
 
 2000-09-11  Mikio Nakajima  <minakaji@osaka.email.ne.jp>

@@ -2,7 +2,7 @@
 
 	* Makefile (clean): Delete experimental/skk-isearch.el.
 
-	* SKK-MK : Copy "experimental/skk-is-n.el" to
+	* SKK-MK: Copy "experimental/skk-is-n.el" to
 	"experimental/skk-isearch.el" under Emacs 18.
 	(SKK-MK-compile): Also gather autoloads from
 	"experimental/skk-isearch.el".
@@ -15,7 +15,7 @@
 
 	* Makefile (clean): Delete experimental/*.elc.
 
-	* SKK-MK : Require "skk-e18" if `emacs-major-version' is 18.
+	* SKK-MK: Require "skk-e18" if `emacs-major-version' is 18.
 	(SKK-MK-texinfo-coding-system): Modify for Emacs 18.
 	(SKK_MODULES): Ditto.
 	(SKK-MK-compile): Ditto.
@@ -111,7 +111,7 @@
 
 2000-01-15  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
-	* skk-jisx0201.el: Require 'static' at the compile time.
+	* skk-jisx0201.el: Require "static" at the compile time.
 	(skk-jisx0201-zenkaku): Use `static-cond'.
 	(skk-jisx0201-hankaku): Ditto.
 	(skk-setup-modeline): Ditto.

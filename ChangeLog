@@ -1,3 +1,8 @@
+2000-01-25  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-e18.el (save-match-data): `defmacro-maybe'
+	instead of `defmacro'.
+
 2000-01-26  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-macs.el (skk-ascii-char-p): typo fixed.

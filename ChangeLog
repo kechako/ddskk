@@ -1,3 +1,10 @@
+1999-12-31  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-lookup.el (skk-lookup-get-method): Omit check by
+	`skk-lisp-prog-p'.
+	(skk-lookup-search-1): New subroutine.
+	(skk-lookup-search): Use `skk-lookup-search-1'.
+
 1999-12-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-jisx0201.el: Add Comments.

@@ -1,3 +1,11 @@
+2000-01-19  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-isearch.el (skk-isearch-setup-keymap): Find keys that invoke
+	SKK in `current-global-map', and let them execute
+	`skk-isearch-skk-mode' in isearch-mode.
+
+	* skk-jisx0201.el: Modify comments.
+
 2000-01-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (skk-insert-new-word): Use `skk-eval-string'.

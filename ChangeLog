@@ -1,5 +1,7 @@
 1999-12-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk-cursor.el (skk-cursor-set-properly) : Bug fixed.
+
 	* skk.el (skk-mode): Call `skk-cursor-set-properly` if
         `skk-use-color-cursor' or `skk-cursor-change-width' is non-nil.
 	

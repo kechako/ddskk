@@ -1,9 +1,14 @@
 2000-01-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* experimental/skk-dos.el (require): Fix.
+
 	* skk-macs.el (skk-j-mode-on): Create a local keymap here.
 	(skk-latin-mode-on): Ditto.
 	(skk-jisx0208-latin-mode-on): Ditto.
 	(skk-abbrev-mode-on): Ditto.
+
+	* skk-vars.el (skk-kakutei-key): The value is not necessarily a
+	string.
 
 	* skk.el (skk-e18-setup): Do not let local key bindings in
 	`skk-j-mode-map', `skk-latin-mode-map',
@@ -1054,12 +1059,12 @@
 	(skk-codename): Contain rail company name.
 
 1999-11-28  FURUE Hideyuki  <furue@kke.co.jp>
-	
+
 	* skk-num.el (skk-num-convert): Bug fixed.
 	* skk.el (skk-henkan-show-candidates): Ditto.
 	(skk-henkan-show-candidate-subr): Do not use `skk-%-to-%%'.
 	* skk-kcode.el (skk-char-to-hex): Bug fixed.
-	
+
 1999-11-25  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-jisx0201.el (skk-setup-modeline): Make sure, under XEmacs,
@@ -1197,12 +1202,12 @@
 	* skk-abbrev.el (skk-completion-original): Bug fixed.
 
 1999-11-09  Shuhei KOBAYASHI <shuhei@aqua.ocn.ne.jp>
-	
+
 	* skk-look.el (skk-look): Use copy-sequence instead of `copy-list'
 	not to depend on CL package on FSF Emacs.
 	* skk-num.el (skk-num-flatten-list): Do not use `mapcan' not to
 	depend on CL package on FSF Emacs.
-	
+
 1999-11-09  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-develop.el: Remove def-edebug-spec for `skk-defun-cond',
@@ -1255,7 +1260,7 @@
 
 	* skk-viper.el: (viper-intercept-ESC-key): Remove cursor control
 	and change class to before.
- 	(vip-intercept-ESC-key): Ditto.
+	(vip-intercept-ESC-key): Ditto.
 	(skk-set-cursor-properly): Renamed to `skk-cursor-set-properly'.
 
 	* skk-cursor.el: Revive to simplify skk.el.
@@ -1272,7 +1277,7 @@
 	(skk-report-set-cursor-error): Renamed to
 	`skk-cursor-report-set-error'.
 	(skk-use-cursor-change): Renamed to `skk-cursor-change-width'.
-	
+
 	* skk.el (abort-recursive-edit): Remove cursor control.
 	(exit-minibuffer): Ditto.
 	(kill-buffer): Ditto.  And change class to before.
@@ -1290,7 +1295,7 @@
 	(skk-latin-mode-on): Ditto.
 	(skk-jisx0208-latin-mode-on): Ditto.
 	(skk-abbrev-mode-on): Ditto.
-	
+
 	(overwrite-mode): Moved to skk-cursor.el.
 	(goto-line): Ditto.
 	(yank): Ditto.
@@ -1336,7 +1341,7 @@
 
 	* skk.el (skk-emacs-id-file): New user option.
 	(skk-share-private-jisyo): Ditto.
-	
+
 	(skk-mode): Add code for `skk-share-private-jisyo'.
 	(skk-save-jisyo-original): Ditto.
 	(skk-update-jisyo-original): Ditto.
@@ -1347,11 +1352,11 @@
 	(skk-setup-modeline): Change mode indicator to `jisx0201'.
 
 	* skk-vars.el: Renamed to skk-xm20_4.el.
-	
+
 	* skk-vars.el: New file for definitions of user variables.
 	(skk-emacs-id): New internal variable.
 	(skk-jisyo-update-vector): Ditto.
-	
+
 1999-11-03  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* experimental/skk-jisx0201.el (skk-jisx0201-search-and-replace):
@@ -1372,7 +1377,7 @@
 	skk-katakana-to-hankaku-region): New function.
 	(skk-toggle-zenkaku-hankaku): Convert hiragana/katakana in midasi
 	into hankaku katakana in ▽ mode.
-	
+
 1999-10-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-hankaku-mode.el: New experimental program.

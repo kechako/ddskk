@@ -1,3 +1,11 @@
+1999-12-08  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-cursor.el (exit-minibuffer): Set cursor color even if the
+	point still exists in the minibuffer.
+	(minibuffer-keyboard-quit): Ditto.
+
+	* skk-vars.el (skk-check-okurigana-on-toroku): Fix doc string.
+
 1999-12-07  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-vars.el (skk-check-okurigana-on-toroku): New variable.

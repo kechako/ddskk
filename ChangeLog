@@ -1,3 +1,13 @@
+2000-10-18  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/README.win: Move 「`MAKE.BAT'の編集とインストール
+	(Windows 95,98/NT)」 to header (change to non-section).
+	Section structer rearranged (change `****' section to `***', `***'
+	to `**' and `**' section to `*').
+	New sections 「* Windows 上で動くサーバについて」,「wskkserve」,
+	「 cygwin を利用してソースからコンパイルして利用する」,「script 言
+	語で実装されたサーバ」created.
+	
 2000-10-17  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* ccc.el: Apply Tsukamoto-san's patch Message-ID:

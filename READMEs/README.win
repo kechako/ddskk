@@ -1,32 +1,30 @@
 -*- outline -*-
 
-README.win
+`MAKE.BAT'の編集とインストール(Windows 95,98/NT) [README.win]
 
-$Date: 2000/10/16 09:13:34 $
-$Id: README.win,v 1.1.4.7 2000/10/16 09:13:34 minakaji Exp $
+$Date: 2000/10/17 16:55:31 $
+$Id: README.win,v 1.1.4.8 2000/10/17 16:55:31 minakaji Exp $
 Yuh Ohmura <yutopia@t3.rim.or.jp>
 Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
                　　　　 <minakaji@pdx.ne.jp> 
 
-*`MAKE.BAT'の編集とインストール(Windows 95,98/NT)
-
 同梱の INSTALL および README にも目を通しておいて下さい。
 
-** Meadow/NTEmacs
+* Meadow/NTEmacs
 
-*** APEL のインストール
+** APEL のインストール
 
 まず APELをインストールする。Daredevil SKK では、APEL 10.2以降での動作
 が確認されているが、APEL は Emacs/XEmacs のバージョンアップに合わせて
 日進月歩なので、できるだけ新しいバージョンをインストールすることをお勧
 めする。
 
-**** APEL の get
+*** APEL の get
 
 APEL は、`ftp://ftp.jpl.org/pub/elisp/apel/' もしくは
 `ftp://ftp.m17n.org/pub/mule/apel/' から入手できる。
 
-**** APEL の展開(解凍)
+*** APEL の展開(解凍)
 
 APELをフリーのtar.exeなどを使って展開する。以下のコマンドを実行。
 
@@ -34,7 +32,7 @@ APELをフリーのtar.exeなどを使って展開する。以下のコマンドを実行。
 
 tar.exeは `ftp://ftp.etl.go.jp/pub/mule/Windows/tools/' などから入手できる。
 
-**** APEL の byte-compile
+*** APEL の byte-compile
 
 Emacs が `c:\usr\Meadow\1.10\bin\meadow95.exe' のとき、APEL を展開した
 ディレクトリに CD によって移動し、以下のコマンドを実行する。
@@ -48,17 +46,17 @@ Emacs が `c:\usr\Meadow\1.10\bin\meadow95.exe' のとき、APEL を展開した
 ルされる)で、(EMUDIR) は同様に emu のインストール先
 \usr\meadow\1.10\site-lisp\emu 等を指定する。
 
-**** load-path への追加
+*** load-path への追加
 
 \usr\meadow\site-lisp\subdir.el を編集し、emu, apel を load-path に追加する。
 
-*** SKKのインストール
+** SKKのインストール
 
-**** SKK の展開(解凍)
+*** SKK の展開(解凍)
 
 SKK ディストリビューションを上記の tar.exe を用いて展開する。
 
-**** MAKE.BAT の編集
+*** MAKE.BAT の編集
 
 MAKE.BAT を自分の環境に合わせて編集する。
 EMACSは御自分のEmacsのフルパスを指定する。上の例では、
@@ -72,53 +70,53 @@ LISPDIR=c:\usr\meadow\site-lisp とすれば、c:\usr\meadow\site-lisp\skk
 なお、デフォルトでは、SKK-JISYO, skk-tut 等は %PREFIX%\share 以下にイ
 ンストールされる。 
 
-**** MAKE.BAT の実行
+*** MAKE.BAT の実行
 
 MAKE.BAT を使う時の注意点は、DOSPROMPT のプロパティで、環境変数のメモ
 リ割り当てが自動になると、環境変数が設定できないので、適当な値(2048と
 か)を入れておく必要があることでしょう。 
 
-**** load-path への追加
+*** load-path への追加
 
 \usr\meadow\site-lisp\subdir.el を編集し、skk を load-path に追加する。
 
-**** .emacs への追加
+*** .emacs への追加
 
 .emacs に次の内容を追加する。
 
 (require 'skk-setup)
 
-*** cygwin32
+** cygwin32
 
-cygwin32などがインストールされていて、Makefile でインストールする場合は
+cygwin32 がインストールされていて、Makefile でインストールする場合は
 SKK-CFG にインストール先のディレクトリを指定する必要がある。
 
-** Mule for Windows
+* Mule for Windows
 
 Mule for Windows はすでに開発が終了しているため、特別な理由が無い限り
 は Meadow の使用を推奨する。しかし、マシンスペックなどの理由により
 Mule for Windows を使用する場合は以下の手順に従う。
 
-*** APEL のインストール
+** APEL のインストール
 
 まず APELをインストールする。Daredevil SKK では、APEL 9.22以降での動作
 が確認されたが、APEL は Emacs/XEmacs のバージョンアップに合わせて日進
 月歩なので、できるだけ新しいバージョンをインストールすることをお勧めす
 る。
 
-**** TM がインストールされている場合
+*** TM がインストールされている場合
 
 APEL が含まれないバージョンの TM がインストールされている場合、TM がイ
 ンストールされているディレクトリと同じ階層にある emu というディレクト
 リを削除する。
 また、tl\filename.el および tl\filename.elc を削除する。
 
-**** APEL の get
+*** APEL の get
 
 APEL は、`ftp://ftp.jpl.org/pub/elisp/apel/' もしくは
 `ftp://ftp.m17n.org/pub/mule/apel/' から入手できる。
 
-**** APELの展開(解凍)
+*** APELの展開(解凍)
 
 APELをフリーのtar.exeなどを使って展開する。以下のコマンドを実行。
 
@@ -127,20 +125,18 @@ APELをフリーのtar.exeなどを使って展開する。以下のコマンドを実行。
 tar.exeは `ftp://ftp.etl.go.jp/pub/mule/Windows/tools/' などから入手で
 きる。
 
-**** APEL の byte-compile
+*** APEL の byte-compile
 
 Emacs が `c:\usr\mule\bin\mule.exe' のとき、APEL を展開したディレクト
 リに CD によって移動し、以下のコマンドを実行する。
 
-  C:\temp\skk-11> c:\usr\mule\bin\mule -q -batch 
-                  -no-site-file -l APEL-MK -f install-apel NONE (LISPDIR) (EMUDIR)
-  (改行はいれない)
+  C:\temp\skk-11> c:\usr\mule\bin\mule -q -batch -no-site-file -l APEL-MK -f install-apel NONE (LISPDIR) (EMUDIR)
 
 ただし、上の LISPDIR には apel のインストール先(例えば
 \usr\mule\site-lisp とすれば、 \usr\mule\site-lisp\apel にインストール
 される)で、EMUDIRは同様に emu のインストール先である。
 
-**** .emacs への追加
+*** .emacs への追加
 
 .emacs に以下の行を追加する。
 
@@ -149,13 +145,13 @@ Emacs が `c:\usr\mule\bin\mule.exe' のとき、APEL を展開したディレクト
 TM がインストールされていない場合は同様に emu のディレクトリも .emacs
 に指定する。
 
-*** SKKのインストール
+** SKKのインストール
 
-**** SKK の展開(解凍)
+*** SKK の展開(解凍)
 
 SKK ディストリビューションを上記の tar.exe を用いて展開する。
 
-**** MAKE.BAT の編集
+*** MAKE.BAT の編集
 
 MAKE.BAT を自分の環境に合わせて編集する。
 EMACSは御自分のEmacsのフルパスを指定する。上の例では、
@@ -169,36 +165,57 @@ LISPDIR=c:\usr\mule\site-lisp とすれば、c:\usr\mule\site-lisp\skk にイ
 なお、デフォルトでは、SKK-JISYO, skk-tut 等は %PREFIX%\share 以下にイ
 ンストールされる。 
 
-**** MAKE.BAT の実行
+*** MAKE.BAT の実行
 
 MAKE.BAT を使う時の注意点は、DOSPROMPT のプロパティで、環境変数のメモ
 リ割り当てが自動になると、環境変数が設定できないので、適当な値(2048と
 か)を入れておく必要があることでしょう。 
 
-**** .emacs への追加
+** .emacs への追加
 
 .emacs に次の内容を追加する。
 
 (require 'skk-setup)
 
-*** cygwin32
+** cygwin32
 
-cygwin32などがインストールされていて、Makefile でインストールする場合は
+cygwin32 がインストールされていて、Makefile でインストールする場合は
 SKK-CFG にインストール先のディレクトリを指定する必要がある。
 
-* skkserve on Windows
+* Windows 上で動くサーバについて
 
-Windows 上で動作する skkserv には次のようなものがあります。
+Windows で利用できる SKK 辞書サーバには次のようなものがあります。
 
-wskkserve; Windows 上で動作する skkserve です。
+** wskkserve
 
-  http://member.nifty.ne.jp/Tatari_SAKAMOTO/wskkserv.htm
+Windows 上で動作する skkserve です。
+http://member.nifty.ne.jp/Tatari_SAKAMOTO/wskkserv.htm から入手できま
+す。
 
-cygwin が使用できる環境では skkserve を直接コンパイル
-して使用することができます。
+** cygwin を利用してソースからコンパイルして利用する
 
-また、perl, ruby が使用できるならば、pskkserve や、
-rskkserve も使用できます。
+cygwin が使用できる環境では skkserve を直接コンパイルして使用すること
+ができます。skkserv は
+ftp://skk.kuis.kyoto-u.ac.jp:/pub/skk/9.6/plain/skkserv から入手できま
+す。
+
+また、cygwin で GNU inetutils をインストールしている場合
+(http://sources.redhat.com/cygwin/から入手できる setup.exe を利用する
+とディフォルトでインストールされます)、dbskkd を利用することもできます。
+なお、inetutils の設定については、
+/usr/doc/Cygwin/inetutils-1.3.2.README を参照して下さい。また、dbskkd
+は http://www.ne.jp/asahi/bdx/info/software/jp-dbskkd.html から入手で
+きます。
+
+** script 言語で実装されたサーバ
+
+perl, ruby が使用できるならば、pskkserve や rskkserve が使用できます。
+
+pskkserv は
+ftp://skk.kuis.kyoto-u.ac.jp:/pub/skk/9.6/plain/contrib/pskkserv か
+ら、rskkserve は
+http://www.ruby-lang.org/en/raa-list.rhtml?name=rskkserv から入手でき
+ます。
 
 * SKK on Windows
 

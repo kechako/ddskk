@@ -1,3 +1,8 @@
+2000-10-15  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-toggle-characters): Hand 'vcontract to
+	`skk-katakana-region' as VCONTRACT argument .
+
 2000-10-13  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-cursor.el (skk-cursor-buffer-local-frame-params-ad-targets):

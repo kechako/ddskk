@@ -1,3 +1,8 @@
+2000-08-26  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* doc/skk.texi (■モードにおける文字変換, 数字や記号文字の入力):
+	Update for SKK 10 and lator.
+
 2000-08-25  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-dos.el (skk-save-jisyo): Advise to preserve

@@ -1,0 +1,66 @@
+-*- outline -*-
+
+             $Date: 1999/11/11 04:01:02 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
+	     $Id: PROPOSAL.branch,v 1.1.2.1 1999/11/11 04:01:02 minakaji Exp $
+
+* CVS
+
+** Checkout
+
+Checkout して cvs server からソースをもらってきます (これをワーキング
+コピーといいます) (*1)
+
+  $ cvs checkout -d ext:openlab.ring.gr.jp:/circus/cvsroot/skk -r daredevil skk/main
+
+最初に 1 回だけパスワードを入れる必要があります。~/.cvspass というファ
+イルに password が記録されます。
+
+カレントディレクトリの下にできる skk/main というディレクトリにワーキン
+グコピーがコピーされます。
+
+  $ cd skk/main
+
+コンパイルして使うなり、編集するなりご自由にどうぞ。
+
+ (*1): ~/.cvsrc に、 
+         cvs -z9
+       と書いておくと、cvs server との通信内容が圧縮されます。
+
+
+** Update
+
+ワーキングコピーは残しておくと、cvs server 上のソースに変更が加えられ
+たときに差分だけ取り寄せ、ワーキングコピーを最新の状態にすることができ
+ます。
+
+   $ cvs update
+
+
+** Commit
+
+まず、ワーキングコピーのソースを自分の環境でコンパイル & インストー
+ルします。
+
+自分が普段使っている環境で動作確認をして下さい。(少なくとも一度、SKK
+を起動 & 終了して問題がないことを確認してね)。
+
+ML に投稿するためのリリースノートを書いて下さい (主な変更点が分る程度
+の簡単なもので結構です) 。この際、上記でインストールした新たなワーキン
+グコピーからコンパイルした SKK を必ず使用して下さい。
+
+リリースノートの記事を書いている間中も SKK に問題がなければ、ワーキグ
+コピーを commit して上記リリースノートを ML に投稿して下さい。
+
+  $ cd skk/main
+  $ cvs commit -m "Your comment please." skk.el
+
+
+** Tagify
+
+Daredevil SKK に手を加えた人は、このファイルと同じディレクトリにある
+Codename というファイルの中身を参照してコードネームを tag 付けして下さ
+い。
+
+     $ cvs tag Codename .
+
+[end of PROPOSAL]

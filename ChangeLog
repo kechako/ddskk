@@ -1,3 +1,10 @@
+1999-11-18  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/AUTHORS: Add descriptions for Daredeveil branch.
+	* READMEs/CVS_digest: New file.
+	* READMEs/Codename: New file.
+	* READMEs/Contributors: Filename typo fixed.
+
 1999-11-18  TSUMURA Tomoaki  <tsumura@kuis.kyoto-u.ac.jp>
 
 	* skk-cursor.el (skk-change-cursor-when-ovwrt): Renamed to

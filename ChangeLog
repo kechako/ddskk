@@ -1,3 +1,9 @@
+2000-03-13  Takao KAWAMURA  <kawamura@debian.org>
+
+	* Makefile (clean): Doesn't remove ../ddskk*.
+	(tar): Remove ../ddskk*.
+	(snapshot): Ditto.
+
 2000-03-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-vars.el (skk-codename): Specify station name only.

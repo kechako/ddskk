@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.8 2000/08/04 18:19:37 czkmt Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.9 2000/08/11 15:17:16 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/04 18:19:37 $
+;; Last Modified: $Date: 2000/08/11 15:17:16 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -761,7 +761,6 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
     (skktut-get-question-page skktut-question-count)
     (local-set-key "\C-xq" 'skk-tutorial-quit)
     (local-set-key "\C-xt" 'skk-tutorial-again)
-    (local-set-key "\C-xj" 'skktut-error-command)
     (local-set-key "\C-xn" 'skktut-next-question)
     (local-set-key "\C-xs" 'skktut-skip-question)))
 
@@ -774,7 +773,6 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
     (skktut-localize-and-init-variables)
     (local-set-key "\C-xq" 'skk-tutorial-quit)
     (local-set-key "\C-xt" 'skk-tutorial-again)
-    (local-set-key "\C-xj" 'skktut-error-command)
     (local-set-key "\C-xn" 'skktut-next-question)
     (local-set-key "\C-xs" 'skktut-skip-question)
     (auto-fill-mode -1)

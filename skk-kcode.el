@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.4 2000/02/06 04:32:53 okada Exp $
+;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.5 2000/02/26 15:40:03 mrt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/02/06 04:32:53 $
+;; Last Modified: $Date: 2000/02/26 15:40:03 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -139,7 +139,7 @@
               (setq str (concat str (nth i menu-keys1) ":" (car (nth i chars))
                                 "  " ))
               (setq i (1+ i)) )
-            (message str) )
+            (message "%s" str) )
           (let ((char (event-to-character (skk-read-event)))
                 rest ch )
             (if (not (characterp char))

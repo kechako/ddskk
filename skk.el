@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.54 2000/02/16 09:50:40 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.55 2000/02/26 15:40:01 mrt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/02/16 09:50:40 $
+;; Last Modified: $Date: 2000/02/26 15:40:01 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/02/16 09:50:40 $")
+      (let* ((raw-date "$Date: 2000/02/26 15:40:01 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -3630,10 +3630,12 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	 (setq-default skk-input-mode-string "")
 	 (force-mode-line-update t))
 	(t
-	 (setq minor-mode-alist
-	       (put-alist 'skk-mode
-			  ;; each element of minor-mode-alist is not cons cell.
-			  '(skk-input-mode-string) minor-mode-alist)))))
+	 (static-if (eq skk-emacs-type 'xemacs)
+	     (add-minor-mode 'skk-mode 'skk-input-mode-string)
+	   (setq minor-mode-alist
+		 ;; each element of minor-mode-alist is not cons cell.
+		 (put-alist 'skk-mode
+			    '(skk-input-mode-string) minor-mode-alist))))))
 
 ;; cover to original functions.
 

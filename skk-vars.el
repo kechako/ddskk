@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.30 2000/08/12 05:50:34 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.31 2000/08/16 12:46:54 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/12 05:50:34 $
+;; Last Modified: $Date: 2000/08/16 12:46:54 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -133,6 +133,10 @@
 (defgroup skk-isearch nil "SKK incremental search related customization."
   :prefix "skk-isearch-"
   :group 'skk)
+
+(defgroup skk-jisx0201 nil "SKK jisx0201 (Hankaku Kana) related customization."
+  :prefix "skk-jisx0201-"
+  :group 'skk-jisx0201)
 
 (defgroup skk-kakasi nil "SKK kakasi related customization."
   :prefix "skk-"
@@ -1365,6 +1369,11 @@ skk-toggle-kutouten $B$O$3$l$r%H%0%k$G@Z$j49$($k!#(B
   :type 'function
   :group 'skk)
 
+(defcustom skk-use-jisx0201-input-method nil "\
+*Non-nil $B$J$i(B $BH>3Q%+%J$H(B Japanese Roman $B$NF~NO5!G=$,MxMQ2DG=$K$J$k!#(B"
+  :type 'boolean
+  :group 'skk)
+
 (defcustom skk-use-kana-keyboard nil "\
 *Non-nil $B$J$i2>L>F~NOMQ$N@_Dj$r%m!<%I$9$k!#(B
 SKK $B;HMQCf$K$3$NJQ?t$NCM$r@Z$jBX$($k$3$H$G(B  $B%m!<%^;zF~NO(B $B"+"*(B $B2>L>F~NO(B $B$N%H%0%k(B
@@ -1401,6 +1410,14 @@ skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
 					 "forestgreen"
 				       "green")
   "*$B%+%?%+%J%b!<%I$r<($9%+!<%=%k?'!#(B
+skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
+  :type 'string
+  :group 'skk-cursor)
+
+(defcustom skk-cursor-jisx0201-color (if (eq skk-background-mode 'light)
+					 "blueviolet"
+				       "thistle")
+  "*JISX0201 $B%b!<%I$r<($9%+!<%=%k?'!#(B
 skk-use-color-cursor $B$,(B non-nil $B$N$H$-$K;HMQ$5$l$k!#(B"
   :type 'string
   :group 'skk-cursor)
@@ -1538,6 +1555,12 @@ regexp isearch $B$N:]!"$3$N@55,I=8=$K%^%C%A$9$kJ8;z$,8!:wJ8;zNs$N4V$K4^$^$l$F$$
 $B$b%^%C%A$9$k!#(B"
   :type 'regexp
   :group 'skk-isearch)
+
+;;; SKK-JISX0201.EL related.
+(defcustom skk-jisx0201-mode-string " jisx0201"
+  "*SKK $B$,(B JISX0201 $B%b!<%I$G$"$k$H$-$K%b!<%I%i%$%s$KI=<($5$l$kJ8;zNs!#(B"
+  :type 'string
+  :group 'skk-jisx0201)
 
 ;;; SKK-KAKASI.EL related.
 (defcustom skk-use-kakasi (exec-installed-p "kakasi")
@@ -2236,6 +2259,26 @@ This map should be derived from isearch-mode-map.")
 (defvar skk-isearch-switch t)
 (defvar skk-isearch-state nil)
 (defvar skk-isearch-in-editing nil)
+
+;;; -- SKK-JISX0201.EL related internal constants and variables.
+(defvar skk-jisx0201-mode-map nil "*SKK JISX0201 $B%b!<%I$N%-!<%^%C%W!#(B")
+
+(defvar skk-jisx0201-rule-tree nil
+  "$B%m!<%^;z(B -> JISX0201 $BJQ49$N>uBVA+0\5,B'$rI=$9%D%j!<$N=i4|>uBV!#(B
+skk-mode $B$N5/F0;~$KKh2s(B skk-rom-kana-base-rule-list $B$H(B
+skk-rom-kana-rule-list $B$+$iLZ$N7A$K%3%s%Q%$%k$5$l$k!#(B")
+
+(defvar skk-jisx0201-base-rule-tree nil)
+(defvar skk-jisx0201-roman-rule-tree nil)
+(skk-deflocalvar skk-jisx0201-roman nil)
+
+(skk-deflocalvar skk-jisx0201-current-rule-tree nil
+  "$B%m!<%^;z(B -> JISX0201 $BJQ49$N>uBVA+0\5,B'$rI=$o$9%D%j!<$N8=;~E@$N>uBV!#(B
+$B%m!<%^;zF~NO$N=i4|$G$O(B skk-jisx0201-rule-tree $B$HF10l$N>uBV$G!"J8;zF~NO$,?J$`$K(B
+$B$D$l!"LZ$r$?$I$C$F$f$/>uBV$NA+0\$rI=$9!#(B")
+
+(skk-deflocalvar skk-jisx0201-mode nil
+  "Non-nil $B$G$"$l$P!"F~NO%b!<%I$,(B JISX0201 $B%b!<%I$G$"$k$3$H$r<($9!#(B")
 
 ;;; -- SKK-KCODE.EL related internal constants and variables.
 (defconst skk-code-n1-min 161)

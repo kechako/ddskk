@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-annotation.el,v 1.1.2.2 2000/10/28 01:48:37 minakaji Exp $
+;; Version: $Id: skk-annotation.el,v 1.1.2.3 2000/10/28 10:07:22 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 27, 2000.
-;; Last Modified: $Date: 2000/10/28 01:48:37 $
+;; Last Modified: $Date: 2000/10/28 10:07:22 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -48,6 +48,7 @@
     nil
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-c" 'skk-annotation-save-and-quit)
+    (define-key map "\C-c\C-q" 'skk-annotation-quit)
     (setq skk-annotation-mode-map map)))
 
 (or (assq 'skk-annotation-mode minor-mode-alist)
@@ -99,9 +100,7 @@
 (defun skk-annotation-show-message (annotation)
   (if (> skk-henkan-count 3)
       nil
-    (skk-annotation-insert annotation)
-    (message annotation)
-    (sit-for 1)))
+    (message annotation)))
 
 ;;;###autoload
 (defun skk-annotation-add (&optional no-previous-annotation)
@@ -109,7 +108,8 @@
   (interactive "P")
   (save-match-data
     (skk-kakutei)
-    (let ((word (skk-get-last-henkan-datum 'henkan-list)))
+    (let ((word (skk-get-last-henkan-datum 'henkan-list))
+	  (last-henkan-data skk-last-henkan-data))
       (or word (skk-error "確定した情報がありません" "No kakutei information"))
       (setq skk-annotation-original-window-configuration
 	    (current-window-configuration))
@@ -118,15 +118,21 @@
       (other-window 1)
       (switch-to-buffer (get-buffer-create skk-annotation-buffer))
       (setq buffer-read-only nil
-	    skk-annotation-mode t)
+	    skk-annotation-mode t
+	    skk-last-henkan-data last-henkan-data) ; copy buffer local variable.
       (erase-buffer)
       (if (and (not no-previous-annotation)
 	       (string-match ";\\**" (car word)))
 	  (insert (substring (car word) (match-end 0))))
       (run-hooks 'skk-annotation-mode-hook)
-      (message "%s to save edits"
+      (message "%s to save edits, %s to just quit"
 	       (mapconcat 'key-description
 			  (where-is-internal 'skk-annotation-save-and-quit
+					     skk-annotation-mode-map)
+			  ", ")
+
+	       (mapconcat 'key-description
+			  (where-is-internal 'skk-annotation-quit
 					     skk-annotation-mode-map)
 			  ", ")))))
 
@@ -144,16 +150,20 @@
     (if annotation
 	(skk-annotation-last-word-1 
 	 (lambda (beg end)
-	   (setq end (set-marker (make-marker) end))
 	   (goto-char beg)
 	   (if (re-search-forward ";[^/]*" end t)
 	       (delete-region (match-beginning 0) (match-end 0)))
 	   (goto-char end)
-	   (set-marker end nil)
 	   (insert ";*" annotation))))
     (set-window-configuration
      skk-annotation-original-window-configuration)
     (or quiet (message "Added annotation"))))
+
+(defun skk-annotation-quit ()
+  "annotation を付けずに annotation バッファを閉じる。"
+  (interactive)
+  (set-window-configuration
+   skk-annotation-original-window-configuration))
 
 ;;;###autoload
 (defun skk-annotation-remove (&optional no-previous-annotation)
@@ -163,30 +173,48 @@
     (skk-kakutei)
     (let ((word (skk-get-last-henkan-datum 'henkan-list)))
       (or word (skk-error "確定した情報がありません" "No kakutei information"))
-	(skk-annotation-last-word-1 
-	 (lambda (beg end)
-	   (setq end (set-marker (make-marker) end))
-	   (goto-char beg)
-	   (if (re-search-forward ";[^/]*" end t)
-	       (delete-region (match-beginning 0) (match-end 0)))
-	   (goto-char end)
-	   (set-marker end nil))))))
+      (skk-annotation-last-word-1 
+       (lambda (beg end)
+	 (goto-char beg)
+	 (if (re-search-forward ";[^/]*" end t)
+	     (delete-region (match-beginning 0) (match-end 0))))))))
 
 (defun skk-annotation-last-word-1 (function)
+  ;; funcall FUNCTION with BEG and END where BEG and END are markers.
   (let ((jisyo-buffer (skk-get-jisyo-buffer skk-jisyo 'nomsg))
+	(word (car (skk-get-last-henkan-datum 'henkan-list)))
+	(okuri-char (skk-get-last-henkan-datum 'okuri-char))
+	;;(henkan-okurigana (skk-get-last-henkan-datum 'henkan-okurigana))
 	(inhibit-quit t)
-	candidate beg end)
+	candidate beg end realend pattern)
     (if (not jisyo-buffer)
 	nil
       (save-match-data
 	(with-current-buffer jisyo-buffer
-	  (goto-char (if (skk-get-last-henkan-datum 'okuri-char)
-			 skk-okuri-ari-min skk-okuri-nasi-min))
+	  (goto-char (if okuri-char skk-okuri-ari-min skk-okuri-nasi-min))
 	  (if (not (search-forward " /" nil t nil))
 	      nil 
-	    (setq beg (point)
-		  end (progn (search-forward "/") (1- (point))))
-	    (funcall function beg end)))))))
+	    (setq beg (set-marker (make-marker) (point))
+		  end (set-marker
+		       (make-marker) (progn (search-forward "/") (1- (point)))))
+	    (funcall function beg end)
+	    (if (not okuri-char)
+		nil
+	      (goto-char end)
+	      (setq realend (set-marker (make-marker)
+					(skk-save-point (end-of-line) (point))))
+	      ;; skip other candidates that has not a okuirigana.
+	      (search-forward "/[" realend t nil)
+	      (if (string-match ";" word)
+		  (setq word (substring word 0 (match-beginning 0))))
+	      (setq pattern (concat "/\\(" word "\\)\\(;[^/]*\\)*/"))
+	      (while (re-search-forward pattern realend t nil)
+		(set-marker beg (match-beginning 1))
+		(set-marker end (or (match-end 2) (match-end 1)))
+		(funcall function beg end))
+	      (set-marker beg nil)
+	      (set-marker end nil)
+	      (set-marker realend nil))))))))
 
 ;;;###autoload
 (defun skk-annotation-quote (&optional quiet)

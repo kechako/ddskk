@@ -1,5 +1,19 @@
 2000-10-28  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* experimental/skk-annotation.el (skk-annotation-quit): New
+	function.
+	(skk-annotation-add): Bug fixed.
+	Put out skk-annotation-quit key bind, too.
+	(skk-annotation-last-word-1): Bug fixed.
+	(skk-annotation-remove): Do not change END to marker.
+	(skk-annotation-save-and-quit): Ditto.
+	(skk-annotation-show-message): Do not insert ANNOTATION.  Do not
+	sit for a second.
+	(skk-annotation-last-word-1): Call FUNCTION all okuri ari
+	candidates that are the same word and has different okurigana.
+	Set BEG and END markers respectively and set such markers to nil
+	after FUNCTION is called.
+
 	* skk-vars.el (skk-annotation): New group.
 	(skk-annotation-buffer): New internal constants.
 	(skk-annotation-function): New user variable.

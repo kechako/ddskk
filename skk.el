@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.85 2000/10/27 09:42:16 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.86 2000/11/05 04:03:17 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/27 09:42:16 $
+;; Last Modified: $Date: 2000/11/05 04:03:17 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -1212,7 +1212,11 @@ dependent."
     (and (boundp 'self-insert-after-hook) self-insert-after-hook
 	 (funcall self-insert-after-hook (- (point) (length str)) (point)))
     (and overwrite-mode
-	 (skk-del-char-with-pad (skk-ovwrt-len (string-width str))))))
+	 (skk-del-char-with-pad (skk-ovwrt-len (string-width str)))))
+  ;; SKK 9.6 ではこのタイミングで fill が行われていたが、SKK 10 では行われてい
+  ;; なかった。
+  (when (and skk-j-mode (not skk-henkan-on))
+    (skk-do-auto-fill)))
 
 (defun skk-ovwrt-len (len)
   ;; 上書きして良い長さを返す。

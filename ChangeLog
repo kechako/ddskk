@@ -1,3 +1,21 @@
+2000-08-31  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK: Under Emacs 18, Use `if' instead of `when' where it is
+	not yet defined.
+
+	* ptexinfmt.el: Sync with Wanderlust.
+
+	* skk-jisx0201.el (skk-toggle-katakana): Set the extent for
+	`skk-input-mode-string' under XEmacs.
+
+	* skk-macs.el (skk-mode-off, skk-j-mode-on, skk-latin-mode-on,
+	skk-jisx0208-latin-mode-on, skk-abbrev-mode-on): Ditto.
+
+	* skk.el : Changes for XEmacs --
+	(skk-mode): Create extents for `skk-input-mode-string'.
+	(skk-setup-modeline): If `skk-status-indicator' is left, Add an
+	extent to the modeline format, as well as `skk-input-mode-string'.
+
 2000-08-28  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK (SKK-MK-compile): Require cl for Emacs 18.

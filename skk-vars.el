@@ -4,9 +4,9 @@
 
 ;; Author: SKK Development Team <skk@ring.gr.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.50 2001/09/06 21:31:39 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.50.2.1 2001/09/09 01:45:12 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2001/09/06 21:31:39 $
+;; Last Modified: $Date: 2001/09/09 01:45:12 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1533,7 +1533,7 @@ cdr は元号表記の string からなるリスト。"
   :group 'skk-gadget)
 
 (defcustom skk-month-alist
-  '(("Jan" "1" "Januar") ("Feb" "2" "Februar") ("Mar" "3" "März")
+  '(("Jan" "1" "Januar") ("Feb" "2" "Februar") ("Mar" "3" "M,Adrz")
     ("Apr" "4" "April") ("May" "5" "Mai")
     ("Jun" "6" "Juni") ("Jul" "7" "Juli") ("Aug" "8" "August")
     ("Sep" "9" "September") ("Oct" "10" "Oktober")
@@ -1589,10 +1589,23 @@ nil であれば、元号表示する。"
   :group 'skk-gadget)
 
 (defcustom skk-units-alist
-  '(("mile" ("km" . 1.6093) ("yard" . 1760))
-    ("yard" ("feet" . 3) ("cm" . 91.44))
-    ("feet" ("inch" . 12) ("cm" . 30.48))
-    ("inch" ("feet" . 0.5) ("cm" 2.54)))
+  (cond
+   ((featurep 'lisp-float-type)
+    (list
+     (list "mile"
+	   (cons "km"  (/ (float 16093) (float 10000)))
+	   (cons "yard" 1760))
+     (list "yard"
+	   (cons "feet" 3)
+	   (cons "cm"  (/ (float 9144) (float 100))))
+     (list "feet"
+	   (cons "inch" 12)
+	   (cons "cm" (/ (float 3048) (float 100))))
+     (list "inch"
+	   (cons "feet" (/ (float 5) (float 10)))
+	   (cons "cm" (/ (float 254) (float 100))))))
+   (t
+    nil))
   "*単位換算情報のエーリスト。
 各要素は \(基準となる単位 (変換する単位 . 変換時の倍率\)\) の形式による。
 `skk-gadget-units-conversion' で参照する。"

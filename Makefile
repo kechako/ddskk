@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: SKK Development Team <skk@ring.gr.jp>
-# Version: $Id: Makefile,v 1.44 2001/01/02 09:10:14 minakaji Exp $
-# Last Modified: $Date: 2001/01/02 09:10:14 $
+# Version: $Id: Makefile,v 1.44.2.1 2001/09/09 01:45:12 czkmt Exp $
+# Last Modified: $Date: 2001/09/09 01:45:12 $
 
 
 VERSION = 11.5
@@ -11,6 +11,7 @@ BZIP2     = bzip2 -9
 CP	  = /bin/cp -p
 DATE	  = date
 EMACS	  = emacs
+NEMACS	  = nemacs
 FLAGS     = -batch -q -no-site-file -l SKK-MK
 GZIP      = gzip -9
 MD5	  = md5
@@ -21,7 +22,7 @@ XEMACS	  = xemacs
 set_jisyo =
 
 elc:
-	$(EMACS) $(FLAGS) -f SKK-MK-compile
+	$(NEMACS) $(FLAGS) -f SKK-MK-compile
 
 package:
 	$(XEMACS) $(FLAGS) -f SKK-MK-compile-package
@@ -30,7 +31,7 @@ info:
 	$(EMACS) $(FLAGS) -f SKK-MK-compile-info
 
 install:
-	$(EMACS) $(FLAGS) -f SKK-MK-install 
+	$(NEMACS) $(FLAGS) -f SKK-MK-install 
 
 install-elc:
 	$(EMACS) $(FLAGS) -f SKK-MK-install-elc
@@ -43,7 +44,7 @@ install-package:
 
 
 what-where:
-	$(EMACS) $(FLAGS) -f SKK-MK-what-where
+	$(NEMACS) $(FLAGS) -f SKK-MK-what-where
 
 what-where-package:
 	$(XEMACS) $(FLAGS) -f SKK-MK-what-where-package

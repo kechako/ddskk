@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.5 2000/09/04 09:06:44 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.6 2000/09/07 03:49:41 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/04 09:06:44 $
+;; Last Modified: $Date: 2000/09/07 03:49:41 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -126,7 +126,7 @@
 	     (setq v (skk-nunion v (skk-look-ispell arg))))
 	 (if (not skk-look-recursive-search)
 	     v
-	   (let (skk-henkan-key v2 v3)pell
+	   (let (skk-henkan-key v2 v3)
 	     (while v
 	       (let ((skk-current-search-prog-list
 		      (delete '(skk-look) (copy-sequence skk-search-prog-list))))
@@ -196,13 +196,18 @@
 	   (accept-process-output ispell-process)
 	   (not (string= "" (car ispell-filter)))))
   (setq ispell-filter (cdr ispell-filter)) ; remove extra \n
-  (if (listp ispell-filter)
-      (setq poss (ispell-parse-output (car ispell-filter))))
-  (setq ispell-filter nil)
-  (cond ((or (eq poss t) (stringp poss)) nil)
-	((null poss) (skk-error "ispell process でエラーが発生しました。"
-				"error in ispell process"))
-	(t (car (cdr (cdr poss))))))
+  (let ((poss (and ispell-filter (listp ispell-filter)
+		   (ispell-parse-output (car ispell-filter)))))
+    (setq ispell-filter nil)
+    (cond ((or (eq poss t) (stringp poss)) nil)
+	  ((null poss)
+	   (skk-message "ispell process でエラーが発生しました。"
+			"error in ispell process")
+	   (sit-for 1)
+	   (message "")
+	   nil)
+	  ;; return miss and guess.
+	  (t (skk-nunion (nth 2 poss) (nth 3 poss))))))
 
 (provide 'skk-look)
 ;;; skk-look.el ends here

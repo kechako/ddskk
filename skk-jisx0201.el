@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.4 1999/11/28 08:14:47 kawamura Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.5 1999/12/03 10:51:47 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 1999/11/28 08:14:47 $
+;; Last Modified: $Date: 1999/12/03 10:51:47 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -48,6 +48,8 @@
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
+(and (eq skk-emacs-type 'mule2)
+     (require 'jisx0201))
 
 (defgroup skk-jisx0201 nil "SKK jisx0201 related customization."
   :prefix "skk-jisx0201-"
@@ -321,6 +323,50 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
 (defadvice skk-abbrev-mode (after skk-jisx0201-ad activate)
   (setq skk-jisx0201-mode nil) )
 
+(defadvice newline (around skk-jisx0201-ad activate)
+  "skk-egg-like-newline が non-nil だったら、変換中の newline で確定のみ行い、改行しない。"
+  (if (not (or skk-jisx0201-mode skk-abbrev-mode))
+      ad-do-it
+    (let (
+	  ;;(arg (ad-get-arg 0))
+          ;; skk-kakutei を実行すると skk-henkan-on の値が無条件に nil になる
+          ;; ので、保存しておく必要がある。
+          (no-newline (and skk-egg-like-newline skk-henkan-on))
+	  (auto-fill-function (and (interactive-p) auto-fill-function)) )
+      ;; fill されても nil が帰ってくる :-<
+      ;;(if (skk-kakutei)
+      ;;    (setq arg (1- arg)) )
+      ;;(if skk-mode
+      ;;    (let ((opos (point)))
+      ;;      ;; skk-kakutei (skk-do-auto-fill) によって行が折り返されたら arg を 1 つ減らす。
+      ;;      (skk-kakutei)
+      ;;      (if (and (not (= opos (point))) (integerp arg))
+      ;;          (ad-set-arg 0 (1- arg)) )))
+      (and skk-mode (skk-kakutei))
+      (if (not no-newline)
+	  ad-do-it ))))
+
+(defadvice newline-and-indent (around skk-jisx0201-ad activate)
+  "skk-egg-like-newline が non-nil だったら、変換中の newline-and-indent で確定のみ行い、改行しない。"
+  (if (not (or skk-jisx0201-mode skk-abbrev-mode))
+      ad-do-it
+    (let ((no-newline (and skk-egg-like-newline skk-henkan-on))
+	  (auto-fill-function (and (interactive-p) auto-fill-function)) )
+      (and skk-mode (skk-kakutei))
+      (or no-newline ad-do-it) )))
+
+(defadvice exit-minibuffer (around skk-jisx0201-ad activate)
+  "skk-egg-like-newline が non-nil だったら、変換中の exit-minibuffer で確定のみ行う。"
+  (skk-remove-minibuffer-setup-hook
+   'skk-jisx0201-mode-on 'skk-setup-minibuffer
+   (function (lambda ()
+	       (add-hook 'pre-command-hook 'skk-pre-command nil 'local) )))
+  (if (not (or skk-jisx0201-mode skk-abbrev-mode))
+      ad-do-it
+    (let ((no-newline (and skk-egg-like-newline skk-henkan-on)))
+      (and skk-mode (skk-kakutei))
+      (or no-newline ad-do-it) )))
+
 ;; functions.
 ;;;###autoload
 (defun skk-jisx0201-mode (arg)
@@ -328,6 +374,31 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
   (interactive "P")
   (skk-kakutei)
   (skk-jisx0201-mode-on) )
+
+(defun skk-jisx0201-string-conversion (str func)
+  (let ((buf (get-buffer-create " *SKK JIS X 0201 work*")))
+    (save-excursion
+      (set-buffer buf)
+      (erase-buffer)
+      (insert str)
+      (funcall func 1 (point))
+      (buffer-string))))
+
+(defun skk-jisx0201-zenkaku (str)
+  "STR の JIS X 0201 カナに属する文字列を対応する JIS X 0208 の文字列で置き換え
+る。"
+  (let ((func (or (and (featurep 'jisx0201)
+		       'zenkaku-katakana-region)
+		  'japanese-zenkaku-region)))
+    (skk-jisx0201-string-conversion str func)))
+
+(defun skk-jisx0201-hankaku (str)
+  "STR の JIS X 0208 に属する文字列を対応する JIS X 0201 カナの文字列で置き換え
+る。"
+  (let ((func (or (and (featurep 'jisx0201)
+		       'hankaku-katakana-region)
+		  'japanese-hankaku-region)))
+    (skk-jisx0201-string-conversion str func)))
 
 (defun skk-jisx0201-insert (&optional arg)
   "SKK JISX0201 モードの文字入力を行なう。"
@@ -349,7 +420,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
 	    (let ((jisx0201 (buffer-substring-no-properties
 			     skk-henkan-start-point (point) ))
 		  jisx0208 )
-	      (if (and jisx0201 (setq jisx0208 (japanese-zenkaku jisx0201)))
+	      (if (and jisx0201 (setq jisx0208 (skk-jisx0201-zenkaku jisx0201)))
 		  (progn
 		    (insert-before-markers jisx0208)
 		    (delete-region skk-henkan-start-point
@@ -616,7 +687,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
   (start end &optional vcontract latin-jisx0201)
   (skk-search-and-replace
    start end "[ぁ-ん]+"
-   (lambda (matched) (save-match-data (japanese-hankaku matched))) )
+   (lambda (matched) (save-match-data (skk-jisx0201-hankaku matched))) )
   (if vcontract
       (skk-search-and-replace
        start end "う゛" (lambda (matched) "ｳﾞ") ))
@@ -628,7 +699,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
   (start end &optional vcontract latin-jisx0201)
   (skk-search-and-replace
    start end "[ァ-ン]+"
-   (lambda (matched) (save-match-data (japanese-hankaku matched))) )
+   (lambda (matched) (save-match-data (skk-jisx0201-hankaku matched))) )
   (if vcontract
       (skk-search-and-replace
        start end "ヴ" (lambda (matched) "ｳﾞ") ))

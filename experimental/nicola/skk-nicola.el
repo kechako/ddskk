@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/17 15:03:55 $
+;; Last Modified: $Date: 2000/10/07 10:46:56 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -292,22 +292,22 @@ keycode 131 = underscore\n"))
       (skk-nicola-rshift-key . "右親指シフトキー"))
     ;;
     (list
-     (if (and skk-nicola-use-space-as-rshift
-	      (not (member (key-description skk-nicola-rshift-key)
-			   '("SPC" "space"))))
-	 '("space" . "右親指シフトキー、送りなし変換開始")))
+     (when (and skk-nicola-use-space-as-rshift
+		(not (member (key-description skk-nicola-rshift-key)
+			     '("SPC" "space"))))
+       '("space" . "右親指シフトキー、送りなし変換開始")))
     ;;
     (list
      (do ((spec (nth 4 skk-kanagaki-rule-tree) (cdr spec))
 	  (list nil (car spec))
-	  (str nil (and (memq
-			 (nth 3 list)
-			 '(skk-kanagaki-set-okurigana
-			   skk-kanagaki-set-okurigana-no-sokuon))
-			(nth 1 list))))
+	  (str nil (when (memq
+			  (nth 3 list)
+			  '(skk-kanagaki-set-okurigana
+			    skk-kanagaki-set-okurigana-no-sokuon))
+		     (nth 1 list))))
 	 ((or str (null spec))
-	  (and (stringp str)
-	       (cons str "送りあり変換開始")))))
+	  (when (stringp str)
+	    (cons str "送りあり変換開始")))))
     ;;
     (list
      
@@ -564,9 +564,9 @@ keycode 131 = underscore\n"))
   ;; CHAR を RULE の中から探して入力すべき文字列を決定する。
   ;; ARG を与えられた場合はその数だけ文字列を連結して入力する。
   (let* ((el (cadr (assq char rule)))
-	 (str (and el (cond ((stringp el) el)
-			    (skk-katakana (car el))
-			    (t (cdr el)))))
+	 (str (when el (cond ((stringp el) el)
+			     (skk-katakana (car el))
+			     (t (cdr el)))))
 	 (arg (prefix-numeric-value arg)))
     ;;
     (when str
@@ -576,7 +576,7 @@ keycode 131 = underscore\n"))
 	   (skk-nicola-process-okuri))
 	  (t
 	   ;;
-	   (and skk-henkan-active (skk-kakutei))))
+	   (when skk-henkan-active (skk-kakutei))))
     ;; 何かに使うことがあるかもしれないので、STR を返しておく。
     str))
 
@@ -672,8 +672,8 @@ keycode 131 = underscore\n"))
     ;; 確定するときは送り開始の標識を消す。
     (save-excursion
       (goto-char skk-nicola-okuri-flag)
-      (and (eq (following-char) ?*)
-	   (delete-char 1))))
+      (when (eq (following-char) ?*)
+	(delete-char 1))))
   ;;
   (setq skk-nicola-okuri-flag nil))
 

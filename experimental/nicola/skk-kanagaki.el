@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/14 14:50:19 $
+;; Last Modified: $Date: 2000/10/07 10:46:56 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -403,14 +403,14 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
     (list
      (do ((spec (nth 4 skk-kanagaki-rule-tree) (cdr spec))
 	  (list nil (car spec))
-	  (str nil (and (memq
-			 (nth 3 list)
-			 '(skk-kanagaki-set-okurigana
-			   skk-kanagaki-set-okurigana-no-sokuon))
-			(nth 1 list))))
+	  (str nil (when (memq
+			  (nth 3 list)
+			  '(skk-kanagaki-set-okurigana
+			    skk-kanagaki-set-okurigana-no-sokuon))
+		     (nth 1 list))))
 	 ((or str (null spec))
-	  (and (stringp str)
-	       (cons str "$BAw$j$"$jJQ493+;O(B"))))))))
+	  (when (stringp str)
+	    (cons str "$BAw$j$"$jJQ493+;O(B"))))))))
 
 ;;;###autoload
 (defun skk-kanagaki-insert (&optional arg)
@@ -471,29 +471,31 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
   ;; $BI,MW$J%b%8%e!<%k$r%m!<%I!#(B
   (require (intern (format "skk-%s" skk-kanagaki-keyboard-type)))
   ;; $B%-!<%P%$%s%I!#$?$@$7$3$l$O!"$h$jE,@Z$J%-!<Dj5A$r8+$D$1$k$^$G$N;CDjE*=hCV!#(B
-  (mapcar (function
-	   (lambda (cons)
-	     (and (symbol-value (car cons)) (commandp (cdr cons))
-		  (define-key skk-j-mode-map
-		    (symbol-value (car cons)) (cdr cons)))))
-	  '((skk-kanagaki-set-henkan-point-key . skk-set-henkan-point-subr)
-	    (skk-kanagaki-abbrev-mode-key . skk-abbrev-mode)
-	    (skk-kanagaki-katakana-mode-key . skk-toggle-kana)
-	    (skk-kanagaki-latin-jisx0208-mode-key . skk-jisx0208-latin-mode)
-	    (skk-kanagaki-hankaku-mode-key . skk-toggle-katakana)
-	    (skk-kanagaki-latin-mode-key . skk-latin-mode)
-	    (skk-kanagaki-code-input-key . skk-input-by-code-or-menu)
-	    (skk-kanagaki-toggle-rom-kana-key . skk-kanagaki-toggle-rom-kana)
-	    (skk-kanagaki-midashi-henkan-key . skk-kanagaki-midashi-henkan)
-	    (skk-kanagaki-previous-candidate-key . skk-previous-candidate)))
+  (let ((list
+	 '((skk-kanagaki-set-henkan-point-key . skk-set-henkan-point-subr)
+	   (skk-kanagaki-abbrev-mode-key . skk-abbrev-mode)
+	   (skk-kanagaki-katakana-mode-key . skk-toggle-kana)
+	   (skk-kanagaki-latin-jisx0208-mode-key . skk-jisx0208-latin-mode)
+	   (skk-kanagaki-hankaku-mode-key . skk-toggle-katakana)
+	   (skk-kanagaki-latin-mode-key . skk-latin-mode)
+	   (skk-kanagaki-code-input-key . skk-input-by-code-or-menu)
+	   (skk-kanagaki-toggle-rom-kana-key . skk-kanagaki-toggle-rom-kana)
+	   (skk-kanagaki-midashi-henkan-key . skk-kanagaki-midashi-henkan)
+	   (skk-kanagaki-previous-candidate-key . skk-previous-candidate))))
+    (while list
+      (let ((cons (car list)))
+	(when (and (symbol-value (car cons)) (commandp (cdr cons)))
+	  (define-key skk-j-mode-map
+	    (symbol-value (car cons)) (cdr cons))))
+      (setq list (cdr list))))
   ;;
   (define-key help-map skk-kanagaki-help-key 'skk-kanagaki-help)
   ;;
   (static-unless (memq skk-emacs-type '(nemacs mule1))
     (eval-after-load "skk-jisx0201"
-      '(and skk-kanagaki-hankaku-mode-key
-	    (define-key skk-jisx0201-mode-map skk-kanagaki-hankaku-mode-key
-	      'skk-toggle-katakana))))
+      '(when skk-kanagaki-hankaku-mode-key
+	 (define-key skk-jisx0201-mode-map skk-kanagaki-hankaku-mode-key
+	   'skk-toggle-katakana))))
   ;;
   (define-key skk-j-mode-map skk-kanagaki-start-henkan-key
     'skk-kanagaki-insert)
@@ -525,13 +527,13 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
 	   (t
 	    list))))
     (cond (skk-use-kana-keyboard
-	   (or (equal skk-rule-tree skk-kanagaki-rule-tree)
-	       (setq skk-rule-tree skk-kanagaki-rule-tree))
+	   (unless (equal skk-rule-tree skk-kanagaki-rule-tree)
+	     (setq skk-rule-tree skk-kanagaki-rule-tree))
 	   (let (skk-set-henkan-point-key)
 	     ad-do-it))
 	  (t
-	   (or (equal skk-rule-tree skk-kanagaki-rom-kana-rule-tree)
-	       (setq skk-rule-tree skk-kanagaki-rom-kana-rule-tree))
+	   (unless (equal skk-rule-tree skk-kanagaki-rom-kana-rule-tree)
+	     (setq skk-rule-tree skk-kanagaki-rom-kana-rule-tree))
 	   ad-do-it))))
 
 ;;

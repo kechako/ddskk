@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.20 2000/02/16 09:50:40 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.21 2000/03/19 14:03:15 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/02/16 09:50:40 $
+;; Last Modified: $Date: 2000/03/19 14:03:15 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -69,6 +69,8 @@
 	 (goto-char skk-save-point)
          (skk-set-marker skk-save-point nil)))))
 
+(def-edebug-spec skk-save-point t)
+
 (defmacro skk-message (japanese english &rest arg)
   ;; skk-japanese-message-and-error が non-nil だったら JAPANESE を nil であれ
   ;; ば ENGLISH をエコーエリアに表示する。
@@ -122,6 +124,8 @@
   (` (unwind-protect
 	 (progn (,@ form))
        (setq skk-previous-point (point)))))
+
+(def-edebug-spec skk-with-point-move t)
 
 (defmacro skk-face-on (object start end face &optional priority)
   (static-cond

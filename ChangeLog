@@ -1,3 +1,12 @@
+2000-03-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-MK (SKK_MODULES): Add skk-exsearch.
+
+	* experimental/skk-exsearch.el: New experimental program.
+
+	* skk-develop.el: Move edebug specs of `skk-save-point' and
+	`skk-with-point-move' to skk-macs.el.
+
 2000-03-16  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* SKK-MK (SKK-MK-cleanup-trouble-makers): Removed.

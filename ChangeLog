@@ -1,3 +1,7 @@
+2000-01-02  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-dos.el: Fix comments.
+
 1999-12-31  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-lookup.el (skk-lookup-get-method): Omit check by

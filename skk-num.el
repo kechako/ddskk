@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-num.el,v 1.6.2.4.2.5 2000/08/27 18:34:48 czkmt Exp $
+;; Version: $Id: skk-num.el,v 1.6.2.4.2.6 2000/09/24 20:18:15 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/27 18:34:48 $
+;; Last Modified: $Date: 2000/09/24 20:18:15 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -29,7 +29,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(eval-when-compile (require 'cl) (require 'skk-macs) (require 'skk-vars))
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
 ;;;###autoload
 (defun skk-num-compute-henkan-key (key)
@@ -98,8 +98,8 @@
                (if (and (> skk-henkan-count -1)
                         (nth skk-henkan-count skk-henkan-list))
                    ;; ("A" "#2" "C") -> ("A" ("#2" ."一") "C")
-                   (setf (nth skk-henkan-count skk-henkan-list)
-                         (cons key current))
+		   (setcar (nthcdr skk-henkan-count skk-henkan-list)
+			   (cons key current))
                  (setq skk-henkan-list
                        (nconc skk-henkan-list (list (cons key current))))))
               ;; #4
@@ -108,13 +108,13 @@
                    (setq current (cdr (car l)))
                    (if (and (> skk-henkan-count -1)
                             (nth skk-henkan-count skk-henkan-list))
-                       (progn
-                         (setf (nth skk-henkan-count skk-henkan-list) (car l))
-                         (setq skk-henkan-list (skk-splice-in
-                                                skk-henkan-list
-                                                (1+ skk-henkan-count)
-                                                (cdr l))))
-                     (setq skk-henkan-list (nconc skk-henkan-list l))))))
+		       (progn
+			 (setcar (nthcdr skk-henkan-count skk-henkan-list) (car l))
+			 (setq skk-henkan-list (skk-splice-in
+						skk-henkan-list
+						(1+ skk-henkan-count)
+						(cdr l))))
+		     (setq skk-henkan-list (nconc skk-henkan-list l))))))
         current))))
 
 (defun skk-num-convert*7 ()

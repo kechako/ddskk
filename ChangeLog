@@ -1,3 +1,9 @@
+1999-11-25  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-jisx0201.el (skk-setup-modeline): Make sure, under XEmacs,
+	`modeline-format' in each buffer is a list.
+	* skk.el (skk-setup-modeline): Ditto.
+
 1999-11-25  TSUMURA Tomoaki  <tsumura@kuis.kyoto-u.ac.jp>
 
 	* skk.el (skk-katakana-region): Fix the problem that

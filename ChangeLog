@@ -4,6 +4,7 @@
 	(skk-isearch-setup-keymap): Call it.
 	* skk.el (skk-truncate-message): Use `truncate-string' instead of
 	`truncate-string-to-width'.
+	* SKK-MK: Typo.
 
 2000-01-19  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
@@ -91,7 +92,7 @@
 	* SKK-MK (LISPDIR): Select a good place for MS-DOS and Windows.
 	(VERSION_SPECIFIC_LISPDIR): Ditto.
 	(standard-translation-table-for-decode): Under Emacs 20.3 or
-	lator, set this variable and compile skk-jisx0201.el properly.
+	later, set this variable and compile skk-jisx0201.el properly.
 
 	* etc/Emacs.ad: Typo.
 

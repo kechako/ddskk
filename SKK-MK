@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.16 2000/01/18 16:21:23 czkmt Exp $
-;; Last Modified: $Date: 2000/01/18 16:21:23 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.17 2000/01/19 16:59:13 czkmt Exp $
+;; Last Modified: $Date: 2000/01/19 16:59:13 $
 
 ;; Commentary
 ;;
@@ -259,7 +259,7 @@ end with `skk'." )
 (defconst SKK_DAREDEVIL_NOT_USE '(skk-vip skk-foreword stack-m))
 
 ;; This code is for skk-jisx0201.el.
-(cond ((fboundp 'make-translation-table) ;; Emacs 20.3 or lator
+(cond ((fboundp 'make-translation-table) ;; Emacs 20.3 or later
        (setq standard-translation-table-for-decode
 	     (make-translation-table nil)))
       ((fboundp 'make-unification-table) ;; Emacs 20.2

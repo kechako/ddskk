@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.24 2000/08/16 12:46:21 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.25 2000/08/21 02:22:51 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/08/16 12:46:21 $
+;; Last Modified: $Date: 2000/08/21 02:22:51 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -48,7 +48,7 @@
 ;;
 ;;
 ;; <業務連絡>
-::
+;;
 ;; このファイルを編集するときは、できれば XEmacs を使ってください。 Emacs 20 は
 ;; デフォルトでは JISX0201.1976 Japanese Roman を自動的に US-ASCII に変換するよ
 ;; うになっているからです。 Emacs 20.3 以降でこのファイルを編集する場合は、この

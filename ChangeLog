@@ -1,3 +1,15 @@
+2000-03-24  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-MK (SKK_MODULES): Add `skk-exserv'.
+
+	* experimental/skk-exserv.el: New experimental program.
+
+	* experimental/skk-exsearch.el (search-engine): Convert
+	`skk-henkan-key' by `skk-num-compute-henkan-key' if
+	`skk-use-numeric-conversion' is non-nil.
+        Remove arg ARGUMENT.
+	(skk-cdbget-search): Remove second argument `skk-henkan-key'.
+
 2000-03-22  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-server.el (skk-adjust-search-prog-list-for-server-search):

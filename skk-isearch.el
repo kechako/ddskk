@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.26 2000/09/06 14:59:28 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.27 2000/09/11 15:54:16 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/06 14:59:28 $
+;; Last Modified: $Date: 2000/09/11 15:54:16 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -53,7 +53,10 @@
 ;; skk-mode.
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'static))
+(eval-when-compile
+  (require 'cl)
+  (require 'skk-macs)
+  (require 'static))
 (require 'skk)
 (require 'skk-vars)
 
@@ -201,7 +204,6 @@ kakutei'ed and erase the buffer contents."
   "hook function called when skk isearch begin."
   ;; setup working buffer.  initial skk mode for isearch should be
   ;; determined in the original buffer and set in working buffer.
-  (require 'skk)
   (let ((initial (skk-isearch-initial-mode)))
     (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
       (skk-erase-prefix 'clean)
@@ -259,8 +261,8 @@ kakutei'ed and erase the buffer contents."
 	  ((eq mode 'latin) (skk-latin-mode-on))
 	  ((eq mode 'jisx0208-latin) (skk-jisx0208-latin-mode-on))))
   (setq skk-isearch-switch nil)
-  (or skk-isearch-in-editing
-      (setq skk-isearch-state nil))
+  (unless skk-isearch-in-editing
+    (setq skk-isearch-state nil))
   (when (and (boundp 'default-input-method)
 	     (string-match "^japanese-skk" (format "%s" default-input-method)))
     (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
@@ -284,31 +286,26 @@ Optional argument PREFIX is apppended if given."
 
 (defun skk-isearch-find-keys-define (map commands command)
   (let (keys prefs)
-    (mapcar
-     (function (lambda (c)
-		 (setq keys (where-is-internal c (current-global-map)))
-		 (mapcar
-		  (function (lambda (key)
-			      (catch 'tag
-				(let ((len (length key)))
-				  (cond ((> len 2)
-					 (throw 'tag nil))
-					((= len 2)
-					 (unless (member (aref key 0) prefs)
-					   (define-key map (vector (aref key 0))
-					     (make-sparse-keymap))
-					   (setq prefs (cons (aref key 0) prefs)))))
-				  (define-key map key command)))))
-		  keys)))
-     commands)))
+    (dolist (c commands)
+      (setq keys (where-is-internal c (current-global-map)))
+      (dolist (key keys)
+	(catch 'tag
+	  (let ((len (length key)))
+	    (cond ((> len 2)
+		   (throw 'tag nil))
+		  ((= len 2)
+		   (unless (member (aref key 0) prefs)
+		     (define-key map (vector (aref key 0))
+		       (make-sparse-keymap))
+		     (setq prefs (cons (aref key 0) prefs)))))
+	    (define-key map key command)))))))
 
 ;; XXX should be more generic
 (defun skk-isearch-setup-keymap (map)
   ;; printable chars.
-  (let ((c ?\040))
-    (while (< c ?\177)
-      (define-key map (char-to-string c) 'skk-isearch-wrapper)
-      (setq c (1+ c))))
+  (do ((c ?\040 (1+ c)))
+      ((>= c ?\177))
+    (define-key map (char-to-string c) 'skk-isearch-wrapper))
 
   ;; control chars for skk.
   (define-key map "\C-g" 'skk-isearch-keyboard-quit)
@@ -411,17 +408,14 @@ If the conversion is in progress and no string is fixed, just return nil."
 
 (defun skk-isearch-search-string-regexp (string)
   (if isearch-regexp
-      (let ((chars (string-to-char-list string))
-	    (prev (skk-isearch-last-char isearch-string))
-	    (result ""))
-	(while chars
-	  (if (and (skk-isearch-breakable-p prev)
-		   (skk-isearch-breakable-p (car chars)))
-	      (setq result (concat result skk-isearch-whitespace-regexp)))
-	  (setq result (concat result (char-to-string (car chars)))
-		prev (car chars)
-		chars (cdr chars)))
-	result)
+      (do ((prev (skk-isearch-last-char isearch-string) (car chars))
+	   (result "" (concat result (char-to-string (car chars))))
+	   (chars (string-to-char-list string) (cdr chars)))
+	  ((null chars) result)
+	(if (and (skk-isearch-breakable-p prev)
+		 (skk-isearch-breakable-p (car chars)))
+	    (setq result (concat result skk-isearch-whitespace-regexp))))
+    ;; else
     string))
 
 (defun skk-isearch-mode-message ()
@@ -468,13 +462,11 @@ If the current mode is different from previous, remove it first."
 		(setq skk-isearch-incomplete-message (buffer-string))
 		(skk-isearch-incomplete-message))))))
       (let ((str (skk-isearch-mode-string)))
-	(mapcar
-	 (function (lambda (cmd)
-		     (or (string-match (concat "^" (regexp-quote str))
-				       (car (cdr cmd)))
-			 (setcdr cmd (cons (concat str (car cmd))
-					   (cdr (cdr cmd)))))))
-	 isearch-cmds)
+	(dolist (cmd isearch-cmds)
+	  (or (string-match (concat "^" (regexp-quote str))
+			    (car (cdr cmd)))
+	      (setcdr cmd (cons (concat str (car cmd))
+				(cdr (cdr cmd))))))
 	(isearch-delete-char))))
 
 (defun skk-isearch-kakutei (isearch-function)

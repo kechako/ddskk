@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.44 2000/09/10 12:10:17 czkmt Exp $
-;; Last Modified: $Date: 2000/09/10 12:10:17 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.45 2000/09/12 16:54:50 czkmt Exp $
+;; Last Modified: $Date: 2000/09/12 16:54:50 $
 
 ;; Commentary
 ;;
@@ -274,10 +274,24 @@
 	       (lambda (elt)
 		 (setq SKK_MODULES (delq elt SKK_MODULES))))
 	      '(ccc skk-cursor skk-isearch skk-jisx0201 skk-study))
-      (require 'cl)
       (condition-case nil
-	  (load "bytecomp-runtime.el")
+	  (progn
+	    (load "bytecomp-runtime")
+	    (load "bytecomp")
+	    (load "byte-optimize"))
 	(error))
+      (require 'cl)
+      ;; JUST WORKING AROUND FOR A BUG IN ORIGINAL EMACS 18.59.
+      ;; APPLY patch/e18/cl_el-defsetf.patch FOR REAL FIX.
+      (unless (get 'nth :setf-update-fn)
+	(message "%s" "\
+Loading cl... This CL is BROKEN!!
+You must overwrite cl.elc with patch/e18/cl.elc.
+Just working around for it...")
+	(defsetf nth
+	  setnth
+	  "`setf' inversion for `nth'"))
+      ;;
       (require 'skk-e18 (expand-file-name
 			 "experimental/skk-e18.el"
 			 default-directory))

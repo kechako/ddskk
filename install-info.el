@@ -47,9 +47,10 @@
   (if (fboundp 'point-at-eol)
       (` (point-at-eol (, n)))
     (` (save-excursion
-	 (unless (or (null (, n)) (= 1 (, n)))
-	   (forward-line (- (, n) 1)))
-	 (end-of-line)
+	 (if (or (null (, n)) (= 1 (, n)))
+	     (end-of-line)
+	   (when (eq (forward-line (- (, n) 1)) 0)
+	     (end-of-line)))
 	 (point)))))
 
 ;; Functions.

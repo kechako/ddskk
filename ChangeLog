@@ -2,6 +2,9 @@
 
 	* experimental/skk-dos.el (require): Fix.
 
+	* experimental/skk-e18.el (insert-file-contents-as-coding-system):
+	Sync with APEL.
+
 	* skk-macs.el (skk-j-mode-on): Create a local keymap here.
 	(skk-latin-mode-on): Ditto.
 	(skk-jisx0208-latin-mode-on): Ditto.
@@ -1432,7 +1435,7 @@
 	* skk.el (skk-make-temp-file): New
 	`skk-file-exists-and-writable-p'.
 	Provide "~/tmp" as last choice of working directory.
-	
+
 	* skk-foreword.el (skk-file-exists-and-writable-p): New inline
 	function.
 
@@ -1455,7 +1458,7 @@
 	Make meaning of 3th element reverse.  Not seach if nil.
 	Change :type accordingly.
 	(skk-lookup-get-method): Get proper method according to okurigana
-	and `skk-process-okuri-early'. 
+	and `skk-process-okuri-early'.
 	(skk-lookup-get-nonsearch-sex): Change index accordingly.
 	(skk-lookup-get-pickup-regexp): Ditto.
 	(skk-lookup-get-split-regexp): Ditto.
@@ -1507,10 +1510,10 @@
 	QUIET to FORCE.
 
 1999-10-15  Takao KAWAMURA <kawamura@ike.tottori-u.ac.jp>, Mikio Nakajima  <minakaji@osaka.email.ne.jp>
-	
+
 	* experimental/skk-study.el (skk-study-read): New optional
 	argument FORCE.
-	
+
 1999-10-15  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* experimental/skk-study.el (skk-study-update): Bug fixed.
@@ -1556,12 +1559,12 @@
 1999-10-06  Tomotaka SUWA <cooper@saitama.fujimic.fujisankei-g.co.jp>
 
 	(skk-make-temp-file): Bug fixed.
-	
+
 1999-10-06  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (skk-remove-common): Assign proper value to
 	`skk-char-okurigana'.
-	
+
 	* SKK-MK (EMU_PREFIX): get environment variable `EMU_PREFIX'
 	first.
 
@@ -1574,7 +1577,7 @@
 	(skk-study-read-1): Use `with-temp-buffer' instead of
 	`save-excursion'.
         Check with `find-coding-system' if `coding-system-p ' returns nil.
-	
+
 	* experimental/skk-lookup.el (skk-lookup-test-regexp): New
 	function.
 	(skk-lookup-option-alist): Add "IWAKOKU" entry.
@@ -1597,7 +1600,7 @@
 1999-10-03  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-vars.el: Update autoloads.
-	
+
 	* doc/skk.texi (お願い): Add skk-dic ML e-mail address.
 
 	* experimental/skk-lookup.el (skk-lookup-pickup-headings): Bind
@@ -1610,7 +1613,7 @@
 	(skk-lookup-process-heading): Simplify slighly.
 	New arguments PICKUP-REGEXP and SPLIT-REGEXP.
 	Discard temporary variable of the same names.
- 	Process properly when only SPLIT-REGEXP is specified and PICKUP-REGEXP
+	Process properly when only SPLIT-REGEXP is specified and PICKUP-REGEXP
 	is nil.
 
 	* skk.el (skk-mode): Require skk-leim.el when running Mule3,
@@ -1625,7 +1628,7 @@
 
 	* skk-isearch.el (skk-isearch-mode-string-alist): Tagify.
 	* (skk-isearch-mode-string-alist): Specify type and tagify.
-	
+
 	* skk-num.el (skk-num-type-alist): Specify type and tagify.
 	* skk-gadget.el (skk-number-style): Ditto.
 	* skk-server.el (skk-servers-list): Ditto.
@@ -1642,29 +1645,29 @@
 
 	* experimental/skk-lookup.el (skk-lookup-pickup-pattern,
 	skk-lookup-split-pattern): Removed.
-	
+
 	(skk-lookup-search-agents, skk-lookup-option-alist,
 	skk-lookup-default-option-list, skk-lookup-search-modules): New
 	user variables.
-	
- 	(skk-lookup-agent-list, skk-lookup-default-module,
+
+	(skk-lookup-agent-list, skk-lookup-default-module,
 	skk-lookup-module-list): New internal variables.
-	
+
 	(skk-lookup-get-method, skk-lookup-get-pickup-regexp,
 	skk-lookup-get-split-regexp): New inline functions.
-	
+
 	(skk-lookup-search): Use `skk-lookup-default-module'.
 	Bind `lookup-enable-gaiji' to nil not to put out gaiji.
 	Get search method by each dictionary.
-	
+
 	(skk-lookup-process-heading): Get regexp from name of dictionary.
-	
+
 	(skk-lookup-default-module, skk-lookup-module-list,
 	skk-lookup-new-module, skk-lookup-agent-list,
 	skk-lookup-pickup-headings): New functions.
 
 1999-09-30  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
-	
+
 	* skk-num.el: Require cl only when compiling.
 
 	* experimental/skk-lookup.el: Require cl when compiling.
@@ -1675,10 +1678,10 @@
 
 	* skk-foreword.el (skk-get-current-candidate-simply): Add error
 	checking.
-	
+
 	* skk.el (kill-buffer): Do `skk-kakutei' only when `kill-buffer'
 	is called interactively.
-	
+
 1999-09-29  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* experimental/skk-lookup.el: New file.

@@ -5,9 +5,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.1 1999/11/22 16:00:24 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.2 1999/11/22 16:33:50 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/22 16:00:24 $
+;; Last Modified: $Date: 1999/11/22 16:33:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -53,7 +53,7 @@
 ;; skk-mode.
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'skk-vars))
+(eval-when-compile (require 'skk-macs) (require 'skk-vars) (require 'static))
 
 ;; interface to skk.el
 ;;
@@ -280,7 +280,7 @@ Optional argument PREFIX is apppended if given."
 
 (or (and (boundp 'skk-isearch-mode-map)
 	 skk-isearch-mode-map)
-    (if (eq skk-emacs-type 'xemacs)
+    (static-if (eq skk-emacs-type 'xemacs)
         (progn
           (setq skk-isearch-mode-map (skk-isearch-setup-keymap (make-keymap)))
           (set-keymap-parents skk-isearch-mode-map isearch-mode-map) )

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.71 2000/08/31 14:06:34 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.72 2000/09/09 04:25:25 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/31 14:06:34 $
+;; Last Modified: $Date: 2000/09/09 04:25:25 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/08/31 14:06:34 $")
+      (let* ((raw-date "$Date: 2000/09/09 04:25:25 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1703,10 +1703,13 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		(backward-char 1)
 		(insert "\n  "))
 	      (forward-line 1)))
-	  ;; *候補* バッファを見易くする。
-	  ;; (save-window-excursion の中なので大丈夫なはず)
-	  (delete-other-windows)
-	  (display-buffer buff))))
+	  (unless (eq (next-window) (selected-window))
+	    ;; *候補* バッファを見易くする。
+	    ;; (save-window-excursion の中なので大丈夫なはず)
+	    (delete-other-windows))
+	  (display-buffer buff)
+	  (or (pos-visible-in-window-p)
+	      (recenter '(1))))))
     ;; 表示する候補数を返す。
     n))
 

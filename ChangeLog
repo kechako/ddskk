@@ -1,5 +1,13 @@
 1999-12-04  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-cursor.el (skk-cursor-set-properly): Change cursor color to
+	`skk-cursor-jisx0201-color' when needed.
+
+	* skk-jisx0201.el (skk-toggle-katakana): Call
+	`skk-cursor-set-properly'.
+
+1999-12-04  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* skk.el (skk-define-menu-bar-map): Call lambda expressions by
 	`call-interactively'.
 

@@ -1,5 +1,8 @@
-2000-01-25  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+2000-01-26  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk.el (skk-henkan-show-candidate-subr): Revive.
+
+2000-01-25  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-macs.el (skk-str-length): Use `string-to-char-list' for
 	Emacsen other than XEmacs, Mule4 and Mule3 (hereinafter referred

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.78 2000/10/08 13:10:20 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.79 2000/10/12 10:09:57 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/08 13:10:20 $
+;; Last Modified: $Date: 2000/10/12 10:09:57 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/10/08 13:10:20 $")
+      (let* ((raw-date "$Date: 2000/10/12 10:09:57 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1551,11 +1551,12 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	     (condition-case nil
 		 (let* ((event (skk-read-event))
 			(char (event-to-character event))
-			(key (cond ((eq skk-emacs-type 'xemacs)
-				    (event-key event))
-				   (t
-				    (let ((keys (recent-keys)))
-				      (vector (aref keys (1- (length keys))))))))
+			(key (static-cond
+			      ((eq skk-emacs-type 'xemacs)
+			       (event-key event))
+			      (t
+			       (let ((keys (recent-keys)))
+				 (vector (aref keys (1- (length keys))))))))
 			num)
 		   (if (eq skk-emacs-type 'xemacs)
 		       (message ""))	; clear out candidates in echo area
@@ -3717,71 +3718,73 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 (defun skk-setup-modeline ()
   "モード行へのステータス表示を準備する。"
   (cond ((eq skk-status-indicator 'left)
-	 (mapcar (function
-		  (lambda (el)
-		    (let ((sym (car el))
-			  (strs (cdr el)))
-		      (if (string= (symbol-value sym) (cdr strs))
-			  (set sym (car strs))))))
-		 (append
-		  (cond
-		   ((and (fboundp 'face-proportional-p)
-			 (face-proportional-p 'modeline))
-		    '((skk-latin-mode-string . ("--SKK:" . " SKK"))
-		      (skk-hiragana-mode-string . ("--かな:" . " かな"))
-		      (skk-katakana-mode-string . ("--カナ:" . " カナ"))
-		      (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
-		      (skk-abbrev-mode-string . ("--aあ:" . " aあ"))
-		      (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201"))))
-		   (t
-		    '((skk-latin-mode-string . ("--SKK::" . " SKK"))
-		      (skk-hiragana-mode-string . ("--かな:" . " かな"))
-		      (skk-katakana-mode-string . ("--カナ:" . " カナ"))
-		      (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
-		      (skk-abbrev-mode-string . ("--aあ::" . " aあ"))
-		      (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201")))))))
+	 (let ((list
+		(cond
+		 ((and (fboundp 'face-proportional-p)
+		       (face-proportional-p 'modeline))
+		  '((skk-latin-mode-string . ("--SKK:" . " SKK"))
+		    (skk-hiragana-mode-string . ("--かな:" . " かな"))
+		    (skk-katakana-mode-string . ("--カナ:" . " カナ"))
+		    (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
+		    (skk-abbrev-mode-string . ("--aあ:" . " aあ"))
+		    (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201"))))
+		 (t
+		  '((skk-latin-mode-string . ("--SKK::" . " SKK"))
+		    (skk-hiragana-mode-string . ("--かな:" . " かな"))
+		    (skk-katakana-mode-string . ("--カナ:" . " カナ"))
+		    (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
+		    (skk-abbrev-mode-string . ("--aあ::" . " aあ"))
+		    (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201")))))))
+	   (while list
+	     (let ((sym (caar list))
+		   (strs (cdar list)))
+	       (if (string= (symbol-value sym) (cdr strs))
+		   (set sym (car strs))))
+	     (setq list (cdr list))))
 	 ;;
 	 (static-cond
 	  ((eq skk-emacs-type 'xemacs)
 	   (let ((extent (make-extent nil nil)))
-	     (or (rassq 'skk-input-mode-string default-modeline-format)
-		 (setq-default default-modeline-format
-			       (append (list
-					""
-					(cons extent 'skk-input-mode-string)
-					default-modeline-format))))
-	     (mapc (function
-		    (lambda (buf)
-		      (when (buffer-live-p buf)
-			(save-excursion
-			  (set-buffer buf)
-			  (and (listp modeline-format)
-			       (or (rassq 'skk-input-mode-string modeline-format)
-				   (setq modeline-format
-					 (append (list
-						  ""
-						  (cons extent 'skk-input-mode-string))
-						 modeline-format))))))))
-		   (buffer-list))))
+	     (unless (rassq 'skk-input-mode-string default-modeline-format)
+	       (setq-default default-modeline-format
+			     (append (list
+				      ""
+				      (cons extent 'skk-input-mode-string)
+				      default-modeline-format))))
+	     (mapc
+	      (function
+	       (lambda (buf)
+		 (when (buffer-live-p buf)
+		   (save-excursion
+		     (set-buffer buf)
+		     (when (and (listp modeline-format)
+				(not (rassq 'skk-input-mode-string modeline-format)))
+		       (setq modeline-format
+			     (append (list
+				      ""
+				      (cons extent 'skk-input-mode-string))
+				     modeline-format)))))))
+	      (buffer-list))))
 	  ;;
 	  (t
-	   (or (memq 'skk-input-mode-string (default-value 'mode-line-format))
-	       (setq-default mode-line-format
+	   (unless (memq 'skk-input-mode-string (default-value 'mode-line-format))
+	     (setq-default mode-line-format
+			   (append '("" skk-input-mode-string)
+				   (default-value 'mode-line-format))))
+	   (let ((list (buffer-list)))
+	     (while list
+	       (let ((buf (car list)))
+		 (when (buffer-live-p buf)
+		   (save-excursion
+		     (set-buffer buf)
+		     (when (and (listp mode-line-format)
+				(or (assq 'mode-line-format (buffer-local-variables))
+				    (memq 'mode-line-format (buffer-local-variables)))
+				(not (memq 'skk-input-mode-string mode-line-format)))
+		       (setq mode-line-format
 			     (append '("" skk-input-mode-string)
-				     (default-value 'mode-line-format))))
-	   (mapcar (function
-		    (lambda (buf)
-		      (when (buffer-live-p buf)
-			(save-excursion
-			  (set-buffer buf)
-			  (and (listp mode-line-format)
-			       (or (assq 'mode-line-format (buffer-local-variables))
-				   (memq 'mode-line-format (buffer-local-variables)))
-			       (or (memq 'skk-input-mode-string mode-line-format)
-				   (setq mode-line-format
-					 (append '("" skk-input-mode-string)
-						 mode-line-format))))))))
-		   (buffer-list))))
+				     mode-line-format))))))
+	       (setq list (cdr list))))))
 	 (setq-default skk-input-mode-string "")
 	 (force-mode-line-update t))
 	;;

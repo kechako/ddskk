@@ -1,5 +1,16 @@
+2000-09-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* READMEs/CVS_00readme: Update.
+
+	* skk-vars.el (skk-coding-system-alist): sjis => shift_jis.
+
+	* skk.el (skk-henkan-show-candidate-subr): If the selected frame
+	has 2 or more windows, delete other windows.
+	If point is not visible in the selected window, put point in the
+	center of the window.
+
 2000-09-09  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
-	
+
 	* experimental/skk-cursor2.el: Merged skk-cursor2 and skk-cursor3
 	into skk-cursor.el.
 	* experimental/skk-cursor3.el: Ditto.

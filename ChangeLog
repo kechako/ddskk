@@ -1,3 +1,11 @@
+2000-09-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* Makefile (package): Call `SKK-MK-compile-package'.
+
+	* SKK-MK (SKK-MK-compile-package,
+	SKK-MK-generate-autoloads-el-package): New functions.
+	(SKK-MK-install-package): Call `SKK-MK-compile-package'.
+
 2000-09-17  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-vars.el: Grouping by function and filename.
@@ -28,7 +36,7 @@
 	(skk-server): Ditto. 
 	(skk-init-file): Use `defcustom' instead of `defvar'.
 
-2000-09-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+2000-09-17  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el: Add comments.
 

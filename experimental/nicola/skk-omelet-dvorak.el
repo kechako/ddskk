@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/06 11:34:49 $
+;; Last Modified: $Date: 2000/09/07 13:33:59 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -183,8 +183,8 @@ ANSI Dvorak 配列キーボードで omelet 入力するための基本ルール。")
     ;;
     (?1 "？") (?2 "／") (?3 "〜") (?4 "「") (?5 "」")
     ;;
-    (?6 "“") (?7 ("”" . "＆")) (?8 "＋") (?9 "【") (?0 "】") (?\[ "…") (?\] "＋")
-    (?\\ "｜")
+    (?6 "“") (?7 ("”" . "＆")) (?8 "＋") (?9 "【") (?0 "】") (?\[ "…")
+    (?\] "＋") (?\\ "｜")
     ;;
     (?' ("ァ" . "ぁ")) (?, ("エ" . "え")) (?. ("リ" . "り")) (?p ("ャ" . "ゃ"))
     (?y ("レ" . "れ"))

@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/06 11:34:49 $
+;; Last Modified: $Date: 2000/09/07 13:33:59 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -25,8 +25,7 @@
 ;;; Commentary:
 
 ;; このプログラムは箕浦逸史さん作の  NICOLA-SKK version 0.39 を基に、 Daredevil
-;; SKK に対応させたものです。原作のアイデアはほぼそのまま利用したつもりですが、
-;; 現段階ではまだ機能的にオリジナルに劣るかもしれません。
+;; SKK に対応させたものです。原作のアイデアに基いて実装していく予定です。
 ;;
 ;; キー配列のルールは別ファイルに細分化しています。これらは、同じく箕浦さん作の
 ;; omelet (たまご用の親指シフト入力インターフェイス) および同氏の web site の文

@@ -20,7 +20,8 @@ VERSION_SPECIFIC_LISPDIR = NONE
 
 GOMI	= *.elc auto-autoloads.el custom-load.el nicola-ddskk-autoloads.el
 
-VERSION	= 0.2.3
+DDSKK_VERSION=11.3
+VERSION	= $(DDSKK_VERSION)-`date -u '+%Y%m%d'`
 
 all: elc
 
@@ -45,5 +46,5 @@ clean:
 tar: clean
 	cd .. ; $(RM) $(PACKAGE)-$(VERSION) $(PACKAGE)-$(VERSION).tar.gz ;\
 	ln -sf nicola $(PACKAGE)-$(VERSION) ;\
-	$(TAR) cvpf $(PACKAGE)-$(VERSION).tar -X .exclude -h $(PACKAGE)-$(VERSION) ;\
+	$(TAR) cvpf $(PACKAGE)-$(VERSION).tar --exclude=CVS -h $(PACKAGE)-$(VERSION) ;\
 	$(GZIP) $(PACKAGE)-$(VERSION).tar

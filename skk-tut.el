@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-tut.el,v 1.33.2.1 2001/09/09 03:03:34 czkmt Exp $
+;; Version: $Id: skk-tut.el,v 1.33.2.2 2001/09/09 03:04:50 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2001/09/09 03:03:34 $
+;; Last Modified: $Date: 2001/09/09 03:04:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -277,7 +277,9 @@
     (skk-update-jisyo-function . 'skk-update-jisyo-original)
     (skk-use-color-cursor . (and window-system (fboundp 'x-display-color-p) (x-display-color-p)))
     (skk-cursor-change-width . nil)
-    (skk-use-face . nil)
+    (skk-use-face . (if (memq skk-emacs-type '(nemacs mule1))
+			nil
+		      window-system))
     (skk-use-look . nil)
     (skk-use-numeric-conversion . t)
     (skk-use-rdbms . nil)

@@ -1,3 +1,14 @@
+2000-07-08  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-MK (SKK_MODULES): Add `skk-cursor2' and `ccc'.
+
+	* skk-setup.el.in: Add check if skk-cursor2 feature is exists or
+	not.
+
+	* experimental/ccc.el: New experimental program.
+	* experimental/skk-cursor2.el: Ditto (modified version of
+	skk-cursor.el which uses `ccc.el'.
+
 2000-06-24  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-viper.el (viper-forward-word-kernel): Add check whether

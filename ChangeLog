@@ -1,5 +1,8 @@
 2000-09-10  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* Makefile (tar): Modify to make archive in openlab.ring.gr.jp.
+	(snapshot): Ditto.
+
 	* READMEs/skk-faq.txt: Updated.
 
 	* skk-setup.el.in (isearch-mode-end-hook): Remove

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.83 2000/10/20 22:57:44 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.84 2000/10/22 05:14:57 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/20 22:57:44 $
+;; Last Modified: $Date: 2000/10/22 05:14:57 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -1332,7 +1332,9 @@ SKK abbrev モード以外では、skk-insert-comma 関数を使用すること。"
   (interactive "*P")
   (skk-with-point-move
    (if (eq last-command 'skk-completion)
-       (skk-previous-completion)
+       (progn
+	 (setq this-command 'skk-completion)
+	 (skk-previous-completion))
      (skk-emulate-original-map arg))))
 
 (defun skk-jisx0208-latin-insert (arg)

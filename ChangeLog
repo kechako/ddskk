@@ -1,5 +1,7 @@
 2000-10-22  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk.el (skk-abbrev-comma): Bug fixed.
+
 	* ccc.el (ccc-defadvice): Check if FUNCTION is fboundp or not.
 	Fixed warning message.
 	* skk-macs.el (skk-defadvice): Ditto.

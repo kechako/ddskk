@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.43 2000/10/15 20:34:50 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.44 2000/10/22 05:14:56 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:50 $
+;; Last Modified: $Date: 2000/10/22 05:14:56 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2522,7 +2522,7 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
   ;; KANJIGEN: Super$BE}9g<-=q(B99 Disk2/$B4A;z8;(B : EPWING
   ;; KOUJIEN: $B9-<-1q(B $BBh(B4$BHG(B($B4dGH(B,EPWING) $B%^%k%A%a%G%#%"HG(B
   ;; KOJIEN: $B9-<-1qBh(B5$BHG(B($B4dGH(B,EPWING)
-  ;; KOKUGO: what's this?
+  ;; KOKUGO: $BF|K\8l<-E5!J8=Be9q8l!"30Mh8l!K(B
   ;; RIKAGAKU: $BM}2=3X<-E5(B
   ;; WAEI: what's this?
   "*$B%G%#%U%)%k%H$N<-=q8!:w!"J8;z@Z$j=P$7%*%W%7%g%s!#(B

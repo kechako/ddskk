@@ -1,6 +1,6 @@
 2000-09-06  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
-	* SKK-MK (SKK-MK-server-installed-p): Newfunction.
+	* SKK-MK (SKK-MK-server-installed-p): New function.
 	(SKK-MK-install): Don't set `skk-large-jisyo' if a local server is
 	found.
 	(SKk-MK-install-package): Ditto.

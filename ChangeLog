@@ -1,3 +1,9 @@
+1999-11-25  TSUMURA Tomoaki  <tsumura@kuis.kyoto-u.ac.jp>
+
+	* skk.el (skk-katakana-region): Fix the problem that
+	lambda function returns `nil' on byte-compiled code.
+	(skk-hiragana-region): Ditto.
+
 1999-11-25  Takao KAWAMURA  <kawamura@debian.org>
 
 	* skk-autoloads.el: Added an entry for `skk-compile-rule-list'.

@@ -4,6 +4,8 @@
 
 	* skk-macs.el (skk-do-auto-fill): Do not fill until fill-column.
 
+	* skk-num.el, skk-vars.el: Sync.
+
 2001-09-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* ChangeLog.3: New file.
@@ -18,8 +20,8 @@
 
 
 
-Version: $Id: ChangeLog,v 1.368.2.4 2001/09/11 12:08:06 czkmt Exp $
-Last Modified: $Date: 2001/09/11 12:08:06 $
+Version: $Id: ChangeLog,v 1.368.2.5 2001/09/11 16:52:21 czkmt Exp $
+Last Modified: $Date: 2001/09/11 16:52:21 $
 
 Local Variables:
 buffer-file-coding-system: iso-2022-jp

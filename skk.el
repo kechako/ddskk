@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.60 2000/08/02 14:35:27 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.61 2000/08/02 23:41:29 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/02 14:35:27 $
+;; Last Modified: $Date: 2000/08/02 23:41:29 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/08/02 14:35:27 $")
+      (let* ((raw-date "$Date: 2000/08/02 23:41:29 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -2778,15 +2778,10 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 (defun skk-search ()
   ;; skk-current-search-prog-list の要素になっているプログラムを評価して、
   ;; skk-henkan-keyをキーにして検索を行う。
-  (let (l prog)
+  (let (l)
     (while (and (null l) skk-current-search-prog-list)
-      (setq l (eval (setq prog (car skk-current-search-prog-list)))
-	    skk-current-search-prog-list (cdr skk-current-search-prog-list))
-      (when skk-use-numeric-conversion
-	(setq l
-	      (append l
-		      (let (skk-use-numeric-conversion)
-			(eval prog))))))
+      (setq l (eval (car skk-current-search-prog-list))
+	    skk-current-search-prog-list (cdr skk-current-search-prog-list)))
     l))
 
 (defun skk-search-jisyo-file (file limit &optional nomsg)

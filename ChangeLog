@@ -1,10 +1,16 @@
+2000-01-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk.el (skk-isearch-forward, skk-isearch-forward-regexp,
+	skk-isearch-backward, skk-isearch-backward-regexp): Enclose with
+	`static-unless' instead of unless.
+
 2000-01-30  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* experimental/skk-e18.el (skk-hiragana-to-katakana): Moved to
 	skk.el.
 	(skk-katakana-to-hiragana): Ditto.
 	(unread-command-events): Removed.
-	
+
 	* skk-macs.el (skk-lisp-prog-p): Use `skk-ascii-char-p'.
 	(skk-unread-event): Add definition for Emacs 18.
 
@@ -891,7 +897,7 @@
 	(SKK_DAREDEVIL_NOT_USE): Add stack-m.
 
 	* stack-m: Removed.
-	
+
 1999-11-30  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-vars.el (skk-start-henkan-with-completion-char): Use `?\240'
@@ -908,15 +914,15 @@
 	* skk-macs.el (skk-find-coding-system): New macro.
 
 	* skk-study.el (skk-study-save,skk-study-read-1): Use
- 	`skk-find-coding-system'.
-	
+	`skk-find-coding-system'.
+
 	* skk.el (skk-save-jisyo-1): Ditto.
 
 	* skk.el (skk-get-jisyo-buffer): Use `skk-find-coding-system'.
-  	Accept pair of filename and coding-system as an argument.
+	Accept pair of filename and coding-system as an argument.
 
 	* skk-obsolete.el (skk-obsolete-function-alist): Replace
- 	`skk-set-cursor-color-properly' with `skk-set-cursor-properly'.
+	`skk-set-cursor-color-properly' with `skk-set-cursor-properly'.
 
 1999-11-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
@@ -935,7 +941,7 @@
 	(tar): Depend on clean.
 
 1999-11-28  FURUE Hideyuki  <furue@kke.co.jp>
-	
+
 	* skk-comp.el (skk-completion-original): Use
 	`skk-completion-depth' to search completed word.
 	(skk-previous-completion-original): Ditto.
@@ -1016,7 +1022,7 @@
 
 	* SKK-MK (SKK_PACKAGE_NOT_USE): New constant.
 	(SKK_DAREDEVIL_NOT_USE): Ditto.
-	(SKK-MK-install): Make directories, SKK_LISPDIR, SKK_DATADIR and 
+	(SKK-MK-install): Make directories, SKK_LISPDIR, SKK_DATADIR and
 	SKK_INFODIR if they do not exist.
 	Remove SKK_DAREDEVIL_NOT_USE from SKK_MODULES and delete related
 	files.

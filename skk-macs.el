@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.24 2000/09/30 15:26:51 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.25 2000/10/13 11:15:10 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/30 15:26:51 $
+;; Last Modified: $Date: 2000/10/13 11:15:10 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -32,7 +32,7 @@
 (eval-when-compile
   (require 'static) (require 'skk-vars)
   (defconst skk-emacs-type
-    (cond ((string-match "XEmacs" emacs-version) 'xemacs)
+    (cond ((featurep 'xemacs) 'xemacs)
 	  ((and (boundp 'NEMACS)) 'nemacs)
 	  ((and (boundp 'mule-version)
 		(string< "5.0" mule-version) 'mule5))
@@ -45,7 +45,7 @@
 	  ((and (boundp 'mule-version)
 		(string< "1.0" mule-version) 'mule1))))
   (defmacro skk-detect-emacs ()
-    (` (or (eq (cond ((string-match "XEmacs" emacs-version) 'xemacs)
+    (` (or (eq (cond ((featurep 'xemacs) 'xemacs)
 		     ((and (boundp 'NEMACS)) 'nemacs)
 		     ((and (boundp 'mule-version)
 			   (string< "5.0" mule-version) 'mule5))

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.48 2000/10/27 09:42:15 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.49 2000/10/28 01:48:36 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/27 09:42:15 $
+;; Last Modified: $Date: 2000/10/28 01:48:36 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -189,6 +189,10 @@
 
 (defgroup skk-server nil "SKK server related customization." 
   :prefix "skk-server-" 
+  :group 'skk-custom-by-filename)
+
+(defgroup skk-annotation nil "SKK annotation related customization." 
+  :prefix "skk-annotation-" 
   :group 'skk-custom-by-filename)
 
 ;;(defgroup skk-viper nil "SKK/Viper related customization."
@@ -2659,7 +2663,43 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
 (defcustom skk-show-annotation nil
   "*Non-nil $B$G$"$l$P!"<-=q$N8uJd$K4^$^$l$k(B`;'$B0J9_$NJ8;zNs$rJQ49$N:]!"Cm5-$H$7$FJL(B Window $B$KI=<($9$k!#(B"
   :type 'boolean
+  :group 'skk-annotation
   :group 'skk-misc)
+
+(defcustom skk-annotation-function nil 
+  "*annotation $B$rI=<($9$k$+$I$&$+$N%A%'%C%/;~$K%3!<%k$5$l$k4X?t!#(B
+non-nil $B$rJV$9$H(B annotation $B$rI=<($9$k!#(B"
+  :type 'function
+  :group 'skk-annotation
+  :group 'skk-hooks-and-functions)
+
+(defcustom skk-annotation-show-message t
+  "*Non-nil $B$G$"$l$P!"Cm5-$r%(%3!<%(%j%"$KI=<($9$k!#(B"
+  :type 'boolean
+  :group 'skk-annotation
+  :group 'skk-misc)
+
+(defcustom skk-annotation-mode-hook nil
+  "*SKK annotation mode $B$KF~$C$?$H$-$N%U%C%/!#(B"
+  :type 'hook
+  :group 'skk-annotation
+  :group 'skk-hooks-and-functions)
+
+;; SKK-ANNORTATION related internal constants and variables.
+;; constants.
+(defconst skk-annotation-buffer "*SKK annotation*")
+
+;; global variables.
+(defvar skk-annotation-mode-map nil "*SKK annotation $B%b!<%I$N%-!<%^%C%W!#(B")
+
+(defvar skk-annotation-original-window-configuration nil
+  "SKK annotation mode $B$KF~$kA0$N(B window configuration$B!#(B
+skk-annotation-save-and-quit $B$r8F$V$H$3$N(B window configuration
+$B$r;H$C$F(B SKK annotation mode $B$KF~$kA0$N(B window $B>uBV$KLa$9!#(B")
+
+;; buffer local variables.
+(skk-deflocalvar skk-annotation-mode nil
+  "Non-nil $B$G$"$l$P!"(Bannotation $B%b!<%I$G$"$k$3$H$r<($9!#(B")
 
 (require 'product)
 (product-provide (provide 'skk-vars) (require 'skk-version))

@@ -1,3 +1,29 @@
+2000-10-28  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-vars.el (skk-annotation): New group.
+	(skk-annotation-buffer): New internal constants.
+	(skk-annotation-function): New user variable.
+	(skk-annotation-mode-hook): Ditto.
+	(skk-annotation-show-message): New user option.
+	(skk-annotation-mode-map): New keymap.
+	(skk-annotation-original-window-configuration): New internal
+	variable.
+	(skk-annotation-mode): Ditto.
+
+	* experimental/skk-annotation.el: Require `skk-macs' and
+	`skk-vars'.
+	(skk-annotation-insert): New inline function.
+	(skk-annotation-quote-1): Ditto.
+	(skk-annotation-show): Rename to `skk-annotation-show-buffer'.
+	(skk-annotation-show): New function.
+	(skk-annotation-show-1): Ditto.
+	(skk-annotation-show-message): Ditto.
+	(skk-annotation-last-word-1): Ditto.
+	(skk-annotation-add): New command.
+	(skk-annotation-save-and-quit): Ditto.
+	(skk-annotation-remove): Ditto.
+	(skk-annotation-quote): Ditto.
+
 2000-10-27  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* SKK-MK (SKK_MODULES): Add skk-annotation.

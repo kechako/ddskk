@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/10/17 14:14:53 $
+;; Last Modified: $Date: 2000/11/02 12:25:34 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -538,6 +538,14 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
 	  (t
 	   (unless (equal skk-rule-tree skk-kanagaki-rom-kana-rule-tree)
 	     (setq skk-rule-tree skk-kanagaki-rom-kana-rule-tree))
+	   ad-do-it))))
+
+(defadvice skk-okurigana-prefix (around skk-knagaki-ad activate compile)
+  (cond ((and skk-use-kana-keyboard
+	      (member (ad-get-arg 0) '("$B$C(B" "$B%C(B")))
+	 "t")
+	(t
+	 (let ((skk-henkan-okurigana (ad-get-arg 0)))
 	   ad-do-it))))
 
 ;;

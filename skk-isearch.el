@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.25 2000/09/04 14:44:33 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.26 2000/09/06 14:59:28 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/04 14:44:33 $
+;; Last Modified: $Date: 2000/09/06 14:59:28 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -219,9 +219,14 @@ kakutei'ed and erase the buffer contents."
   (set skk-isearch-overriding-local-map skk-isearch-mode-map)
   (when (and (boundp 'current-input-method) current-input-method
 	     (string-match "^japanese-skk" current-input-method))
-    (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
-      (or current-input-method
-	  (toggle-input-method))))
+    (let* ((method current-input-method)
+	   (func (if (string= "japanese-skk" method)
+		     'skk-inactivate
+		   'skk-auto-fill-inactivate)))
+      (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
+	(unless current-input-method
+	  (setq inactivate-current-input-method-function func)
+	  (setq current-input-method method)))))
   (setq skk-isearch-switch t)
   (setq skk-isearch-in-editing nil)
   (setq skk-isearch-incomplete-message ""

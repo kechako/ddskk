@@ -1,3 +1,8 @@
+2000-01-24  Takao KAWAMURA  <kawamura@debian.org>
+
+	* SKK-MK (SKK-MK-generate-autoloads-el): corrected the
+	indentation.
+
 2000-01-23  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* Makefile (clean): Delete experimental/skk-isearch.el.

@@ -1,11 +1,11 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: SKK Development Team <skk@ring.gr.jp>
-# Version: $Id: Makefile,v 1.44.2.2 2001/09/11 12:08:06 czkmt Exp $
-# Last Modified: $Date: 2001/09/11 12:08:06 $
+# Version: $Id: Makefile,v 1.44.2.3 2001/09/11 12:15:16 czkmt Exp $
+# Last Modified: $Date: 2001/09/11 12:15:16 $
 
 
-VERSION = 11.5-ne01
+VERSION = 11.5.0.1
 
 BZIP2     = bzip2 -9
 CP	  = /bin/cp -p
@@ -16,7 +16,7 @@ FLAGS     = -batch -q -no-site-file -l SKK-MK
 GZIP      = gzip -9
 MD5	  = md5
 RM	  = /bin/rm -f
-SNAPBASE  = ddskk`$(DATE) '+%Y%m%d'`
+SNAPBASE  = ddskk-ne-`$(DATE) '+%Y%m%d'`
 TAR	  = tar
 XEMACS	  = xemacs
 set_jisyo =

@@ -1,3 +1,10 @@
+2000-10-20  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* READMEs/NEWS: Add description about leim-list.el, etc.
+
+	* skk-setup.el.in (isearch-message-prefix): Move the advice
+	* skk-isearch.el: to here.
+
 2000-10-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* ccc.el (ccc-defadvice): New macro.

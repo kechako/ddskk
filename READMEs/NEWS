@@ -37,7 +37,7 @@ Nemacs 3.3.2 $B$*$h$S(B Mule 1.1 $B>e$G4pK\E*$J5!G=$,F0$/$h$&$K$J$C$?!#$?$@(
 $B$7K0$/$^$GHs8x<0BP1~!#$3$N5!G=$O(B experimental/skk-e18.el $B$K$h$jDs6!$5(B
 $B$l$k!#(B
 
-$B$^$?!"(BEmacs 18 $B$N$?$a$KI,MW$K$5$l$k$b$N!"$*$h$S$"$k$HJXMx$J$b$N$r(B
+$B$^$?!"(BEmacs 18 $B$N$?$a$KI,MW$H$5$l$k$b$N!"$*$h$S$"$k$HJXMx$J$b$N$r(B
 patch/e18 $B%G%#%l%/%H%j$K<}O?$7$?!#(B
 
 ** $B8uJdI=<($,D9$$>l9g$KBP1~$9$k5!G=(B ($B@lMQ$N(B window $B$r;H$&(B)$B!#(B
@@ -84,6 +84,11 @@ isearch $B$N@_Dj$G(B add-hook $B$7$F$$$k>l9g$J$I!"(B skk-set-cursor-properly
 Emacs 20 $B$N0Y$N=$@5!#(BSKK $B$r(B Emacs $B$N(B Input Method $B$H$7$F;HMQ$7$F$$$k$H(B
 $B$-!"4X?t(B `read-from-minibuffer' $B$N(B $BBh(B 7 $B0z?t(B INHERIT-INPUT-METHOD $B$r(B
 $BHs(B nil $B$K$7$F$b@5$7$/F0:n$7$J$$%P%0$,=$@5$5$l$?!#(B
+
+** Canna $B$H$NAj@-$N2~A1!#(B
+
+SKK $B$r5/F0$9$kA0$K(B Canna $B$N@_Dj$r$7$F$$$k$H!"%9%Z!<%9$r2!$7$F$bJQ49$G(B
+$B$-$J$$LdBj$,=$@5$5$l$?!#(B
 
 ** $B$$$/$D$+$N%P%0$N=$@5!#(B
 

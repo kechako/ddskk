@@ -32,6 +32,17 @@
 	* skk-isearch.el (skk-isearch-mode-setup): Call `skk-erase-prefix'
 	with its argument non-nil in `skk-isearch-working-buffer'.
 
+1999-11-24  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-MK (SKK-MK-install-package): delete 'skk-autoloads from
+	SKK_MODULES.
+
+	* skk-isearch.el (skk-isearch-mode-message): 整形 doc string.
+
+1999-11-24  FURUE Hideyuki <furue@kke.co.jp>
+
+	* skk.el (skk-mode): Call `skk-create-file' for `skk-jisyo'.
+
 1999-11-23  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-jisx0201.el (skk-setup-modeline): Fix typo -- use

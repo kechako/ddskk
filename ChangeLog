@@ -1,3 +1,9 @@
+2000-10-22  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* ccc.el (ccc-defadvice): Check if FUNCTION is fboundp or not.
+	Fixed warning message.
+	* skk-macs.el (skk-defadvice): Ditto.
+
 2000-10-21  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* ccc.el (ccc-defadvice): Delete interactive call from advice

@@ -3,9 +3,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: ccc.el,v 1.1.2.10 2000/10/20 22:57:43 minakaji Exp $
+;; Version: $Id: ccc.el,v 1.1.2.11 2000/10/21 22:48:38 minakaji Exp $
 ;; Keywords: cursor
-;; Last Modified: $Date: 2000/10/20 22:57:43 $
+;; Last Modified: $Date: 2000/10/21 22:48:38 $
 
 ;; This software is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -125,30 +125,33 @@
 ;; Macros.
 ;;
 (defmacro ccc-defadvice (function &rest everything-else)
-  (let ((origfunc (if (ad-is-advised function)
-		      (ad-get-orig-definition function)
-		    (symbol-function function)))
+  (let ((origfunc (and (fboundp function)
+		       (if (ad-is-advised function)
+			   (ad-get-orig-definition function)
+			 (symbol-function function))))
 	interactive)
-    (if (or (not (subrp origfunc))
+    (if (or (not origfunc)
+	    (not (subrp origfunc))
 	    (memq function		; XXX possibilly Emacs version dependent
 		  ;; interactive commands which do not have interactive specs.
 		  '(abort-recursive-edit bury-buffer delete-frame delete-window
 					 exit-minibuffer)))
 	nil
+      ;; check if advice definition has a interactive call or not.
       (setq interactive
-	    (cond ((and (stringp (nth 1 everything-else))
+	    (cond ((and (stringp (nth 1 everything-else)) ; have document
 			(eq 'interactive (car-safe (nth 2 everything-else))))
 		   (nth 2 everything-else))
 		  ((eq 'interactive (car-safe (nth 1 everything-else)))
 		   (nth 1 everything-else))))
       (cond ((and (commandp origfunc) (not interactive))
 	     (message
-	      "*** WARNING: Adding advice to %s without mirroring its interactive spec ***"
+	      "*** WARNING: Adding advice to subr %s without mirroring its interactive spec ***"
 	      function))
 	    ((and (not (commandp origfunc)) interactive)
 	     (setq everything-else (delq interactive everything-else))
 	     (message
-	      "*** WARNING: Deleted interactive call from %s advice as % is a subr/non-command ***"
+	      "*** WARNING: Deleted interactive call from %s advice as % is not a subr command ***"
 	      function function))))
     (` (defadvice (, function) (,@ everything-else)))))
 

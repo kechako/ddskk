@@ -279,25 +279,6 @@ be applied to `file-coding-system-for-read'."
 	      (save-excursion
 		(set-buffer buf)
 		(use-local-map local-map)))))))
-
-    (defun skk-jisx0208-to-ascii (string)
-      (let ((char
-	     (cond ((eq skk-emacs-type 'mule1)
-		    (let* ((ch (string-to-char string))
-			   (ch1 (char-component ch 1)))
-		      (cond ((eq 161 ch1)	; ?\241
-			     (cdr (assq (char-component ch 2) skk-hankaku-alist)))
-			    ((eq 163 ch1)	; ?\243
-			     (- (char-component ch 2) 128) ; ?\200
-			     ))))
-		   ((eq skk-emacs-type 'nemacs)
-		    (let ((ch1 (aref string 0)))
-		      (cond ((eq 161 ch1)	; ?\241
-			     (cdr (assq (aref string 1) skk-hankaku-alist)))
-			    ((eq 163 ch1)	; ?\243
-			     (- (aref string 1) 128) ; ?\200
-			     )))))))
-	(and char (char-to-string char))))
     ;;
     )))
 

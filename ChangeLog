@@ -1,3 +1,15 @@
+2000-01-27  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* experimental/skk-correct.el: New experimental program.
+
+	* SKK-MK (SKK_MODULES): Add skk-correct.
+
+	* skk.el: Do not occur error even on Emacs 18 (just warning...).
+	(skk-jisx0208-to-ascii): Add defition taken from skk-e18.el for
+	nemacs and mule1.
+
+	* experimental/skk-e18.el (skk-jisx0208-to-ascii): Removed.
+	
 2000-01-26  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-e18.el (save-match-data): `defmacro-maybe'

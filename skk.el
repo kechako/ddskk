@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.38 2000/01/25 15:19:56 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.39 2000/01/27 05:18:47 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/25 15:19:56 $
+;; Last Modified: $Date: 2000/01/27 05:18:47 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -46,8 +46,8 @@
 
 ;;; Code:
 (cond ((or (and (boundp 'epoch::version) epoch::version)
-   (string< (substring emacs-version 0 2) "18"))
-      (error "This version of SKK requires Emacs 19 or later"))
+	   (string< (substring emacs-version 0 2) "19"))
+      (error "This version of SKK may not work on Emacs 18..."))
      ((not (or (featurep 'mule) (boundp 'NEMACS)))
       (error "This version of SKK requires MULE features")))
 ;; APEL 9.22 or later required.
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/25 15:19:56 $")
+      (let* ((raw-date "$Date: 2000/01/27 05:18:47 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -276,22 +276,25 @@
     (make-character charset n1 n2))))
 
 (defun skk-jisx0208-to-ascii (string)
-  (static-cond
-   ((memq skk-emacs-type '(xemacs mule4 mule3))
-    (require 'japan-util)
-    (let ((char
-	   (get-char-code-property (string-to-char string) 'ascii)))
-      (and char (char-to-string char))))
-   ((eq skk-emacs-type 'mule2)
-    (let ((char
+  (let ((char
+	 (static-cond
+	  ((memq skk-emacs-type '(xemacs mule4 mule3))
+	   (require 'japan-util)
+	   (get-char-code-property (string-to-char string) 'ascii))
+	  ((memq skk-emacs-type '(mule2 mule1))
 	   (let* ((ch (string-to-char string))
 		  (ch1 (char-component ch 1)))
-	     (cond ((eq 161 ch1)	; ?\241
+	     (cond ((eq ch1 ?\241)
 		    (cdr (assq (char-component ch 2) skk-hankaku-alist)))
-		   ((eq 163 ch1)	; ?\243
-		    (- (char-component ch 2) 128) ; ?\200
-		   )))))
-      (and char (char-to-string char))))))
+		   ((eq ch1 ?\243)
+		    (- (char-component ch 2) ?\200)))))
+	  ((eq skk-emacs-type 'nemacs)
+	   (let ((ch1 (aref string 0)))
+	     (cond ((eq ch1 ?\241)
+		    (cdr (assq (aref string 1) skk-hankaku-alist)))
+		   ((eq ch1 ?\243)
+		    (- (aref string 1) ?\200))))))))
+    (and char (char-to-string char))))
 
 ;;;###autoload
 (defun skk-mode (&optional arg)

@@ -2,31 +2,97 @@
 
 * 11.3
 
+** 基本設定の自動化。
+
+Emacs 20 以降のために leim-list.el を用意することにより、自動的に基本
+設定がされるようになった。
+
+ただし、Emacs は起動時に load-path の最上位にある leim-list.el をロー
+ドするだけなので、skk のインストールされたディレクトリより上位のディレ
+クトリに leim-list.el があればこの機能は無効になる。(*)
+
+  (*) ただし、egg/leim-list.el は load-path 上のすべての leim-list.el
+      をロードするのでこの限りではない。同機能は skk/leim-list.el にも
+      取りこんだ。
+
+この問題は GNU Emacs 20 では普通現れないが、XEmacs では現れうる。
+具体的には、/usr/local/lib/xemacs/mule-packages/lisp/leim/ が
+/usr/local/lib/xemacs/mule-packages/lisp/skk/ より load-path の上位に
+くるため、leim/leim-list.el がロードされてしまい、skk/leim-list.el が
+ロードされない。そのため、XEmacs では skk/leim-list.el は用いないこと
+にしている。その代わり、XEmacs のパッケージでは auto-autoloads.el が自
+動的にロードされるのでこれを利用している。
+
+なお、leim-list.el をロードしないもの (Emacs 19) においても
+
+(require 'skk-setup)
+
+で基本設定ができる。
+
 ** skk-isearch の input method 対応。
 
 ** Emacs 18 対応。
 
+Nemacs 3.3.2 および Mule 1.1 上で基本的な機能が動くようになった。ただ
+し飽くまで非公式対応。この機能は experimental/skk-e18.el により提供さ
+れる。
+
+また、Emacs 18 のために必要にされるもの、およびあると便利なものを
+patch/e18 ディレクトリに収録した。
+
 ** 候補表示が長い場合に対応する機能 (専用の window を使う)。
 
-** JIS X 2013 サポート。
+候補一覧が一行では表示しきれない場合に、ウィンドウを分割してそこに候補
+一覧が表示されるようになった。操作性に変更はない。
 
-** skk-vars.el に変数を集約。
+** JIS X 0213 サポート。
 
-** skk-macs.el によるマクロなどの提供。
+skk-jisx0213.el によりこの機能が提供される。
 
 ** 仮名入力対応 (experimental/nicola)。
 
+experimental/nicola ディレクトリに、SKK を仮名入力対応させるためのプロ
+グラムが追加された。
+
 ** skk-look による ispell を使用した修正。
+
+skk-look で英単語など検索する際に、ispell で綴りを修正する機能が追加さ
+れた。
 
 ** APEL のバージョンチェック。
 
 APEL のバージョンをチェックするため、product.el を利用するようになりました。
-このため、APEL は 10.0 以降が必要となります。
+現在、APEL は 10.2 以降が必要となります。
 
-** skk-set-cursor-properly は廃止されました。
+** 新しいカーソル制御機構を採用。
+
+GNU Emacs においては、ccc.el により新しいカーソル制御機構が提供される。
+XEmacs については本体がより良い制御機構を持っていることが分かったので、
+かなり簡潔な記述でカーソル制御ができるようになった。
+
+** 関数 skk-set-cursor-properly は廃止されました。
 
 isearch の設定で add-hook している場合など、 skk-set-cursor-properly  
 の設定を削除して下さい。
+
+** custom group の見直し。
+
+カスタマイズし易いように、custom group の見直しが行われた。
+
+** Input Method としての機能の改善。
+
+Emacs 20 の為の修正。SKK を Emacs の Input Method として使用していると
+き、関数 `read-from-minibuffer' の 第 7 引数 INHERIT-INPUT-METHOD を
+非 nil にしても正しく動作しないバグが修正された。
+
+** いくつかのバグの修正。
+
+以下の関数のバグが修正された (洩れがあったら追加してください)。
+
+o skk-count-jisyo-candidates-original
+o skk-clock
+o skk-num-type3-kanji-1
+
 
 * Daredevil branch 11.1
 

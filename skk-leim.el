@@ -3,9 +3,9 @@
 ;; Murata Shuuichirou <mrt@astec.co.jp>
 ;;
 ;; Author: Murata Shuuichirou <mrt@mickey.ai.kyutech.ac.jp>
-;; Version: $Id: skk-leim.el,v 1.5.2.3.2.5 2000/09/04 14:44:52 czkmt Exp $
+;; Version: $Id: skk-leim.el,v 1.5.2.3.2.6 2000/09/05 18:04:08 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/04 14:44:52 $
+;; Last Modified: $Date: 2000/09/05 18:04:08 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -30,12 +30,16 @@
 ;;;###autoload
 (defun skk-activate (&optional name)
   (setq inactivate-current-input-method-function 'skk-inactivate)
-  (skk-mode 1))
+  (skk-mode 1)
+  (if (eq (selected-window) (minibuffer-window))
+      (add-hook 'minibuffer-exit-hook 'skk-leim-exit-from-minibuffer)))
 
 ;;;###autoload
 (defun skk-auto-fill-activate (&optional name)
   (setq inactivate-current-input-method-function 'skk-auto-fill-inactivate)
-  (skk-auto-fill-mode 1))
+  (skk-auto-fill-mode 1)
+  (if (eq (selected-window) (minibuffer-window))
+      (add-hook 'minibuffer-exit-hook 'skk-leim-exit-from-minibuffer)))
 
 ;;;###autoload
 (defun skk-inactivate ()
@@ -44,6 +48,11 @@
 ;;;###autoload
 (defun skk-auto-fill-inactivate ()
   (skk-auto-fill-mode -1))
+
+(defun skk-leim-exit-from-minibuffer ()
+  (inactivate-input-method)
+  (if (<= (minibuffer-depth) 1)
+      (remove-hook 'minibuffer-exit-hook 'skk-leim-exit-from-minibuffer)))
 
 ;;;###autoload
 (if (fboundp 'register-input-method)

@@ -1,3 +1,26 @@
+1999-12-03  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK (SKK_INFOS): Add skk.info-5 and skk.info-6.
+
+	* doc/.cvsignore: Ditto.
+
+	* experimental/dbm/skk-dbm.el: Don't require `skk-foreword'.
+
+	* experimental/skk-dcomp.el: Ditto.
+	(skk-dcomp-extent): Now this is a local variable.
+
+	* skk-jisx0201.el: Load "jisx0201" under Mule 2.
+	(newline, newline-and-indent, exit-minibuffer): New advices. Check
+	if `skk-egg-like-newline' is non-nil.
+	(skk-jisx0201-string-conversion): New function.
+	(skk-jisx0201-zenkaku, skk-jisx0201-hankaku): New functions that
+	call it.
+	(skk-jisx0201-insert): Call `skk-jisx0201-zenkaku' instead of
+	`japanese-zenkaku'.
+	(skk-hiragana-to-jisx0201-region): Call `skk-jisx0201-hankaku'
+	instead of `japanese-hankaku'.
+	(skk-katakana-to-jisx0201-region): Ditto.
+
 1999-12-02  Yuh Ohmura (yutopia@t3.rim.or.jp>
 
 	* READMEs/CVS_on_Windows: update

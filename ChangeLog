@@ -1,3 +1,8 @@
+2000-11-06  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-server.el: Add 2000 year to Copyright notice.
+	(skk-search-server): Add `;;;###autoload' cookie.
+
 2000-10-31  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* doc/skk.texi: Add 2000 year to Copyright notice.

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.87 2000/11/06 11:06:00 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.88 2000/11/06 11:23:05 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/11/06 11:06:00 $
+;; Last Modified: $Date: 2000/11/06 11:23:05 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -2852,7 +2852,6 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                    "Inserting contents of %s ...done"
                    (file-name-nondirectory file)))
               (skk-setup-jisyo-buffer)
-	      ;;(skk-update-jisyo-format)
               (set-buffer-modified-p nil)
               jisyo-buf)))))
 
@@ -2905,32 +2904,6 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	  (setq skk-okuri-nasi-min (point-marker)))
       (skk-error "送りなしエントリのヘッダーがありません！"
 		 "Header line for okuri-nasi entries is missing!"))))
-
-(defun skk-update-jisyo-format ()
-  ;; skk-annotation
-  (let ((min skk-okuri-ari-min) (max skk-okuri-ari-max))
-    (skk-update-jisyo-format-1 min max)
-    (setq min skk-okuri-nasi-min
-	  max (point-max))
-    (skk-update-jisyo-format-1 min max))
-  ;; anything else?
-  )
-
-(defun skk-update-jisyo-format-1 (min max)
-  (let (candidate)
-    (goto-char min)
-    (while (re-search-forward "\\/\\([^\n/]*;[^\n/]*\\)\\/" max t nil)
-      (setq candidate (buffer-substring-no-properties
-		       (match-beginning 1) (match-end 1)))
-      (delete-region (match-beginning 1) (match-end 1))
-      (goto-char (match-beginning 1))
-      (insert 
-       (concat "(concat \""
-	       (mapconcat
-		(function
-		 (lambda (c) (if (eq c ?\;) "\\073" (char-to-string c))))
-		(append candidate nil) "")
-	       "\")")))))
 
 (defun skk-search ()
   ;; skk-current-search-prog-list の要素になっているプログラムを評価して、
@@ -3302,7 +3275,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
         (concat "(concat \""
                 (mapconcat (function (lambda (c)
                                        (cond ((eq c ?/) "\\057")
-					     ((eq c ?\;) "\\073")
+					     ;;((eq c ?\;) "\\073")
                                              ((eq c ?\n) "\\n")
                                              ((eq c ?\r) "\\r")
                                              ((eq c ?\") "\\\"")

@@ -1,8 +1,8 @@
 2000-11-06  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* READMES/{CVS_digest, INSTALL, README.win}, doc/skk.texi,
-	experimental/skk-annotation.el, skk-server.el, skk.el: Sync with
-	main trunk.
+	experimental/skk-annotation.el, skk-server.el, skk-vars.el,
+	skk.el: Sync with main trunk.
 
 2000-11-05  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 

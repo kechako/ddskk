@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.53 2000/10/30 11:15:04 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.54 2000/11/06 11:23:03 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/30 11:15:04 $
+;; Last Modified: $Date: 2000/11/06 11:23:03 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2704,12 +2704,13 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
 
 (defcustom skk-annotation-function nil 
   "*annotation $B$rI=<($9$k$+$I$&$+$N%A%'%C%/;~$K%3!<%k$5$l$k4X?t!#(B
-non-nil $B$rJV$9$H(B annotation $B$rI=<($9$k!#(B"
+non-nil $B$rJV$9$H(B annotation $B$rI=<($9$k!#(Bannotation $B$NBP>]$H$9$kJ8;zNs(B
+$B$r0z?t$K$7$F(B funcall $B$5$l$k!#(B"
   :type 'function
   :group 'skk-annotation
   :group 'skk-hooks-and-functions)
 
-(defcustom skk-annotation-show-message t
+(defcustom skk-annotation-show-as-message t
   "*Non-nil $B$G$"$l$P!"Cm5-$r%(%3!<%(%j%"$KI=<($9$k!#(B"
   :type 'boolean
   :group 'skk-annotation

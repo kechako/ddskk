@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.51 2000/10/29 08:56:20 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.52 2000/10/29 21:11:31 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/29 08:56:20 $
+;; Last Modified: $Date: 2000/10/29 21:11:31 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2467,7 +2467,7 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
     ;; "$B"!<k!&3t!&<l!&<n!L;w$?$b$N4A;z!M(B" "$B"!@V%o%$%s!&%V!<%`!L7r9/LdBj!M(B"
     ("GN99EP01" exact exact prefix t ("^$B"!(B\\([^$B!L!M(B]+\\)$B!L(B.+$B!M(B$" . 1) nil nil)
     ("GN99EP02" exact exact prefix t ("^$B"!(B\\([^$B!L!M(B]+\\)$B!L(B.+$B!M(B$" . 1) nil nil)
-    ;; IWAKOKU: $B!V<-!&E5!&HW!W(B
+    ;; $B4dGH9q8l<-E5(B
     ;; "$B$7$?$$!Z;`BN!&;SBN![(B", "$B$7$?$$!Z;YBb![!Z;^Bb![(B",
     ;; "$B$"$$!Z0&![(B", "$B$"$$(B($B$"$p(B)$B!ZMu![(B"
     ;; "$B$"$$(B<gaiji=za52a>$B0%(B<gaiji=za52b>"

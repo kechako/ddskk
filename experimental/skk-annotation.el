@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-annotation.el,v 1.1.2.5 2000/10/29 08:19:04 minakaji Exp $
+;; Version: $Id: skk-annotation.el,v 1.1.2.6 2000/10/29 21:11:34 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 27, 2000.
-;; Last Modified: $Date: 2000/10/29 08:19:04 $
+;; Last Modified: $Date: 2000/10/29 21:11:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -48,7 +48,7 @@
     nil
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-c" 'skk-annotation-save-and-quit)
-    (define-key map "\C-c\C-k" 'skk-annotation-kill)
+    (define-key map "\C-c\C-k" 'skk-annotation-quit)
     (setq skk-annotation-mode-map map)))
 
 (or (assq 'skk-annotation-mode minor-mode-alist)
@@ -72,6 +72,16 @@
 	   (function (lambda (c) (if (eq c ?\;) "\\073" (char-to-string c))))
 	   (append word nil) "")
 	  "\")"))
+
+;; advices.
+(defadvice skk-nunion (around skk-annotation-ad activate)
+  (save-match-data
+    (let* ((var ad-do-it) (tmp var))
+      (while tmp
+	(if (string-match ";" (car tmp))
+	    (setq tmp (delete (substring (car tmp) 0 (match-beginning 0)) tmp)))
+	(setq tmp (cdr tmp)))
+      var)))
 
 ;; functions.
 ;;;###autoload
@@ -169,7 +179,7 @@ no-previous-annotation $B$r;XDj$9$k$H(B \(C-u M-x skk-annotation-add $B$G;XDj
 			  ", ")
 
 	       (mapconcat 'key-description
-			  (where-is-internal 'skk-annotation-kill
+			  (where-is-internal 'skk-annotation-quit
 					     skk-annotation-mode-map)
 			  ", ")))))
 

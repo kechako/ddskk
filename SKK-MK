@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.31 2000/08/16 03:09:33 czkmt Exp $
-;; Last Modified: $Date: 2000/08/16 03:09:33 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.32 2000/08/16 09:47:02 czkmt Exp $
+;; Last Modified: $Date: 2000/08/16 09:47:02 $
 
 ;; Commentary
 ;;
@@ -611,6 +611,8 @@ SKK tutorials:
 	      (and (file-exists-p file)
 		     (generate-file-autoloads file)))))
 	 modules)
+	(goto-char (point-max))
+	(insert "\n(provide 'skk-autoloads)\n;;; skk-autoloads.el ends here\n")
 	(write-region-as-coding-system
 	 (if (boundp 'MULE) *junet*unix 'iso-2022-7bit)
 	 (point-min) (point-max) "skk-autoloads.el" nil 'quiet)

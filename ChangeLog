@@ -1,3 +1,9 @@
+2000-09-06  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-leim.el (skk-leim-exit-from-minibuffer): New function.
+	(skk-activate, skk-auto-fill-activate): In minibuffer, add
+	`skk-leim-exit-from-minibuffer' to `minibuffer-exit-hook'.
+
 2000-09-04  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK: Under Emacs 18, load bytecomp-runtime.el if possible.
@@ -26,7 +32,7 @@
 
 	* skk-setup.el.in (isearch-mode-end-hook): Call
 	`skk-isearch-mode-cleanup' if the feature skk-isearch is provided.
-	(isearch-mdoe-map): Make sure C-\ is bound to
+	(isearch-mode-map): Make sure C-\ is bound to
 	`isearch-toggle-input-method'.
 	(isearch-toggle-input-method): New advice. Invoke skk-isearch if
 	`default-input-method' is japanese-skk{-auto-fill}.

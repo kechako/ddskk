@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.86 2000/11/05 04:03:17 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.87 2000/11/06 11:06:00 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/11/05 04:03:17 $
+;; Last Modified: $Date: 2000/11/06 11:06:00 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -62,6 +62,9 @@
 (require 'pces)
 (require 'pcustom)
 (require 'alist)
+(condition-case nil
+    (require 'product)
+  ((error) (error "This version of Daredevil SKK requires APEL/10.2 or later")))
 (or (product-version>= 'apel-ver '(10 2))
     (error "This version of Daredevil SKK requires APEL/10.2 or later"))
 ;; Elib 1.0 is required.
@@ -2849,6 +2852,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                    "Inserting contents of %s ...done"
                    (file-name-nondirectory file)))
               (skk-setup-jisyo-buffer)
+	      ;;(skk-update-jisyo-format)
               (set-buffer-modified-p nil)
               jisyo-buf)))))
 
@@ -2901,6 +2905,32 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	  (setq skk-okuri-nasi-min (point-marker)))
       (skk-error "送りなしエントリのヘッダーがありません！"
 		 "Header line for okuri-nasi entries is missing!"))))
+
+(defun skk-update-jisyo-format ()
+  ;; skk-annotation
+  (let ((min skk-okuri-ari-min) (max skk-okuri-ari-max))
+    (skk-update-jisyo-format-1 min max)
+    (setq min skk-okuri-nasi-min
+	  max (point-max))
+    (skk-update-jisyo-format-1 min max))
+  ;; anything else?
+  )
+
+(defun skk-update-jisyo-format-1 (min max)
+  (let (candidate)
+    (goto-char min)
+    (while (re-search-forward "\\/\\([^\n/]*;[^\n/]*\\)\\/" max t nil)
+      (setq candidate (buffer-substring-no-properties
+		       (match-beginning 1) (match-end 1)))
+      (delete-region (match-beginning 1) (match-end 1))
+      (goto-char (match-beginning 1))
+      (insert 
+       (concat "(concat \""
+	       (mapconcat
+		(function
+		 (lambda (c) (if (eq c ?\;) "\\073" (char-to-string c))))
+		(append candidate nil) "")
+	       "\")")))))
 
 (defun skk-search ()
   ;; skk-current-search-prog-list の要素になっているプログラムを評価して、

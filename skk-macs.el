@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.17 2000/01/30 09:44:19 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.18 2000/01/30 10:41:26 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/30 09:44:19 $
+;; Last Modified: $Date: 2000/01/30 10:41:26 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -389,7 +389,7 @@
        (append skk-j-mode-map
 	       (cdr (if (skk-in-minibuffer-p)
 			minibuffer-local-map
-		      (current-local-map))))))
+		      skk-current-local-map)))))
   (force-mode-line-update))
 
 (defsubst skk-latin-mode-on ()
@@ -406,7 +406,7 @@
        (append skk-latin-mode-map
 	       (cdr (if (skk-in-minibuffer-p)
 			minibuffer-local-map
-		      (current-local-map))))))
+		      skk-current-local-map)))))
   (force-mode-line-update))
 
 (defsubst skk-jisx0208-latin-mode-on ()
@@ -423,7 +423,7 @@
        (append skk-jisx0208-latin-mode-map
 	       (cdr (if (skk-in-minibuffer-p)
 			minibuffer-local-map
-		      (current-local-map))))))
+		      skk-current-local-map)))))
   (force-mode-line-update))
 
 (defsubst skk-abbrev-mode-on ()
@@ -440,7 +440,7 @@
        (append skk-abbrev-mode-map
 	       (cdr (if (skk-in-minibuffer-p)
 			minibuffer-local-map
-		      (current-local-map))))))
+		      skk-current-local-map)))))
   (force-mode-line-update))
 
 (defsubst skk-in-minibuffer-p ()

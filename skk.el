@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.50 2000/01/30 09:45:24 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.51 2000/01/30 10:41:26 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/30 09:45:24 $
+;; Last Modified: $Date: 2000/01/30 10:41:26 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/30 09:45:24 $")
+      (let* ((raw-date "$Date: 2000/01/30 10:41:26 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1601,11 +1601,12 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
     (let ((enable-recursive-minibuffers t)
           ;; 変換中に isearch message が出ないようにする。
           skk-isearch-message new-one)
-      (add-hook 'minibuffer-setup-hook 'skk-j-mode-on)
-      (add-hook
-       'minibuffer-setup-hook
-       (function (lambda ()
-		   (add-hook 'pre-command-hook 'skk-pre-command nil 'local))))
+      (static-unless (memq skk-emacs-type '(nemacs mule1))
+	(add-hook 'minibuffer-setup-hook 'skk-j-mode-on)
+	(add-hook
+	 'minibuffer-setup-hook
+	 (function (lambda ()
+		     (add-hook 'pre-command-hook 'skk-pre-command nil 'local)))))
       (condition-case nil
           (setq new-one
                 (read-from-minibuffer
@@ -1616,7 +1617,13 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
                          " ")
 		 (if (and (not skk-okuri-char)
 			  skk-read-from-minibuffer-function)
-		     (funcall skk-read-from-minibuffer-function))))
+		     (funcall skk-read-from-minibuffer-function))
+		 (static-when (memq skk-emacs-type '(nemacs mule1))
+		   (with-current-buffer
+		       (get-buffer-create (format " *Minibuf-%d*" (minibuffer-depth)))
+		     (skk-j-mode-on)
+		     (skk-pre-command))
+		   (append skk-j-mode-map (cdr minibuffer-local-map)))))
         (quit
          (setq new-one "")))
       (if (and skk-check-okurigana-on-touroku

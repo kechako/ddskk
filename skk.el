@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.49 2000/01/30 04:33:59 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.50 2000/01/30 09:45:24 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/30 04:33:59 $
+;; Last Modified: $Date: 2000/01/30 09:45:24 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/30 04:33:59 $")
+      (let* ((raw-date "$Date: 2000/01/30 09:45:24 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -130,32 +130,31 @@
 	    (where-is-internal 'egg-self-insert-command global-map)
 	    '("\t")))
 
+  (let ((i 0) e list)
+    (setq list '(skk-latin-mode-map skk-j-mode-map skk-jisx0208-latin-mode-map
+				    skk-abbrev-mode-map))
+    (while (setq e (nth i list))
+      (set e (make-sparse-keymap))
+      (setq i (1+ i)))
+    ;; Defined in skk-mode.
+    ;; (define-key skk-latin-mode-map skk-kakutei-key 'skk-kakutei)
+    (setq i 0 list skk-e18-self-insert-keys)
+    (while (setq e (nth i list))
+      (define-key skk-j-mode-map e 'skk-insert)
+      (setq i (1+ i)))
+    ;; Defined in skk-mode.
+    ;; (define-key skk-jisx0208-latin-mode-map skk-kakutei-key 'skk-kakutei)
+    (setq i 0)
+    (while (< i 128)
+      (and (aref skk-jisx0208-latin-vector i)
+	   (define-key skk-jisx0208-latin-mode-map
+	     (char-to-string i) 'skk-jisx0208-latin-insert))
+      (setq i (1+ i)))
+    (define-key skk-jisx0208-latin-mode-map "\C-q" 'skk-latin-henkan))
+
   (defun skk-e18-setup ()
     (setq skk-current-local-map (if (skk-in-minibuffer-p) minibuffer-local-map
-				  (current-local-map)))
-    (let ((i 0) e list)
-      (setq list '(skk-latin-mode-map skk-j-mode-map skk-jisx0208-latin-mode-map
-				      skk-abbrev-mode-map))
-      (while (setq e (nth i list))
-	(set e (if skk-current-local-map (copy-keymap skk-current-local-map)
-		 (make-sparse-keymap)))
-	(setq i (1+ i)))
-      ;; Defined in skk-mode.
-      ;; (define-key skk-latin-mode-map skk-kakutei-key 'skk-kakutei)
-      (setq i 0 list skk-e18-self-insert-keys)
-      (while (setq e (nth i list))
-	(define-key skk-j-mode-map e 'skk-insert)
-	(setq i (1+ i)))
-      ;; Defined in skk-mode.
-      ;; (define-key skk-jisx0208-latin-mode-map skk-kakutei-key 'skk-kakutei)
-      (setq i 0)
-      (while (< i 128)
-	(and (aref skk-jisx0208-latin-vector i)
-	     (define-key skk-jisx0208-latin-mode-map
-	       (char-to-string i) 'skk-jisx0208-latin-insert))
-	(setq i (1+ i)))
-      (define-key skk-jisx0208-latin-mode-map "\C-q" 'skk-latin-henkan)))
-  )
+				  (current-local-map)))))
  (t
   (defun skk-define-menu-bar-map (map)
     ;; SKK メニューのトップに出現するコマンドのメニューへの定義を行なう。

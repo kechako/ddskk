@@ -89,7 +89,7 @@
 
 ;; Other functions.
 (defun-maybe window-minibuffer-p (&optional window)
-"Returns non-nil if WINDOW is a minibuffer window."
+"Return non-nil if WINDOW is a minibuffer window."
   (eq (or window (selected-window)) (minibuffer-window)))
 
 (defun-maybe overlayp (object))

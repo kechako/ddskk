@@ -1,10 +1,13 @@
 2000-09-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* READMEs/skk-faq.txt (http): Update.
+
 	* experimental/GUIDELINE: Update.
 
 	* experimental/tut-code/skk-def.el: Update comments for daredevil.
 	* experimental/tut-code/skk-tutcdef.el: Ditto.
 	* experimental/tut-code/skk-tutcode.el: Ditto.
+	
 2000-09-11  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (skk-isearch-find-keys-define): Use `dolist'.

@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.17 2000/01/19 16:59:13 czkmt Exp $
-;; Last Modified: $Date: 2000/01/19 16:59:13 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.18 2000/01/23 13:39:13 czkmt Exp $
+;; Last Modified: $Date: 2000/01/23 13:39:13 $
 
 ;; Commentary
 ;;
@@ -126,7 +126,7 @@ end with `skk'." )
 			(file-exists-p (expand-file-name "emu.el" emutmp))))))
 	       emutmp)
 	      ((and
-		apeldir 
+		apeldir
 		(setq emutmp (expand-file-name (concat "../" EMU_PREFIX) apeldir))
 		(cond ((and (file-exists-p emutmp)
 			    (not (string= emutmp VERSION_SPECIFIC_LISPDIR))
@@ -139,17 +139,17 @@ end with `skk'." )
 			(file-exists-p emutmp)
 			(file-exists-p (expand-file-name "emu.el" emutmp))))))
 	       emutmp))))
-  (and emudir 
+  (and emudir
        (setq load-path (tinyinstall-add-load-path emudir load-path)))
   (and apeldir
        (setq load-path (tinyinstall-add-load-path apeldir load-path))))
-  
+
 (setq load-path (cons (expand-file-name ".") load-path))
 
 (and VERSION_SPECIFIC_LISPDIR
      (file-exists-p VERSION_SPECIFIC_LISPDIR)
      (setq load-path (tinyinstall-add-load-path
-		      (expand-file-name VERSION_SPECIFIC_LISPDIR) load-path )))
+		      (expand-file-name VERSION_SPECIFIC_LISPDIR) load-path)))
 
 (if SKK-MK-debugging
     (progn
@@ -164,19 +164,25 @@ end with `skk'." )
 (defconst SKK-MK-running-xemacs (string-match "XEmacs" emacs-version))
 
 (defconst SKK-MK-texinfo-coding-system
-  (if (or SKK-MK-running-xemacs 
-	  (and (boundp 'mule-version)
-	       (or (string< "4.0" mule-version) (string< "3.0" mule-version))))
-      'junet
-    *junet*))
+  (cond ((or SKK-MK-running-xemacs
+	     (and (boundp 'mule-version)
+		  (or (string< "4.0" mule-version) (string< "3.0" mule-version))))
+	 'junet)
+	((boundp 'MULE)
+	 *junet*)
+	(t
+	 nil)))
 
 ;; GENERIC VARIABLE.
 (defvar DOCDIR (or (getenv "DOCDIR") "./doc"))
 (defvar ETCDIR (or (getenv "ETCDIR") "./etc"))
 (defvar SKK_INFOS
-  (or (getenv "SKK_INFOS")
-      '("skk.info" "skk.info-1" "skk.info-2" "skk.info-3" "skk.info-4"
-	"skk.info-5" "skk.info-6")))
+  (cond ((= 18 emacs-major-version)
+	 nil)
+	(t
+	 (or (getenv "SKK_INFOS")
+	     '("skk.info" "skk.info-1" "skk.info-2" "skk.info-3" "skk.info-4"
+	       "skk.info-5" "skk.info-6")))))
 (defvar SKK_MODULES
   ;; こんなもんコマンドラインで指定する人いないよね？
   (or (getenv "SKK_MODULES")
@@ -187,7 +193,7 @@ end with `skk'." )
 			    skk-leim skk-look skk-num skk-obsolete
 			    skk-cursor skk-server skk-tut
 			    ;; EXPERIMENTAL
-			    skk-abbrev skk-dcomp skk-hankaku-mode
+			    skk-abbrev skk-dcomp
 			    skk-jisx0201 skk-rdbms skk-study
 			    skk-tutcdef skk-tutcode
 			    ;; VIP 3.7
@@ -204,6 +210,8 @@ end with `skk'." )
 	(and SKK-MK-running-xemacs
 	     (member "skk-leim" preloaded-file-list)
 	     (setq list (nconc list (list 'skk-xm20_4))))
+	(when (= 18 emacs-major-version)
+	  (setq list (delq 'skk-jisx0201 list)))
 	(condition-case nil
 	    ;; you might have to add lookup installed directory to `load-path'.
 	    (and (let ((lookup-byte-compile t)) (require 'lookup))
@@ -266,6 +274,10 @@ end with `skk'." )
        (setq standard-character-unification-table-for-decode
 	     (make-unification-table nil))))
 
+;; work around for Nemacs.el
+(when (= 18 emacs-major-version)
+  (require 'skk-e18 "experimental/skk-e18"))
+
 ;;; [ADVICES]
 (defadvice write-region (before SKK-MK-ad disable)
   (save-excursion
@@ -290,13 +302,16 @@ end with `skk'." )
 ;;; [FUNCTIONS]
 (defun SKK-MK-compile ()
   (let (standard-output) (SKK-MK-generate-autoloads-el))
+  (when (= 18 emacs-major-version)
+    (compile-elisp-modules '(skk-e18) "./experimental"))
   (compile-elisp-modules SKK_MODULES "."))
 
 (defun SKK-MK-compile-info ()
-  (if (or (not (file-exists-p (expand-file-name (car SKK_INFOS) DOCDIR)))
-	  (file-newer-than-file-p (expand-file-name (car SKK_TEXIS) DOCDIR)
-				  (expand-file-name (car SKK_INFOS) DOCDIR)))
-      (SKK-MK-texinfo-format SKK_TEXIS)))
+  (and SKK_INFOS
+       (if (or (not (file-exists-p (expand-file-name (car SKK_INFOS) DOCDIR)))
+	       (file-newer-than-file-p (expand-file-name (car SKK_TEXIS) DOCDIR)
+				       (expand-file-name (car SKK_INFOS) DOCDIR)))
+	   (SKK-MK-texinfo-format SKK_TEXIS))))
 
 (defun SKK-MK-install ()
   (SKK-MK-compile)
@@ -314,7 +329,7 @@ end with `skk'." )
       (make-directory SKK_INFODIR t))
   (let ((not-use SKK_DAREDEVIL_NOT_USE)
 	file )
-    (while not-use 
+    (while not-use
       (setq SKK_MODULES (delq (car not-use) SKK_MODULES)
 	    file (expand-file-name
 		  (concat (prin1-to-string (car not-use)) ".el")
@@ -324,12 +339,15 @@ end with `skk'." )
       (setq file (concat file "c"))
       (and (file-exists-p file) (delete-file file))))
   ;; install Emacs Lisp programs.
+  (when (= 18 emacs-major-version)
+    (install-elisp-modules '(skk-e18) "./experimental" SKK_LISPDIR))
   (install-elisp-modules SKK_MODULES "." SKK_LISPDIR)
   ;; install infos.
-  (if (or (not (file-exists-p (expand-file-name (car SKK_INFOS) DOCDIR)))
-	  (file-newer-than-file-p (expand-file-name (car SKK_TEXIS) DOCDIR)
-				  (expand-file-name (car SKK_INFOS) DOCDIR)))
-      (SKK-MK-texinfo-format SKK_TEXIS))
+  (and SKK_INFOS
+       (if (or (not (file-exists-p (expand-file-name (car SKK_INFOS) DOCDIR)))
+	       (file-newer-than-file-p (expand-file-name (car SKK_TEXIS) DOCDIR)
+				       (expand-file-name (car SKK_INFOS) DOCDIR)))
+	   (SKK-MK-texinfo-format SKK_TEXIS)))
   (install-files SKK_INFOS DOCDIR SKK_INFODIR nil t nil)
   ;; install tutorials.
   (install-files SKK_TUTORIALS ETCDIR SKK_DATADIR nil t nil))
@@ -347,7 +365,7 @@ end with `skk'." )
       (make-directory PACKAGE_INFODIR t))
   (let ((not-use (append SKK_PACKAGE_NOT_USE SKK_DAREDEVIL_NOT_USE))
 	file )
-    (while not-use 
+    (while not-use
       (setq SKK_MODULES (delq (car not-use) SKK_MODULES)
 	    file (expand-file-name
 		  (concat (prin1-to-string (car not-use)) ".el")
@@ -384,7 +402,7 @@ end with `skk'." )
 		     package-locations)))
 	       (if early-package-load-path
 		   (nconc
-		    l 
+		    l
 		    (mapcar
 		     (function (lambda (d) (expand-file-name "lisp/skk" d)))
 		     early-packages)))
@@ -400,7 +418,7 @@ end with `skk'." )
 		    (mapcar
 		     (function (lambda (d) (expand-file-name "lisp/skk" d)))
 		     last-packages)))
-	       l )
+	       l)
 	   (delq nil
 		 (mapcar
 		  (function (lambda (d) (if (string-match "skk/*$" d) d)))
@@ -438,7 +456,7 @@ end with `skk'." )
 (defun SKK-MK-texinfo-format (targets)
   (let (
 	;; Emacs20.2's default is 'raw-text-unix.
-	(coding-system-for-write SKK-MK-texinfo-coding-system) 
+	(coding-system-for-write SKK-MK-texinfo-coding-system)
 	x obuf beg )
     (while targets
       (setq x (expand-file-name (car targets) DOCDIR))
@@ -523,6 +541,7 @@ SKK tutorials:
         (buf (get-buffer-create " *SKK-MK-generate-autoloads-el*"))
         (sort-min)
         (funcs))
+
     (save-excursion
       (set-buffer buf)
       (erase-buffer)
@@ -562,9 +581,10 @@ SKK tutorials:
                   " nil)\n")
           (setq funcs (cdr funcs)))
         (setq modules (cdr modules)))      (sort-lines nil sort-min (point-max))
-      (insert "\n(provide 'skk-autoloads)\n;;; skk-autoloads.el ends here\n")
-      (write-region (point-min) (point-max) "skk-autoloads.el" nil 'quiet)
-      (kill-buffer buf))))
+	(goto-char (point-max))
+	(insert "\n(provide 'skk-autoloads)\n;;; skk-autoloads.el ends here\n")
+	(write-region (point-min) (point-max) "skk-autoloads.el" nil 'quiet)
+	(kill-buffer buf))))
 
 (defun SKK-MK-collect-autoload-functions (module)
   "Return a list of autoload functions defined in MODULE."
@@ -582,7 +602,8 @@ SKK tutorials:
                                     (save-excursion
                                       (re-search-forward
                                        "^[ 	]*(interactive"
-                                       (save-excursion (re-search-forward "^(defun" nil t 2))
+                                       (save-excursion
+					 (re-search-forward "^(defun" nil t 2))
                                        t)))
                               funcs)))))
           (delete-region (point) (point-max))))

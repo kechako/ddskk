@@ -6,9 +6,9 @@
 ;;
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-exserv.el,v 1.1.2.2 2000/03/24 14:06:17 minakaji Exp $
+;; Version: $Id: skk-exserv.el,v 1.1.2.3 2000/07/02 13:30:42 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/03/24 14:06:17 $
+;; Last Modified: $Date: 2000/07/02 13:30:42 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -46,10 +46,10 @@
 	    :initform nil
 	    :documentation
 	    "Name of the service desired, or an integer specifying a port number to connect to.")
-   (name :initarg :name
-	 :initform nil
-	 :documentation
-	 "Name for process.  It is modified if necessary to make it unique.")
+   (process-name :initarg :process-name
+		 :initform nil
+		 :documentation
+		 "Name of process.  It is modified if necessary to make it unique.")
    (process initarg :process
 	    :initform nil
 	    :documentation "Process object that belongs to program.")
@@ -66,7 +66,7 @@ with any buffer."))
 (defclass dbskkd-engine (network-search-engine)
   ((service :initarg :service
 	    :initform "skkserv")
-   (name :initarg :name :initform "dbskkd")
+   (process-name :initarg :process-name :initform "dbskkd")
    (buffer :initarg :buffer
 	   :initform (lambda () (get-buffer-create " *dbskkd*")))
    (found :initform 1
@@ -95,40 +95,39 @@ candidates that are delimited by slash.")
   (car skk-exserv-list))
 
 (defmethod server-opened-p ((engine network-search-engine))
-  (with-slots ((proc process)) engine
-    (and proc (eq (process-status proc) 'open))))
+  (with-slots (process) engine
+    (and process (eq (process-status process) 'open))))
 
 (defmethod open-server ((engine network-search-engine))
   ;; Return t if process is opened.
-  (with-slots ((proc process)) engine
+  (with-slots (process coding-system) engine
     (condition-case nil
 	(progn
-	  (setq proc
+	  (setq process
 		(open-network-stream
-		 (oref engine name) (oref engine buffer)
+		 (oref engine process-name) (oref engine buffer)
 		 (oref engine host) (oref engine service)))
-	  (if (not proc)
+	  (if (not process)
 	      nil
-	    (process-kill-without-query proc)
-	    (with-slots ((code coding-system engine)) engine
-	      (static-cond
-	       ((eq skk-emacs-type 'xemacs)
-		(set-process-input-coding-system proc code)
-		(set-process-output-coding-system proc code))
-	       ((eq skk-emacs-type 'nemacs)
-		(set-process-kanji-code proc 0))
-	       (t
-		(set-process-coding-system proc code code))))
-	    (oset engine process proc)
-	    (eq (process-status proc) 'open)))
+	    (process-kill-without-query process)
+	    (static-cond
+	     ((eq skk-emacs-type 'xemacs)
+	      (set-process-input-coding-system process coding-system)
+	      (set-process-output-coding-system process coding-system))
+	     ((eq skk-emacs-type 'nemacs)
+	      (set-process-kanji-code process 0))
+	     (t
+	      (set-process-coding-system process coding-system coding-system)))
+	    (oset engine process process)
+	    (eq (process-status process) 'open)))
       (error nil))))
 
 (defmethod disconnect-server ((engine dbskkd-engine))
-  (with-slots ((tag name)) engine
-    (if (eq (process-status tag) 'open)
+  (with-slots (process-name) engine
+    (if (eq (process-status process-name) 'open)
 	(progn
-	  (process-send-string tag "0") 
-	  (accept-process-output (get-process tag))))))
+	  (process-send-string process-name "0") 
+	  (accept-process-output (get-process process-name))))))
 
 ;;;###autoload
 (defun skk-server-version ()
@@ -151,13 +150,13 @@ candidates that are delimited by slash.")
 	  (let (v)
 	    (erase-buffer)
 	    ;; サーバーバージョンを得る。
-	    (process-send-string (oref engine name) "2")
+	    (process-send-string (oref engine process-name) "2")
 	    (while (and (server-opened-p engine) (eq (buffer-size) 0))
 	      (accept-process-output))
 	    (setq v (buffer-string))
 	    (erase-buffer)
 	    ;; ホスト名を得る。
-	    (process-send-string (oref engine name) "3")
+	    (process-send-string (oref engine process-name) "3")
 	    (while (and (server-opened-p engine) (eq (buffer-size) 0))
 	      (accept-process-output))
 	    (goto-char (point-min))
@@ -183,7 +182,7 @@ candidates that are delimited by slash.")
     (with-current-buffer (oref engine buffer)
       (let (l)
 	(erase-buffer)
-	(process-send-string (oref engine name) (concat "1" key " "))
+	(process-send-string (oref engine process-name) (concat "1" key " "))
 	(while (and (server-opened-p engine) (eq (buffer-size) 0))
 	  (accept-process-output))
 	;; found key successfully, so check if a whole line is received.
@@ -223,4 +222,7 @@ candidates that are delimited by slash.")
 (run-hooks 'skk-exserv-load-hook)
 
 (provide 'skk-exserv)
+;;; Local Variables:
+;;; eval: (require 'eieio)
+;;; End:
 ;;; skk-exserv.el ends here

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-exsearch.el,v 1.1.2.5 2000/04/06 00:20:18 minakaji Exp $
+;; Version: $Id: skk-exsearch.el,v 1.1.2.6 2000/07/02 13:30:42 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/04/06 00:20:18 $
+;; Last Modified: $Date: 2000/07/02 13:30:42 $
 
 ;; This file is part of Daredevil SKK.
 

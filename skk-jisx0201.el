@@ -3,29 +3,30 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.22 2000/08/04 18:19:37 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.23 2000/08/14 01:12:11 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/08/04 18:19:37 $
+;; Last Modified: $Date: 2000/08/14 01:12:11 $
 
 ;; This file is part of Daredevil SKK.
 
-;; Daredevil SKK is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either versions 2, or (at your option)
-;; any later version.
+;; Daredevil SKK  is free software;  you  can redistribute it  and/or modify it
+;; under the terms  of the GNU General Public License  as published by the Free
+;; Software  Foundation;  either versions  2,  or  (at your option)  any  later
+;; version.
 
-;; Daredevil SKK is distributed in the hope that it will be useful
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; Daredevil SKK is distributed in the hope that it will be useful  but WITHOUT
+;; ANY  WARRANTY;  without  even  the implied  warranty  of MERCHANTABILITY  or
+;; FITNESS  FOR  A PARTICULAR PURPOSE.  See the GNU General Public License  for
+;; more details.
 
-;; You should have received a copy of the GNU General Public License
-;; along with Daredevil SKK, see the file COPYING.  If not, write to the Free
-;; Software Foundation Inc., 59 Temple Place - Suite 330, Boston,
-;; MA 02111-1307, USA.
+;; You should have received a copy of the GNU General Public License along with
+;; Daredevil SKK,  see the file COPYING.  If not,  write  to  the Free Software
+;; Foundation Inc., 59 Temple Place - Suite 330, Boston,  MA 02111-1307, USA.
 
 ;;; Commentary:
+;;
+;; <簡単な説明>
 ;;
 ;; ~/.skk に
 ;;
@@ -35,32 +36,32 @@
 ;;
 ;; ◎カタカナモードにおいて、
 ;;   ・"C-q" で全角カナモードと半角カナモードを切りかえます。
-;; ◎ひらがな/カタカナ両モード内での▽モードにおいて、
-;;   ・"C-q" を押すと､見出し語として入力されたひらがな/カタカナをﾊﾝｶｸｶﾀｶﾅに変換します｡
 ;;
-;; skk-jisx0201-roman-rule-list に JISX0201.1976 Japanese Roman (latin-jisx0201) 
-;; の文字列を定義しています。ただし JISX0201.1976 Japanese Roman 入力は今のところ
-;; Emacs 20.3 以降とXEmacs 21 以降でしか出来ていません。ｶﾅ と roman を切り替える key
-;; はとりあえず C-c C-q にしてあります。
+;; ◎ひらがな/カタカナ両モード内での▽モードにおいて、
+;;   ・"C-q" を押すと､見出し語として入力されたひらがな/カタカナをﾊﾝｶｸｶﾀｶﾅに変換
+;;     します。
+;;
+;; skk-jisx0201-roman-rule-list に JISX0201.1976 Japanese Roman (latin-jisx0201)
+;; の文字列を定義しています。ただし JISX0201.1976 Japanese Roman 入力は今のとこ
+;; ろ Emacs 20.3 以降とXEmacs 21 以降でしか出来ていません。ｶﾅ と roman を切り替
+;; える key はとりあえず C-c C-q にしてあります。
+;;
 ;;
 ;; <業務連絡>
-;; このファイルを編集するときは、できれば XEmacs を使ってください。Emacs 20 は
+::
+;; このファイルを編集するときは、できれば XEmacs を使ってください。 Emacs 20 は
 ;; デフォルトでは JISX0201.1976 Japanese Roman を自動的に US-ASCII に変換するよ
-;; うになっているからです。Emacs 20.3 以降でこのファイルを編集する場合は、この
+;; うになっているからです。 Emacs 20.3 以降でこのファイルを編集する場合は、この
 ;; ファイルを開く前に
 ;;
 ;; (setq standard-translation-table-for-decode (make-translation-table nil))
 ;;
-;; を評価してください。同様に Emacs 20.2 でこのファイルを編集する場合は、このファイル
-;; を開く前に
+;; を評価してください。 同様に Emacs 20.2 でこのファイルを編集する場合は、 この
+;; ファイルを開く前に
 ;;
 ;; (setq standard-character-unification-table-for-decode (make-unification-table nil))
 ;;
-;; を評価してください。(Mule 2.3 については分かりません。)
-;;
-;; <業務連絡 その2>
-;; やっぱり JISX0201.1976 Japanese Kana と JISX0201.1976 Japanese Roman の入力
-;; モードは別々の方がいいと思います。
+;; を評価してください (Mule 2.3 については分かりません)。
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars) (require 'static))

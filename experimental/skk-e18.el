@@ -83,7 +83,7 @@
 	skk-katakana nil)
   ;; initialize
   (setq skk-input-mode-string skk-hiragana-mode-string)
-  (use-local-map skk-emacs-local-map)
+  (use-local-map skk-current-local-map)
   (force-mode-line-update)
   (remove-hook 'pre-command-hook 'skk-pre-command 'local))
 
@@ -223,7 +223,7 @@
 		(progn
 		  (setq buf (current-buffer)
 			local-map (current-local-map))
-		  (use-local-map skk-emacs-local-map)
+		  (use-local-map skk-current-local-map)
 		  (setq command (key-binding keys))
 		  (if (eq command this-command)
 		      ;; avoid recursive calling of skk-emulate-original-map.

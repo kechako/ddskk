@@ -1,5 +1,9 @@
 2000-08-02  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
+	* skk.el (skk-search): Undo the previous change.
+
+2000-08-02  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
 	* experimental/skk-e18.el (frame-width): Call `screen-width'.
 
 	* skk-look.el (skk-look): Bind `skk-use-numeric-conversion' to

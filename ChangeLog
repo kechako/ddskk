@@ -1,3 +1,8 @@
+1999-12-15  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-isearch.el (isearch-repeat): Delete unnecessary or
+	unreasonable elements from `isearch-cmds'.
+
 1999-12-15  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (skk-mode): Move skk-cursor.el related codes to

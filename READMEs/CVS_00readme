@@ -1,0 +1,58 @@
+CVS の入手
+
+  CVS は GNU ソフトウェアとして GNU のミラーサイトから入手できます。
+  マスターサイトは
+
+    ftp://ftp.gnu.org/gnu/cvs/
+
+  ですが、日本から入手する場合は
+
+    ftp://ftp.ring.gr.jp/pub/GNU/cvs/
+    ftp://ftp.win.ne.jp/pub/GNU/cvs/
+    ftp://ftp.iij.ad.jp/pub/GNU/cvs/
+    ftp://ftp.tokyonet.ad.jp/pub/GNU/cvs/
+
+  等の日本のサイトを利用すればいいでしょう。現時点での最新版は 
+  cvs-1.10 です。
+
+  GNU のミラーサイトに置かれるのは安定した正式リリース版のみですが、最
+  新の開発版を利用したい人は
+
+    http://download.cyclic.com/pub/
+
+  に置かれているものが利用できます。現時点での最新版は cvs-1.10.7 です。
+
+
+  Windows の binary が欲しい方は、
+
+    http://download.cyclic.com/pub/cvs-1.10/windows/cvs-1.10-win.zip
+
+  に正式版 cvs-1.10 のバイナリーが、
+
+    http://download.cyclic.com/pub/cvs-1.10.5/windows/cvs.exe
+
+  に開発版 cvs-1.10.5 のバイナリーが置かれています。また、Mac 用 CVS は
+
+    http://www.maccvs.org/
+
+  から入手可能です。
+
+
+  cvs に関する情報は cvs のホームページ
+
+    http://www.loria.fr/~molli/cvs-index.html
+
+  および、最近 cvs のメンテナンスを行っている Cyclic Software のページ
+
+    http://www.cyclic.com/
+
+  から入手可能です。
+
+
+  また、CVS に関する日本語の情報として、以下のようなページがあります。
+
+    http://www.cyclic.com/cvs/lang-jp.html
+    http://www.race.u-tokyo.ac.jp/~moro/cvs/
+    http://www.itojun.org/hack/cvs/tut-kernel.html
+    http://www-vox.dj.kit.ac.jp/nishi/cvs/
+    http://duff.kuicr.kyoto-u.ac.jp/~okuji/gnujdoc.html

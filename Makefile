@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-# Version: $Id: Makefile,v 1.13.4.15 2000/09/09 03:25:48 minakaji Exp $
-# Last Modified: $Date: 2000/09/09 03:25:48 $
+# Version: $Id: Makefile,v 1.13.4.16 2000/09/09 17:49:13 czkmt Exp $
+# Last Modified: $Date: 2000/09/09 17:49:13 $
 
 
 VERSION = 11.3
@@ -21,6 +21,9 @@ set_jisyo =
 elc:
 	$(EMACS) $(FLAGS) -f SKK-MK-compile
 
+package:
+	$(XEMACS) $(FLAGS) -f SKK-MK-compile
+
 info:
 	$(EMACS) $(FLAGS) -f SKK-MK-compile-info
 
@@ -35,10 +38,11 @@ what-where:
 	$(EMACS) $(FLAGS) -f SKK-MK-what-where
 
 what-where-package:
-	$(EMACS) $(FLAGS) -f SKK-MK-what-where-package
+	$(XEMACS) $(FLAGS) -f SKK-MK-what-where-package
 
 clean:
 	-$(RM) skk-autoloads.el skk-setup.el leim-list.el *.elc experimental/*.elc \
+	auto-autoloads.el custom-load.el \
 	experimental/skk-isearch.el ./doc/skk.info* `find . -name '*~'` `find . -name '.*~'`
 
 tar: clean

@@ -1,3 +1,17 @@
+2000-10-29  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* experimental/skk-annotation.el (skk-annotation-mode-map): Change
+	key bind skk-annotation-quit to "\C-c\C-k".
+	(skk-annotation-add): Document updated.  Use `skk-annotation-setup'.
+	(skk-annotation-quit): Call `kill-buffer'.
+	Rename to `skk-annotation-kill'.
+	(skk-annotation-quote): Use `skk-annotation-setup'.
+	(skk-annotation-remove): Use `skk-annotation-setup'.
+	Abolish optional argument NO-PREVIOUS-ANNOTATION.
+	(skk-annotation-setup): New function.
+
+	* skk-vars.el (skk-annotation-annotated-word): New internal
+	variable.
 2000-10-28  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* experimental/skk-annotation.el (skk-annotation-quit): New

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.49 2000/10/28 01:48:36 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.50 2000/10/29 00:16:50 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/28 01:48:36 $
+;; Last Modified: $Date: 2000/10/29 00:16:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2696,6 +2696,9 @@ non-nil を返すと annotation を表示する。"
   "SKK annotation mode に入る前の window configuration。
 skk-annotation-save-and-quit を呼ぶとこの window configuration
 を使って SKK annotation mode に入る前の window 状態に戻す。")
+
+(defvar skk-annotation-annotated-word nil
+  "annotation を付けられる単語。")
 
 ;; buffer local variables.
 (skk-deflocalvar skk-annotation-mode nil

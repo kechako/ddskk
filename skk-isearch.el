@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.19 2000/01/19 14:39:46 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.20 2000/01/19 16:03:36 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/19 14:39:46 $
+;; Last Modified: $Date: 2000/01/19 16:03:36 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -257,6 +257,24 @@ Optional argument PREFIX is apppended if given."
 ;; define keymap
 ;;
 
+(defun skk-isearch-find-keys-define (map commands command)
+  (let (keys)
+    (mapcar
+     (function (lambda (c)
+		 (setq keys (where-is-internal c (current-global-map)))
+		 (mapcar
+		  (function (lambda (key)
+			      (catch 'tag
+				(let ((len (length key)))
+				  (cond ((> len 2)
+					 (throw 'tag nil))
+					((= len 2)
+					 (define-key map (vector (aref key 0))
+					   (make-sparse-keymap))))
+				  (define-key map key command)))))
+		  keys)))
+     commands)))
+
 ;; XXX should be more generic
 (defun skk-isearch-setup-keymap (map)
   ;; printable chars.
@@ -270,36 +288,24 @@ Optional argument PREFIX is apppended if given."
   (define-key map skk-kakutei-key 'skk-isearch-newline)
   (define-key map "\C-m" 'skk-isearch-exit)
 
+  ;; C-x map for skk.
+  (define-key map "\C-x" (make-sparse-keymap))
+  (define-key map [?\C-x t] 'isearch-other-control-char)
+
   ;; Keys for `skk-isearch-skk-mode'.
-  (let ((commands '(skk-mode skk-auto-fill-mode))
-	keys)
+  (let ((commands '(skk-mode skk-auto-fill-mode)))
     (if (and (boundp 'default-input-method)
 	     (equal default-input-method "japanese-skk"))
 	(setq commands (cons 'toggle-input-method commands)))
-    (while commands
-      (setq keys (where-is-internal (car commands) (current-global-map))
-	    commands (cdr commands))
-      (while keys
-	(define-key map (car keys) 'skk-isearch-skk-mode)
-	(setq keys (cdr keys)))))
+    (skk-isearch-find-keys-define map commands 'skk-isearch-skk-mode))
 
   ;; Keys for `skk-isearch-delete-char'.
   (let ((commands '(backward-delete-char-untabify
 		    backward-delete-char
 		    backward-or-forward-delete-char
-		    delete-backward-char))
-	keys)
-    (while commands
-      (setq keys (where-is-internal (car commands) (current-global-map))
-	    commands (cdr commands))
-      (while keys
-	(define-key map (car keys) 'skk-isearch-delete-char)
-	(setq keys (cdr keys)))))
-
-  ;; C-x map for skk.
-  (define-key map "\C-x" (make-sparse-keymap))
-  (define-key map [?\C-x t] 'isearch-other-control-char)
-  (define-key map "\C-x\C-j" 'skk-isearch-skk-mode)
+		    delete-backward-char)))
+    (skk-isearch-find-keys-define map commands 'skk-isearch-delete-char))
+  ;;
   map)
 
 

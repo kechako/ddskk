@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/10/09 00:16:28 $
+;; Last Modified: $Date: 2000/10/09 03:11:55 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -344,7 +344,7 @@ keycode 131 = underscore\n"))
   (interactive "p")
   ;;
   (when (or (and (markerp skk-nicola-okuri-flag)
-		 (eq (marker-position skk-nicola-okuri-flag) (point)))
+		 (<= (point) (marker-position skk-nicola-okuri-flag)))
 	    (or (not skk-henkan-on) skk-henkan-active))
     (setq skk-nicola-okuri-flag nil))
   ;;
@@ -702,7 +702,10 @@ keycode 131 = underscore\n"))
   (setq skk-nicola-okuri-flag nil))
 
 (defadvice skk-previous-candidate (before skk-nicola-ad activate compile)
-  (setq skk-nicola-okuri-flag nil))
+  (when (or (and (markerp skk-nicola-okuri-flag)
+		 (<= (point) (marker-position skk-nicola-okuri-flag)))
+	    (or (not skk-henkan-on) skk-henkan-active))
+    (setq skk-nicola-okuri-flag nil)))
 
 (static-unless (memq skk-emacs-type '(nemacs mule1))
   ;;

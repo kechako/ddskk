@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.68 2000/08/19 03:06:31 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.69 2000/08/23 13:33:44 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/19 03:06:31 $
+;; Last Modified: $Date: 2000/08/23 13:33:44 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/08/19 03:06:31 $")
+      (let* ((raw-date "$Date: 2000/08/23 13:33:44 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -3806,6 +3806,12 @@ picture-mode $B$+$i=P$?$H$-$K$=$N%P%C%U%!$G(B SKK $B$r@5>o$KF0$+$9$?$a$N=hM}!
 
 (defadvice save-buffers-kill-emacs (before skk-ad activate)
   (run-hooks 'skk-before-kill-emacs-hook))
+
+(defadvice comint-send-input (around skk-ad activate compile)
+  (cond ((or skk-henkan-on skk-henkan-active)
+	 (skk-kakutei)
+	 (unless skk-egg-like-newline ad-do-it))
+	(t ad-do-it)))
 
 (static-if (eq skk-emacs-type 'xemacs)
     (defadvice minibuffer-keyboard-quit (around skk-ad activate)

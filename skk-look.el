@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.10 2000/09/09 12:48:14 czkmt Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.11 2000/09/09 23:09:45 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/09 12:48:14 $
+;; Last Modified: $Date: 2000/09/09 23:09:45 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -28,44 +28,58 @@
 ;;
 ;; <How to work>
 ;; .skk か .emacs で `skk-use-look' を t にセットしてこれを評価して下さい。その
-;; 後 skk-mode を立ち上げるか、M-x skk-restart すると、SKK abbrev モードで、
-;; UNIX look コマンドを利用した英文字 + アスタリスクの変換ができるようになりま
-;; す。こんな感じです。
+;; 後 skk-mode を立ち上げるか、M-x skk-restart すると、 下記のような芸当が可能に
+;; なります。
 ;;
-;; ▽confere* (SPC)
-;; ---> ▼conference
+;; (1)英単語を補完ができます。
 ;;
-;; 確定すると、`confere*' を見出し語、`conference' を候補とするエントリが個人辞
-;; 書に追加されます。このようなエントリを追加したくない場合は、
-;; skk.el のユーザー変数、`skk-search-excluding-word-pattern-function' を適切に
-;; 設定することで、これを実現することができます。詳しくは、
-;; `skk-search-excluding-word-pattern-function' のドキュメントをご覧下さい。
+;;    ▽abstr(TAB) ---> ▽abstract 
 ;;
-;; `skk-look-recursive-search' の値を non-nil にすると、look が見つけた英単語を
-;; 見出し語にして、再帰的に SKK 辞書内を検索することができます。例えば、いずれか
-;; の SKK 辞書に
+;;    通常の補完機能同様、`.' で次の補完候補、`,' でひとつ前の補完候補に
+;;    移動できます。
 ;;
-;;  abstract /アブストラクト/抽象/
-;;  abstraction /アブストラクション/
+;;    SKK 形式の英和辞書があれば、ここから SPC を押して英和変換ができます
+;;    ね。
 ;;
-;; というエントリがある場合、
+;; (2)英単語をあいまいに変換して取り出すことができます。
 ;;
-;;  ▽abs* (SPC)
+;;    ▽abstr* (SPC) ---> ▼abstract 
 ;;
-;;  ---> ▼abstract (SPC) -> ▼アブストラクト (SPC) -> ▼抽象 (SPC)
-;;       -> ▼abstraction (SPC) -> ▼アブストラクション
+;;    見出し語にアスタリスク (`*') を入れるのをお忘れなく。
 ;;
-;; のように英単語 + その英単語を見出し語にした候補の「セット」を変換結果として出
-;; 力することができます。この際、`skk-look-expanded-word-only' の値が non-nil で
-;; あれば、再帰検索に成功した英単語の「セット」だけ (再帰検索で検出されなかった
-;; 英単語は無視する) を出力することができます。
+;;    確定すると、`abstr*' を見出し語、`abstract' を候補とするエントリが個人辞
+;;    書に追加されます。このようなエントリを追加したくない場合は、
+;;    ユーザー変数、`skk-search-excluding-word-pattern-function' を適切に
+;;    設定することで、これを実現することができます。詳しくは、
+;;    `skk-search-excluding-word-pattern-function' のドキュメントをご覧下さい。
 ;;
-;; abbrev モードで補完を行なうと、個人辞書を検索し尽した後で、look コマンドによる
-;; 英単語補完を行ないます。例えば、こんな感じに動作します。
+;; (3)(2)で変換した後、更に再帰的な英和変換を行なうことができます。
 ;;
-;;  ▽confe (TAB)
-;;  ---> ▽conference
+;;    まず、`skk-look-recursive-search' の値を non-nil にセットして下さ
+;;    い。Emacs/SKK を再起動する必要はありません。
 ;;
+;;    すると、例えば、
+;;
+;;    ▽abstr* (SPC)
+;;
+;;      ---> ▼abstract (SPC) -> ▼アブストラクト (SPC) -> ▼抽象 (SPC)
+;;        -> ▼abstraction (SPC) -> ▼アブストラクション
+;;
+;;    このように英単語 + その英単語を見出し語にした候補の「セット」を変換
+;;    結果として出力することができます。
+;;
+;;    この際、`skk-look-expanded-word-only' の値が non-nil であれば、再帰
+;;    検索に成功した英単語の「セット」だけを出力することができます (再帰
+;;    検索で検出されなかった英単語は無視して出力しません) 。
+;;
+;;    もちろん、SKK 辞書に
+;;
+;;       abstract /アブストラクト/抽象/
+;;       abstraction /アブストラクション/
+;;
+;;    というエントリがあることを前提としています。edict を SKK 辞書形式に
+;;    変換すると良いですね。
+;; 
 ;; 動作確認を行なった look は、Slackware 3.5 に入っていた、man page に
 ;; `BSD Experimental June 14, 1993' と記載のあるもの (バージョン情報がない) にて
 ;; 行なっています。オプションの指定などが異なる look があれば、ご一報下さい。よろ
@@ -199,30 +213,36 @@
 	   (not (string= "" (car ispell-filter)))))
   (setq ispell-filter (cdr ispell-filter)) ; remove extra \n
   (let ((poss (and ispell-filter (listp ispell-filter)
+		   ;; 1: t for an exact match.
+		   ;; 2: A string containing the root word matched via suffix removal.
+		   ;; 3: A list of possible correct spellings of the format:
+		   ;;    (ORIGINAL-WORD OFFSET MISS-LIST GUESS-LIST)
+		   ;;    ORIGINAL-WORD is a string of the possibly misspelled word.
+		   ;;    OFFSET is an integer giving the line offset of the word.
+		   ;;    MISS-LIST and GUESS-LIST are possibly null lists of guesses and misses.
+		   ;; 4: Nil when an error has occurred."
 		   (or (ispell-parse-output (car ispell-filter))
 		       'error)))
 	ret var)
     (setq ispell-filter nil)
-    (cond ((or (eq poss t) (stringp poss))
-	   (skk-look-1 word))
-	  ((eq poss 'error)
+    (cond ((eq poss 'error)
 	   (skk-message "ispell process でエラーが発生しました。"
 			"error in ispell process")
 	   (sit-for 1)
 	   (message "")
 	   nil)
-	  ((and (null (or (nth 2 poss) (nth 3 poss))) (car poss))
-	   ;;             word
-	   (skk-look-1 (car poss)))
+	  ((or (eq poss t)
+	       ;; root word に対して skk-look-1 かけちゃおうか？
+	       ;; でもちっとも補完ぢゃなくなっちまいますね... (^^;;。
+	       (stringp poss)
+	       (null (or (nth 2 poss) (nth 3 poss))))
+	   (skk-look-1 word))
 	  (t
-	   ;;              word        miss         guess
-	   (setq var (cons word (nconc (nth 2 poss) (nth 3 poss))))
 	   (while var
 	     ;; call look command by each candidate put out by ispell.
 	     (setq ret (skk-nunion ret (cons (car var) (skk-look-1 (car var))))
 		   var (cdr var)))
-	   ;; unnecessary?
-	   (delete word ret)))))
+	   (delete word (skk-nunion (skk-look-1 word) ret))))))
 
 (provide 'skk-look)
 ;;; skk-look.el ends here

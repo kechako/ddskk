@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-setup.el.in,v 1.1.2.8 2000/09/06 14:54:24 czkmt Exp $
+;; Version: $Id: skk-setup.el.in,v 1.1.2.9 2000/09/09 23:09:45 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/06 14:54:24 $
+;; Last Modified: $Date: 2000/09/09 23:09:45 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -40,10 +40,7 @@
 ;; (add-hook 'isearch-mode-end-hook
 ;; 	  (lambda ()
 ;; 	    (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
-;; 	    (if (and (featurep 'skk-cursor)
-;; 		     (boundp 'skk-mode-invoked) skk-mode-invoked
-;; 		     (skk-color-display-p))
-;; 		(skk-set-cursor-properly))))
+;; 		)))
 
 ;;(defvar skk-large-jisyo "@DIC@")
 ;;(defvar skk-aux-large-jisyo "@AUXDIC@")
@@ -56,14 +53,6 @@
 (add-hook 'isearch-mode-end-hook
 	  (lambda ()
 	    (and (featurep 'skk-isearch) (skk-isearch-mode-cleanup))))
-
-(add-hook 'isearch-mode-end-hook
-	  (lambda ()
-	    (if (and (featurep 'skk-cursor)
-		     (boundp 'skk-mode-invoked) skk-mode-invoked
-		     (skk-color-display-p))
-		(skk-set-cursor-properly)))
-	  'append)
 
 (or (featurep 'xemacs)
     (and (fboundp 'register-input-method)

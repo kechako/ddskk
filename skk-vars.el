@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.33 2000/09/04 09:06:44 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.34 2000/09/06 14:57:34 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/04 09:06:44 $
+;; Last Modified: $Date: 2000/09/06 14:57:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1675,7 +1675,8 @@ skk-look-recursive-search が non-nil であるときのみ有効。"
   :type 'boolean
   :group 'skk-look)
 
-(defcustom skk-look-use-ispell (exec-installed-p "ispell")
+(defcustom skk-look-use-ispell (and (exec-installed-p "ispell")
+				    (module-installed-p 'ispell))
   "*Non-nil であれば、look による検索の際、ispell を併用する。"
   :type 'boolean
   :group 'skk-look)

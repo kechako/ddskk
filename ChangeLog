@@ -1,5 +1,18 @@
 2000-01-23  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* Makefile (clean): Delete experimental/skk-isearch.el.
+
+	* SKK-MK : Copy "experimental/skk-is-n.el" to
+	"experimental/skk-isearch.el" under Emacs 18.
+	(SKK-MK-compile): Also gather autoloads from
+	"experimental/skk-isearch.el".
+	(SKK-MK-generate-autoloads-el): Use a file name without its
+	directory name.
+
+	* experimental/skk-is-n.el: New file.
+
+2000-01-23  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* Makefile (clean): Delete experimental/*.elc.
 
 	* SKK-MK : Require "skk-e18" if `emacs-major-version' is 18.

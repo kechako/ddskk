@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.4 1999/11/28 08:14:45 kawamura Exp $
-;; Last Modified: $Date: 1999/11/28 08:14:45 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.5 1999/11/29 21:41:32 czkmt Exp $
+;; Last Modified: $Date: 1999/11/29 21:41:32 $
 
 ;; Commentary
 ;;
@@ -148,6 +148,7 @@ end with `skk'." )
       (princ (format "load-path=%s\n" load-path)) ))
 
 ;; After seaching APEL installed dirctory, require full set install.el.
+(require 'poe)
 (require 'install)
 
 ;; constants.

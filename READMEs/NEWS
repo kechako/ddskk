@@ -1,5 +1,33 @@
 -*- outline -*-
 
+* 11.3
+
+** skk-isearch の input method 対応。
+
+** Emacs 18 対応。
+
+** 候補表示が長い場合に対応する機能 (専用の window を使う)。
+
+** JIS X 2013 サポート。
+
+** skk-vars.el に変数を集約。
+
+** skk-macs.el によるマクロなどの提供。
+
+** 仮名入力対応 (experimental/nicola)。
+
+** skk-look による ispell を使用した修正。
+
+** APEL のバージョンチェック。
+
+APEL のバージョンをチェックするため、product.el を利用するようになりました。
+このため、APEL は 10.0 以降が必要となります。
+
+** skk-set-cursor-properly は廃止されました。
+
+isearch の設定で add-hook している場合など、 skk-set-cursor-properly  
+の設定を削除して下さい。
+
 * Daredevil branch 11.1
 
 ** skk.el の更なるシェイプアップを検討。

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.23 2000/08/31 14:06:04 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.24 2000/09/30 15:26:51 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/31 14:06:04 $
+;; Last Modified: $Date: 2000/09/30 15:26:51 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -516,16 +516,12 @@
 (defsubst skk-substring-head-character (string)
   (char-to-string (string-to-char string)))
 
-(defsubst skk-get-current-candidate-simply (&optional noconv)
+(defsubst skk-get-current-candidate-1 ()
   (if (> 0 skk-henkan-count)
       (skk-error "候補を取り出すことができません"
 		 "Cannot get current candidate")
     ;; (nth -1 '(A B C)) は、A を返すので、負でないかどうかチェックする。
-    (let ((word (nth skk-henkan-count skk-henkan-list)))
-      (and word
-	   (if (and (skk-numeric-p) (consp word))
-	       (if noconv (car word) (cdr word))
-	     word)))))
+    (nth skk-henkan-count skk-henkan-list)))
 
 ;; convert skk-rom-kana-rule-list to skk-rule-tree.
 ;; The rule tree follows the following syntax:

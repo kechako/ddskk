@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.39 2000/09/27 13:42:08 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.40 2000/09/30 15:26:51 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:08 $
+;; Last Modified: $Date: 2000/09/30 15:26:51 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1870,6 +1870,12 @@ SKK サーバーが使用するポート番号を書き、設定をすることができる。
   :type 'hook
   :group 'skk-hooks-and-functions
   :group 'skk-server)
+
+(defcustom skk-jisx0213-prohibit nil
+  "*Non-nil であれば JISX0213 の文字列を含む候補の出力をしない。
+Mule-UCS がインストールされていないときはこの値は動作に影響しない。"
+  :type 'boolean
+  :group 'skk-misc)
 
 ;;; -- INTERNAL CONSTANTS AND VARIABLES of SKK.EL
 ;; (ones of other separate programs should be in the relative files.)

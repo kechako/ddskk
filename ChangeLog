@@ -1,3 +1,40 @@
+2000-10-01  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-lookup.el: Require bitmap when running on MULE.
+
+	* SKK-MK (SKK_MODULES): Add skk-jisx0213 if available.
+	(SKK_DICTIONARIES): Add "SKK-JISYO.JIS2", "SKK-JISYO.JIS3_4",
+	"SKK-JISYO.pubdic+", "SKK-JISYO.edict", "SKK-JISYO.office.zipcode"
+	and "SKK-JISYO.zipcode".
+	
+	* skk-jisx0213.el: New file.
+
+	* skk-vars.el (skk-jisx0213-prohibit): New user option.
+
+	* skk.el (skk-henkan): Use `skk-get-current-candidate-1'.
+	(skk-previous-candidate): Use new `skk-get-current-candidate'.
+	(skk-kakutei): Ditto.
+	(skk-purge-from-jisyo): Ditto.
+	(skk-henkan-show-candidates): Use `skk-num-multiple-convert'
+	instead of `skk-num-convert*7'.
+	(skk-get-current-candidate): New funcition.
+	(skk-henkan-1): Call `skk-search' until getting NEW-WORD even if skk-henkan-count is 0.	
+	
+	* skk-num.el (skk-num-convert-1): New subroutine.
+	(skk-num-process-user-minibuf-input): Removed.
+	(skk-num-convert): Call `skk-num-uniq' if type 4 numeric
+	conversion is done.
+	Abolish argument KEY.
+	Do not return CURRENT.
+	(skk-num-exp): Use `save-match-data'.
+	(skk-num-process-user-minibuf-input): Ditto.
+	(skk-num-convert*7): Removed.
+	(skk-num-multiple-convert): New function.
+	(skk-henkan-list-filter): New funcition.
+	
+	* skk-macs.el (skk-get-current-candidate-simply): Abolish optional
+	argument NOCONV and renamed it to `skk-get-current-candidate-1'.
+
 2000-09-29  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/FAQ.txt: Fixed a description about 「検索する辞書を増や

@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.47 2000/09/27 13:42:04 minakaji Exp $
-;; Last Modified: $Date: 2000/09/27 13:42:04 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.48 2000/09/30 15:26:49 minakaji Exp $
+;; Last Modified: $Date: 2000/09/30 15:26:49 $
 
 ;; Commentary
 ;;
@@ -171,7 +171,11 @@
 (defvar SKK_TEXIS (or (getenv "SKK_TEXIS") '("skk.texi")))
 (defvar SKK_TUTORIALS (or (getenv "SKK_TUTORIALS") '("SKK.tut" "SKK.tut.E")))
 (defvar SKK_DICTIONARIES
-  (or (getenv "SKK_DICTIONARIES") '("SKK-JISYO.L" "SKK-JISYO.M" "SKK-JISYO.S")))
+  (or (getenv "SKK_DICTIONARIES")
+      '("SKK-JISYO.L" "SKK-JISYO.M" "SKK-JISYO.S"
+	"SKK-JISYO.JIS2" "SKK-JISYO.JIS3_4"
+	"SKK-JISYO.pubdic+" "SKK-JISYO.edict"
+	"SKK-JISYO.office.zipcode" "SKK-JISYO.zipcode")))
 (defvar SKK_MODULES
   ;; こんなもんコマンドラインで指定する人いないよね？
   (or (getenv "SKK_MODULES")
@@ -209,13 +213,18 @@
 	       (setq list (nconc list (list 'ccc)))
 	       (or (fboundp 'register-input-method)
 		   (setq list (delq 'skk-leim list)))))
-	;;
+	;; skk-jisx0213.el
+	(condition-case nil
+	    (and (require 'jisx0213) (require 'un-define)
+		 (setq list (nconc list (list 'skk-jisx0213))))
+	  (error))
+	;; skk-lookup.el
 	(condition-case nil
 	    ;; you might have to add lookup installed directory to `load-path'.
 	    (and (let ((lookup-byte-compile t)) (require 'lookup))
                  (setq list (nconc list (list 'skk-lookup))))
 	  (error))
-	;;
+	;; skk-viper.el
 	(condition-case nil
 	    (and (require 'viper) (setq list (nconc list (list 'skk-viper))))
 	  (error))

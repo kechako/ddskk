@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.74 2000/09/27 13:42:09 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.75 2000/09/30 15:26:52 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:09 $
+;; Last Modified: $Date: 2000/09/30 15:26:52 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/09/27 13:42:09 $")
+      (let* ((raw-date "$Date: 2000/09/30 15:26:52 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1448,10 +1448,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
             (skk-set-marker mark nil)
 	    (backward-char 1))
         (goto-char (point-max)))
-      (and kakutei-henkan
-	   (skk-kakutei (if (skk-numeric-p)
-			    (skk-get-current-candidate-simply 'noconv)
-			  new-word))))))
+      (and kakutei-henkan (skk-kakutei)))))
 
 (defun skk-henkan-1 ()
   ;; skk-henkan のサブルーチン。
@@ -1464,36 +1461,39 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	       ;; in this case, we should not search kakutei jisyo.
 	       (setq skk-current-search-prog-list
 		     (cdr skk-current-search-prog-list)))
-          (setq skk-henkan-list (skk-search))
-          (if (null skk-henkan-list)
-              nil
-            (setq new-word (skk-get-current-candidate))
-            (and skk-kakutei-flag
-		 ;; found the unique candidate in kakutei jisyo
-		 (setq this-command 'skk-kakutei-henkan))))
+          (while (and skk-current-search-prog-list (not new-word))
+            (setq skk-henkan-list (skk-nunion skk-henkan-list (skk-search)))
+	    (skk-henkan-list-filter)
+	    (setq new-word (skk-get-current-candidate)))
+          (if (and new-word skk-kakutei-flag)
+	      ;; found the unique candidate in kakutei jisyo
+	      (setq this-command 'skk-kakutei-henkan)))
       ;; 変換回数が 1 以上のとき。
       (setq new-word (skk-get-current-candidate))
       (or new-word
           ;; 新しい候補を見つけるか、skk-current-search-prog-list が空にな
           ;; るまで skk-search を連続してコールする。
           (while (and skk-current-search-prog-list (not new-word))
-            (setq skk-henkan-list (skk-nunion skk-henkan-list (skk-search))
-                  new-word (skk-get-current-candidate))))
+            (setq skk-henkan-list (skk-nunion skk-henkan-list (skk-search)))
+	    (skk-henkan-list-filter)
+	    (setq new-word (skk-get-current-candidate))))
       (and new-word (> skk-henkan-count 3)
 	   ;; show candidates in minibuffer
 	   (setq new-word (skk-henkan-show-candidates))))
     new-word))
 
-(defun skk-get-current-candidate ()
+(defun skk-get-current-candidate (&optional noconv)
   (if (skk-numeric-p)
-      (let (val)
-        (skk-num-uniq)
-        (setq val (skk-num-convert (skk-get-current-candidate-simply)))
-        (if (not skk-num-recompute-key)
-            val
-          (skk-num-uniq)
-          (skk-num-convert (skk-get-current-candidate-simply))))
-    (skk-get-current-candidate-simply)))
+      (if noconv
+	  (car (skk-get-current-candidate-1))
+	(cdr (skk-get-current-candidate-1)))
+    (skk-get-current-candidate-1)))
+
+(defun skk-henkan-list-filter ()
+  (if (skk-numeric-p)
+      (progn (skk-num-uniq) (skk-num-multiple-convert)))
+  (if (and (featurep 'jisx0213) skk-jisx0213-prohibit)
+      (skk-jisx0213-henkan-list-filter)))
 
 (defun skk-henkan-show-candidates ()
   ;; ミニバッファで変換した候補群を表示する。
@@ -1544,7 +1544,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		(setq skk-henkan-list
 		      (skk-nunion skk-henkan-list (skk-search)))
 		(and (skk-numeric-p) (skk-num-uniq)))
-	      (and (skk-numeric-p) (skk-num-convert*7))
+	      (and (skk-numeric-p) (skk-num-multiple-convert 7))
 	      (setq henkan-list (nthcdr (+ 4 (* loop 7)) skk-henkan-list))))
        (save-window-excursion
 	 (setq n (skk-henkan-show-candidate-subr candidate-keys henkan-list))
@@ -1718,7 +1718,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   (save-match-data
     (let ((enable-recursive-minibuffers t)
           ;; 変換中に isearch message が出ないようにする。
-          skk-isearch-message new-one)
+          skk-isearch-message orglen new-one)
       (static-unless (memq skk-emacs-type '(nemacs mule1))
 	(add-hook 'minibuffer-setup-hook 'skk-j-mode-on)
 	(add-hook
@@ -1776,18 +1776,18 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
         ;; 末尾の空白を取り除く。
         (and (string-match "[ 　]+$" new-one)
 	     (setq new-one (substring new-one 0 (match-beginning 0))))
-        (if (skk-numeric-p)
-            (setq new-one (skk-num-process-user-minibuf-input new-one))
-          ;; すごくたくさんの候補がある場合に、その最後に新しい候補を加えるのは
-          ;; けっこう骨だが。
-          (setq skk-henkan-list (nconc skk-henkan-list (list new-one))
-                ;; フラグをオンにする。
-                skk-kakutei-flag t))
+	(setq skk-henkan-list (nconc skk-henkan-list (list new-one)))
+	(if (skk-numeric-p)
+	    (progn
+	      (setq orglen (length skk-henkan-list))
+	      (skk-num-convert)
+	      (setq new-one (cdr (skk-get-current-candidate-1)))))
+	(if (or (not orglen) (= orglen (length skk-henkan-list)))
+	    (setq skk-kakutei-flag t))
         (setq skk-henkan-in-minibuff-flag t
               skk-touroku-count (1+ skk-touroku-count)))
       ;; (nth skk-henkan-count skk-henkan-list) が nil だから辞書登録に
       ;; 入っている。skk-henkan-count をインクリメントする必要はない。
-      ;; (setq skk-henkan-count (1+ skk-henkan-count))
       ;; new-one が空文字列だったら nil を返す。
       (if (not (string= new-one "")) new-one))))
 
@@ -1879,7 +1879,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		(insert-and-inherit skk-henkan-key)
 		(skk-change-marker-to-white))
 	    (setq skk-henkan-count (1- skk-henkan-count))
-	    (skk-insert-new-word (skk-get-current-candidate-simply))))
+	    (skk-insert-new-word (skk-get-current-candidate))))
 	 (if mark
 	     (progn
 	       (goto-char mark)
@@ -1910,7 +1910,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   ;; なくなる。
   (interactive)
   (let ((inhibit-quit t)
-	converted kakutei-word)
+	converted kakutei-word var)
     (if (not skk-henkan-on)
 	nil
       (if skk-henkan-active
@@ -1921,7 +1921,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		  ;; 個人辞書を参照する (確定辞書は参照しない) ので、多少資源と時
 		  ;; 間を無駄にしても、個人辞書に確定辞書のエントリを書き込んで更
 		  ;; 新もしておく。
-		  (or word (skk-get-current-candidate-simply (skk-numeric-p))))
+		  (or word (skk-get-current-candidate 'noconv)))
 	    (if (or
 		 (and (not skk-search-excluding-word-pattern-function) kakutei-word)
 		 (and
@@ -1932,7 +1932,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		  (skk-update-jisyo kakutei-word)
 		  (if (skk-numeric-p)
 		      (progn
-			(setq converted (skk-get-current-candidate-simply))
+			(setq converted (skk-get-current-candidate))
 			(skk-num-update-jisyo kakutei-word converted)))))))
       (if skk-mode
 	  (progn
@@ -2417,7 +2417,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 			  (if skk-japanese-message-and-error
 			      "%s /%s/%sを辞書から削除します。良いですか？"
 			    "Really purge \"%s /%s/%s\"?")
-			  skk-henkan-key (skk-get-current-candidate-simply)
+			  skk-henkan-key (skk-get-current-candidate)
 			  (if (and skk-henkan-okurigana
 				   (or skk-henkan-okuri-strictly
 				       skk-henkan-strict-okuri-precedence))
@@ -2438,7 +2438,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	 (let ((end (if skk-henkan-okurigana (+ (length skk-henkan-okurigana)
 						skk-henkan-end-point)
 		      skk-henkan-end-point))
-	       (word (skk-get-current-candidate-simply (skk-numeric-p))))
+	       (word (skk-get-current-candidate)))
 	   (skk-update-jisyo word 'purge)
 	   ;; Emacs 19.28 だと Overlay を消しておかないと、次に insert される
 	   ;; skk-henkan-key に何故か Overlay がかかってしまう。

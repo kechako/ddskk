@@ -197,6 +197,8 @@ Mule-2.3 添付の egg.el よりコピーした。")
 "Returns non-nil if WINDOW is a minibuffer window."
   (eq (selected-window) (minibuffer-window)))
 
+(defun-maybe overlayp (object))
+
 (defun-maybe float (arg)
   arg)
 

@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/11/08 09:32:30 $
+;; Last Modified: $Date: 2000/11/09 08:24:45 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -115,14 +115,6 @@
      '(message "xmodmap を呼んでいます...完了"))
     '(t
       (message "xmodmap の呼び出しに失敗しました")))))
-
-;;;###autoload
-(defmacro skk-kanagaki-sit-for (seconds &optional nodisplay)
-  (case skk-emacs-type
-   ((nemacs mule1 xemacs)
-    (` (sit-for (, seconds) (, nodisplay))))
-   (t
-    (` (sit-for (, seconds) nil (, nodisplay))))))
 
 ;;;###autoload
 (defmacro skk-kanagaki-make-string (n str)

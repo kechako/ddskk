@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/11/07 10:10:16 $
+;; Last Modified: $Date: 2000/11/09 08:24:45 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -362,7 +362,7 @@ keycode 131 = underscore\n"))
   ;; `skk-latin-mode' において、 左右親指キーの同時打鍵によって 'skk-j-mode' に
   ;; 入る。
   (interactive "*p")
-  (if (skk-kanagaki-sit-for skk-nicola-latin-interval t)
+  (if (skk-sit-for skk-nicola-latin-interval t)
       ;; then
       (let ((last-command-char ?\ ))
 	(call-interactively 'self-insert-command t))
@@ -424,7 +424,7 @@ keycode 131 = underscore\n"))
   (unless (and skk-henkan-on (not skk-henkan-active))
     (setq skk-nicola-okuri-flag nil))
   ;;
-  (cond ((skk-kanagaki-sit-for skk-nicola-interval t)
+  (cond ((skk-sit-for skk-nicola-interval t)
 	 ;; No input in the interval.
 	 (case this-command
 	   (skk-nicola-self-insert-rshift

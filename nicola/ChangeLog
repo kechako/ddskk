@@ -1,3 +1,9 @@
+2000-11-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-kanagaki-util.el (skk-kanagaki-sit-for): Ablish.
+
+	* skk-nicola.el: Use `skk-sit-for'.
+
 2000-11-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-kanagaki.el: Modify comments.

@@ -1,3 +1,15 @@
+2000-11-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-macs.el (skk-sit-for): New macro.
+	(skk-read-event): Abolish.
+
+	* skk-gadget.el (skk-clock): Use `skk-sit-for'.
+
+	* skk-kcode.el, skk-tut.el, skk.el: Use `next-command-event'
+	instead of `skk-read-event'.
+
+	* nicola: Update.
+
 2000-11-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-annotation.el, skk-macs.el: Sync with main

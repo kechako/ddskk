@@ -8,6 +8,8 @@
 
 	* install-info.el (install-info-add-groups): Discard DIR-FILE if
 	it is invalid.
+	(install-info-compressed-name-p): Use
+	`jka-compr-get-compression-info'.
 
 2000-11-01  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 

@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.18 2000/01/23 13:39:13 czkmt Exp $
-;; Last Modified: $Date: 2000/01/23 13:39:13 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.19 2000/01/23 17:13:40 czkmt Exp $
+;; Last Modified: $Date: 2000/01/23 17:13:40 $
 
 ;; Commentary
 ;;
@@ -211,7 +211,7 @@ end with `skk'." )
 	     (member "skk-leim" preloaded-file-list)
 	     (setq list (nconc list (list 'skk-xm20_4))))
 	(when (= 18 emacs-major-version)
-	  (setq list (delq 'skk-jisx0201 list)))
+	  (setq list (delq 'skk-isearch (delq 'skk-jisx0201 list))))
 	(condition-case nil
 	    ;; you might have to add lookup installed directory to `load-path'.
 	    (and (let ((lookup-byte-compile t)) (require 'lookup))
@@ -274,9 +274,13 @@ end with `skk'." )
        (setq standard-character-unification-table-for-decode
 	     (make-unification-table nil))))
 
-;; work around for Nemacs.el
+;; Work around for Nemacs
 (when (= 18 emacs-major-version)
-  (require 'skk-e18 "experimental/skk-e18"))
+  (require 'skk-e18 "experimental/skk-e18")
+  (condition-case nil
+      (delete-file "experimental/skk-isearch.el")
+    (error))
+  (copy-file "experimental/skk-is-n.el" "experimental/skk-isearch.el" nil t))
 
 ;;; [ADVICES]
 (defadvice write-region (before SKK-MK-ad disable)
@@ -286,24 +290,28 @@ end with `skk'." )
 	  (progn
 	    (goto-char (point-min))
 	    (re-search-forward "^$")
-	    (insert 
+	    (insert
 	     (format
 	      "\n(or (eq (cond ((string-match \"XEmacs\" emacs-version) 'xemacs)
 	      ((and (boundp 'mule-version)
-		    (string< \"4.0\" mule-version) 'mule4 ))
+		    (string< \"4.0\" mule-version) 'mule4))
 	      ((and (boundp 'mule-version)
-		    (string< \"3.0\" mule-version) 'mule3 ))
+		    (string< \"3.0\" mule-version) 'mule3))
 	      ((and (boundp 'mule-version)
-		    (string< \"2.0\" mule-version) 'mule2 )))
-	'%s )
+		    (string< \"2.0\" mule-version) 'mule2)))
+	'%s)
     (error \"This SKK was byte compiled by different type of Emacs!\"))\n"
 	      (symbol-value 'skk-emacs-type))))))))
 
 ;;; [FUNCTIONS]
 (defun SKK-MK-compile ()
-  (let (standard-output) (SKK-MK-generate-autoloads-el))
-  (when (= 18 emacs-major-version)
-    (compile-elisp-modules '(skk-e18) "./experimental"))
+  (let (standard-output)
+    (cond ((= 18 emacs-major-version)
+	   (let ((SKK_MODULES (cons 'experimental/skk-isearch SKK_MODULES)))
+	     (SKK-MK-generate-autoloads-el))
+	   (compile-elisp-modules '(skk-e18 skk-isearch) "./experimental"))
+	  (t
+	   (SKK-MK-generate-autoloads-el))))
   (compile-elisp-modules SKK_MODULES "."))
 
 (defun SKK-MK-compile-info ()
@@ -340,7 +348,7 @@ end with `skk'." )
       (and (file-exists-p file) (delete-file file))))
   ;; install Emacs Lisp programs.
   (when (= 18 emacs-major-version)
-    (install-elisp-modules '(skk-e18) "./experimental" SKK_LISPDIR))
+    (install-elisp-modules '(skk-e18 skk-isearch) "./experimental" SKK_LISPDIR))
   (install-elisp-modules SKK_MODULES "." SKK_LISPDIR)
   ;; install infos.
   (and SKK_INFOS
@@ -575,7 +583,7 @@ SKK tutorials:
         (setq funcs (SKK-MK-collect-autoload-functions (car modules)))
         (while funcs
           (insert "(autoload '" (caar funcs)
-                  " \"" (symbol-name (car modules))
+                  " \"" (file-name-nondirectory (symbol-name (car modules)))
                   "\" nil "
                   (symbol-name (if (cdar funcs) t))
                   " nil)\n")

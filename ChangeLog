@@ -1,3 +1,7 @@
+2001-03-30  Norio Maeda  <nmaeda@dd.iij4u.or.jp>
+
+	* skk-kcode.el (skk-display-code): added SJIS encoding
+	
 2000-11-11  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-annotation.el, skk-macs.el, skk.el: Sync with

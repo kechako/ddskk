@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.11 2000/11/09 08:22:16 czkmt Exp $
+;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.12 2001/03/30 00:00:24 nmaeda Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/11/09 08:22:16 $
+;; Last Modified: $Date: 2001/03/30 00:00:24 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -300,11 +300,15 @@
 	       (char1-e (+ char1-j 128))
 	       (char2-j (skk-char-octet char 1))
 	       (char2-k (- char2-j 32))
-	       (char2-e (+ char2-j 128)))
+	       (char2-e (+ char2-j 128))
+	       (sjis (skk-jis2sjis char1-j char2-j))
+	       (char1-s (car sjis))
+	       (char2-s (cadr sjis)))
 	  (message
-	   "『%s』  EUC: %2x%2x (%3d, %3d), JIS: %2x%2x (%3d, %3d), KUTEN: (%2d, %2d)"
+	   "『%s』 EUC: %2x%2x (%3d, %3d), JIS: %2x%2x (%3d, %3d), KUTEN: (%2d, %2d), SJIS: %2x%2x"
 	   str char1-e char2-e char1-e char2-e
-	   char1-j char2-j char1-j char2-j char1-k char2-k)))
+	   char1-j char2-j char1-j char2-j char1-k char2-k
+	   char1-s char2-s)))
        ((memq charset '(ascii latin-jisx0201))
 	(message "\"%s\"  %2x (%3d)"
 		 str (skk-char-octet char 0)  (skk-char-octet char 0)))
@@ -324,11 +328,15 @@
 	       (char1-k (- char1-j 32))
 	       (char2-e (car (cdr (cdr char-list))))
 	       (char2-j (- char2-e 128))
-	       (char2-k (- char2-j 32)))
+	       (char2-k (- char2-j 32))
+	       (sjis (skk-jis2sjis char1-j char2-j))
+	       (char1-s (car sjis))
+	       (char2-s (cadr sjis)))
 	  (message
-	   "『%s』  EUC: %2x%2x (%3d, %3d), JIS: %2x%2x (%3d, %3d), KUTEN: (%2d, %2d)"
+	   "『%s』 EUC: %2x%2x (%3d, %3d), JIS: %2x%2x (%3d, %3d), KUTEN: (%2d, %2d), SJIS: %2x%2x"
 	   str char1-e char2-e char1-e char2-e
-	   char1-j char2-j char1-j char2-j char1-k char2-k)))
+	   char1-j char2-j char1-j char2-j char1-k char2-k
+	   char1-s char2-s)))
        ((or (= (length char-list) 1)	; ascii character
 	    (memq (car char-list) (list lc-ascii lc-roman)))
 	(let ((char (car char-list)))
@@ -336,6 +344,24 @@
        (t
 	(skk-error "判別できない文字です"
 		   "Cannot understand this character")))))))
+
+(defun skk-jis2sjis (char1 char2)
+  (let* ((ch2 (if (eq (* (/ char1 2) 2) char1)
+ 		  (+ char2 125) (+ char2 31)))
+	 (c2 (if (>= ch2 127)
+		 (+ ch2 1) ch2))
+	 (ch1 (+ (/ (- char1 33) 2) 129))
+	 (c1 (if (> ch1 159)
+		  (+ ch1 64) ch1)))
+    (list c1 c2)))
+
+(defun skk-sjis2jis (char1 char2)
+  (let* ((ch1 (if (<= char1 159) (+ (* (- char1 113) 2) 1)
+		(+ (* (- char1 177) 2) 1)))
+	 (ch2 (if (> char2 127) (- char2 1) (char2)))
+	 (c2 (if (>= ch2 158) (- ch2 125) (- ch2 31)))
+	 (c1 (if (> ch2 127) (+ ch1 1) (ch1))))
+    (list c1 c2)))
 
 (run-hooks 'skk-kcode-load-hook)
 

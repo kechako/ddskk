@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-obsolete.el,v 1.1.2.4.2.3 2000/09/27 13:42:07 minakaji Exp $
+;; Version: $Id: skk-obsolete.el,v 1.1.2.4.2.4 2000/10/12 10:08:46 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:07 $
+;; Last Modified: $Date: 2000/10/12 10:08:46 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -88,8 +88,6 @@
     (skk-raw-number-to-skk-rep . skk-num-rawnum-exp)
     (skk-raw-number-to-skk-rep-1 . skk-num-rawnum-exp-1)
     (skk-recompute-numerals . skk-num-recompute)
-    (skk-set-cursor-color . skk-cursor-set-color)
-    (skk-set-cursor-properly . skk-cursor-set-properly)
     (skk-shogi-num-str . skk-num-shogi)
     (skk-toggle-kana . skk-toggle-characters)
     (skk-update-jisyo-for-numerals . skk-num-update-jisyo)

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.6 2000/07/07 22:13:37 minakaji Exp $
+;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.7 2000/08/28 14:53:29 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:37 $
+;; Last Modified: $Date: 2000/08/28 14:53:29 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -88,7 +88,7 @@
     (make-char charset (logand (lognot 128) n1) (logand (lognot 128) n2)))
    ((memq skk-emacs-type '(mule5 mule4 mule3))
     (make-char charset n1 n2))
-   ((eq skk-emacs-type '(mule2 mule1))
+   ((memq skk-emacs-type '(mule2 mule1))
     (make-character charset n1 n2))))
 
 (defun skk-next-n2-code (n)

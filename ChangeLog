@@ -1,3 +1,8 @@
+1999-12-05  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-cursor.el (completing-read): New advice. Call
+	`skk-cursor-set-properly'.
+
 1999-12-04  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-isearch.el (skk-isearch-redo-function): Use list for handler
@@ -143,7 +148,7 @@
 
 1999-11-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
-	skk-cursor,el (skk-cursor-set-properly): Set color properly on
+	* skk-cursor,el (skk-cursor-set-properly): Set color properly on
 	`skk-abbrev-mode'.
 
 1999-11-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-develop.el,v 1.6.2.6.2.4 2000/10/15 20:34:47 minakaji Exp $
+;; Version: $Id: skk-develop.el,v 1.6.2.6.2.5 2000/10/20 22:57:43 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:47 $
+;; Last Modified: $Date: 2000/10/20 22:57:43 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -100,6 +100,7 @@ mail-user-agent $B$r@_Dj$9$k$3$H$K$h$j9%$_$N%a!<%k%$%s%?!<%U%'%$%9$r;HMQ$9$k$3$
                'emacs-lisp-mode)))
            '(("^\\s *(skk-deflocalvar\\s +\\S +" . "")
 	     ("^\\s *(skk-defun-cond\\s +\\S +" . "")
+	     ("^\\s *(skk-defadvice\\s +\\S +" . "")
 	     ("^\\s *(skk-defsubst-cond\\s +\\S +" . ""))))
 
 (eval-after-load "font-lock"
@@ -109,6 +110,9 @@ mail-user-agent $B$r@_Dj$9$k$3$H$K$h$j9%$_$N%a!<%k%$%s%?!<%U%'%$%9$r;HMQ$9$k$3$
 	     (1 font-lock-keyword-face)
 	     (2 font-lock-variable-name-face))
 	    ("^(\\(skk-defsubst-cond\\)[ \t'\(]*\\(\\sw+\\)?"
+	     (1 font-lock-keyword-face)
+	     (2 font-lock-variable-name-face))
+	    ("^(\\(skk-defavice\\)[ \t'\(]*\\(\\sw+\\)?"
 	     (1 font-lock-keyword-face)
 	     (2 font-lock-variable-name-face))
 	    ("^(\\(skk-deflocalvar\\)[ \t'\(]*\\(\\sw+\\)?"

@@ -5,9 +5,9 @@
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>,
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.13 2000/10/15 20:34:52 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.14 2000/10/20 22:57:44 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:52 $
+;; Last Modified: $Date: 2000/10/20 22:57:44 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -126,7 +126,7 @@
 	       (add-hook 'pre-command-hook 'skk-pre-command nil 'local)))))
 
 (if skk-use-color-cursor
-    (defadvice read-from-minibuffer (before skk-viper-ad activate)
+    (skk-defadvice read-from-minibuffer (before skk-viper-ad activate)
       "minibuffer-setup-hook に update-buffer-local-frame-params をフックする。
 viper-read-string-with-history は minibuffer-setup-hook を関数ローカル
 にしてしまうので、予め minibuffer-setup-hook にかけておいたフックが無効

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.29 2000/10/20 14:50:44 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.30 2000/10/20 22:57:44 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/20 14:50:44 $
+;; Last Modified: $Date: 2000/10/20 22:57:44 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -63,20 +63,32 @@
 (skk-detect-emacs)
 
 (defmacro skk-defadvice (function &rest everything-else)
-  (if (and (commandp function)
-	   (subrp (if (ad-is-advised function)
+  (let ((origfunc (if (ad-is-advised function)
 		      (ad-get-orig-definition function)
 		    (symbol-function function)))
-	   (null (memq function	; XXX possibilly Emacs version dependent
-		       ;; interactive commands which do not have interactive specs.
-		       '(abort-recursive-edit bury-buffer delete-frame delete-window 
-					      exit-minibuffer)))
-	   (not (memq 'interactive (list (car-safe (nth 1 everything-else))
-					 (car-safe (nth 2 everything-else))))))
-      (message
-       "*** WARNING: Adding advice to %s without mirroring its interactive spec ***"
-       function))
-  (` (defadvice (, function) (,@ everything-else))))
+	interactive)
+    (if (or (not (subrp origfunc))
+	    (memq function		; XXX possibilly Emacs version dependent
+		  ;; interactive commands which do not have interactive specs.
+		  '(abort-recursive-edit bury-buffer delete-frame delete-window
+					 exit-minibuffer)))
+	nil
+      (setq interactive
+	    (cond ((and (stringp (nth 1 everything-else))
+			(eq 'interactive (car-safe (nth 2 everything-else))))
+		   (nth 2 everything-else))
+		  ((eq 'interactive (car-safe (nth 1 everything-else)))
+		   (nth 1 everything-else))))
+      (cond ((and (commandp origfunc) (not interactive))
+	     (message
+	      "*** WARNING: Adding advice to %s without mirroring its interactive spec ***"
+	      function))
+	    ((and (not (commandp origfunc)) interactive)
+	     (setq everything-else (delq interactive everything-else))
+	     (message
+	      "*** WARNING: Deleted interactive call from %s advice as % is not a subr command ***"
+	      function function))))
+    (` (defadvice (, function) (,@ everything-else)))))
 
 (put 'skk-defadvice 'lisp-indent-function 'defun)
 (def-edebug-spec skk-defadvice defadvice)
@@ -137,6 +149,7 @@
 	       (, (format "%s\n\(buffer local\)" documentation)))
        (make-variable-buffer-local '(, var))
        )))
+(put 'skk-deflocalvar 'lisp-indent-function 'defun)
 
 (defmacro skk-with-point-move (&rest form)
   ;; ポイントを移動するがフックを実行してほしくない場合に使う。
@@ -166,8 +179,6 @@
 	       (and (, priority) (overlay-put (, object) 'priority (, priority)))
 	       (overlay-put (, object) 'face (, face)))
 	   (move-overlay (, object) (, start) (, end))))))))
-
-(put 'skk-deflocalvar 'lisp-indent-function 'defun)
 
 ;;(defun-maybe mapvector (function sequence)
 ;;  "Apply FUNCTION to each element of SEQUENCE, making a vector of the results.

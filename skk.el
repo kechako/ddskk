@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.82 2000/10/19 08:46:42 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.83 2000/10/20 22:57:44 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/19 08:46:42 $
+;; Last Modified: $Date: 2000/10/20 22:57:44 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -3787,7 +3787,7 @@ C-u ARG $B$G(B ARG $B$rM?$($k$H!"$=$NJ8;zJ,$@$1La$C$FF1$8F0:n$r9T$J$&!#(B"
 
 ;; cover to original functions.
 
-(defadvice keyboard-quit (around skk-ad activate)
+(skk-defadvice keyboard-quit (around skk-ad activate)
   "$B"'%b!<%I$G$"$l$P!"8uJd$NI=<($r$d$a$F"&%b!<%I$KLa$9(B ($B8+=P$78l$O;D$9(B)$B!#(B
 $B"&%b!<%I$G$"$l$P!"8+=P$78l$r:o=|$9$k!#(B
 $B>e5-$N$I$A$i$N%b!<%I$G$b$J$1$l$P(B keyboard-quit $B$HF1$8F0:n$r$9$k!#(B"
@@ -3814,7 +3814,7 @@ C-u ARG $B$G(B ARG $B$rM?$($k$H!"$=$NJ8;zJ,$@$1La$C$FF1$8F0:n$r9T$J$&!#(B"
 	   (delete-region (point) skk-henkan-start-point))
       (skk-kakutei))))
 
-(defadvice abort-recursive-edit (around skk-ad activate)
+(skk-defadvice abort-recursive-edit (around skk-ad activate)
   "$B"'%b!<%I$G$"$l$P!"8uJd$NI=<($r$d$a$F"&%b!<%I$KLa$9(B ($B8+=P$78l$O;D$9(B)$B!#(B
 $B"&%b!<%I$G$"$l$P!"8+=P$78l$r:o=|$9$k!#(B
 $B>e5-$N$I$A$i$N%b!<%I$G$b$J$1$l$P(B abort-recursive-edit $B$HF1$8F0:n$r$9$k!#(B"
@@ -3840,7 +3840,7 @@ C-u ARG $B$G(B ARG $B$rM?$($k$H!"$=$NJ8;zJ,$@$1La$C$FF1$8F0:n$r9T$J$&!#(B"
 		(delete-region (point) skk-henkan-start-point))
 	   (skk-kakutei))))
 	
-(defadvice newline (around skk-ad activate)
+(skk-defadvice newline (around skk-ad activate)
   "skk-egg-like-newline $B$,(B non-nil $B$@$C$?$i!"JQ49Cf$N(B newline $B$G3NDj$N$_9T$$!"2~9T$7$J$$!#(B"
   (if (not (or skk-j-mode skk-abbrev-mode))
       ad-do-it
@@ -3863,7 +3863,7 @@ C-u ARG $B$G(B ARG $B$rM?$($k$H!"$=$NJ8;zJ,$@$1La$C$FF1$8F0:n$r9T$J$&!#(B"
       (if (not no-newline)
 	  ad-do-it))))
 
-(defadvice newline-and-indent (around skk-ad activate)
+(skk-defadvice newline-and-indent (around skk-ad activate)
   "skk-egg-like-newline $B$,(B non-nil $B$@$C$?$i!"JQ49Cf$N(B newline-and-indent $B$G3NDj$N$_9T$$!"2~9T$7$J$$!#(B"
   (if (not (or skk-j-mode skk-abbrev-mode))
       ad-do-it
@@ -3872,7 +3872,7 @@ C-u ARG $B$G(B ARG $B$rM?$($k$H!"$=$NJ8;zJ,$@$1La$C$FF1$8F0:n$r9T$J$&!#(B"
       (and skk-mode (skk-kakutei))
       (or no-newline ad-do-it))))
 
-(defadvice exit-minibuffer (around skk-ad activate)
+(skk-defadvice exit-minibuffer (around skk-ad activate)
   "skk-egg-like-newline $B$,(B non-nil $B$@$C$?$i!"JQ49Cf$N(B exit-minibuffer $B$G3NDj$N$_9T$&!#(B"
   ;; subr command but no arg.
   (skk-remove-minibuffer-setup-hook
@@ -3890,16 +3890,16 @@ C-u ARG $B$G(B ARG $B$rM?$($k$H!"$=$NJ8;zJ,$@$1La$C$FF1$8F0:n$r9T$J$&!#(B"
 picture-mode $B$+$i=P$?$H$-$K$=$N%P%C%U%!$G(B SKK $B$r@5>o$KF0$+$9$?$a$N=hM}!#(B"
   (and skk-mode (skk-kill-local-variables)))
 
-(defadvice undo (before skk-ad activate)
+(skk-defadvice undo (before skk-ad activate)
   "SKK $B%b!<%I$,(B on $B$J$i(B skk-self-insert-non-undo-count $B$r=i4|2=$9$k!#(B"
   (and skk-mode (setq skk-self-insert-non-undo-count 0)))
 
-(defadvice kill-buffer (before skk-ad activate)
+(skk-defadvice kill-buffer (before skk-ad activate)
   "SKK $B$N"'%b!<%I$@$C$?$i!"3NDj$7$F$+$i%P%C%U%!$r%-%k$9$k!#(B"
   (interactive "bKill buffer: ") ; subr command with arg.
   (and skk-mode skk-henkan-on (interactive-p) (skk-kakutei)))
 
-(defadvice save-buffers-kill-emacs (before skk-ad activate)
+(skk-defadvice save-buffers-kill-emacs (before skk-ad activate)
   (run-hooks 'skk-before-kill-emacs-hook))
 
 (defadvice comint-send-input (around skk-ad activate compile)
@@ -3909,7 +3909,7 @@ picture-mode $B$+$i=P$?$H$-$K$=$N%P%C%U%!$G(B SKK $B$r@5>o$KF0$+$9$?$a$N=hM}!
 	(t ad-do-it)))
 
 (static-if (eq skk-emacs-type 'xemacs)
-    (defadvice minibuffer-keyboard-quit (around skk-ad activate)
+    (skk-defadvice minibuffer-keyboard-quit (around skk-ad activate)
       ;; XEmacs has minibuffer-keyboard-quit that has nothing to do with delsel.
       (skk-remove-minibuffer-setup-hook
        'skk-j-mode-on 'skk-setup-minibuffer

@@ -1,3 +1,33 @@
+2000-10-21  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* ccc.el (ccc-defadvice): Delete interactive call from advice
+	definition if trying to add an advice to subr/non-command.
+	* skk-macs.el (skk-defadvice): Ditto.
+
+	* skk.el (keyboard-quit): Use `skk-defadvice' instead of
+	`defadvice'.
+	(abort-recursive-edit): Ditto.
+	(newline): Ditto.
+	(newline-and-indent): Ditto.
+	(exit-minibuffer): Ditto.
+	(undo): Ditto.
+	(kill-buffer): Ditto.
+	(save-buffers-kill-emacs): Ditto.
+	(minibuffer-keyboard-quit): Ditto.
+
+	* skk-cursor.el (minibuffer-keyboard-quit): Use `skk-defadvice'
+	instead of `defadvice'.
+	* skk-jisx0201.el (newline): Ditto.
+	(newline-and-indent): Ditto.
+	(exit-minibuffer): Ditto.
+	* skk-tut.el (kill-buffer): Ditto.
+	(other-frame): Ditto.
+	(save-buffers-kill-emacs): Ditto.
+	* skk-viper.el (read-from-minibuffer) : Ditto.
+
+	* skk-develop.el: Add `skk-defadvice' regexp for hilit19 and
+	font-lock.
+
 2000-10-20  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* READMEs/NEWS: Add description about leim-list.el, etc.

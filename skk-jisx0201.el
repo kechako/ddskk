@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.30 2000/10/15 20:34:47 minakaji Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.31 2000/10/20 22:57:43 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/10/15 20:34:47 $
+;; Last Modified: $Date: 2000/10/20 22:57:43 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -257,7 +257,7 @@
 (defadvice skk-abbrev-mode (after skk-jisx0201-ad activate)
   (setq skk-jisx0201-mode nil))
 
-(defadvice newline (around skk-jisx0201-ad activate)
+(skk-defadvice newline (around skk-jisx0201-ad activate)
   "skk-egg-like-newline が non-nil だったら、変換中の newline で確定のみ行い、改行しない。"
   (if (not (or skk-jisx0201-mode skk-abbrev-mode))
       ad-do-it
@@ -280,7 +280,7 @@
       (if (not no-newline)
 	  ad-do-it))))
 
-(defadvice newline-and-indent (around skk-jisx0201-ad activate)
+(skk-defadvice newline-and-indent (around skk-jisx0201-ad activate)
   "skk-egg-like-newline が non-nil だったら、変換中の newline-and-indent で確定のみ行い、改行しない。"
   (if (not (or skk-jisx0201-mode skk-abbrev-mode))
       ad-do-it
@@ -289,7 +289,7 @@
       (and skk-mode (skk-kakutei))
       (or no-newline ad-do-it))))
 
-(defadvice exit-minibuffer (around skk-jisx0201-ad activate)
+(skk-defadvice exit-minibuffer (around skk-jisx0201-ad activate)
   "skk-egg-like-newline が non-nil だったら、変換中の exit-minibuffer で確定のみ行う。"
   (skk-remove-minibuffer-setup-hook
    'skk-jisx0201-mode-on 'skk-setup-minibuffer

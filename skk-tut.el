@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.11 2000/10/15 20:34:50 minakaji Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.12 2000/10/20 22:57:44 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:50 $
+;; Last Modified: $Date: 2000/10/20 22:57:44 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -445,7 +445,7 @@ The English version is SKK.tut.E."
        (= skktut-question-count 1)
        (skktut-error "このキーはまだ使えません" "Cannot use this key yet")))
 
-(defadvice kill-buffer (around skktut-ad disable)
+(skk-defadvice kill-buffer (around skktut-ad disable)
   "SKK チュートリアル用アドバイス付。"
   (interactive "bKill buffer: ") ; subr command with arg.
   (cond ((or (not (interactive-p))
@@ -461,7 +461,7 @@ The English version is SKK.tut.E."
 	 ;;ad-do-it
 	)))
 
-(defadvice other-frame (before skktut-ad disable)
+(skk-defadvice other-frame (before skktut-ad disable)
   "SKK チュートリアル用アドバイス付。"
   (skktut-before-move-to-other-frame))
 
@@ -470,7 +470,7 @@ The English version is SKK.tut.E."
 ;;  "SKK チュートリアル用アドバイス付。"
 ;;  (skktut-before-move-to-other-frame))
 
-(defadvice save-buffers-kill-emacs (around skktut-ad disable)
+(skk-defadvice save-buffers-kill-emacs (around skktut-ad disable)
   "SKK チュートリアル用アドバイス付。"
   (if (skktut-yes-or-no-p "Tutorial も Emacs も終了します。よろしいですね？ "
 			  "Quit tutorial and kill emacs? ")

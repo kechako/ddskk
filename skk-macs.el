@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.14 2000/01/29 04:46:41 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.15 2000/01/29 19:21:33 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/29 04:46:41 $
+;; Last Modified: $Date: 2000/01/29 19:21:33 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -163,7 +163,7 @@
   (static-cond
    ((eq skk-emacs-type 'xemacs) (eq (device-class (selected-device)) 'color))
    ((fboundp 'x-display-color-p) (and window-system (x-display-color-p)))))
- 
+
 (defsubst skk-str-length (str)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4))
@@ -371,7 +371,7 @@
         skk-katakana nil)
   ;; initialize
   (setq skk-input-mode-string skk-hiragana-mode-string)
-  (static-if (eq skk-emacs-type 'nemacs) (use-local-map skk-current-local-map))
+  (static-if (memq skk-emacs-type '(nemacs mule1)) (use-local-map skk-current-local-map))
   (force-mode-line-update)
   (remove-hook 'pre-command-hook 'skk-pre-command 'local))
 
@@ -383,7 +383,7 @@
         skk-jisx0208-latin-mode nil
         ;; j's sub mode.
         skk-katakana katakana)
-  (static-if (eq skk-emacs-type 'nemacs) (use-local-map skk-j-mode-map))
+  (static-if (memq skk-emacs-type '(nemacs mule1)) (use-local-map skk-j-mode-map))
   (force-mode-line-update))
 
 (defsubst skk-latin-mode-on ()
@@ -395,7 +395,7 @@
         ;; j's sub mode.
         skk-katakana nil
         skk-input-mode-string skk-latin-mode-string)
-  (static-if (eq skk-emacs-type 'nemacs) (use-local-map skk-latin-mode-map))
+  (static-if (memq skk-emacs-type '(nemacs mule1)) (use-local-map skk-latin-mode-map))
   (force-mode-line-update))
 
 (defsubst skk-jisx0208-latin-mode-on ()
@@ -407,7 +407,7 @@
         ;; j's sub mode.
         skk-katakana nil
         skk-input-mode-string skk-jisx0208-latin-mode-string)
-  (static-if (eq skk-emacs-type 'nemacs)
+  (static-if (memq skk-emacs-type '(nemacs mule1))
       (use-local-map skk-jisx0208-latin-mode-map))
   (force-mode-line-update))
 
@@ -420,7 +420,7 @@
         ;; j's sub mode.
         skk-katakana nil
         skk-input-mode-string skk-abbrev-mode-string)
-  (static-if (eq skk-emacs-type 'nemacs) (use-local-map skk-abbrev-mode-map))
+  (static-if (memq skk-emacs-type '(nemacs mule1)) (use-local-map skk-abbrev-mode-map))
   (force-mode-line-update))
 
 (defsubst skk-in-minibuffer-p ()

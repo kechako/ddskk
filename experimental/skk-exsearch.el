@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-exsearch.el,v 1.1.2.1 2000/03/19 14:03:16 minakaji Exp $
+;; Version: $Id: skk-exsearch.el,v 1.1.2.2 2000/03/20 03:05:01 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/03/19 14:03:16 $
+;; Last Modified: $Date: 2000/03/20 03:05:01 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -26,42 +26,54 @@
 
 ;;; Commentary:
 ;;
-;; This file needs eieio (which provides CLOS like OO programming) 
-;; package that can be found at;
+;; This file needs eieio package (which provides CLOS like OO 
+;; programming) that can be found at;
 ;;
 ;;    ftp://ftp.ultranet.com/pub/zappo
 ;;
-;; This program may be (or may not be) core engine of external 
-;; searching program.
+;; This program may be (or may not be) a core engine of external 
+;; searching program of Daredevil (or some other new branch) SKK.
 ;;
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
 (require 'eieio)
 
-(defclass synchronous-search-engine ()
+(defclass search-engine ()
   ((program :initarg :program
 	    :initform nil
 	    :documentation "Program file.")
-   (infile :initarg :infile
+   ;;(argument :initarg :argument :initform nil :documentation "")
+   (dictionary :initarg :dictionary
+	       :initform nil
+	       :documentation "Dictionary file to be searched."))
+  "External search engine superclass.")
+
+(defclass synchronous-search-engine (search-engine)
+  ((infile :initarg :infile
 	   :initform nil
 	   :documentation
 	   "This is where the program's input comes from. (nil means `/dev/null').")
    (stderr :initarg :stderr
 	   :initform nil
-	   :documentation
-	   "What to do with standard error in the child.  nil (discard standard error output), t (mix it with ordinary output), or a file name string.")
-   ;;(argument :initarg :argument :initform nil :documentation "")
-   (dictionary :initarg :dictionary
-	       :initform nil
-	       :documentation "Dictionary file to be searched."))
-  "External synchronous search engine superclass.")
+	   :documentation "What to do with standard error in the child.\
+nil (discard standard error output), t (mix it with ordinary output),\
+or a file name string."))
+   "External synchronous search engine class.")
 
-(defclass asynchronous-search-engine ()
+(defclass asynchronous-search-engine (search-engine)
   ((process initarg :process
 	    :initform nil
-	    :documentation "Process object that belongs to program."))
-  "External asynchronous search engine superclass.")
+	    :documentation "Process object that belongs to program.")
+   (buffer :initarg :buffer
+	   :initform nil
+	   :documentation
+	   "the buffer or (buffer-name) to associate with the process.\
+Process output goes at end of that buffer, unless you specify\
+an output stream or filter function to handle the output.\
+BUFFER may be also nil, meaning that this process is not associated\
+with any buffer."))
+  "External asynchronous search engine class.")
 
 (defclass regular-engine (synchronous-search-engine)
   ((coding-system :initarg :coding-system
@@ -98,6 +110,7 @@ delimited by slash.")
   "*look search engine object.")
 			       
 (defmethod core-engine ((engine synchronous-search-engine) argument)
+  ;; core search engine
   (save-excursion
     (and (= 0 (apply 'call-process (oref engine program)
 		     (oref engine infile)
@@ -107,7 +120,6 @@ delimited by slash.")
 	 (> (buffer-size) 0))))
 		       
 (defmethod search-engine ((engine regular-engine) &rest argument)
-  ;; core search engine
   (let ((okurigana (or skk-henkan-okurigana skk-okuri-char))
 	l)
     (with-temp-buffer 

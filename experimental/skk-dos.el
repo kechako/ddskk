@@ -24,10 +24,11 @@
 
 ;;; Commentary:
 
-;; これは Daredevil SKK を Demacs で動かすための work around です。
-;; ファイル名の制限を強引に解決することを目的としています。
-;; Demacs は window-system 周りに特殊な実装がされているのでその辺も多少ご
-;; まかします。
+;; これは Daredevil SKK を DOS 用 Emacs で動かすための work around です。
+;; ファイル名の制限を強引に解決することを目的としています。(環境によっては
+;; long file name が扱えるようですが。)
+;; DOS 用 Emacs は window-system 周りに特殊な実装がされているのでその辺も多少
+;; ごまかします。
 ;; インストールまではサポートしていません。Emacs Lisp のソースを好きな所に
 ;; コピーして load-path を設定してください。その後 ~/_emacs に
 ;;
@@ -89,8 +90,8 @@
 (defadvice require (around skk-dos-ad activate preactivate)
   "Just a work around for SKK.
 May not work with a more complicated program like Gnus."
-  (condition-case nil
-      (ad-Orig-require (ad-get-arg 0) (ad-get-arg 1))
+  (condition-case err
+      ad-do-it
     (error
      (let* ((file (or (ad-get-arg 1) (format "%s" (ad-get-arg 0))))
 	    (i 1)
@@ -106,8 +107,9 @@ May not work with a more complicated program like Gnus."
 		    (error nil))
 		  (setq i (1+ i)))))
 	     (t
-	      nil)))))
-  ad-do-it)
+	      nil)))
+     (or (featurep (ad-get-arg 0))
+	 (error (car err) (cdr err))))))
 
 ;; Functions.
 (or (fboundp 'make-color-instance)

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.55 2000/02/26 15:40:01 mrt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.56 2000/04/09 13:42:21 kawamura Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/02/26 15:40:01 $
+;; Last Modified: $Date: 2000/04/09 13:42:21 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/02/26 15:40:01 $")
+      (let* ((raw-date "$Date: 2000/04/09 13:42:21 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -2390,9 +2390,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
               (progn
                 (skk-message "SKK 辞書を保存しています...完了！"
                              "Saving SKK jisyo...done")
-                (sit-for 1)))
-          (and (eq this-command 'save-buffers-kill-emacs)
-	       (skk-record-jisyo-data)))
+                (sit-for 1))))
 	(if skk-share-private-jisyo
 	    (with-temp-buffer
 	      (fillarray skk-jisyo-update-vector nil)
@@ -2575,8 +2573,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                       "Cannot reread private JISYO!"))))))
 
 (defun skk-record-jisyo-data ()
-  ;; 辞書データを取り、Emacs の終了の際であれば、そのデータを 
-  ;; skk-record-file に保存し、それ以外であれば、それをエコーする。
+  "辞書データを skk-record-file にセーブする。"
   (if (or (not skk-keep-record) (> 1 skk-kakutei-count))
       nil
     (with-temp-file skk-record-file
@@ -2597,7 +2594,14 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	       (skk-count-jisyo-candidates (expand-file-name (if (consp skk-jisyo) (car skk-jisyo) skk-jisyo))))
 	       ;; 1 行 1 候補とみなす。
 	      (t (with-current-buffer (skk-get-jisyo-buffer skk-jisyo 'nomsg)
-		   (- (count-lines (point-min) (point-max)) 2)))))))
+		   (- (count-lines (point-min) (point-max)) 2))))))
+      (if (integerp skk-keep-record)
+          (progn
+            (setq selective-display nil)
+            (widen)
+            (goto-char (point-min))
+            (forward-line skk-keep-record)
+            (delete-region (point) (point-max)))))
     (setq skk-touroku-count 0 skk-kakutei-count 0)))
 
 (defun skk-count-jisyo-candidates (file-or-table)
@@ -3558,6 +3562,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
     (setq args (cdr args))))
 
 (add-hook 'edit-picture-hook 'skk-misc-for-picture 'append)
+(add-hook 'skk-before-kill-emacs-hook 'skk-record-jisyo-data)
 ;; add 'skk-save-jisyo only to remove easily.
 (add-hook 'skk-before-kill-emacs-hook 'skk-save-jisyo)
 (add-hook 'minibuffer-exit-hook

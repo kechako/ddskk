@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.35 2000/10/20 14:51:35 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.36 2000/10/20 18:28:18 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/20 14:51:35 $
+;; Last Modified: $Date: 2000/10/20 18:28:18 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -465,15 +465,14 @@ If the current mode is different from previous, remove it first."
 		    (setq skk-isearch-incomplete-message (buffer-string))
 		    (skk-isearch-incomplete-message))))))
     ;;
-    (do* ((cmds isearch-cmds (cdr cmds))
-	  (cmd (car cmds) (car cmds))
+    (let ((cmd (nth 1 isearch-cmds))
 	  (prompt (skk-isearch-mode-string)))
-	((null cmds) (isearch-delete-char))
-      (unless (string-match (concat "^" (regexp-quote prompt)) (cadr cmd))
+      (unless (or (null cmd)
+		  (string-match (concat "^" (regexp-quote prompt)) (cadr cmd)))
 	;; `skk-isearch-delete-char' が呼ばれる前に `skk-isearch-working-buffer'
-	;; 内のモードが切り替えられていた場合、isearch-cmds の各要素について、
-	;; messege の内容を update しないと [DEL] したときのモードの表示がおかし
-	;; くなる。
+	;; 内のモードが切り替えられていた場合、 isearch-cmds  の第 2 要素につい
+	;; て、 messege の内容を update しないと [DEL] したときのモードの表示が
+	;; おかしくなる。
 	(do ((alist skk-isearch-mode-string-alist (cdr alist))
 	     (msg nil (when (string-match
 			     (concat "^" (regexp-quote (cdar alist)))
@@ -481,7 +480,8 @@ If the current mode is different from previous, remove it first."
 			(substring (cadr cmd) (match-end 0)))))
 	    ((or msg (null alist))
 	     (setcdr cmd (cons (concat prompt (or msg (cadr cmd)))
-			       (cddr cmd)))))))))
+			       (cddr cmd)))))))
+    (isearch-delete-char)))
 
 (defun skk-isearch-kakutei (isearch-function)
   "Special wrapper for skk-kakutei or newline."

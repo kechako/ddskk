@@ -4,14 +4,16 @@
 
 	* Makefile: Use nemacs by default.
 
+	* skk-tut.el: Require skk-e18 on Emacs 18.
+
 2001-09-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* New branch ddskk-e18.
 
 
 
-Version: $Id: ChangeLog,v 1.368.2.2 2001/09/09 01:45:12 czkmt Exp $
-Last Modified: $Date: 2001/09/09 01:45:12 $
+Version: $Id: ChangeLog,v 1.368.2.3 2001/09/09 03:03:34 czkmt Exp $
+Last Modified: $Date: 2001/09/09 03:03:34 $
 
 Local Variables:
 buffer-file-coding-system: iso-2022-jp

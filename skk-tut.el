@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-tut.el,v 1.33 2001/08/31 19:30:15 czkmt Exp $
+;; Version: $Id: skk-tut.el,v 1.33.2.1 2001/09/09 03:03:34 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2001/08/31 19:30:15 $
+;; Last Modified: $Date: 2001/09/09 03:03:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -33,6 +33,8 @@
   (require 'static))
 
 (eval-and-compile
+  (static-when (string-match "^18" emacs-version)
+    (require 'skk-e18))
   (require 'skk-vars)
   (autoload 'skk-nicola-setup-tutorial "skk-nicola")
   (autoload 'skk-viper-normalize-map "skk-viper"))
@@ -261,7 +263,8 @@
 				   ("Q" nil skk-set-henkan-point-subr)
 				   ("X" nil skk-purge-from-jisyo) ("/" nil skk-abbrev-mode)
 				   ("$" nil skk-display-code-for-char-at-point)
-				   ("@" nil skk-today) ("\\" nil skk-input-by-code-or-menu)))
+				   ("@" nil skk-today) ("\\" nil skk-input-by-code-or-menu)
+				   (skk-kakutei-key nil skk-kakutei)))
     (skk-rom-kana-rule-list . '(("hh" "h" ("ッ" . "っ"))))
     (skk-save-jisyo-function . 'skk-save-jisyo-original)
     (skk-search-excluding-word-pattern-function . nil)
@@ -274,7 +277,7 @@
     (skk-update-jisyo-function . 'skk-update-jisyo-original)
     (skk-use-color-cursor . (and window-system (fboundp 'x-display-color-p) (x-display-color-p)))
     (skk-cursor-change-width . nil)
-    (skk-use-face . window-system)
+    (skk-use-face . nil)
     (skk-use-look . nil)
     (skk-use-numeric-conversion . t)
     (skk-use-rdbms . nil)

@@ -1,3 +1,17 @@
+2000-09-08  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-look.el (skk-look-1): Do not put out originally handed word.
+	(skk-look-ispell): Call look command by each candidate put out by
+	ispell.
+	Set symbol `error' to POSS if ispell-parse-output returns nil (and
+	make a error message if POSS is equal to symbol `error'.
+	(skk-look): Do not union lists made by `skk-look-1' and
+	`skk-look-ispell'.
+	(skk-look-completion): Ditto.
+	Do not remove `skk-look-completion-words'
+	from a list made by `skk-look-1' or `skk-look-ipell' (as it is
+	removed already).
+
 2000-09-07  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* Makefile (set_jisyo): New variable.

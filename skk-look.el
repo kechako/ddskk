@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.6 2000/09/07 03:49:41 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.7 2000/09/08 00:50:13 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/07 03:49:41 $
+;; Last Modified: $Date: 2000/09/08 00:50:13 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -121,9 +121,9 @@
        (eq (skk-str-ref skk-henkan-key (1- (length skk-henkan-key))) ?*)
        (let ((args (substring skk-henkan-key 0 (1- (length skk-henkan-key))))
 	     v)
-	 (setq v (skk-look-1 args))
-	 (if skk-look-use-ispell
-	     (setq v (skk-nunion v (skk-look-ispell arg))))
+	 (if (not skk-look-use-ispell)
+	     (setq v (skk-look-1 args))
+	   (setq v (skk-look-ispell arg)))
 	 (if (not skk-look-recursive-search)
 	     v
 	   (let (skk-henkan-key v2 v3)
@@ -144,7 +144,8 @@
 (defun skk-look-1 (args)
   ;; core search engine
   (with-temp-buffer
-    (let (opt)
+    (let ((word args)
+	  opt)
       (setq args (list args))
       (and skk-look-dictionary (nconc args (list skk-look-dictionary)))
       (and skk-look-dictionary-order (setq opt "d"))
@@ -158,25 +159,26 @@
       (and
        (= 0 (apply 'call-process skk-look-command nil t nil args))
        (> (buffer-size) 0)
-       (split-string (buffer-substring-no-properties (point-min) (1- (point-max)))
-		     "\n")))))
+       (delete word (split-string (buffer-substring-no-properties
+				   (point-min) (1- (point-max)))
+				  "\n"))))))
 
 ;;;###autoload
 (defun skk-look-completion ()
   (or skk-look-completion-words
-      (let ((stacked skk-completion-stack))
+      (let ((stacked skk-completion-stack)) ; 他の機能による補完候補。
 	;; look は複数の候補を吐くので、一旦貯めておいて、一つづつ complete する。
 	(setq skk-look-completion-words
-	      ;; 他の機能を使った補完
-	      (delete skk-completion-word
-		      (if skk-look-use-ispell
-			  (skk-nunion (skk-look-1 skk-completion-word)
-				      (skk-look-ispell skk-completion-word))
-			(skk-look-1 skk-completion-word))))
+	      (if (not skk-look-use-ispell)
+		  (skk-look-1 skk-completion-word)
+		(skk-look-ispell skk-completion-word)))
 	(while stacked
 	  (setq skk-look-completion-words
 		(delete (car stacked) skk-look-completion-words)
-		stacked (cdr stacked)))))
+		stacked (cdr stacked)))
+	;;skk-look-completion-words の各要素は、実際に補完を行なった段階で
+	;; `skk-completion' により skk-completion-stack に入れられる。
+	))
   (prog1
       (car skk-look-completion-words)
     (setq skk-look-completion-words (cdr skk-look-completion-words))))
@@ -186,28 +188,40 @@
 
 
 ;;;###autoload
-(defun skk-look-ispell (args)
+(defun skk-look-ispell (word)
   (require 'ispell)
   (ispell-accept-buffer-local-defs)
   (message "")
   (process-send-string ispell-process "%\n") ;put in verbose mode
-  (process-send-string ispell-process (concat "^" args "\n"))
+  (process-send-string ispell-process (concat "^" word "\n"))
   (while (progn
 	   (accept-process-output ispell-process)
 	   (not (string= "" (car ispell-filter)))))
   (setq ispell-filter (cdr ispell-filter)) ; remove extra \n
   (let ((poss (and ispell-filter (listp ispell-filter)
-		   (ispell-parse-output (car ispell-filter)))))
+		   (or (ispell-parse-output (car ispell-filter))
+		       'error)))
+	ret var)
     (setq ispell-filter nil)
     (cond ((or (eq poss t) (stringp poss)) nil)
-	  ((null poss)
+	  ((eq poss 'error)
 	   (skk-message "ispell process でエラーが発生しました。"
 			"error in ispell process")
 	   (sit-for 1)
 	   (message "")
 	   nil)
-	  ;; return miss and guess.
-	  (t (skk-nunion (nth 2 poss) (nth 3 poss))))))
+	  ((null (or (nth 2 poss) (nth 3 poss)))
+	   ;;             word
+	   (skk-look-1 (car poss)))
+	  (t
+	   ;;                   miss        guess
+	   (setq var (nconc (nth 2 poss) (nth 3 poss)))
+	   (while var
+	     ;; call look command by each candidate put out by ispell.
+	     (setq ret (skk-nunion (cons (car var) (skk-look-1 (car var))) ret)
+		   var (cdr var)))
+	   ;; unnecessary?
+	   (delete word ret)))))
 
 (provide 'skk-look)
 ;;; skk-look.el ends here

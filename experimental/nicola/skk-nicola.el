@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/11 10:46:28 $
+;; Last Modified: $Date: 2000/09/11 11:51:07 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -396,7 +396,7 @@ keycode 131 = underscore\n"))
 		    'text-cursor 'background skk-cursor-hiragana-color
 		    (current-buffer)))
 		  (t
-		   (update-buffer-local-frame-params)))))
+		   (set-buffer-local-cursor-color (skk-cursor-current-color))))))
 	      (char
 	       (let ((last-command-char ?\ ))
 		 (call-interactively 'self-insert-command t))

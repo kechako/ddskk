@@ -30,8 +30,9 @@
 	 (require 'skk-e18))
     (autoload 'browse-url "browse-url" nil t)
     (autoload 'browse-url-netscape "browse-url" nil t)
-    (autoload 'update-buffer-local-frame-params "ccc" nil nil)
-;    (autoload 'set-face-property "faces" nil nil)
+    (autoload 'update-buffer-local-frame-params "ccc")
+    (autoload 'set-buffer-local-cursor-color "ccc")
+    (autoload 'skk-cursor-current-color "skk-cursor")
     (princ (format "PREFIX=%s
 LISPDIR=%s\n" PREFIX LISPDIR))))
 
@@ -47,7 +48,6 @@ LISPDIR=%s\n" PREFIX LISPDIR))))
 
 (defun install-nicola-ddskk ()
   (config-nicola-ddskk)
-  (require 'cl)
   (require 'pcustom)
   (install-elisp-modules nicola-ddskk-modules "./" NICOLA-DDSKK_DIR)
   (delete-file "./nicola-ddskk-autoloads.el"))

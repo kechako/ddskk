@@ -2,7 +2,9 @@
 
 	* skk-kanagaki.el (skk-kangaki-help): Use `dolist'.
 
-	* skk-nicola.el (skk-nicola-2nd-help): ditto.
+	* skk-nicola.el (skk-nicola-2nd-help): Ditto.
+	(skk-nicola-turn-on-j-mode): Use `set-buffer-local-cursor-color'
+	instead of `update-buffer-local-frame-params'.
 
 2000-09-10  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 

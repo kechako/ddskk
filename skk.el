@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.7 1999/11/25 04:07:58 kawamura Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.8 1999/11/25 05:43:30 tsumura Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/25 04:07:58 $
+;; Last Modified: $Date: 1999/11/25 05:43:30 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -82,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/25 04:07:58 $")
+      (let* ((raw-date "$Date: 1999/11/25 05:43:30 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -3152,7 +3152,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   (interactive "*r\nP")
   (if vcontract
       (skk-search-and-replace
-       start end "う゛" (lambda (matched) "ヴ") ))
+       start end "う゛" (lambda (matched) nil "ヴ") ))
   (skk-search-and-replace
    start end "[ぁ-ん]+" 
    (lambda (matched) (skk-hiragana-to-katakana matched)) ))
@@ -3166,7 +3166,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   (interactive "*r\nP")
   (if vexpand
       (skk-search-and-replace
-       start end "ヴ" (lambda (matched) "う゛") ))
+       start end "ヴ" (lambda (matched) nil "う゛") ))
   (skk-search-and-replace
    start end "[ァ-ン]+" 
    (lambda (matched) (skk-katakana-to-hiragana matched)) ))

@@ -1,3 +1,18 @@
+1999-11-29  Murata Shuuichirou  <mrt@notwork.org>
+
+	* skk-macs.el (skk-find-coding-system): New macro.
+
+	* skk-study.el (skk-study-save,skk-study-read-1): Use
+ 	`skk-find-coding-system'.
+	
+	* skk.el (skk-save-jisyo-1): Ditto.
+
+	* skk.el (skk-get-jisyo-buffer): Use `skk-find-coding-system'.
+  	Accept pair of filename and coding-system as an argument.
+
+	* skk-obsolete.el (skk-obsolete-function-alist): Replace
+ 	`skk-set-cursor-color-properly' with `skk-set-cursor-properly'.
+
 1999-11-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	skk-cursor,el (skk-cursor-set-properly): Set color properly on

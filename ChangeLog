@@ -1,3 +1,7 @@
+2000-09-28  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* ptexinfmt.el: Sync with Wanderlust.
+
 2000-09-27  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* Makefile: Change Maintainer to SKK Development Team.

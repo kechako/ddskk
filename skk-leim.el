@@ -3,9 +3,9 @@
 ;; Murata Shuuichirou <mrt@astec.co.jp>
 ;;
 ;; Author: Murata Shuuichirou <mrt@mickey.ai.kyutech.ac.jp>
-;; Version: $Id: skk-leim.el,v 1.5.2.3.2.6 2000/09/05 18:04:08 czkmt Exp $
+;; Version: $Id: skk-leim.el,v 1.5.2.3.2.7 2000/09/17 15:03:32 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/05 18:04:08 $
+;; Last Modified: $Date: 2000/09/17 15:03:32 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -55,17 +55,16 @@
       (remove-hook 'minibuffer-exit-hook 'skk-leim-exit-from-minibuffer)))
 
 ;;;###autoload
-(if (fboundp 'register-input-method)
-    (progn
-      (register-input-method
-       "japanese-skk" "Japanese"
-       'skk-activate ""
-       "Simple Kana to Kanji conversion program")
-      ;;
-      (register-input-method
-       "japanese-skk-auto-fill" "Japanese"
-       'skk-auto-fill-activate ""
-       "Simple Kana to Kanji conversion program with auto-fill")))
+(register-input-method
+ "japanese-skk" "Japanese"
+ 'skk-activate ""
+ "Simple Kana to Kanji conversion program")
+
+;;;###autoload
+(register-input-method
+ "japanese-skk-auto-fill" "Japanese"
+ 'skk-auto-fill-activate ""
+ "Simple Kana to Kanji conversion program with auto-fill")
 
 (provide 'skk-leim)
 ;;; skk-leim.el ends here

@@ -1,3 +1,8 @@
+2000-04-27  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/README.win: Change file name `Readme' to `README' and
+	`Install' to `INSTALL'.
+
 2000-4-27  Yuh Ohmura  <yutopia@t3.rim.or.jp>
 
 	* READMEs/README.win: add SKK on Windows and skkserve on

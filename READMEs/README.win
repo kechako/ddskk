@@ -2,15 +2,15 @@
 
 README.win
 
-$Date: 2000/04/27 01:27:21 $
-$Id: README.win,v 1.1.4.5 2000/04/27 01:27:21 yutopia Exp $
+$Date: 2000/04/27 03:54:03 $
+$Id: README.win,v 1.1.4.6 2000/04/27 03:54:03 minakaji Exp $
 Yuh Ohmura <yutopia@t3.rim.or.jp>
 Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
                　　　　 <minakaji@pdx.ne.jp> 
 
 *`MAKE.BAT'の編集とインストール(Windows 95,98/NT)
 
-同梱の install および Readme にも目を通しておいて下さい。
+同梱の INSTALL および README にも目を通しておいて下さい。
 
 ** Meadow/NTEmacs
 

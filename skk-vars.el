@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.14 1999/12/26 02:33:08 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.15 1999/12/27 15:43:11 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/26 02:33:08 $
+;; Last Modified: $Date: 1999/12/27 15:43:11 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -81,7 +81,7 @@
                   (/ (apply '+ (win32-color-values "white")) 3))
                'dark)
               ((and (memq system-type '(ms-dos windows-nt))
-                    (fboundp 'x-color-values))
+                    (not (fboundp 'x-color-values)))
                (if (string-match "light"
                                  (cdr (assq 'background-color params)))
                    'light
@@ -144,7 +144,11 @@
 ;;  :prefix "skk-"
 ;;  :group 'skk)
 
-(defvar skk-init-file (convert-standard-filename "~/.skk")
+(defvar skk-init-file (convert-standard-filename
+		       (cond ((eq system-type 'ms-dos)
+			      "~/_skk")
+			     (t
+			      "~/.skk")))
   "*SKK $B$N=i4|@_Dj%U%!%$%kL>!#(B
 skk.el 9.x $B$h$j(B ~/.emacs $B$G$N%+%9%?%^%$%:$b2DG=$H$J$C$?!#(B"
 ;  "*Name of the SKK initialization file.
@@ -311,12 +315,20 @@ skk-search $B4X?t$,(B skk-search-prog-list $B$N(B car $B$+$i8eJ}8~$X=gHV$K
 			(const t) (const nil))))
   :group 'skk)
 
-(defcustom skk-jisyo (convert-standard-filename "~/.skk-jisyo")
+(defcustom skk-jisyo (convert-standard-filename
+		      (cond ((eq system-type 'ms-dos)
+			     "~/_skk-jis")
+			    (t
+			     "~/.skk-jisyo")))
   "*SKK $B$N%f!<%6!<<-=q!#(B" 
   :type 'file
   :group 'skk)
 
-(defcustom skk-backup-jisyo (convert-standard-filename "~/.skk-jisyo.BAK")
+(defcustom skk-backup-jisyo (convert-standard-filename
+			     (cond ((eq system-type 'ms-dos)
+				    "~/_skk-bak")
+				   (t
+				    "~/.skk-jisyo.BAK")))
   "*SKK $B$N%f!<%6!<<-=q$N%P%C%/%"%C%W%U%!%$%k!#(B" 
   :type 'file
   :group 'skk)
@@ -333,7 +345,11 @@ Mule $B$G$O!"(B*euc-japan*, *sjis*, *junet*$B!#(B
   :type 'boolean
   :group 'skk)
 
-(defcustom skk-record-file (convert-standard-filename "~/.skk-record")
+(defcustom skk-record-file (convert-standard-filename
+			    (cond ((eq system-type 'ms-dos)
+				   "~/_skk-rec")
+				  (t
+				   "~/.skk-record")))
   "*$B%f!<%6!<<-=q$NE}7W$r<h$k%U%!%$%k!#(B
 $B<-=q%;!<%V$N;~9o!"C18l$NEPO??t!"3NDj$r9T$C$?2s?t!"3NDjN(!"A4BN$N8l?t$N(B
 $B>pJs$r<}$a$k!#(B" 
@@ -1079,7 +1095,8 @@ skk-comp.el $B0J30$NJd405!G=$rMxMQ$G$-$k$h$&$K4X?t$r(B funcall $B$9$k7A$K$7$F
   :type 'hook
   :group 'skk-comp)
 
-(defcustom skk-use-color-cursor (and window-system (fboundp 'x-display-color-p)
+(defcustom skk-use-color-cursor (and (not (eq system-type 'ms-dos))
+				     window-system (fboundp 'x-display-color-p)
 				     (x-display-color-p))
   "*Non-nil $B$G$"$l$P!"(BSKK $B%b!<%I$NF~NO%b!<%I$K1~$8$F%+!<%=%k$K?'$rIU$1$k!#(B"
   :type 'boolean
@@ -1375,7 +1392,7 @@ nil $B$G$"$l$P!"I=<($7$J$$!#(B"
   :type 'boolean
   :group 'skk-cursor)
 
-(defcustom skk-cursor-change-width t
+(defcustom skk-cursor-change-width (not (eq system-type 'ms-dos))
   "*Non-nil $B$G$"$l$P!"(BOvwrt $B%^%$%J!<%b!<%I;~$K%+!<%=%k$NI}$r=L$a$k!#(B" 
   :type 'boolean
   :group 'skk-cursor)

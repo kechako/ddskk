@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.13 2000/01/28 05:21:42 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.14 2000/01/29 04:46:41 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/28 05:21:42 $
+;; Last Modified: $Date: 2000/01/29 04:46:41 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -252,8 +252,8 @@
 ;; this one is called once in skk-kcode.el, too.
 (defsubst skk-charsetp (object)
   (static-cond
-   ((fboundp 'charsetp) (charsetp object))
    ((eq skk-emacs-type 'xemacs) (find-charset object))
+   ((fboundp 'charsetp) (charsetp object))
    ((eq skk-emacs-type 'mule2) (character-set object))))
 
 ;;; version independent

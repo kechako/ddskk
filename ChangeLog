@@ -1,3 +1,21 @@
+2000-02-06  Kenichi OKADA <okada@opaopa.org>
+
+	* skk-vars.el (skk-emacs-type): Add `mule5'.
+	(skk-kcode-charset): Ditto.
+	(skk-coding-system-alist): Ditto.
+	(skk-kcode-charset-list): Ditot.
+	* skk.el (skk-jisx0208-to-ascii): Ditto.
+	(skk-mode): Ditto.
+	* skk-macs.el (skk-emacs-type): Ditto.
+	(skk-detect-emacs): Ditto.
+	(skk-str-length): Ditto.
+	(skk-substring): Ditto.
+	(skk-ascii-char-p): Ditto.
+	(skk-str-ref): Ditto.
+	(skk-jisx0208-p): Ditto.
+	* skk-kcode.el (skk-make-char): Ditto.
+	(skk-display-code): Ditto.
+
 2000-02-05  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-e18.el (insert-and-inherit): Sync with APEL.

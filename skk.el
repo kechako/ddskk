@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.52 2000/01/30 15:14:12 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.53 2000/02/06 04:32:54 okada Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/30 15:14:12 $
+;; Last Modified: $Date: 2000/02/06 04:32:54 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/30 15:14:12 $")
+      (let* ((raw-date "$Date: 2000/02/06 04:32:54 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -303,7 +303,7 @@
 (defun skk-jisx0208-to-ascii (string)
   (let ((char
 	 (static-cond
-	  ((memq skk-emacs-type '(xemacs mule4 mule3))
+	  ((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
 	   (require 'japan-util)
 	   (get-char-code-property (string-to-char string) 'ascii))
 	  ((memq skk-emacs-type '(mule2 mule1))
@@ -409,7 +409,7 @@ dependent."
           (load skk-init-file t)
 	  (skk-setup-modeline)
 	  (require 'skk-autoloads)
-	  (static-if (or (memq skk-emacs-type '(mule3 mule4))
+	  (static-if (or (memq skk-emacs-type '(mule3 mule4 mule5))
 			 (and (eq skk-emacs-type 'xemacs)
 			      (or
 			       ;; XEmacs 21 or later.

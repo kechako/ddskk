@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.18 2000/01/30 10:41:26 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.19 2000/02/06 04:32:54 okada Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/30 10:41:26 $
+;; Last Modified: $Date: 2000/02/06 04:32:54 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -35,6 +35,8 @@
     (cond ((string-match "XEmacs" emacs-version) 'xemacs)
 	  ((and (boundp 'NEMACS)) 'nemacs)
 	  ((and (boundp 'mule-version)
+		(string< "5.0" mule-version) 'mule5))
+	  ((and (boundp 'mule-version)
 		(string< "4.0" mule-version) 'mule4))
 	  ((and (boundp 'mule-version)
 		(string< "3.0" mule-version) 'mule3))
@@ -45,6 +47,8 @@
   (defmacro skk-detect-emacs ()
     (` (or (eq (cond ((string-match "XEmacs" emacs-version) 'xemacs)
 		     ((and (boundp 'NEMACS)) 'nemacs)
+		     ((and (boundp 'mule-version)
+			   (string< "5.0" mule-version) 'mule5))
 		     ((and (boundp 'mule-version)
 			   (string< "4.0" mule-version) 'mule4))
 		     ((and (boundp 'mule-version)
@@ -166,7 +170,7 @@
 
 (defsubst skk-str-length (str)
   (static-cond
-   ((memq skk-emacs-type '(xemacs mule4))
+   ((memq skk-emacs-type '(xemacs mule5 mule4))
     (length str))
    ((eq skk-emacs-type 'mule3)
     (length (string-to-vector str)))
@@ -175,7 +179,7 @@
 
 (defsubst skk-substring (str pos1 pos2)
   (static-cond
-   ((memq skk-emacs-type '(xemacs mule4))
+   ((memq skk-emacs-type '(xemacs mule5 mule4))
     (substring str pos1 pos2))
    ((eq skk-emacs-type 'mule3)
     (if (< pos1 0)
@@ -218,7 +222,7 @@
 (defsubst skk-ascii-char-p (char)
   ;; CHAR が ascii 文字だったら t を返す。
   (static-cond
-   ((memq skk-emacs-type '(xemacs mule4 mule3))
+   ((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
     (eq (char-charset char) 'ascii))
    ((eq skk-emacs-type 'mule2)
     ;; Can I use this for mule1?
@@ -227,7 +231,7 @@
  
 (defsubst skk-str-ref (str pos)
   (static-cond
-   ((memq skk-emacs-type '(xemacs mule4))
+   ((memq skk-emacs-type '(xemacs mule5 mule4))
     (aref str pos))
    ((eq skk-emacs-type 'mule3)
     (aref (string-to-vector str) pos))
@@ -235,7 +239,7 @@
 
 (defsubst skk-jisx0208-p (char)
   (static-cond
-   ((memq skk-emacs-type '(xemacs mule4 mule3))
+   ((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
     (eq (char-charset char) 'japanese-jisx0208))
    ((eq skk-emacs-type 'mule2)
     ;; Can I use this for mule1?

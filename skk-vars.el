@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.21 2000/01/30 14:33:51 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.22 2000/02/06 04:32:54 okada Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/30 14:33:51 $
+;; Last Modified: $Date: 2000/02/06 04:32:54 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -44,6 +44,8 @@
 (eval-and-compile
   (defconst skk-emacs-type (cond ((string-match "XEmacs" emacs-version) 'xemacs)
 				 ((and (boundp 'NEMACS)) 'nemacs)
+				 ((and (boundp 'mule-version)
+				       (string< "5.0" mule-version) 'mule5))
 				 ((and (boundp 'mule-version)
 				       (string< "4.0" mule-version) 'mule4))
 				 ((and (boundp 'mule-version)
@@ -1561,7 +1563,7 @@ nil であれば、訓令式 \"(「日本式」とも言うようだ)\" を用いる。
   :group 'skk-kcode)
 
 (defcustom skk-kcode-charset
-  (cond ((memq skk-emacs-type '(xemacs mule4 mule3))
+  (cond ((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
 	 'japanese-jisx0208)
 	((eq skk-emacs-type 'nemacs)
 	 nil)
@@ -1776,7 +1778,7 @@ SKK サーバーが使用するポート番号を書き、設定をすることができる。
  )
 
 (defconst skk-coding-system-alist
-  (cond ((memq skk-emacs-type '(xemacs mule4 mule3))
+  (cond ((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
 	 '(("euc" . euc-japan)
 	   ("ujis" . euc-japan)
 	   ("sjis". sjis)
@@ -2221,7 +2223,7 @@ This map should be derived from isearch-mode-map.")
 (defconst skk-code-n2-max 254)
 (defconst skk-code-null 128)
 (defconst skk-kcode-charset-list
-  (if (memq skk-emacs-type '(xemacs mule4 mule3))
+  (if (memq skk-emacs-type '(xemacs mule5 mule4 mule3))
       (mapcar '(lambda (x) (list (symbol-name x))) (charset-list))))
 (defvar skk-input-by-code-or-menu-jump-default skk-code-n1-min)
 

@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.31 2000/09/27 13:42:05 minakaji Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.32 2000/10/12 10:07:04 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:05 $
+;; Last Modified: $Date: 2000/10/12 10:07:04 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -46,7 +46,7 @@
 	 skk-cursor-jisx0201-color)
 	(t skk-cursor-latin-color)))
 
-(static-if (string-match "XEmacs" emacs-version)
+(static-if (featurep 'xemacs)
     ;; XEmacs
     (progn
       ;; advices.
@@ -141,6 +141,12 @@
 	  "Set cursor color which represents skk mode."
 	  (set-buffer-local-cursor-color (skk-cursor-current-color)))))
       (setq funcs (cdr funcs))))
+
+  ;; Hooks
+  (add-hook 'minibuffer-setup-hook 
+	    (lambda ()
+	      (set-buffer-local-cursor-color (skk-cursor-current-color)))
+	    'append)
   )
 ;;; Hooks
 ;;(add-hook 'isearch-mode-end-hook 'update-buffer-local-frame-params 'append)

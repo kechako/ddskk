@@ -3,17 +3,6 @@
 	* doc/skk.texi: Add 2000 year to Copyright notice.
 	(英単語をあいまいに変換して取り出す): Remove unnecessary sentence.
 
-	* READMEs/README.win (APEL の byte-compile): Doc fixed.
-
-	* READMEs/CVS_digest (Tagify): Change section name to `tag 付け'
-	and update sentences.
-
-	* READMEs/INSTALL (APEL): Modify sentence slightly.
-
-	* skk-version.el (skk-version): Updated to 11.4 and Ishibashi.
-
-	* Sync up with daredevil.
-	
 2000-10-30  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* SKK 10.62a released.

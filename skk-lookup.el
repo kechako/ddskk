@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-lookup.el,v 1.1.2.3.2.9 2000/10/24 03:45:08 minakaji Exp $
+;; Version: $Id: skk-lookup.el,v 1.1.2.3.2.10 2000/10/25 14:47:43 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Sep. 23, 1999
-;; Last Modified: $Date: 2000/10/24 03:45:08 $
+;; Last Modified: $Date: 2000/10/25 14:47:43 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -91,38 +91,30 @@
 		   (require 'skk-num))
 
 (if (memq skk-emacs-type '(mule5 mule4 mule3 mule2 mule1))
-    (condition-case nil
-	(require 'bitmap)
-      (error)))
-    
+    (condition-case nil (require 'bitmap) (error)))
+ 
 (require 'poe)
 (require 'lookup)
 
 (defalias-maybe 'skk-okurigana-prefix 'skk-auto-okurigana-prefix)
 
 ;;;; inline functions.
-(defsubst skk-lookup-get-method (name okuri-process)
-  (save-match-data
-    (let ((list (assoc name skk-lookup-option-alist))
-	  sex)
-      ;; If you search via ndtpd, book's name and slash are attached to NAME
-      ;; as prefix, like `IWANAMI/KOJIEN'.  The following forms will truncate
-      ;; it to `KOJIEN'.
-      (if (and (null list) (string-match "/\\(.+\\)$" name))
-	  (setq list (assoc (match-string-no-properties 1 name)
-			    skk-lookup-option-alist)))
-      (setq sex (nth okuri-process (if list
-				       (cdr list)
-				     skk-lookup-default-option-list)))
-      (cond ((symbolp sex) sex)
-	    (t (eval sex))))))
-
 (defsubst skk-lookup-get-1 (name index)
-  (save-match-data
-    (let ((list (assoc name skk-lookup-option-alist)))
-      (if (and (null list) (string-match "/\\(.+\\)$" name))
-	  (setq list (assoc (match-string 1 name) skk-lookup-option-alist)))
-      (nth index (if list (cdr list) skk-lookup-default-option-list)))))
+  (let ((list
+	 (cdr
+	  (or (assoc name skk-lookup-option-alist)
+	      (save-match-data
+		;; If you search via ndtpd, book's name and slash are attached
+		;; to NAME as prefix, like `IWANAMI/KOJIEN'.  The following 
+		;; forms will truncate it to `KOJIEN'.
+		(if (string-match "/\\(.+\\)$" name)
+		    (assoc (match-string 1 name) skk-lookup-option-alist)))))))
+    (nth index (or list skk-lookup-default-option-list))))
+
+(defsubst skk-lookup-get-method (name okuri-process)
+  (let ((sex (skk-lookup-get-1 name okuri-process)))
+    (cond ((symbolp sex) sex)
+	  (t (eval sex)))))
 
 (defsubst skk-lookup-get-nonsearch-sex (name)
   (skk-lookup-get-1 name 3))
@@ -174,8 +166,7 @@
 
 (defun skk-lookup-search-1 (module key okuri-process)
   ;; search pattern.
-  (let (name method entries ;pickup-regexp split-regexp
-	     candidates-string candidates-list)
+  (let (name method entries candidates-string candidates-list)
     (setq lookup-search-pattern key)
     ;; setup modules.
     (lookup-module-setup module)
@@ -191,20 +182,15 @@
 		  (setq entries (lookup-vse-search-query
 				 dictionary
 				 (lookup-make-query method lookup-search-pattern))))
-	 ;;(setq pickup-regexp (skk-lookup-get-pickup-regexp name)
-	 ;;      split-regexp (skk-lookup-get-split-regexp name))
 	 (lookup-foreach
 	  (lambda (entry)
 	    ;; pickup necessary string for SKK.
 	    (setq candidates-string (lookup-entry-heading entry))
-	    ;;(if (or pickup-regexp split-regexp)
 	    (if (or (skk-lookup-get-pickup-regexp name)
 		    (skk-lookup-get-split-regexp name))
 		(setq candidates-list
 		      (nconc (skk-lookup-process-heading
-			      name	; NEW
-			      candidates-string ;pickup-regexp split-regexp
-			      okuri-process)
+			      name candidates-string okuri-process)
 			     candidates-list))
 	      (setq candidates-string (skk-lookup-process-okurigana
 				       candidates-string
@@ -255,7 +241,6 @@
 		  (substring string 0 (- okuri-length))))))))
 
 (defun skk-lookup-process-heading
-  ;;(heading pickup-regexp split-regexp okuri-process-type)
   (dicname heading okuri-process-type)
   ;; heading しか取り出さないのはもったいない？  他にも情報を取り出し
   ;; ておいて、必要に応じて参照するか？

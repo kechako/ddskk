@@ -1,12 +1,12 @@
 ;;; skk-vars.el --- variables and constants commonly use
 ;;    in Daredevil SKK package programs.
-;; Copyright (C) 1999 Mikio Nakajima <minakaji@osaka.email.ne.jp>
+;; Copyright (C) 1999, 2000 Mikio Nakajima <minakaji@osaka.email.ne.jp>
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.46 2000/10/24 15:14:25 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.47 2000/10/25 14:47:43 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/24 15:14:25 $
+;; Last Modified: $Date: 2000/10/25 14:47:43 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1663,7 +1663,8 @@ nil であれば、訓令式 \"(「日本式」とも言うようだ)\" を用いる。
   :group 'skk-kcode)
 
 (defcustom skk-kcode-charset
-  (cond ((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
+  (cond ((featurep 'jisx0213) 'japanese-jisx0213-1)
+	((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
 	 'japanese-jisx0208)
 	((eq skk-emacs-type 'nemacs) nil)
 	(t lc-jp))
@@ -1900,7 +1901,12 @@ Mule-UCS がインストールされていないときはこの値は動作に影響しない。"
 )
 
 (defconst skk-coding-system-alist
-  (cond ((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
+  (cond ((featurep 'jisx0213)
+	 '(("euc" . euc-jisx0213)
+	   ("ujis" . euc-jisx0213)
+	   ("sjis". shift_jisx0213)
+	   ("jis" . iso-2022-jp-3-compatible)))
+	((memq skk-emacs-type '(xemacs mule5 mule4 mule3))
 	 '(("euc" . euc-japan)
 	   ("ujis" . euc-japan)
 	   ("sjis". shift_jis)
@@ -2353,7 +2359,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 
 ;;; -- SKK-KCODE.EL related internal constants and variables.
 (defconst skk-code-n1-min 161)
-(defconst skk-code-n1-max 244)
+(defconst skk-code-n1-max (if (featurep 'jisx0213) 254 244))
 (defconst skk-code-n2-min 161)
 (defconst skk-code-n2-max 254)
 (defconst skk-code-null 128)

@@ -1,3 +1,18 @@
+2000-10-25  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-vars.el (skk-coding-system-alist): Define "euc" and "ujis"
+        for euc-jisx0213, "sjis" for shift_jisx0213 and "jis" for
+	iso-2022-jp-3-compatible if emacs has a feature 'jisx0213.
+	(skk-code-n1-max): Set 254 if emacs has a feature 'jisx0213.
+	(skk-kcode-charset): Set 'japanese-jisx0213-1 if emacs has a
+	feature 'jisx0213.
+
+	* skk-kakasi.el: Update Takahashi-san's email address and
+	description about a ftp site to get kakasi.
+	
+	* skk-lookup.el (skk-lookup-get-method): Use `skk-lookup-get-1'.
+	(skk-lookup-get-1): Simplified slightly.
+
 2000-10-25  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* READMES/FAQ.txt (左手の小指を SHIFT で酷使したくありません。):

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-kakasi.el,v 1.4.2.4.2.4 2000/10/15 20:34:48 minakaji Exp $
+;; Version: $Id: skk-kakasi.el,v 1.4.2.4.2.5 2000/10/25 14:47:43 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:48 $
+;; Last Modified: $Date: 2000/10/25 14:47:43 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -27,18 +27,18 @@
 ;;; Commentary:
 
 ;; skk-kakasi.el は KAKASI を SKK の中から使うインターフェイスです。KAKASI は、
-;; 高橋裕信さん <takahasi@tiny.or.jp> による、「漢字かなまじり文をひらがな文や
-;; ローマ字文に変換することを目的として作成したプログラムと辞書の総称」です。
-;; 私自身がニュースやメールを読んでいて、日常読みが分らなくて恥ずかしい思いを
-;; することが多いので、逆引きをしたくて作りました。
+;; 高橋裕信さん <hironobu@trc.rwcp.or.jp> による、「漢字かなまじり文をひらが
+;; な文やローマ字文に変換することを目的として作成したプログラムと辞書の総称」
+;; です。私自身がニュースやメールを読んでいて、日常読みが分らなくて恥ずかしい
+;; 思いをすることが多いので、逆引きをしたくて作りました。
 ;;
-;; KAKASI は、1996 年 4 月 25 日現在、
-;; sunsite.sut.ac.jp:/pub/asia-info/japanese-src/packages/kakasi-2.2.5.tar.gz
-;; sunsite.sut.ac.jp:/pub/asia-info/japanese-src/packages/kakasidict.940620.gz
+;; KAKASI は、
+;; 
+;;  ftp://kakasi.namazu.org/pub/kakasi/
+;; 
 ;; にあり anonymous ftp で入手できます。
 ;;
-;; 素晴しいプログラム KAKASI をお作りになった高橋さんと、KAKASI を anonymous
-;; ftp で入手可能としている sunsite.sut.ac.jp に感謝いたします。
+;; 素晴しいプログラム KAKASI をお作りになった高橋さんに感謝いたします。
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))

@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.43 2000/09/09 17:48:53 czkmt Exp $
-;; Last Modified: $Date: 2000/09/09 17:48:53 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.44 2000/09/10 12:10:17 czkmt Exp $
+;; Last Modified: $Date: 2000/09/10 12:10:17 $
 
 ;; Commentary
 ;;
@@ -273,7 +273,7 @@
       (mapcar (function
 	       (lambda (elt)
 		 (setq SKK_MODULES (delq elt SKK_MODULES))))
-	      '(skk-cursor skk-isearch skk-jisx0201 skk-study))
+	      '(ccc skk-cursor skk-isearch skk-jisx0201 skk-study))
       (require 'cl)
       (condition-case nil
 	  (load "bytecomp-runtime.el")

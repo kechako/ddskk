@@ -1,3 +1,8 @@
+1999-11-29  Takao KAWAMURA  <kawamura@debian.org>
+
+	* Makefile (clean): Remove skk-autoloads.el.
+	(tar): Depend on clean.
+
 1999-11-28  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (skk-isearch-delete-char): Check the car of the

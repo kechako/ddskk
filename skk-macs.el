@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.10 2000/01/25 13:14:56 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.11 2000/01/25 14:55:29 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/25 13:14:56 $
+;; Last Modified: $Date: 2000/01/25 14:55:29 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -170,7 +170,7 @@
     (length str))
    ((eq skk-emacs-type 'mule3)
     (length (string-to-vector str)))
-   ((eq skk-emacs-type 'mule2)
+   (t
     (length (string-to-char-list str)))))
 
 (defsubst skk-substring (str pos1 pos2)
@@ -187,7 +187,7 @@
       (let ((sl (nthcdr pos1 (string-to-char-list str))))
 	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
 	(concat sl))))
-   ((eq skk-emacs-type 'mule2)
+   (t
     (if (< pos1 0)
 	(setq pos1 (+ (skk-str-length str) pos1)))
     (if (< pos2 0)
@@ -203,7 +203,9 @@
   (static-cond
    ((eq skk-emacs-type 'xemacs)
     (next-command-event))
-   (t (read-event))))
+   ((fboundp 'read-event)
+    (read-event))
+   (t (read-char))))
 
 (defsubst skk-char-to-string (char)
   (static-cond
@@ -218,8 +220,9 @@
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4 mule3))
     (eq (char-charset char) 'ascii))
-   ((eq skk-emacs-type 'mule2)
-    (= (char-leading-char char) 0))))
+   ((e skk-emacs-type 'mule2)
+    (= (char-leading-char char) 0))
+   (t (and (< ?\37 char) (< char ?\200)))))
  
 (defsubst skk-str-ref (str pos)
   (static-cond
@@ -227,15 +230,17 @@
     (aref str pos))
    ((eq skk-emacs-type 'mule3)
     (aref (string-to-vector str) pos))
-   ((eq skk-emacs-type 'mule2)
-    (nth pos (string-to-char-list str)))))
+   (t (nth pos (string-to-char-list str)))))
 
 (defsubst skk-jisx0208-p (char)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4 mule3))
     (eq (char-charset char) 'japanese-jisx0208))
    ((eq skk-emacs-type 'mule2)
-    (= (char-leading-char char) lc-jp))))
+    ;; Can I use this for mule1?
+    (= (char-leading-char char) lc-jp))
+   (t
+    (and (<= char ?\200) (<= ?\377 char)))))
 
 (defsubst skk-char-octet (ch &optional n)
   (static-cond

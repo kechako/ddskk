@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.1 1999/11/28 04:53:36 minakaji Exp $
+;; Version: $Id: skk-kcode.el,v 1.7.2.5.2.2 2000/01/25 14:55:29 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/28 04:53:36 $
+;; Last Modified: $Date: 2000/01/25 14:55:29 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -76,7 +76,10 @@
  		      "Cannot convert %c to hexadecimal number" char))))
 
 (defun skk-make-string (n1 n2)
-  (char-to-string (skk-make-char skk-kcode-charset n1 n2)) )
+  (static-cond
+   ((eq skk-emacs-type 'nemacs)
+    (concat (char-to-string n1) (char-to-string n2)))
+   (t (char-to-string (skk-make-char skk-kcode-charset n1 n2)))))
 
 (defun skk-next-n2-code (n)
   (if (<= (setq n (1+ n)) skk-code-n2-max) n skk-code-n2-min))

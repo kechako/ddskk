@@ -131,12 +131,6 @@
   (use-local-map skk-abbrev-mode-map)
   (force-mode-line-update))
 
-(defsubst skk-str-length (str)
-  (length (string-to-char-list str)))
-
-(defsubst skk-str-ref (str pos)
-  (nth pos (string-to-char-list str)))
-
 ;; Pieces of advice.
 (defadvice byte-code-function-p (around skk-e18-ad activate)
   (cond ((and (consp (ad-get-arg 0)) (consp (cdr (ad-get-arg 0))))
@@ -170,9 +164,6 @@
 
 (defun-maybe insert-and-inherit (&rest args)
   (apply 'insert args))
-
-(defun-maybe read-event (&rest args)
-  (read-char))
 
 (defun-maybe number-to-string (num)
   (format "%d" num))
@@ -250,30 +241,6 @@ be applied to `file-coding-system-for-read'."
 	      (save-excursion
 		(set-buffer buf)
 		(use-local-map local-map)))))))
-
-    (defun skk-make-temp-file (prefix)
-      (let ((dir
-	     (cond ((skk-file-exists-and-writable-p temporary-file-directory)
-		    (expand-file-name temporary-file-directory))
-		   (t (or (file-exists-p "~/tmp") (make-directory "~/tmp"))
-		      (or (file-writable-p "~/tmp") (set-file-modes "~/tmp" 1023))
-		      "~/tmp"))))
-	(make-temp-name (expand-file-name prefix dir))))
-    ;;
-    )))
-
-(add-hook
- 'skk-kcode-load-hook
- (function
-  (lambda ()
-    ;;
-    (when (eq skk-emacs-type 'nemacs)
-      (defun skk-make-string (n1 n2)
-	(concat (char-to-string n1) (char-to-string n2))))
-
-    (when (eq skk-emacs-type 'mule1)
-      (defun skk-make-char (charset n1 n2)
-	(make-character charset n1 n2)))
     ;;
     )))
 

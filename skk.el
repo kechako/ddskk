@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.36 2000/01/25 13:16:04 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.37 2000/01/25 14:55:30 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/25 13:16:04 $
+;; Last Modified: $Date: 2000/01/25 14:55:30 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/25 13:16:04 $")
+      (let* ((raw-date "$Date: 2000/01/25 14:55:30 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -272,7 +272,7 @@
     (make-char charset (logand (lognot 128) n1) (logand (lognot 128) n2)))
    ((memq skk-emacs-type '(mule4 mule3))
     (make-char charset n1 n2))
-   ((eq skk-emacs-type 'mule2)
+   ((eq skk-emacs-type '(mule2 mule1))
     (make-character charset n1 n2))))
 
 (defun skk-jisx0208-to-ascii (string)
@@ -367,27 +367,27 @@ dependent."
 	(remove-hook 'post-command-hook 'skk-after-point-move 'local)
 	(and (eq skk-status-indicator 'left)
 	     (setq skk-input-mode-string ""))
-	(and (eq skk-emacs-type 'xemacs) (easy-menu-remove skk-menu)))
+	(static-if (eq skk-emacs-type 'xemacs) (easy-menu-remove skk-menu)))
     ;; enter skk-mode
     (if (not skk-mode-invoked)
         ;; enter skk-mode for the first time in this session
         (progn
-	  (and (eq skk-emacs-type 'xemacs)
-	       (boundp 'preloaded-file-list)
-	       (member "skk-leim" preloaded-file-list)
-	       ;; require dummy file.
-	       (require 'skk-xm20_4))
+	  (static-if (and (eq skk-emacs-type 'xemacs)
+			  (boundp 'preloaded-file-list)
+			  (member "skk-leim" preloaded-file-list))
+	      ;; require dummy file.
+	      (require 'skk-xm20_4))
           (skk-setup-init-file)
           (load skk-init-file t)
 	  (skk-setup-modeline)
 	  (require 'skk-autoloads)
-	  (if (or (memq skk-emacs-type '(mule3 mule4))
-		  (and (eq skk-emacs-type 'xemacs)
-		       (or
-			;; XEmacs 21 or later.
-			(> emacs-major-version 20)
-			;; XEmacs 20.4 or later.
-			(> emacs-minor-version 2))))
+	  (static-if (or (memq skk-emacs-type '(mule3 mule4))
+			 (and (eq skk-emacs-type 'xemacs)
+			      (or
+			       ;; XEmacs 21 or later.
+			       (> emacs-major-version 20)
+			       ;; XEmacs 20.4 or later.
+			       (> emacs-minor-version 2))))
 	      (require 'skk-leim))
 	  (if skk-share-private-jisyo
 	      (progn
@@ -457,7 +457,7 @@ dependent."
     (and (eq skk-status-indicator 'left)
 	 (setq skk-input-mode-string skk-hiragana-mode-string))
     (skk-j-mode-on)
-    (and (eq skk-emacs-type 'xemacs) (easy-menu-add skk-menu))
+    (static-if (eq skk-emacs-type 'xemacs) (easy-menu-add skk-menu))
     (run-hooks 'skk-mode-hook)))
 
 ;;;###autoload
@@ -482,8 +482,7 @@ dependent."
        (format (if skk-japanese-message-and-error
                    "辞書の保存をせずに %s を終了します。良いですか？"
                  "Do you really wish to kill %s without saving Jisyo? ")
-               (cond ((eq skk-emacs-type 'xemacs) "XEmacs")
-		     (t "Mule"))))
+               (static-if (eq skk-emacs-type 'xemacs) "XEmacs" "Mule")))
       (let ((buff (skk-get-jisyo-buffer skk-jisyo 'nomsg)))
 	(ad-disable-advice 'save-buffers-kill-emacs 'before 'skk-ad)
 	(ad-activate 'save-buffers-kill-emacs)
@@ -1405,7 +1404,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
                (let* ((event (skk-read-event))
                       (char (event-to-character event))
                       num)
-		 (if (eq skk-emacs-type 'xemacs)
+		 (static-if (eq skk-emacs-type 'xemacs)
 		     (message ""))	; clear out candidates in echo area
                  (if (null char)
                      (skk-unread-event event)
@@ -2447,18 +2446,10 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   (let ((dir
 	 (cond ((skk-file-exists-and-writable-p temporary-file-directory)
 		(expand-file-name temporary-file-directory))
-	       ((and (memq system-type '(ms-dos windows-nt))
-		     (skk-file-exists-and-writable-p "a:/temp"))
-		;; NEC PC-9800 series.
-		"a:/temp")
 	       (t (or (file-exists-p "~/tmp") (make-directory "~/tmp"))
 		  (or (file-writable-p "~/tmp") (set-file-modes "~/tmp" 1023))
-		  "~/tmp"))))
-    (make-temp-name
-     (concat dir
-	     (if (memq (skk-str-ref dir (1- (length dir))) '(?/ ?\\))
-		 "" "/")
-	     prefix))))
+		  "~/tmp/"))))
+    (make-temp-name (expand-file-name prefix dir))))
 
 (defun skk-make-new-jisyo (tempo-file)
   ;; TEMPO-FILE を新規の skk-jisyo にする。skk-backup-jisyo が non-nil だった

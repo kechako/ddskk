@@ -1,3 +1,39 @@
+2000-01-25  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+
+	* skk-macs.el (skk-str-length): Use `string-to-char-list' for
+	Emacsen other than XEmacs, Mule4 and Mule3 (hereinafter referred
+	to as `old Emacs'.
+	(skk-str-ref): Ditto.
+	(skk-read-event): Use `read-char' for old Emacs.
+	(skk-substring): Use last definition for old Emacs.
+	(skk-ascii-char-p): Compare character using `<' for Mule1 and
+	NEmacs.
+	(skk-jisx0208-p): Ditto.
+
+	* skk-kcode.el (skk-make-string): Do not use `skk-make-char' for
+	NEmacs.
+
+	* skk.el (skk-make-temp-file): Use `expand-file-name'.  Set end
+	slashed directory to temporary variable DIR.  Do not access A
+	drive even if system-type is MS-DOS oriented one.
+	(skk-make-char): Use last definition for mule1.
+	(skk-mode): Use static-if for for the place using
+	`skk-emacs-type'.
+	(skk-kill-emacs-without-saving-jisyo): Ditto.
+	(skk-henkan-show-candidates): Ditto.
+	
+	* experimental/skk-e18.el (read-event): Removed.
+	(skk-in-minibuffer-p): Ditto.
+	(skk-lisp-prog-p): Ditto.
+	(skk-make-string): Ditto.
+	(skk-make-temp-file): Ditto.
+	(skk-str-length): Ditto.
+	(skk-str-ref): Ditto.
+	(skk-make-char): Ditto.
+	(window-minibuffer-p): Temporarily defined until poe-18.el defines
+	it.
+
 2000-01-25  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK (SKK_MODULES): Do not install skk-cursor.el for Emacs 18.

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.14 1999/11/29 12:51:43 mrt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.15 1999/11/30 13:25:04 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/29 12:51:43 $
+;; Last Modified: $Date: 1999/11/30 13:25:04 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/29 12:51:43 $")
+      (let* ((raw-date "$Date: 1999/11/30 13:25:04 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -427,6 +427,21 @@ dependent."
     (define-key skk-jisx0208-latin-mode-map skk-kakutei-key 'skk-kakutei)
     (define-key minibuffer-local-map skk-kakutei-key 'skk-kakutei)
     (define-key minibuffer-local-completion-map skk-kakutei-key 'skk-kakutei)
+    (if skk-use-viper
+	()
+      (define-key skk-j-mode-map
+	(char-to-string skk-start-henkan-with-completion-char)
+	'skk-start-henkan-with-completion)
+      (define-key skk-abbrev-mode-map
+	(char-to-string skk-start-henkan-with-completion-char)
+ 	'skk-start-henkan-with-completion)
+      (define-key skk-j-mode-map
+ 	(char-to-string skk-backward-and-set-henkan-point-char)
+ 	'skk-backward-and-set-henkan-point) 
+      (define-key skk-jisx0208-latin-mode-map
+ 	(char-to-string skk-backward-and-set-henkan-point-char)
+ 	'skk-backward-and-set-henkan-point) 
+      )
     (skk-setup-delete-backward-char)
     ;; XEmacs doesn't have minibuffer-local-ns-map
     (and (boundp 'minibuffer-local-ns-map)
@@ -794,7 +809,9 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
 			  (setq this-command 'skk-completion)
 			  (skk-completion nil) )
 			 ((eq ch skk-previous-completion-char)
-			  (skk-previous-completion) )))
+			  (setq this-command 'skk-completion)
+			  (skk-previous-completion) )
+			 (t (skk-kana-input arg)) ))
 		  (t (skk-kana-input arg)) ))
 	   ;; just imput Kana.
 	   (t (skk-kana-input arg)) ))))

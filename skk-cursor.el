@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.10 1999/12/07 13:21:05 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.11 1999/12/08 14:02:49 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/07 13:21:05 $
+;; Last Modified: $Date: 1999/12/08 14:02:49 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -80,7 +80,8 @@
 
 (defadvice exit-minibuffer (before skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (with-current-buffer (skk-minibuffer-origin) (skk-cursor-set-properly)) )
+  (with-current-buffer (skk-minibuffer-origin) (skk-cursor-set-properly))
+  (skk-cursor-set-properly) )
 
 (defadvice kill-buffer (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
@@ -122,7 +123,7 @@
 
 (defadvice switch-to-buffer (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) ) 
+  (skk-cursor-set-properly) )
 
 ;; cover to hilit19 functions.
 (defadvice hilit-yank (after skk-cursor-ad activate)
@@ -180,7 +181,8 @@
 (if (eq skk-emacs-type 'xemacs)
     (defadvice minibuffer-keyboard-quit (before skk-cursor-ad activate)
       "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-      (with-current-buffer (skk-minibuffer-origin) (skk-cursor-set-properly)) ))
+      (with-current-buffer (skk-minibuffer-origin) (skk-cursor-set-properly))
+      (skk-cursor-set-properly) ))
 
 ;; cover to VIP/Viper functions.
 (defadvice viper-intercept-ESC-key (after skk-cursor-ad activate)

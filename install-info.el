@@ -77,7 +77,7 @@ from DIR-FILE; don't insert any new entries."
     ;;
     (cond
      ((and entry section)
-      (setq entries (install-info-entries entry section)))
+      (setq entries (install-info-entries section entry)))
      (entry
       (save-excursion
 	(set-buffer buf)

@@ -1,3 +1,33 @@
+2000-09-17  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-vars.el: Grouping by function and filename.
+	(skk-custom-by-function): New group.
+	(skk-custom-by-filename): Ditto.
+	(skk-use-look): Doc sync up with READMEs/skk-faq.txt.
+	(skk-kutouten-type): Use `defcustom' instead of `skk-deflocalvar'.
+	(skk-faces): Removed.
+	(skk-decoration): Ditto.
+	(skk-dictionary): Ditto.
+	(skk-filenames): Ditto. 
+	(skk-hooks-and-functions): Ditto. 
+	(skk-keybinds): Ditto. 
+	(skk-okurigana): Ditto. 
+	(skk-misc): Ditto. 
+	(skk-abbrev): Ditto. 
+	(skk-auto): Change its group to skk-custom-by-filename.
+	(skk-comp): Ditto. 
+	(skk-cursor): Ditto. 
+	(skk-gadget): Ditto. 
+	(skk-isearch): Ditto. 
+	(skk-jisx0201): Ditto. 
+	(skk-kakasi): Ditto. 
+	(skk-kcode): Ditto. 
+	(skk-look): Ditto. 
+	(skk-lookup): Ditto. 
+	(skk-num): Ditto. 
+	(skk-server): Ditto. 
+	(skk-init-file): Use `defcustom' instead of `defvar'.
+
 2000-09-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el: Add comments.

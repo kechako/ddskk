@@ -1,3 +1,8 @@
+-*- text -*-
+
+     $Id: CVS_00readme,v 1.1.2.5 2000/09/10 12:07:57 czkmt Exp $
+
+
 CVS の入手
 
   CVS は GNU のミラーサイトから入手できます。マスターサイトは
@@ -63,8 +68,7 @@ CVS の入手
 # eval: (save-excursion
 	  (goto-char (point-min))
 	  (while (re-search-forward "\\(ht\\|f\\)tp://.+$" nil t)
-	    (put-text-property (match-beginning 0) (match-end 0)
-			       'mouse-face 'highlight)
-	    (put-text-property (match-beginning 0) (match-end 0) 'face 'bold)))
-# eval: (set-buffer-modified-p nil)
+	    (let ((overlay (make-overlay (match-beginning 0) (match-end 0))))
+	      (overlay-put overlay 'mouse-face 'highlight)
+	      (overlay-put overlay 'face 'bold))))
 # End:

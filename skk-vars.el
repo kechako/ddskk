@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.31 2000/08/16 12:46:54 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.32 2000/08/23 13:33:04 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/16 12:46:54 $
+;; Last Modified: $Date: 2000/08/23 13:33:04 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2256,7 +2256,7 @@ This map should be derived from isearch-mode-map.")
 (defvar skk-isearch-last-mode-string "")
 (defvar skk-isearch-last-mode-regexp "")
 
-(defvar skk-isearch-switch t)
+(defvar skk-isearch-switch nil)
 (defvar skk-isearch-state nil)
 (defvar skk-isearch-in-editing nil)
 

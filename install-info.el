@@ -29,9 +29,26 @@
 (eval-when-compile
   (require 'cl))
 
-(condition-case nil
-    (require 'jka-compr)
-  (error))
+(eval-and-compile
+  (condition-case nil
+      (require 'jka-compr)
+    (error)))
+
+;; Macros.
+(defmacro install-info-compressed-name-p (filename)
+  (if (not (featurep 'jka-compr))
+      nil
+    (` (let ((list jka-compr-compression-info-list)
+	     tag)
+	 (while (and list (not tag))
+	   (when (string-match (aref (car list) 0) (, filename))
+	     (setq tag t))
+	   (setq list (cdr list)))
+	 tag))))
+
+(defmacro install-info-forward-line (n)
+  (` (unless (eq 0 (forward-line (, n)))
+       (insert "\n"))))
 
 (defun install-info (info-file dir-file &optional entry section delete)
   "Install or delete dir entries from INFO-FILE in the Info directory file
@@ -95,8 +112,7 @@ from DIR-FILE; don't insert any new entries."
 	(set-buffer buf)
 	(goto-char (point-min))
 	(while (re-search-forward "^START-INFO-DIR-ENTRY" nil t)
-	  (forward-line 1)
-	  (beginning-of-line)
+	  (install-info-forward-line 1)
 	  (while (not (looking-at "^END-INFO-DIR-ENTRY"))
 	    (let (start str)
 	      (setq start (point))
@@ -109,8 +125,7 @@ from DIR-FILE; don't insert any new entries."
 		    (setq entry
 			  (cons (format "%s\n%s" (car entry) str)
 				(cdr entry))))))
-	      (forward-line 1)
-	      (beginning-of-line)))))
+	      (install-info-forward-line 1)))))
       (unless (setq entry (nreverse entry))
 	(error "warning; no info dir entry in %s" info-file))
       (setq groups (install-info-groups section entry)))
@@ -126,14 +141,11 @@ from DIR-FILE; don't insert any new entries."
 	      (setq section
 		    (nconc section
 			   (list (buffer-substring (match-end 0) (point)))))
-	      (forward-line 1)
-	      (beginning-of-line))
+	      (install-info-forward-line 1))
 	    (while (and (eolp) (not (eobp)))
-	      (forward-line 1)
-	      (beginning-of-line))
+	      (install-info-forward-line 1))
 	    (when (looking-at "^START-INFO-DIR-ENTRY")
-	      (forward-line 1)
-	      (beginning-of-line)
+	      (install-info-forward-line 1)
 	      (while (not (looking-at "^END-INFO-DIR-ENTRY"))
 		(let (start str)
 		  (setq start (point))
@@ -146,8 +158,7 @@ from DIR-FILE; don't insert any new entries."
 			(setq entry
 			      (cons (format "%s\n%s" (car entry) str)
 				    (cdr entry))))))
-		  (forward-line 1)
-		  (beginning-of-line))))
+		  (install-info-forward-line 1))))
 	    (when (and section (setq entry (nreverse entry)))
 	      (setq groups
 		    (nconc groups
@@ -156,8 +167,7 @@ from DIR-FILE; don't insert any new entries."
 	(unless groups
 	  (goto-char (point-min))
 	  (while (re-search-forward "^START-INFO-DIR-ENTRY" nil t)
-	    (forward-line 1)
-	    (beginning-of-line)
+	    (install-info-forward-line 1)
 	    (while (not (looking-at "^END-INFO-DIR-ENTRY"))
 	      (let (start str)
 		(setq start (point))
@@ -170,8 +180,7 @@ from DIR-FILE; don't insert any new entries."
 		      (setq entry
 			     (cons (format "%s\n%s" (car entry) str)
 				   (cdr entry))))))
-		(forward-line 1)
-		(beginning-of-line))))
+		(install-info-forward-line 1))))
 	  (unless (setq entry (nreverse entry))
 	    (error "warning; no info dir entry in %s" info-file))
 	  (unless section
@@ -207,12 +216,10 @@ from DIR-FILE; don't insert any new entries."
 	    (while (re-search-forward
 		    (concat "^" (regexp-quote key) "\\(\\.info\\)?)") nil t)
 	      (let ((start (match-beginning 0)))
-		(when (eq 0 (forward-line 1))
-		  (beginning-of-line))
+		(install-info-forward-line 1)
 		(while (not (or (eolp)
 				(looking-at "^* ")))
-		  (when (eq 0 (forward-line 1))
-		    (beginning-of-line)))
+		  (install-info-forward-line 1))
 		(delete-region start (point)))))))
       (install-info-write-region (point-min) (point-max) dir))
     (kill-buffer buf)))
@@ -248,9 +255,7 @@ File: dir,	Node: Top	This is the top of the INFO tree
 	  (goto-char (point-min))
 	  (cond
 	   ((re-search-forward (concat "^" sec "$") nil t)
-	    (if (eq 1 (forward-line 1))
-		(newline 1)
-	      (beginning-of-line))
+	    (install-info-forward-line 1)
 	    (dolist (en entry)
 	      (let ((key (when (string-match ")" en)
 			   (setq key (substring en 0 (match-beginning 0))))))
@@ -260,16 +265,13 @@ File: dir,	Node: Top	This is the top of the INFO tree
 		     ((looking-at
 		       (concat "^" (regexp-quote key) "\\(\\.info\\)?)"))
 		      (let ((start (point)))
-			(when (eq 0 (forward-line 1))
-			  (beginning-of-line))
+			(install-info-forward-line 1)
 			(while (not (or (eolp)
 					(looking-at "^* ")))
-			  (when (eq 0 (forward-line 1))
-			    (beginning-of-line)))
+			  (install-info-forward-line 1))
 			(delete-region start (point))))
 		     (t
-		      (when (eq 0 (forward-line 1))
-			(beginning-of-line))))))
+		      (install-info-forward-line 1)))))
 		(save-excursion
 		  (catch 'here
 		    (while (not (eolp))
@@ -278,8 +280,7 @@ File: dir,	Node: Top	This is the top of the INFO tree
 			      (point)
 			      (save-excursion (end-of-line) (point)))))
 			(if (string-lessp line en)
-			    (when (eq 0 (forward-line 1))
-			      (beginning-of-line))
+			    (install-info-forward-line 1)
 			  (throw 'here t)))))
 		  (unless (bolp)
 		    (newline 1))
@@ -294,27 +295,16 @@ File: dir,	Node: Top	This is the top of the INFO tree
       (install-info-write-region (point-min) (point-max) dir))
     (kill-buffer buf)))
 
-(defun install-info-compressed-p (file)
-  (if (not (featurep 'jka-compr))
-      nil
-    (let ((list jka-compr-compression-info-list)
-	  tag)
-      (while (and list (not tag))
-	(when (string-match (aref (car list) 0) file)
-	  (setq tag t))
-	(setq list (cdr list)))
-      tag)))
-
 (defun install-info-insert-file-contents (file &optional visit beg end replace)
   (let ((coding-system-for-read 'raw-text))
-    (funcall (if (install-info-compressed-p file)
+    (funcall (if (install-info-compressed-name-p file)
 		 'jka-compr-insert-file-contents
 	       'insert-file-contents)
 	     file visit beg end replace)))
 
 (defun install-info-write-region (start end file &optional append visit)
   (let ((coding-system-for-write 'raw-text))
-    (funcall (if (install-info-compressed-p file)
+    (funcall (if (install-info-compressed-name-p file)
 		 'jka-compr-write-region
 	       'write-region)
 	     start end file append visit)))

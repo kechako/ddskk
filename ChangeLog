@@ -3,6 +3,8 @@
 	* skk-isearch.el, etc/SKK.tut.E: Typos.
 	Reported by Yoshiki Hayashi <yoshiki@xemacs.org>.
 
+	* doc/skk-faq.texi: Use `@url'.
+
 	* SKK-MK (SKK-MK-install): Ignore errors.
 
 	* install-info.el: Many fixes and updates.

@@ -2,9 +2,9 @@
 ;; Copyright (C) 2000 Tsukamoto Tetsuo
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
-;; Version: $Id: skk-e18.el,v 1.1.2.21 2000/08/27 18:33:52 czkmt Exp $
+;; Version: $Id: skk-e18.el,v 1.1.2.22 2000/08/28 14:53:17 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/27 18:33:52 $
+;; Last Modified: $Date: 2000/08/28 14:53:17 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -38,7 +38,6 @@
 ;; において配布されています。
 
 ;;; Code:
-(require 'cl)
 (condition-case nil
     (require 'advice)
   (error

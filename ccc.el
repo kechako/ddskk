@@ -3,9 +3,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: ccc.el,v 1.1.2.6 2000/10/18 10:55:04 czkmt Exp $
+;; Version: $Id: ccc.el,v 1.1.2.7 2000/10/19 08:45:23 czkmt Exp $
 ;; Keywords: cursor
-;; Last Modified: $Date: 2000/10/18 10:55:04 $
+;; Last Modified: $Date: 2000/10/19 08:45:23 $
 
 ;; This software is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -183,11 +183,11 @@
 		       "Update frame frame parameters if `buffer-local-*-color' given."
 		       (interactive (, (cdr func)))
 		       (update-buffer-local-frame-params))))))
-	  ;; non-command or command that has not an interactice spec.
+	  ;; non-command or command that has not an interactive spec.
 	  (if (and (commandp func) (subr-fboundp func)
 		   ;; subr, but no argument.
 		   (null (memq func
-			       ;; XXX posibilly Emacs version dependent
+			       ;; XXX possibilly Emacs version dependent
 			       '(bury-buffer delete-frame delete-window))))
 	      (message
 	       "WARNING: Adding advice to %s without mirroring its interactive spec"

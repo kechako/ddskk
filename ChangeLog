@@ -1,3 +1,20 @@
+1999-11-28  Takao KAWAMURA  <kawamura@debian.org>
+
+	* SKK-MK (SKK-MK-generate-autoloads-el): Generate
+	skk-autoloads.el.
+
+	* skk.el (skk-version): Add `;;;###autoload' cookie.
+
+	* skk-server.el (skk-server-version): Ditto.
+
+	* skk-num.el (skk-num-compute-henkan-key): Ditto.
+	(skk-num): Ditto.
+
+	* skk-jisx0201.el (skk-toggle-katakana): Ditto.
+
+	* skk-study.el (skk-study-check-alist-format): Remove
+	`;;;###autoload' cookie.
+
 1999-11-28  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-study.el: Force emacs-lisp-mode.

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-num.el,v 1.6.2.4.2.1 1999/11/28 04:53:36 minakaji Exp $
+;; Version: $Id: skk-num.el,v 1.6.2.4.2.2 1999/11/28 08:14:47 kawamura Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/28 04:53:36 $
+;; Last Modified: $Date: 1999/11/28 08:14:47 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -31,6 +31,7 @@
 ;;; Code:
 (eval-when-compile (require 'cl) (require 'skk-macs) (require 'skk-vars))
 
+;;;###autoload
 (defun skk-num-compute-henkan-key (key)
   ;; KEY の中の連続する数字を現わす文字列を "#" に置き換えた文字列を返す。"12"
   ;; や "０９" など連続する数字を 1 つの "#" に置き換えることに注意。
@@ -443,6 +444,7 @@
 	(message "%S" skk-num-recompute-key)
         (skk-update-jisyo word purge) )))
 
+;;;###autoload
 (defun skk-num (str)
   ;; 数字を skk-number-style の値に従い変換する。
   ;; skk-current-date のサブルーチン。

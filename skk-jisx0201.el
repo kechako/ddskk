@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.3 1999/11/25 19:01:02 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.4 1999/11/28 08:14:47 kawamura Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 1999/11/25 19:01:02 $
+;; Last Modified: $Date: 1999/11/28 08:14:47 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -575,6 +575,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
    (setq skk-henkan-on t)
    (skk-set-marker skk-henkan-start-point (point)) ))
 
+;;;###autoload
 (defun skk-toggle-katakana (arg)
   (interactive "P")
   (if (and skk-henkan-on (not skk-henkan-active))

@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.3 1999/11/28 04:53:36 minakaji Exp $
-;; Last Modified: $Date: 1999/11/28 04:53:36 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.4 1999/11/28 08:14:45 kawamura Exp $
+;; Last Modified: $Date: 1999/11/28 08:14:45 $
 
 ;; Commentary
 ;;
@@ -241,6 +241,7 @@ end with `skk'." )
 
 ;;; [FUNCTIONS]
 (defun SKK-MK-compile ()
+  (SKK-MK-generate-autoloads-el)
   (compile-elisp-modules SKK_MODULES ".") )
 
 (defun SKK-MK-install ()
@@ -460,5 +461,77 @@ SKK tutorials:
 	(progn (with-output-to-temp-buffer "*What where*" (princ string))
 	       (message "") )
       (princ string) )))
+
+(defun SKK-MK-generate-autoloads-el ()
+  "Generate skk-autoload.el."
+  (let ((modules SKK_MODULES)
+        (buf (get-buffer-create " *SKK-MK-generate-autoloads-el*"))
+        (sort-min)
+        (funcs))
+    (save-excursion
+      (set-buffer buf)
+      (erase-buffer)
+      (insert "\
+;;; skk-autoloads.el --- autoload settings for SKK.
+
+;; This file was generated automatically by SKK-MK at "
+              (current-time-string)
+              ".
+
+;; This file is part of Daredevil SKK.
+
+;; Daredevil SKK is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either versions 2, or (at your option)
+;; any later version.
+
+;; Daredevil SKK is distributed in the hope that it will be useful
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with Daredevil SKK, see the file COPYING.  If not, write to the Free
+;; Software Foundation Inc., 59 Temple Place - Suite 330, Boston,
+;; MA 02111-1307, USA.
+
+;;; Code:\n\n")
+      (setq sort-min (point))
+      (while modules
+        (setq funcs (SKK-MK-collect-autoload-functions (car modules)))
+        (while funcs
+          (insert "(autoload '" (caar funcs)
+                  " \"" (symbol-name (car modules))
+                  "\" nil "
+                  (symbol-name (if (cdar funcs) t))
+                  " nil)\n")
+          (setq funcs (cdr funcs)))
+        (setq modules (cdr modules)))
+      (sort-lines nil sort-min (point-max))
+      (insert "\n(provide 'skk-autoloads)\n;;; skk-autoloads.el ends here\n")
+      (write-region (point-min) (point-max) "skk-autoloads.el" nil 'quiet)
+      (kill-buffer buf))))
+
+(defun SKK-MK-collect-autoload-functions (module)
+  "Return a list of autoload functions defined in MODULE."
+  (let ((el-file (concat (symbol-name module) ".el"))
+        (funcs))
+    (if (file-exists-p el-file)
+        (progn
+          (save-excursion
+            (insert-file-contents el-file)
+            (while (re-search-forward "^;;;###autoload" nil t)
+              (beginning-of-line 2)
+              (if (looking-at "(defun[ 	]+\\([^ 	(]+\\)")
+                  (setq funcs
+                        (cons (cons (match-string 1)
+                                    (save-excursion
+                                      (re-search-forward
+                                       "^[ 	]*(interactive"
+                                       (save-excursion (re-search-forward "^(defun" nil t 2))
+                                       t)))
+                              funcs)))))
+          (delete-region (point) (point-max))))
+    funcs))
 
 ;;; SKK-MK ends here

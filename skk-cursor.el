@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.3 1999/11/29 10:45:05 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.4 1999/11/29 11:30:23 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/29 10:45:05 $
+;; Last Modified: $Date: 1999/11/29 11:30:23 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -61,6 +61,7 @@
 				     skk-cursor-jisx0208-latin-color )
 				    (skk-katakana skk-cursor-katakana-color)
 				    (skk-j-mode skk-cursor-hiragana-color)
+				    (skk-abbrev-mode skk-cursor-abbrev-color)
 				    (t skk-cursor-latin-color) ))))
   (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)) )
 

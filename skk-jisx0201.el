@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.16 2000/01/15 10:04:10 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.17 2000/01/19 14:40:09 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/01/15 10:04:10 $
+;; Last Modified: $Date: 2000/01/19 14:40:09 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -51,9 +51,12 @@
 ;;
 ;; (setq standard-translation-table-for-decode (make-translation-table nil))
 ;;
-;; を評価してください。
-;; (Emacs 20.2 ではとある変数を設定すればいいのですがその変数名を失念しました。
-;; Mule 2.3 については分かりません。)
+;; を評価してください。同様に Emacs 20.2 でこのファイルを編集する場合は、このファイル
+;; を開く前に
+;;
+;; (setq standard-character-unification-table-for-decode (make-unification-table nil))
+;;
+;; を評価してください。(Mule 2.3 については分かりません。)
 ;;
 ;; <業務連絡 その2>
 ;; やっぱり JISX0201.1976 Japanese Kana と JISX0201.1976 Japanese Roman の入力

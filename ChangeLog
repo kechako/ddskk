@@ -1,5 +1,9 @@
 2001-09-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
+	* New branch ddskk-e18.
+
+2001-09-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
 	* doc/skk.texi (SKKの歴史): New chapter.
 
 2001-09-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
@@ -1782,8 +1786,8 @@
 
 
 
-Version: $Id: ChangeLog,v 1.368 2001/09/08 22:55:42 czkmt Exp $
-Last Modified: $Date: 2001/09/08 22:55:42 $
+Version: $Id: ChangeLog,v 1.368.2.1 2001/09/09 01:34:04 czkmt Exp $
+Last Modified: $Date: 2001/09/09 01:34:04 $
 
 Local Variables:
 buffer-file-coding-system: iso-2022-jp

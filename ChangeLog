@@ -2,6 +2,9 @@
 
 	* skk-macs.el (skk-sit-for): New macro.
 	(skk-read-event): Abolish.
+	(skk-charset-p, skk-substring): Modify for Nemacs.
+	(skk-str-length, skk-char-to-string): Re-order conditions.
+	(skk-asii-char-p, skk-jisx0208-p): Modify for Mule 1.
 
 	* skk-gadget.el (skk-clock): Use `skk-sit-for'.
 

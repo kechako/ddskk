@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.23 2000/08/14 01:12:11 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.24 2000/08/16 12:46:21 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/08/14 01:12:11 $
+;; Last Modified: $Date: 2000/08/16 12:46:21 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -73,23 +73,7 @@
 	     (t
 	      (require 'japan-util)))
 
-(defgroup skk-jisx0201 nil "SKK jisx0201 related customization."
-  :prefix "skk-jisx0201-"
-  :group 'skk-jisx0201)
-
-(defcustom skk-cursor-jisx0201-color (if (eq skk-background-mode 'light)
-					 "green"
-				       "forestgreen")
-  "*JISX0201 モードを示すカーソル色。
-skk-use-color-cursor が non-nil のときに使用される。"
-  :type 'string
-  :group 'skk-jisx0201)
-
-(defcustom skk-jisx0201-mode-string " jisx0201"
-  "*SKK が JISX0201 モードであるときにモードラインに表示される文字列。"
-  :type 'string
-  :group 'skk-jisx0201)
-
+;; 諸般の事情により skk-vars.el に入れるべきでない変数
 (defvar skk-jisx0201-base-rule-list
   '(("a" nil "ｱ")
     ("bb" "b" "ｯ") ("ba" nil "ﾊﾞ") ("be" nil "ﾍﾞ")
@@ -374,8 +358,6 @@ skk-use-color-cursor が non-nil のときに使用される。"
     (" " nil " "))
 "*SKK JISX0201 モードの追加のルール。")
 
-(defvar skk-jisx0201-mode-map nil
-  "*SKK JISX0201 モードのキーマップ。")
 (or skk-jisx0201-mode-map
     (let ((map (make-sparse-keymap)))
       (substitute-key-definition 'self-insert-command 'skk-jisx0201-insert map
@@ -393,27 +375,14 @@ skk-use-color-cursor が non-nil のときに使用される。"
       (skk-define-menu-bar-map map)
       (setq skk-jisx0201-mode-map map)))
 
-;; system variables.
-(defvar skk-jisx0201-rule-tree nil
-  "ローマ字 -> JISX0201 変換の状態遷移規則を表すツリーの初期状態。
-skk-mode の起動時に毎回 skk-rom-kana-base-rule-list と
-skk-rom-kana-rule-list から木の形にコンパイルされる。")
-
-(defvar skk-jisx0201-base-rule-tree nil)
-(defvar skk-jisx0201-roman-rule-tree nil)
-(skk-deflocalvar skk-jisx0201-roman nil)
-
-(skk-deflocalvar skk-jisx0201-current-rule-tree nil
-  "ローマ字 -> JISX0201 変換の状態遷移規則を表わすツリーの現時点の状態。
-ローマ字入力の初期では skk-jisx0201-rule-tree と同一の状態で、文字入力が進むに
-つれ、木をたどってゆく状態の遷移を表す。")
-
-(skk-deflocalvar skk-jisx0201-mode nil
-  "Non-nil であれば、入力モードが JISX0201 モードであることを示す。")
-
 (set-modified-alist
  'minor-mode-map-alist
  (list (cons 'skk-jisx0201-mode skk-jisx0201-mode-map)))
+
+(setq skk-jisx0201-base-rule-tree
+      (skk-compile-rule-list skk-jisx0201-base-rule-list skk-jisx0201-rule-list))
+(setq skk-jisx0201-roman-rule-tree
+      (skk-compile-rule-list skk-jisx0201-roman-rule-list))
 
 ;; inline functions.
 (defsubst skk-jisx0201-mode-on (&optional arg)
@@ -432,13 +401,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
         skk-input-mode-string skk-jisx0201-mode-string)
   (force-mode-line-update))
 
-;; advices.
-(defadvice skk-regularize (before skk-jisx0201-ad activate)
-  (setq skk-jisx0201-base-rule-tree
-	(skk-compile-rule-list skk-jisx0201-base-rule-list skk-jisx0201-rule-list))
-  (setq skk-jisx0201-roman-rule-tree
-	(skk-compile-rule-list skk-jisx0201-roman-rule-list)))
-
+;; Pieces of advice.
 (defadvice skk-mode (after skk-jisx0201-ad activate)
   (define-key skk-jisx0201-mode-map skk-kakutei-key 'skk-kakutei)
   (setq skk-jisx0201-mode nil))
@@ -863,74 +826,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
       ;; not yet
       ))
 
-;; overwrite the function of same name in skk.el
-(defun skk-setup-modeline ()
-  "モード行へのステータス表示を準備する。"
-  (cond ((eq skk-status-indicator 'left)
-	 (mapcar (function
-		  (lambda (el)
-		    (let ((sym (car el))
-			  (strs (cdr el)))
-		      (if (string= (symbol-value sym) (cdr strs))
-			  (set sym (car strs))))))
-		 (cond
-		  ((and (fboundp 'face-proportional-p)
-			(face-proportional-p 'modeline))
-		   '((skk-latin-mode-string . ("--SKK:" . " SKK"))
-		     (skk-hiragana-mode-string . ("--かな:" . " かな"))
-		     (skk-katakana-mode-string . ("--カナ:" . " カナ"))
-		     (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
-		     (skk-abbrev-mode-string . ("--aあ:" . " aあ"))
-		     (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201"))))
-		  (t
-		   '((skk-latin-mode-string . ("--SKK::" . " SKK"))
-		     (skk-hiragana-mode-string . ("--かな:" . " かな"))
-		     (skk-katakana-mode-string . ("--カナ:" . " カナ"))
-		     (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
-		     (skk-abbrev-mode-string . ("--aあ::" . " aあ"))
-		     (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201"))))))
-	 (static-cond
-	  ((eq skk-emacs-type 'xemacs)
-	   (or (memq 'skk-input-mode-string default-modeline-format)
-	       (setq-default default-modeline-format
-			     (append '("" skk-input-mode-string)
-				     default-modeline-format)))
-	   (mapc (function
-		  (lambda (buf)
-		    (when (buffer-live-p buf)
-		      (save-excursion
-			(set-buffer buf)
-			(and (listp modeline-format)
-			     (or (memq 'skk-input-mode-string modeline-format)
-				 (setq modeline-format
-				       (append '("" skk-input-mode-string)
-					       modeline-format))))))))
-		 (buffer-list)))
-	  (t
-	   (or (memq 'skk-input-mode-string (default-value 'mode-line-format))
-	       (setq-default mode-line-format
-			     (append '("" skk-input-mode-string)
-				     (default-value 'mode-line-format))))
-	   (mapcar (function
-		    (lambda (buf)
-		      (when (buffer-live-p buf)
-			(save-excursion
-			  (set-buffer buf)
-			  (and (listp mode-line-format)
-			       (or (assq 'mode-line-format (buffer-local-variables))
-				   (memq 'mode-line-format (buffer-local-variables)))
-			       (or (memq 'skk-input-mode-string mode-line-format)
-				   (setq mode-line-format
-					 (append '("" skk-input-mode-string)
-						 mode-line-format))))))))
-		   (buffer-list))))
-	 (setq-default skk-input-mode-string "")
-	 (force-mode-line-update t))
-	((eq skk-status-indicator 'minor-mode)
-	 (setq minor-mode-alist
-	       (put-alist 'skk-mode
-			  ;; each element of minor-mode-alist is not cons cell.
-			  '(skk-input-mode-string) minor-mode-alist)))))
+;;
 
 (define-key skk-jisx0201-mode-map skk-kakutei-key 'skk-kakutei)
 (define-key skk-jisx0201-mode-map "\C-q" 'skk-toggle-katakana)

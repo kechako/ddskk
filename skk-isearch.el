@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.22 2000/07/07 22:13:37 minakaji Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.23 2000/07/18 15:33:27 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:37 $
+;; Last Modified: $Date: 2000/07/18 15:33:27 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -178,6 +178,9 @@ buffer."
 	 ;; always start with the specified mode.
 	 ;; `skk-isearch-start-mode' is symbolic.
 	 (skk-isearch-canonical-start-mode skk-isearch-start-mode))
+	(skk-isearch-state
+	 ;; after `isearch-edit-string'.
+	 skk-isearch-state)
 	;; guess the current buffer.  note that if skk-mode is off,
 	;; skk-isearch-current-mode returns symbol `nil' and control
 	;; falls through to next cond clause.
@@ -214,6 +217,8 @@ kakutei'ed and erase the buffer contents."
 	(setq skk-isearch-mode-map
 	      (skk-isearch-setup-keymap (cons 'keymap isearch-mode-map))))))
   (set skk-isearch-overriding-local-map skk-isearch-mode-map)
+  (setq skk-isearch-switch t)
+  (setq skk-isearch-in-editing nil)
   (setq skk-isearch-incomplete-message ""
 	;; set skk-isearch-message non-nil to call skk-isearch-message.
 	skk-isearch-message "")
@@ -243,6 +248,9 @@ kakutei'ed and erase the buffer contents."
 	  ((eq mode 'abbrev) (skk-abbrev-mode-on))
 	  ((eq mode 'latin) (skk-latin-mode-on))
 	  ((eq mode 'jisx0208-latin) (skk-jisx0208-latin-mode-on))))
+  (setq skk-isearch-switch nil)
+  (or skk-isearch-in-editing
+      (setq skk-isearch-state nil))
   (remove-hook 'pre-command-hook 'skk-pre-command 'local)
   (skk-remove-minibuffer-setup-hook
    'skk-j-mode-on 'skk-setup-minibuffer
@@ -464,7 +472,7 @@ If the current mode is different from previous, remove it first."
   (interactive "P")
   ;; following code is highly depends on internal of skk.
   (if (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
-	(if (memq (skk-isearch-current-mode) '(latin jisx0208-latin))
+	(if (memq (skk-isearch-current-mode) '(latin jisx0208-latin nil))
 	    (prog1
 		t
 	      ;; if the working buffer is latin or jisx0208-latin
@@ -533,31 +541,37 @@ If the current mode is different from previous, remove it first."
 
 (defadvice isearch-repeat (after skk-isearch-ad activate preactivate)
   "`isearch-message' を適切に設定する。"
-  (unless (string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
-			isearch-message)
-    (setq isearch-message
-	  (concat
-	   (skk-isearch-mode-string)
-	   (mapconcat 'isearch-text-char-description isearch-string "")))
-    (setq isearch-cmds (cdr isearch-cmds))
-    (isearch-push-state)
-    (isearch-update)))
+  (when skk-isearch-switch
+    (unless (string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
+			  isearch-message)
+      (setq isearch-message
+	    (concat
+	     (skk-isearch-mode-string)
+	     (mapconcat 'isearch-text-char-description isearch-string "")))
+      (setq isearch-cmds (cdr isearch-cmds))
+      (isearch-push-state)
+      (isearch-update))))
 
 (defadvice isearch-edit-string (before skk-isearch-ad activate preactivate)
   "`isearch-message' を適切に設定する。"
-  (when (string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
-		      isearch-message)
-    (setq isearch-message (substring isearch-message (match-end 0)))))
+  (when skk-isearch-switch
+    (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
+      (setq skk-isearch-state (skk-isearch-current-mode))
+      (setq skk-isearch-in-editing t))
+    (and (string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
+		       isearch-message)
+	 (setq isearch-message (substring isearch-message (match-end 0))))))
 
 (defadvice isearch-search (before skk-isearch-ad activate preactivate)
   "`isearch-message' を適切に設定する。"
-  (unless (or isearch-nonincremental
-	      (string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
-			    isearch-message))
-    (setq isearch-message
-	  (concat
-	   (skk-isearch-mode-string)
-	   (mapconcat 'isearch-text-char-description isearch-string "")))))
+  (when skk-isearch-switch
+    (unless (or isearch-nonincremental
+		(string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
+			      isearch-message))
+      (setq isearch-message
+	    (concat
+	     (skk-isearch-mode-string)
+	     (mapconcat 'isearch-text-char-description isearch-string ""))))))
 
 (put 'skk-isearch-wrapper 'isearch-command t)
 (put 'skk-isearch-keyboard-quit 'isearch-command t)

@@ -2,7 +2,7 @@
 
 	* skk.el (skk-isearch-forward, skk-isearch-forward-regexp,
 	skk-isearch-backward, skk-isearch-backward-regexp): Enclose with
-	`static-unless' instead of unless.
+	`static-unless' instead of `unless'.
 
 2000-01-30  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 

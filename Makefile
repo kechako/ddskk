@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-# Version: $Id: Makefile,v 1.13.4.7 2000/03/11 02:17:15 minakaji Exp $
-# Last Modified: $Date: 2000/03/11 02:17:15 $
+# Version: $Id: Makefile,v 1.13.4.8 2000/03/12 03:35:16 minakaji Exp $
+# Last Modified: $Date: 2000/03/12 03:35:16 $
 
 VERSION = 11.2
 
@@ -42,5 +42,10 @@ tar: clean
 	cd .. ; ln -sf main ddskk-$(VERSION)
 	$(TAR) cvpf ../ddskk$(VERSION).tar --exclude-from=skk.ex --dereference ../ddskk-$(VERSION)
 	$(BZIP2) ../ddskk$(VERSION).tar 
+
+snapshot: clean
+	cd .. ; ln -sf main ddskk-snapshot
+	$(TAR) cvpf ../ddskk-snapshot.tar --exclude-from=skk.ex --dereference ../ddskk-snapshot
+	$(BZIP2) ../ddskk-snapshot.tar 
 
 # end of Makefile.

@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.2 1999/11/28 13:17:02 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.3 1999/11/29 10:45:05 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/28 13:17:02 $
+;; Last Modified: $Date: 1999/11/29 10:45:05 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -104,9 +104,11 @@
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (and skk-mode (skk-cursor-set-properly)) )
 
-(defadvice newline (after skk-cursor-ad activate)
+(defadvice newline (around skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (and skk-mode (skk-cursor-set-properly)) )
+  (if skk-abbrev-mode
+      (progn ad-do-it (skk-cursor-set-properly))
+    ad-do-it ))
 
 ;; 別のバッファへ飛ぶコマンドは skk-mode が nil でもカーソル色を調整する必要が
 ;; ある。
@@ -131,9 +133,11 @@
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (and skk-mode (skk-cursor-set-properly)) )
 
-(defadvice execute-extended-command (after skk-cursor-ad activate)
+(defadvice execute-extended-command (around skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
+  (if skk-mode
+      (unwind-protect ad-do-it (skk-cursor-set-properly))
+    ad-do-it ))
 
 (defadvice pop-to-buffer (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
@@ -245,13 +249,17 @@
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (skk-cursor-set-properly) )
 
-(defadvice skk-delete-backward-char (after skk-cursor-ad activate)
+(defadvice skk-delete-backward-char (around skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
+  (if skk-abbrev-mode
+      (progn ad-do-it (skk-cursor-set-properly))
+    ad-do-it ))
 
-(defadvice skk-start-henkan (after skk-cursor-ad activate)
+(defadvice skk-start-henkan (around skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
+  (if skk-abbrev-mode
+      (progn ad-do-it (skk-cursor-set-properly))
+    ad-do-it ))
 
 (add-hook 'after-make-frame-hook 'skk-cursor-set-properly)
 (add-hook 'minibuffer-setup-hook

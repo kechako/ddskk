@@ -1,5 +1,7 @@
 2000-07-08  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* experimental/skk-cursor3.el: New experimental program.
+
 	* SKK-MK (SKK_MODULES): Add `skk-cursor2' and `ccc'.
 
 	* skk-setup.el.in: Add check if skk-cursor2 feature is exists or

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.33 2000/01/19 16:30:31 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.34 2000/01/23 13:41:23 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/19 16:30:31 $
+;; Last Modified: $Date: 2000/01/23 13:41:23 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -46,11 +46,10 @@
 
 ;;; Code:
 (cond ((or (and (boundp 'epoch::version) epoch::version)
-	   (string< (substring emacs-version 0 2) "18"))
-       (error "%s SKK requires Emacs 19 or later" skk-branch-name))
-      ((not (featurep 'mule))
-       (error "%s SKK requires MULE features" skk-branch-name)))
-
+   (string< (substring emacs-version 0 2) "18"))
+      (error "This version of SKK requires Emacs 19 or later"))
+     ((not (or (featurep 'mule) (boundp 'NEMACS)))
+      (error "This version of SKK requires MULE features")))
 ;; APEL 9.22 or later required.
 (eval-when-compile (require 'static))
 (require 'poe)
@@ -60,9 +59,14 @@
 (require 'alist)
 ;; Elib 1.0 is required.
 (require 'queue-m)
+;; Nemacs.
+(static-when (string-match "^18" emacs-version) (require 'skk-e18))
 ;; Emacs standard library.
 (require 'advice)
-(require 'easymenu)
+(condition-case nil
+    (require 'easymenu)
+  (error
+   (defalias 'easy-menu-define 'ignore)))
 (eval-and-compile (require 'skk-vars) (require 'skk-macs))
 
 ;; inline functions to hook.
@@ -83,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/19 16:30:31 $")
+      (let* ((raw-date "$Date: 2000/01/23 13:41:23 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -124,95 +128,88 @@
      ("Convert Region and Echo"
       ("Gyakubiki"
        ["to Hiragana" skk-gyakubiki-message
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Hiragana, All Candidates"
         ;; あれれ、lambda 関数は定義できないのか？？？  動かないぞ...。
         (call-interactively
 	 (function (lambda (start end) (interactive "r")
 		     (skk-gyakubiki-message start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Katakana" skk-gyakubiki-katakana-message
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Katakana, All Candidates"
         (call-interactively
 	 (function (lambda (start end) (interactive "r")
 		     (skk-gyakubiki-katakana-message
 		      start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
-      )
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
       ("Hurigana"
        ["to Hiragana" skk-hurigana-message
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Hiragana, All Candidates"
         (call-interactively
 	 (function (lambda (start end) (interactive "r")
 		     (skk-hurigana-message start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Katakana" skk-hurigana-katakana-message
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Katakana, All Candidates"
         (call-interactively
 	 (function (lambda (start end) (interactive "r")
 		     (skk-hurigana-katakana-message
 		      start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
-      )
-     )
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]))
      ("Convert Region and Replace"
       ["Ascii" skk-ascii-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
       ("Gyakubiki"
        ["to Hiragana" skk-gyakubiki-region
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Hiragana, All Candidates"
         (call-interactively
 	 (function (lambda (start end) (interactive "r")
 		     (skk-gyakubiki-region start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Katakana" skk-gyakubiki-katakana-region
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Katakana, All Candidates"
         (call-interactively
 	 (function (lambda (start end) (interactive "r")
 		     (skk-gyakubiki-katakana-region
 		      start end 'all-candidates))))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
-      )
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
       ["Hiragana" skk-hiragana-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
       ("Hurigana"
        ["to Hiragana" skk-hurigana-region
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Hiragana, All Candidates"
         (call-interactively
 	 (function (lambda (start end) (interactive "r")
 		     (skk-hurigana-region start end 'all-candidates))))
-	(or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+	(or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Katakana" skk-hurigana-katakana-region
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
        ["to Katakana, All Candidates" (function
                                        (lambda (start end) (interactive "r")
                                          (skk-hurigana-katakana-region
                                           start end 'all-candidates)))
-        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
-      )
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
       ["Katakana" skk-katakana-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
       ["Romaji" skk-romaji-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
       ["Zenkaku" skk-jisx0208-latin-region
-       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
-     )
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))])
      ["Count Jisyo Candidates" skk-count-jisyo-candidates
-      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
      ["Save Jisyo" skk-save-jisyo
-      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
      ["Undo Kakutei" skk-undo-kakutei
-      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0))]
      ["Version" skk-version
       (or (not (boundp 'skktut-problem-count))
-          (eq skktut-problem-count 0)) ]
-    )))
+          (eq skktut-problem-count 0))])))
 
 (or skk-latin-mode-map
     (let ((map (make-sparse-keymap)))
@@ -237,7 +234,7 @@
       (skk-define-menu-bar-map map)
       (setq skk-j-mode-map map)))
 
-(or skk-jisx0208-latin-mode-map 
+(or skk-jisx0208-latin-mode-map
     (let ((map (make-sparse-keymap))
 	  (i 0))
       (while (< i 128)
@@ -248,7 +245,7 @@
       (skk-define-menu-bar-map map)
       (setq skk-jisx0208-latin-mode-map map)))
 
-(or skk-abbrev-mode-map 
+(or skk-abbrev-mode-map
     (let ((map (make-sparse-keymap)))
       (define-key map "," 'skk-abbrev-comma)
       (define-key map "." 'skk-abbrev-period)
@@ -364,7 +361,7 @@ dependent."
       ;; exit skk-mode
       (progn
         (let ((skk-mode t)) (skk-kakutei))
-        (skk-mode-off) 
+        (skk-mode-off)
 	(remove-hook 'pre-command-hook 'skk-pre-command 'local)
 	(remove-hook 'post-command-hook 'skk-after-point-move 'local)
 	(and (eq skk-status-indicator 'left)
@@ -385,7 +382,7 @@ dependent."
 	  (require 'skk-autoloads)
 	  (if (or (memq skk-emacs-type '(mule3 mule4))
 		  (and (eq skk-emacs-type 'xemacs)
-		       (or 
+		       (or
 			;; XEmacs 21 or later.
 			(> emacs-major-version 20)
 			;; XEmacs 20.4 or later.
@@ -440,14 +437,13 @@ dependent."
 	'skk-start-henkan-with-completion)
       (define-key skk-abbrev-mode-map
 	(char-to-string skk-start-henkan-with-completion-char)
- 	'skk-start-henkan-with-completion)
+	'skk-start-henkan-with-completion)
       (define-key skk-j-mode-map
- 	(char-to-string skk-backward-and-set-henkan-point-char)
- 	'skk-backward-and-set-henkan-point) 
+	(char-to-string skk-backward-and-set-henkan-point-char)
+	'skk-backward-and-set-henkan-point)
       (define-key skk-jisx0208-latin-mode-map
- 	(char-to-string skk-backward-and-set-henkan-point-char)
- 	'skk-backward-and-set-henkan-point) 
-     )
+	(char-to-string skk-backward-and-set-henkan-point-char)
+	'skk-backward-and-set-henkan-point))
     (skk-setup-delete-backward-char)
     ;; XEmacs doesn't have minibuffer-local-ns-map
     (and (boundp 'minibuffer-local-ns-map)
@@ -523,16 +519,20 @@ dependent."
 (defun skk-setup-delete-backward-char ()
   (let ((commands '(backward-delete-char-untabify
 		    backward-delete-char
-		    backward-or-forward-delete-char 
+		    backward-or-forward-delete-char
 		    delete-backward-char
 		    picture-backward-clear-column
 		    ;; following two are SKK adviced.
 		    ;;viper-del-backward-char-in-insert
 		    ;;vip-del-backward-char-in-insert
 		   ))
+	(map (if (and (boundp 'overriding-local-map)
+		      (keymapp 'overriding-local-map))
+		 overriding-local-map
+	       (current-global-map)))
 	keys)
     (while commands
-      (setq keys (where-is-internal (car commands) overriding-local-map)
+      (setq keys (where-is-internal (car commands) map)
 	    commands (cdr commands))
       (while keys
 	(define-key skk-abbrev-mode-map (car keys) 'skk-delete-backward-char)
@@ -549,7 +549,7 @@ dependent."
   ;; ル済ファイルを消す。
   (save-match-data
     (let* ((init-file (expand-file-name skk-init-file))
-           (elc (concat init-file 
+           (elc (concat init-file
                         (if (string-match "\\.el$" init-file)
                             "c"
                           ".elc"))))
@@ -815,7 +815,7 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
 	    (skk-set-henkan-point arg))
 	   ;; start conversion.
 	   ((and skk-henkan-on (eq ch skk-start-henkan-char))
-	    (skk-start-henkan arg)) 
+	    (skk-start-henkan arg))
 	   ;; for completion.
 	   ((and skk-henkan-on (not skk-henkan-active))
 	    (cond ((eq ch skk-try-completion-char)
@@ -910,7 +910,7 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
 		(progn
 		  (and skk-henkan-active
 		       skk-kakutei-early
-		       (not skk-process-okuri-early) 
+		       (not skk-process-okuri-early)
 		       (skk-kakutei))
 		  (setq queue (cdr queue)
 			skk-current-rule-tree next))
@@ -1233,7 +1233,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   "▼モードで skk-delete-implies-kakutei が non-nil だったら直前の文字を消して確定する。
 ▼モードで skk-delete-implies-kakutei が nil だったら前候補を表示する。
 ▽モードで`▽'よりも前のポイントで実行すると確定する。
-確定入力モードで、かなプレフィックスの入力中ならば、かなプレフィックスを消す。"  
+確定入力モードで、かなプレフィックスの入力中ならば、かなプレフィックスを消す。"
   (interactive "*P")
   (skk-with-point-move
    (let ((count (prefix-numeric-value arg)))
@@ -1265,7 +1265,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	   ((and skk-henkan-on overwrite-mode)
 	    (backward-char count)
 	    (delete-char count arg))
-	   (t 
+	   (t
 	    (skk-delete-okuri-mark)
 	    (if (skk-get-prefix skk-current-rule-tree)
 		(skk-erase-prefix 'clean)
@@ -1577,7 +1577,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		     (funcall skk-read-from-minibuffer-function))))
         (quit
          (setq new-one "")))
-      (if (and skk-check-okurigana-on-toroku 
+      (if (and skk-check-okurigana-on-touroku
 	       ;; 送りあり変換でも skk-okuri-char だけだと判断できない。
 	       skk-henkan-okurigana new-one)
 	  (setq new-one (skk-remove-redundant-okurgana new-one)))
@@ -1632,22 +1632,22 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   ;; 言う。
   (if skk-henkan-okurigana
       (save-match-data
- 	(string-match "[a-z]+$" skk-henkan-key)
- 	(concat (substring skk-henkan-key 0 (match-beginning 0))
- 		"*" skk-henkan-okurigana))))
+	(string-match "[a-z]+$" skk-henkan-key)
+	(concat (substring skk-henkan-key 0 (match-beginning 0))
+		"*" skk-henkan-okurigana))))
 
 (defun skk-remove-redundant-okurgana (word)
   ;; 送りありの登録をするとき、送り仮名を消してから [RET] を押さなければ正しく
   ;; 登録できない。そこで、ユーザが間違えて送り仮名を消し忘れていないかどうか、
   ;; SKK の側でチェックできる範囲についてはユーザの確認を取る。この部分は
-  ;; `skk-check-okurigana-on-toroku' を non-nil に設定している場合のみ有効。
+  ;; `skk-check-okurigana-on-touroku' を non-nil に設定している場合のみ有効。
   ;; 変換が行なわれたバッファでコールされる (ミニバッファ、辞書バッファではない)。
   (save-match-data
     (if (and (string-match (concat skk-henkan-okurigana "$") word)
 	     (skk-y-or-n-p
 	      (format "辞書登録モードで入力した「%s」の「%s」は送り仮名ですか？"
 		      word skk-henkan-okurigana)
-	      (format "You mean \"%s\" in \"%s\" you typed in dictionary register mode is okurigana?" 
+	      (format "You mean \"%s\" in \"%s\" you typed in dictionary register mode is okurigana?"
 		      skk-henkan-okurigana word)))
 	;; ユーザの指示に従い送り仮名を取り除く。
 	(progn
@@ -1842,7 +1842,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   "一番最後の確定をアンドゥし、見出しに対する候補を表示する。
 最後に確定したときの候補はスキップされる。
 候補が他にないときは、ミニバッファでの辞書登録に入る。"
-  (interactive) 
+  (interactive)
   (skk-with-point-move
    (cond ((eq last-command 'skk-undo-kakutei)
 	  (skk-error "確定アンドゥは連続使用できません"
@@ -1897,7 +1897,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
      ;; skk-kakutei-undo から途中で抜けた場合は、各種フラグを初期化しておかない
      ;; と次の動作をしようとしたときにエラーになる。
      ((error quit) (skk-kakutei)))))
-     
+
 (defun skk-set-henkan-point (&optional arg)
   ;;"変換を開始するポイントをマークし、対応する skk-prefix か、母音を入力する。"
   (let* ((last-char (skk-downcase last-command-char))
@@ -2238,7 +2238,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
       (setq skk-okurigana nil
             skk-okuri-char nil
             skk-henkan-okurigana nil))))
-            
+
 ;;;; jisyo related functions
 (defun skk-purge-from-jisyo (&optional arg)
   "▼モードで現在の候補を辞書バッファから消去する。"
@@ -2295,7 +2295,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   ;;い。"
   (let ((jisyo-buffer (skk-get-jisyo-buffer skk-jisyo 'nomsg)))
     (if (or (not jisyo-buffer) (not (buffer-modified-p jisyo-buffer)))
-        (if (not quiet) 
+        (if (not quiet)
             (progn
 	      (skk-message "SKK 辞書を保存する必要はありません"
                            "No need to save SKK jisyo")
@@ -2625,8 +2625,8 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	  (write-region 1 1 file nil 0)
 	  (if (or japanese english)
 	      (progn
- 		(message (if skk-japanese-message-and-error
- 			     japanese english))
+		(message (if skk-japanese-message-and-error
+			     japanese english))
 		(sit-for 3)))))))
 
 (defun skk-get-jisyo-buffer (file &optional nomsg)
@@ -2748,7 +2748,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
         ;; skk-henkan-key と skk-henkan-okurigana はカレントバッファのローカル
         ;; 値。
         (let ((okurigana (or skk-henkan-okurigana skk-okuri-char))
-              (midasi 
+              (midasi
                (if skk-use-numeric-conversion
 		   ;; skk-henkan-key が nil のことがある。何故?
                    (skk-num-compute-henkan-key skk-henkan-key)
@@ -2965,7 +2965,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   ;; る。
   ;;
   (let ((jisyo-buffer (skk-get-jisyo-buffer skk-jisyo 'nomsg))
-	(midasi 
+	(midasi
 	 (if skk-use-numeric-conversion
 	     (skk-num-compute-henkan-key skk-henkan-key)
 	   skk-henkan-key))
@@ -3177,7 +3177,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
       (skk-search-and-replace
        start end "う゛" (lambda (matched) nil "ヴ")))
   (skk-search-and-replace
-   start end "[ぁ-ん]+" 
+   start end "[ぁ-ん]+"
    (lambda (matched) (skk-hiragana-to-katakana matched))))
 
 (defun skk-hiragana-region (start end &optional vexpand)
@@ -3191,14 +3191,14 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
       (skk-search-and-replace
        start end "ヴ" (lambda (matched) nil "う゛")))
   (skk-search-and-replace
-   start end "[ァ-ン]+" 
+   start end "[ァ-ン]+"
    (lambda (matched) (skk-katakana-to-hiragana matched))))
 
 (defun skk-jisx0208-latin-region (start end)
   "リージョンの ascii 文字を対応する全角英文字に変換する。"
   (interactive "*r")
   (skk-search-and-replace
-   start end "[ -~]" 
+   start end "[ -~]"
    (lambda (matched)
      (aref skk-default-jisx0208-latin-vector (string-to-char matched)))))
 
@@ -3381,7 +3381,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
              face
              (substring face-name (1+ (match-beginning 0)))))
           face))))
-                        
+
 ;; skk-auto.el, skk-rdbms.el の両方で使うので、skk-auto.el より移動した。
 (defun skk-remove-common (word)
   ;; skk-henkan-key と word の間に共通の送り仮名を取り除き、送り仮名以外の部分

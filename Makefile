@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-# Version: $Id: Makefile,v 1.13.4.12 2000/07/07 22:13:36 minakaji Exp $
-# Last Modified: $Date: 2000/07/07 22:13:36 $
+# Version: $Id: Makefile,v 1.13.4.13 2000/08/11 16:31:33 czkmt Exp $
+# Last Modified: $Date: 2000/08/11 16:31:33 $
 
 
 VERSION = 11.3
@@ -13,8 +13,8 @@ CP	= /bin/cp -p
 EMACS	= emacs
 XEMACS	= xemacs
 FLAGS   = -batch -q -no-site-file -l SKK-MK
-BZIP2   = bzip2
-DATE	= date
+BZIP2   = bzip2 -9
+DATE	= date -u
 
 elc:
 	$(EMACS) $(FLAGS) -f SKK-MK-compile
@@ -40,15 +40,15 @@ clean:
 	experimental/skk-isearch.el ./doc/skk.info* `find . -name '*~'` `find . -name '.*~'`
 
 tar: clean
-	-$(RM) ../ddskk-snapshot ../ddskk-*.tar.bz2
-	cd .. ; ln -sf main ddskk-$(VERSION)
-	$(TAR) cvpf ../ddskk$(VERSION).tar --exclude-from=skk.ex --dereference ../ddskk-$(VERSION)
-	$(BZIP2) ../ddskk$(VERSION).tar 
+	cd .. ; $(RM) ddskk-11.{1,2,3} ddskk-*.tar.bz2 ;\
+	ln -sf main ddskk-$(VERSION) ;\
+	$(TAR) cvpf ddskk-$(VERSION).tar --exclude-from=ddskk-$(VERSION)/skk.ex --dereference ddskk-$(VERSION) ;\
+	$(BZIP2) ddskk-$(VERSION).tar
 
 snapshot: clean
-	-$(RM) ../ddskk-snapshot ../ddskk-*.tar.bz2
-	cd .. ; ln -sf main ddskk-snapshot
-	$(TAR) cvpf ../ddskk-`$(DATE) '+%Y%m%d'`.tar --exclude-from=skk.ex --dereference ../ddskk-snapshot
-	$(BZIP2) ../ddskk-`$(DATE) '+%Y%m%d'`.tar 
+	cd .. ; $(RM) ddskk-snapshot ddskk-*.tar.bz2 ;\
+	ln -sf main ddskk-snapshot ;\
+	$(TAR) cvpf ddskk-`$(DATE) '+%Y%m%d'`.tar --exclude-from=ddskk-snapshot/skk.ex --dereference ddskk-snapshot ;\
+	$(BZIP2) ddskk-`$(DATE) '+%Y%m%d'`.tar
 
 # end of Makefile.

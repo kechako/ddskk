@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.38 2000/10/20 18:54:47 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.39 2000/11/01 11:23:44 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/20 18:54:47 $
+;; Last Modified: $Date: 2000/11/01 11:23:44 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -277,8 +277,8 @@ kakutei'ed and erase the buffer contents."
 	       (add-hook 'pre-command-hook 'skk-pre-command nil 'local)))))
 
 (defun skk-isearch-incomplete-message (&optional prefix)
-  "Show message when kana kanji convertion is in progress.
-Optional argument PREFIX is apppended if given."
+  "Show message when kana kanji conversion is in progress.
+Optional argument PREFIX is appended if given."
   (let ((isearch-message (concat isearch-message
 				 skk-isearch-incomplete-message prefix)))
     (isearch-message)))

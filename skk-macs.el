@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.5 1999/12/20 15:52:00 mrt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.6 1999/12/26 02:33:07 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/20 15:52:00 $
+;; Last Modified: $Date: 1999/12/26 02:33:07 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -34,21 +34,21 @@
   (defconst skk-emacs-type
     (cond ((string-match "XEmacs" emacs-version) 'xemacs)
 	  ((and (boundp 'mule-version)
-		(string< "4.0" mule-version) 'mule4 ))
+		(string< "4.0" mule-version) 'mule4))
 	  ((and (boundp 'mule-version)
-		(string< "3.0" mule-version) 'mule3 ))
+		(string< "3.0" mule-version) 'mule3))
 	  ((and (boundp 'mule-version)
-		(string< "2.0" mule-version) 'mule2 ))))
+		(string< "2.0" mule-version) 'mule2))))
   (defmacro skk-detect-emacs ()
     (` (or (eq (cond ((string-match "XEmacs" emacs-version) 'xemacs)
 		     ((and (boundp 'mule-version)
-			   (string< "4.0" mule-version) 'mule4 ))
+			   (string< "4.0" mule-version) 'mule4))
 		     ((and (boundp 'mule-version)
-			   (string< "3.0" mule-version) 'mule3 ))
+			   (string< "3.0" mule-version) 'mule3))
 		     ((and (boundp 'mule-version)
-			   (string< "2.0" mule-version) 'mule2 )))
-	       (quote (, skk-emacs-type)) )
-	   (error "This SKK was byte compiled by different type of Emacs!") ))))
+			   (string< "2.0" mule-version) 'mule2)))
+	       (quote (, skk-emacs-type)))
+	   (error "This SKK was byte compiled by different type of Emacs!")))))
 
 (skk-detect-emacs)
 
@@ -57,23 +57,23 @@
        (unwind-protect
 	   (progn (,@ body))
 	 (goto-char skk-save-point)
-         (skk-set-marker skk-save-point nil) ))))
+         (skk-set-marker skk-save-point nil)))))
 
 (defmacro skk-message (japanese english &rest arg)
   ;; skk-japanese-message-and-error が non-nil だったら JAPANESE を nil であれ
   ;; ば ENGLISH をエコーエリアに表示する。
   ;; ARG は message 関数の第２引数以降の引数として渡される。
   (append (list 'message (list 'if 'skk-japanese-message-and-error
-			       japanese english ))
-	  arg ))
+			       japanese english))
+	  arg))
 
 (defmacro skk-error (japanese english &rest arg)
   ;; skk-japanese-message-and-error が non-nil だったら JAPANESE を nil であれ
   ;; ば ENGLISH をエコーエリアに表示し、エラーを発生させる。
   ;; ARG は error 関数の第２引数以降の引数として渡される。
   (append (list 'error (list 'if 'skk-japanese-message-and-error
-			     japanese english ))
-	  arg ))
+			     japanese english))
+	  arg))
 
 (defmacro skk-yes-or-no-p (japanese english)
   ;; skk-japanese-message-and-error が non-nil であれば、japanese を nil であ
@@ -82,13 +82,13 @@
   ;; うよりオリジナルの yes-or-no-p を使用した方がコードが複雑にならない場合が
   ;; ある。
   (list 'yes-or-no-p (list 'if 'skk-japanese-message-and-error
-				   japanese english )))
+				   japanese english)))
 
 (defmacro skk-y-or-n-p (japanese english)
   ;; skk-japanese-message-and-error が non-nil であれば、japanese を nil であ
   ;; れば english をプロンプトとして y-or-n-p を実行する。
   (list 'y-or-n-p (list 'if 'skk-japanese-message-and-error
-				japanese english )))
+				japanese english)))
 
 (defmacro skk-set-marker (marker position &optional buffer)
   ;; バッファローカル値である skk-henkan-start-point, skk-henkan-end-point,
@@ -96,8 +96,8 @@
   ;; 新規マーカーを作って代入する。
   (list 'progn
         (list 'if (list 'not marker)
-              (list 'setq marker (list 'make-marker)) )
-        (list 'set-marker marker position buffer) ))
+              (list 'setq marker (list 'make-marker)))
+        (list 'set-marker marker position buffer)))
 
 ;; From viper-util.el.  Welcome!
 (defmacro skk-deflocalvar (var default-value &optional documentation)
@@ -105,13 +105,13 @@
        (defvar (, var) (, default-value)
 	       (, (format "%s\n\(buffer local\)" documentation)))
        (make-variable-buffer-local '(, var))
-     )))
+    )))
 
 (defmacro skk-with-point-move (&rest form)
   ;; ポイントを移動するがフックを実行してほしくない場合に使う。
   (` (unwind-protect
 	 (progn (,@ form))
-       (setq skk-previous-point (point)) )))
+       (setq skk-previous-point (point)))))
 
 (defmacro skk-face-on (object start end face &optional priority)
   (static-cond
@@ -123,16 +123,16 @@
 	       (if (not (, priority))
 		   (set-extent-face (, object) (, face))
 		 (set-extent-properties
-		  (, object) (list 'face (, face) 'priority (, priority)) )))
-	   (set-extent-endpoints (, object) (, start) (, end))  ))))
+		  (, object) (list 'face (, face) 'priority (, priority)))))
+	   (set-extent-endpoints (, object) (, start) (, end)) ))))
    (t
     (` (let ((inhibit-quit t))
 	 (if (not (overlayp (, object)))
 	     (progn
 	       (setq (, object) (make-overlay (, start) (, end)))
 	       (and (, priority) (overlay-put (, object) 'priority (, priority)))
-	       (overlay-put (, object) 'face (, face)) )
-	   (move-overlay (, object) (, start) (, end)) ))))))
+	       (overlay-put (, object) 'face (, face)))
+	   (move-overlay (, object) (, start) (, end))))))))
 
 (put 'skk-deflocalvar 'lisp-indent-function 'defun)
 
@@ -140,7 +140,7 @@
 ;;  "Apply FUNCTION to each element of SEQUENCE, making a vector of the results.
 ;;The result is a vector of the same length as SEQUENCE.
 ;;SEQUENCE may be a list, a vector or a string."
-;;  (vconcat (mapcar function sequence) nil) )
+;;  (vconcat (mapcar function sequence) nil))
 
 ;;(defun-maybe mapc (function sequence)
 ;;  "Apply FUNCTION to each element of SEQUENCE.
@@ -149,7 +149,7 @@
 ;;This function is like `mapcar' but does not accumulate the results,
 ;;which is more efficient if you do not use the results."
 ;;  (mapcar function sequence)
-;;  sequence )
+;;  sequence)
 
 ;; ツリーにアクセスするためのインターフェース
 (defsubst skk-make-rule-tree (char prefix nextstate kana branch-list)
@@ -157,45 +157,48 @@
 	prefix
 	(if (string= nextstate "") nil nextstate)
 	kana
-	branch-list ))
+	branch-list))
 
-(defsubst skk-get-char (tree)
-  (car tree) )
-
-(defsubst skk-set-char (tree char)
-  (setcar tree char) )
-
-(defsubst skk-set-prefix (tree prefix)
-  (setcar (nthcdr 1 tree) prefix) )
+;;(defsubst skk-get-char (tree)
+;;  (car tree))
+;;
+;; skk-current-rule-tree に対して破壊的な操作は行なえない。skk-rule-tree の
+;; 内容まで変わってしまい、skk-current-rule-tree の initialize が手軽に行な
+;; えなくなる。ここが解決できれば skk-prefix を全滅できるのに...。
+;;(defsubst skk-set-char (tree char)
+;;  (setcar tree char))
+;;
+;;(defsubst skk-set-prefix (tree prefix)
+;;  (setcar (cdr tree) prefix))
 
 (defsubst skk-get-prefix (tree)
-  (nth 1 tree) )
+  (nth 1 tree))
 
 (defsubst skk-get-nextstate (tree)
-  (nth 2 tree) )
+  (nth 2 tree))
 
 (defsubst skk-set-nextstate (tree nextstate)
   (if (string= nextstate "") (setq nextstate nil))
-  (setcar (nthcdr 2 tree) nextstate) )
+  (setcar (nthcdr 2 tree) nextstate))
 
 (defsubst skk-get-kana (tree)
-  (nth 3 tree) )
+  (nth 3 tree))
 
 (defsubst skk-set-kana (tree kana)
-  (setcar (nthcdr 3 tree) kana) )
+  (setcar (nthcdr 3 tree) kana))
 
 (defsubst skk-get-branch-list (tree)
-  (nth 4 tree) )
+  (nth 4 tree))
 
 (defsubst skk-set-branch-list (tree branch-list)
-  (setcar (nthcdr 4 tree) branch-list) )
+  (setcar (nthcdr 4 tree) branch-list))
 
 ;; tree procedure for skk-kana-input.
 (defsubst skk-add-branch (tree branch)
-  (skk-set-branch-list tree (cons branch (skk-get-branch-list tree))) )
+  (skk-set-branch-list tree (cons branch (skk-get-branch-list tree))))
 
 (defsubst skk-select-branch (tree char)
-  (assq char (skk-get-branch-list tree)) )
+  (assq char (skk-get-branch-list tree)))
 
 (defsubst skk-erase-prefix (&optional clean)
   ;; skk-echo が non-nil であればカレントバッファに挿入された skk-prefix を消
@@ -209,48 +212,48 @@
        (not (string= skk-prefix ""))	; fail safe.
        ;; skk-prefix の消去をアンドゥの対象としない。
        (let ((buffer-undo-list t)
-	     (start (marker-position skk-kana-start-point)) )
+	     (start (marker-position skk-kana-start-point)))
 	 (and start
 	      (condition-case nil
 		  (delete-region start (+ start (length skk-prefix)))
 		(error
 		 (skk-set-marker skk-kana-start-point nil) 
 		 (setq skk-prefix ""
-		       skk-current-rule-tree nil ))))))
+		       skk-current-rule-tree nil))))))
   (and clean (setq skk-prefix ""
-		   skk-current-rule-tree nil ))) ; fail safe
+		   skk-current-rule-tree nil))) ; fail safe
 
 (defsubst skk-kana-cleanup (&optional force)
   (let ((data (or
 	       (and skk-current-rule-tree
 		    (null (skk-get-nextstate skk-current-rule-tree))
-		    (skk-get-kana skk-current-rule-tree) )
+		    (skk-get-kana skk-current-rule-tree))
 	       (and skk-kana-input-search-function
-		    (car (funcall skk-kana-input-search-function)) )))
-	kana )
+		    (car (funcall skk-kana-input-search-function)))))
+	kana)
 	(if (or force data)
 	    (progn
 	      (skk-erase-prefix 'clean)
 	      (setq kana (if (functionp data) (funcall data nil) data))
 	      (if (consp kana)
-		  (setq kana (if skk-katakana (car kana) (cdr kana))) )
+		  (setq kana (if skk-katakana (car kana) (cdr kana))))
 	      (if (stringp kana) (skk-insert-str kana))
 	      (skk-set-marker skk-kana-start-point nil)
-	      t ))))
+	      t))))
 
 (defsubst skk-numeric-p ()
-  (and skk-use-numeric-conversion (require 'skk-num) skk-num-list) )
+  (and skk-use-numeric-conversion (require 'skk-num) skk-num-list))
 
 (defsubst skk-file-exists-and-writable-p (file)
   (and (setq file (expand-file-name file))
-       (file-exists-p file) (file-writable-p file) ))
+       (file-exists-p file) (file-writable-p file)))
 
 (defsubst skk-lower-case-p (char)
   ;; CHAR が小文字のアルファベットであれば、t を返す。
-  (and (<= ?a char) (>= ?z char) ))
+  (and (<= ?a char) (>= ?z char)))
 
 (defsubst skk-downcase (char)
-  (or (cdr (assq char skk-downcase-alist)) (downcase char)) )
+  (or (cdr (assq char skk-downcase-alist)) (downcase char)))
 
 (defsubst skk-mode-off ()
   (setq skk-mode nil
@@ -259,11 +262,11 @@
         skk-j-mode nil
         skk-jisx0208-latin-mode nil
         ;; j's sub mode.
-        skk-katakana nil )
+        skk-katakana nil)
   ;; initialize
   (setq skk-input-mode-string skk-hiragana-mode-string)
   (force-mode-line-update)
-  (remove-hook 'pre-command-hook 'skk-pre-command 'local) )
+  (remove-hook 'pre-command-hook 'skk-pre-command 'local))
 
 (defsubst skk-j-mode-on (&optional katakana)
   (setq skk-mode t
@@ -272,8 +275,8 @@
         skk-j-mode t
         skk-jisx0208-latin-mode nil
         ;; j's sub mode.
-        skk-katakana katakana )
-  (force-mode-line-update) )
+        skk-katakana katakana)
+  (force-mode-line-update))
 
 (defsubst skk-latin-mode-on ()
   (setq skk-mode t
@@ -283,8 +286,8 @@
         skk-jisx0208-latin-mode nil
         ;; j's sub mode.
         skk-katakana nil
-        skk-input-mode-string skk-latin-mode-string )
-  (force-mode-line-update) )
+        skk-input-mode-string skk-latin-mode-string)
+  (force-mode-line-update))
 
 (defsubst skk-jisx0208-latin-mode-on ()
   (setq skk-mode t
@@ -294,8 +297,8 @@
         skk-jisx0208-latin-mode t
         ;; j's sub mode.
         skk-katakana nil
-        skk-input-mode-string skk-jisx0208-latin-mode-string )
-  (force-mode-line-update) )
+        skk-input-mode-string skk-jisx0208-latin-mode-string)
+  (force-mode-line-update))
 
 (defsubst skk-abbrev-mode-on ()
   (setq skk-mode t
@@ -305,12 +308,12 @@
         skk-jisx0208-latin-mode nil
         ;; j's sub mode.
         skk-katakana nil
-        skk-input-mode-string skk-abbrev-mode-string )
-  (force-mode-line-update) )
+        skk-input-mode-string skk-abbrev-mode-string)
+  (force-mode-line-update))
 
 (defsubst skk-in-minibuffer-p ()
   ;; カレントバッファがミニバッファかどうかをチェックする。
-  (window-minibuffer-p (selected-window)) )
+  (window-minibuffer-p (selected-window)))
 
 (defsubst skk-insert-prefix (&optional char)
   ;; skk-echo が non-nil であればカレントバッファに skk-prefix を挿入する。
@@ -319,36 +322,36 @@
        ;; かな文字を挿入する前に全て消去するので、その間、buffer-undo-list を
        ;; t にしてアンドゥ情報を蓄えなくとも問題がない。
        (let ((buffer-undo-list t))
-         (insert-and-inherit (or char skk-prefix)) )))
+         (insert-and-inherit (or char skk-prefix)))))
 
 (defsubst skk-string<= (str1 str2)
   ;; STR1 と STR2 とを比較して、string< か string= であれば、t を返す。
-  (or (string< str1 str2) (string= str1 str2)) )
+  (or (string< str1 str2) (string= str1 str2)))
 
 (defsubst skk-do-auto-fill ()
   ;; auto-fill-function に値が代入されておれば、do-auto-fill をコールする。
-  (and auto-fill-function (funcall auto-fill-function)) )
+  (and auto-fill-function (funcall auto-fill-function)))
 
 (defsubst skk-current-insert-mode ()
   (cond (skk-abbrev-mode 'abbrev)
 	(skk-latin-mode 'latin)
 	(skk-jisx0208-latin-mode 'jisx0208-latin)
 	(skk-katakana 'katakana)
-	(skk-j-mode 'hiragana) ))
+	(skk-j-mode 'hiragana)))
 
 (defsubst skk-substring-head-character (string)
-  (char-to-string (string-to-char string)) )
+  (char-to-string (string-to-char string)))
 
 (defsubst skk-get-current-candidate-simply (&optional noconv)
   (if (> 0 skk-henkan-count)
       (skk-error "候補を取り出すことができません"
-		 "Cannot get current candidate" )
+		 "Cannot get current candidate")
     ;; (nth -1 '(A B C)) は、A を返すので、負でないかどうかチェックする。
     (let ((word (nth skk-henkan-count skk-henkan-list)))
       (and word
 	   (if (and (skk-numeric-p) (consp word))
 	       (if noconv (car word) (cdr word))
-	     word )))))
+	     word)))))
 
 ;; convert skk-rom-kana-rule-list to skk-rule-tree.
 ;; The rule tree follows the following syntax:
@@ -361,138 +364,138 @@
 (defsubst skk-make-raw-arg (arg)
   (cond ((= arg 1) nil)
 	((= arg -1) '-)
-	((numberp arg) (list arg)) ))
+	((numberp arg) (list arg))))
 
 (defsubst skk-unread-event (event)
   ;; Unread single EVENT.
-  (setq unread-command-events (nconc unread-command-events (list event))) )
+  (setq unread-command-events (nconc unread-command-events (list event))))
 
-;;(defsubst skk-get-current-henkan-data (key)
-;;  (cdr (assq key skk-current-henkan-data)) )
+(defsubst skk-get-last-henkan-datum (key)
+  (cdr (assq key skk-last-henkan-data)))
 
-;;(defsubst skk-put-current-henkan-data (key val)
-;;  (setq skk-current-henkan-data (put-alist key val skk-current-henkan-data)) )
+(defsubst skk-put-last-henkan-datum (key val)
+  (let ((e (assq key skk-last-henkan-data)))
+    (if e
+	(setcdr e val)
+      (setq skk-last-henkan-data (cons (cons key val) skk-last-henkan-data)))))
 
-(defsubst skk-get-last-henkan-data (key)
-  (cdr (assq key skk-last-henkan-data)) )
-
-(defsubst skk-put-last-henkan-data (key val)
-  (setq skk-last-henkan-data (put-alist key val skk-last-henkan-data)) )
+(defsubst skk-put-last-henkan-data (alist)
+  (let (kv e)
+    (while (setq kv (car alist))
+      (if (setq e (assq (car kv) skk-last-henkan-data))
+	  (setcdr e (cdr kv))
+	(setq skk-last-henkan-data
+	      (cons (cons (car kv) (cdr kv)) skk-last-henkan-data)))
+      (setq alist (cdr alist)))))
 
 (defsubst skk-find-coding-system (code)
   (cond ((and code
 	      (or (coding-system-p code)
 		  (and (fboundp 'find-coding-system)
 		       (symbolp code)
-		       (find-coding-system code) )))
-	 code )
+		       (find-coding-system code))))
+	 code)
 	((and code (stringp code))
-	 (cdr (assoc code skk-coding-system-alist)) )
-	(t (cdr (assoc "euc" skk-coding-system-alist))) ))
+	 (cdr (assoc code skk-coding-system-alist)))
+	(t (cdr (assoc "euc" skk-coding-system-alist)))))
 
 ;;;; from dabbrev.el.  Welcome!
 ;; 判定間違いを犯す場合あり。要改良。
 (defsubst skk-minibuffer-origin ()
-  (nth 1 (buffer-list)) )
+  (nth 1 (buffer-list)))
 
 ;;;; version specific matter.
 ;;; inline functions.
 (defsubst skk-color-display-p ()
-  (static-if (eq skk-emacs-type 'xemacs)
-      (eq (device-class (selected-device)) 'color)
-    (and (eq window-system 'x) (x-display-color-p))))
-    
+  (static-cond
+   ((eq skk-emacs-type 'xemacs) (eq (device-class (selected-device)) 'color))
+   ((fboundp 'x-display-color-p) (and window-system (x-display-color-p)))))
+ 
 (defsubst skk-str-length (str)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4))
-    (length str) )
+    (length str))
    ((eq skk-emacs-type 'mule3)
-    (length (string-to-vector str)) )
+    (length (string-to-vector str)))
    ((eq skk-emacs-type 'mule2)
-    (length (string-to-char-list str)) )))
+    (length (string-to-char-list str)))))
 
 (defsubst skk-substring (str pos1 pos2)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4))
-    (substring str pos1 pos2) )
+    (substring str pos1 pos2))
    ((eq skk-emacs-type 'mule3)
     (if (< pos1 0)
-	(setq pos1 (+ (skk-str-length str) pos1)) )
+	(setq pos1 (+ (skk-str-length str) pos1)))
     (if (< pos2 0)
-	(setq pos2 (+ (skk-str-length str) pos2)) )
+	(setq pos2 (+ (skk-str-length str) pos2)))
     (if (>= pos1 pos2)
 	""
       (let ((sl (nthcdr pos1 (string-to-char-list str))))
 	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
-	(concat sl) )))
+	(concat sl))))
    ((eq skk-emacs-type 'mule2)
     (if (< pos1 0)
-	(setq pos1 (+ (skk-str-length str) pos1)) )
+	(setq pos1 (+ (skk-str-length str) pos1)))
     (if (< pos2 0)
-	(setq pos2 (+ (skk-str-length str) pos2)) )
+	(setq pos2 (+ (skk-str-length str) pos2)))
     (if (>= pos1 pos2)
 	""
       (let ((sl (nthcdr pos1 (string-to-char-list str))))
 	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
-	(mapconcat 'char-to-string sl "") )))))
+	(mapconcat 'char-to-string sl ""))))))
 
 ;; no argument use only in SKK.
 (defsubst skk-read-event ()
   (static-cond
    ((eq skk-emacs-type 'xemacs)
-    (next-command-event) )
-   (t (read-event)) ))
+    (next-command-event))
+   (t (read-event))))
 
 (defsubst skk-char-to-string (char)
   (static-cond
    ((eq skk-emacs-type 'xemacs)
-    (char-to-string char) )
+    (char-to-string char))
    ((string< "20" emacs-version)
-    (condition-case nil (char-to-string char) (error)) )
-   (t (char-to-string char)) ))
+    (condition-case nil (char-to-string char) (error)))
+   (t (char-to-string char))))
 
 (defsubst skk-ascii-char-p (char)
   ;; CHAR が ascii 文字だったら t を返す。
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4 mule3))
-    (eq (char-charset char) 'ascii) )
+    (eq (char-charset char) 'ascii))
    ((eq skk-emacs-type 'mule2)
-    (= (char-leading-char char) 0) )))
+    (= (char-leading-char char) 0))))
  
 (defsubst skk-str-ref (str pos)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4))
-    (aref str pos) )
+    (aref str pos))
    ((eq skk-emacs-type 'mule3)
-    (aref (string-to-vector str) pos ) )
+    (aref (string-to-vector str) pos))
    ((eq skk-emacs-type 'mule2)
-    (nth pos (string-to-char-list str)) )))
+    (nth pos (string-to-char-list str)))))
 
 (defsubst skk-jisx0208-p (char)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4 mule3))
-    (eq (char-charset char) 'japanese-jisx0208) )
+    (eq (char-charset char) 'japanese-jisx0208))
    ((eq skk-emacs-type 'mule2)
-    (= (char-leading-char char) lc-jp) )))
+    (= (char-leading-char char) lc-jp))))
 
 (defsubst skk-char-octet (ch &optional n)
   (static-cond
    ((eq skk-emacs-type 'xemacs)
-    (or (nth (if n (1+ n) 1) (split-char ch)) 0) )
-   (t (char-octet ch n)) ))
+    (or (nth (if n (1+ n) 1) (split-char ch)) 0))
+   (t (char-octet ch n))))
 
 ;; this one is called once in skk-kcode.el, too.
 (defsubst skk-charsetp (object)
   (static-cond
-   ((and (eq skk-emacs-type 'xemacs) (fboundp 'charsetp))
-    (charsetp object) )
-   ((eq skk-emacs-type 'xemacs)
-    ;; Is there XEmacs that doesn't have `charsetp'?
-    (find-charset object) )
-   ((memq skk-emacs-type '(mule4 mule3))
-    (charsetp object) )
-   ((eq skk-emacs-type 'mule2)
-    (character-set object) )))
+   ((fboundp 'charsetp) (charsetp object))
+   ((eq skk-emacs-type 'xemacs) (find-charset object))
+   ((eq skk-emacs-type 'mule2) (character-set object))))
 
 (provide 'skk-macs)
 ;;; end of skk-macs.el.

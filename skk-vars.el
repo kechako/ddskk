@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.13 1999/12/23 06:33:34 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.14 1999/12/26 02:33:08 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/23 06:33:34 $
+;; Last Modified: $Date: 1999/12/26 02:33:08 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1842,8 +1842,9 @@ Mule-2.3 添付の egg.el よりコピーした。")
 
 (defvar skk-rule-tree nil
   "ローマ字 -> かな変換の状態遷移規則を表すツリーの初期状態。
-skk-mode の起動時に毎回 skk-rom-kana-base-rule-list と
-skk-rom-kana-rule-list から木の形にコンパイルされる。")
+最初に skk-mode を起動したときに skk-rom-kana-base-rule-list と
+skk-rom-kana-rule-list から木の形にコンパイルされる。
+M-x skk-restart によっても再コンパイルされる。")
 
 (defvar skk-insert-new-word-function nil
   "候補を挿入したときに funcall される関数を保存する変数。")
@@ -1993,8 +1994,6 @@ and skk-jisx0208-latin-mode-string のいずれかが代入される。")
 この変数に保持されるポイントが現在のポイントと異なる場合、skk-with-point-move が
 使われていないコマンドを動作させると、skk-after-point-move が作動する。")
 
-;; "" に対応したエントリが skk-roma-kana-[aiue] にあるため、"" を nil で代用
-;; できない。
 (skk-deflocalvar skk-prefix ""
   "入力するかなを決定するためのプレフィックス。")
 

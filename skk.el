@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.27 1999/12/23 08:37:30 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.28 1999/12/26 02:33:08 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/23 08:37:30 $
+;; Last Modified: $Date: 1999/12/26 02:33:08 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/12/23 08:37:30 $")
+      (let* ((raw-date "$Date: 1999/12/26 02:33:08 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -365,6 +365,8 @@ dependent."
       (progn
         (let ((skk-mode t)) (skk-kakutei))
         (skk-mode-off) 
+	(remove-hook 'pre-command-hook 'skk-pre-command 'local)
+	(remove-hook 'post-command-hook 'skk-after-point-move 'local)
 	(and (eq skk-status-indicator 'left)
 	     (setq skk-input-mode-string ""))
 	(and (eq skk-emacs-type 'xemacs) (easy-menu-remove skk-menu)))
@@ -1665,7 +1667,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	 ;; restore the state just before the last kakutei henkan.
 	 (delete-region skk-henkan-start-point (point))
 	 (skk-set-henkan-point-subr)
-	 (insert-and-inherit (skk-get-last-henkan-data 'henkan-key))
+	 (insert-and-inherit (skk-get-last-henkan-datum 'henkan-key))
 	 (setq this-command 'skk-undo-kakutei-henkan))
      (if (string= skk-henkan-key "")
 	 nil
@@ -1800,22 +1802,20 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
       (progn
 	(setq skk-kakutei-count (1+ skk-kakutei-count))
         ;; skk-undo-kakutei のために最後の変換のデータを保存する。
-	(skk-put-last-henkan-data 'henkan-key skk-henkan-key)
-	(skk-put-last-henkan-data 'okuri-char skk-okuri-char)
-	(skk-put-last-henkan-data 'henkan-okurigana skk-henkan-okurigana)
 	(skk-put-last-henkan-data
-	 'henkan-list
-	 ;; 確定した語を先頭にする。
-	 (cons kakutei-word (delete kakutei-word skk-henkan-list)))
-	;; (eq last-command 'skk-kakutei-henkan) でポータブルに確認できるので
-	;; あえていらないか。
-	;;(skk-put-last-henkan-data
-	;; 'kakutei-henkan
-	;; (eq this-command 'skk-kakutei-henkan))
-	;;
-	;; 上記以外の henkan data を skk-last-henkan-data に残したかったら、
-	;; skk-kakutei-end-function を利用する。
-	))
+	 (list (cons 'henkan-key skk-henkan-key)
+	       (cons 'okuri-char skk-okuri-char)
+	       (cons 'henkan-okurigana skk-henkan-okurigana)
+	       (cons 'henkan-list
+		     ;; 確定した語を先頭にする。
+		     (cons kakutei-word
+			   (delete kakutei-word skk-henkan-list)))
+	       ;; (eq last-command 'skk-kakutei-henkan) でポータブルに確認でき
+	       ;; るのであえていらないか。
+	       ;; (cons 'kakutei-henkan (eq this-command 'skk-kakutei-henkan))
+	       ;; 上記以外の henkan data を skk-last-henkan-data に残したかったら、
+	       ;; skk-kakutei-end-function を利用する。
+	       ))))
   (setq skk-abbrev-mode nil
         skk-exit-show-candidates nil
         skk-henkan-active nil
@@ -1845,13 +1845,13 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	  (skk-error "▼モードでは確定アンドゥできません"
 		     "Cannot undo kakutei in ▼ mode"))
 	 ( ; skk-henkan-key may be nil or "".
-	  (or (not (skk-get-last-henkan-data 'henkan-key))
-	      (string= (skk-get-last-henkan-data 'henkan-key) ""))
+	  (or (not (skk-get-last-henkan-datum 'henkan-key))
+	      (string= (skk-get-last-henkan-datum 'henkan-key) ""))
 	  (skk-error "アンドゥデータがありません" "Lost undo data")))
    (condition-case nil
        (let ((end
-	      (if (skk-get-last-henkan-data 'henkan-okurigana)
-		  (+ (length (skk-get-last-henkan-data 'henkan-okurigana))
+	      (if (skk-get-last-henkan-datum 'henkan-okurigana)
+		  (+ (length (skk-get-last-henkan-datum 'henkan-okurigana))
 		     skk-henkan-end-point)
 		skk-henkan-end-point)))
 	 (setq skk-henkan-active t
@@ -1863,12 +1863,12 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		   (cdr skk-search-prog-list)
 		 skk-search-prog-list))
 	 ;; get henkan data back from skk-last-henkan-data.
-	 (setq skk-henkan-key (skk-get-last-henkan-data 'henkan-key)
-	       skk-henkan-list (skk-get-last-henkan-data 'henkan-list)
-	       skk-henkan-okurigana (skk-get-last-henkan-data 'henkan-okurigana)
-	       skk-okuri-char (skk-get-last-henkan-data 'okuri-char))
+	 (setq skk-henkan-key (skk-get-last-henkan-datum 'henkan-key)
+	       skk-henkan-list (skk-get-last-henkan-datum 'henkan-list)
+	       skk-henkan-okurigana (skk-get-last-henkan-datum 'henkan-okurigana)
+	       skk-okuri-char (skk-get-last-henkan-datum 'okuri-char))
 	 (and skk-use-numeric-conversion
-	      (setq skk-num-list (skk-get-last-henkan-data 'skk-num-list)))
+	      (setq skk-num-list (skk-get-last-henkan-datum 'skk-num-list)))
 	 (and (>= (point-max) end)
 	      ;; 最後の変換部分のテキストを消す。送り仮名を把握しているのなら
 	      ;; (skk-process-okuri-early が non-nil なら送り仮名を把握できない)、

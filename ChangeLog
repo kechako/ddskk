@@ -1,4 +1,29 @@
+1999-12-26  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-vars.el (skk-rule-tree): Doc fixed.
+	(skk-cursor-change-width): Change default value to value of
+	variable `window-system'.
+
+	* skk.el (skk-mode): Remove locally skk-pre-command from
+	pre-command-hook and skk-after-point-move from post-command-hook
+	when exit skk-mode.
+
+	* skk-macs.el (skk-get-char): Comment (it is not used).
+	(skk-set-char): Ditto.
+	(skk-set-prefix): Ditto.  Use `cdr' instead of `nthcdr'.
+	(skk-charsetp): Simplify.
+	(skk-color-display-p): Add fboundp check of `x-display-color-p'.
+	Omit `window-system' is eq `x' or not.
+
 1999-12-23  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-macs.el: Eliminate all spaces which existed between
+	parens.
+	(skk-get-last-henkan-data): Renamed to
+	`skk-get-last-henkan-data'.
+	(skk-put-last-henkan-data): Renamed to
+	`skk-put-last-henkan-datum'.
+	(skk-put-last-henkan-data): New inline function.
 
 	* skk.el (skk-update-jisyo-original): Get HENKAN-BUFFER temporary
 	variable only when `skk-update-end-function' is non-nil.

@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.7 1999/12/05 05:59:25 minakaji Exp $
-;; Last Modified: $Date: 1999/12/05 05:59:25 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.8 1999/12/05 14:21:53 kawamura Exp $
+;; Last Modified: $Date: 1999/12/05 14:21:53 $
 
 ;; Commentary
 ;;
@@ -246,8 +246,15 @@ end with `skk'." )
   (SKK-MK-generate-autoloads-el)
   (compile-elisp-modules SKK_MODULES ".") )
 
+(defun SKK-MK-compile-info ()
+  (if (or (not (file-exists-p (expand-file-name (car SKK_INFOS) DOCDIR)))
+	  (file-newer-than-file-p (expand-file-name (car SKK_TEXIS) DOCDIR)
+				  (expand-file-name (car SKK_INFOS) DOCDIR) ))
+      (SKK-MK-texinfo-format SKK_TEXIS) ))
+
 (defun SKK-MK-install ()
   (SKK-MK-compile)
+  (SKK-MK-compile-info)
   (if (and SKK-MK-running-xemacs SKK-MK-cleanup-trouble-makers)
       (SKK-MK-cleanup-trouble-makers
        (eq SKK-MK-cleanup-trouble-makers 'backup) ))
@@ -273,10 +280,6 @@ end with `skk'." )
   ;; install Emacs Lisp programs.
   (install-elisp-modules SKK_MODULES "." SKK_LISPDIR)
   ;; install infos.
-  (if (or (not (file-exists-p (expand-file-name (car SKK_INFOS) DOCDIR)))
-	  (file-newer-than-file-p (expand-file-name (car SKK_TEXIS) DOCDIR)
-				  (expand-file-name (car SKK_INFOS) DOCDIR) ))
-      (SKK-MK-texinfo-format SKK_TEXIS) )
   (install-files SKK_INFOS DOCDIR SKK_INFODIR nil t nil)
   ;; install tutorials.
   (install-files SKK_TUTORIALS ETCDIR SKK_DATADIR nil t nil) )

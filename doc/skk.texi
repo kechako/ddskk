@@ -7,15 +7,16 @@
 @c          Yukiyoshi Kameyama <kameyama@@kuis.kyoto-u.ac.jp>
 @c          Mikio Nakajima <minakaji@osaka.email.ne.jp>
 @c  Maintainer: SKK Development Team <skk@ring.gr.jp>
-@c  Version: $Id: skk.texi,v 1.9.2.1.2.13 2000/10/30 21:21:20 minakaji Exp $
+@c  Version: $Id: skk.texi,v 1.9.2.1.2.14 2000/10/31 13:40:16 czkmt Exp $
 @c  Keywords: japanese
-@c  Last Modified: $Date: 2000/10/30 21:21:20 $
+@c  Last Modified: $Date: 2000/10/31 13:40:16 $
 @c
 @set EDITION 1.5
 @set SKK-VERSION 10.62
-@set UPDATED $Date: 2000/10/30 21:21:20 $
+@set UPDATED $Date: 2000/10/31 13:40:16 $
 @c @set UPDATED-MONTH Oct 1998
 
+@dircategory GNU Emacs Lisp
 @direntry
 * SKK: (skk).         Simple Kana to Kanji conversion program
 @end direntry

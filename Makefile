@@ -1,13 +1,13 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-# Version: $Id: Makefile,v 1.13.4.14 2000/09/07 10:06:15 czkmt Exp $
-# Last Modified: $Date: 2000/09/07 10:06:15 $
+# Version: $Id: Makefile,v 1.13.4.15 2000/09/09 03:25:48 minakaji Exp $
+# Last Modified: $Date: 2000/09/09 03:25:48 $
 
 
 VERSION = 11.3
 
-TAR	= tar
+TAR	= /usr/local/bin/tar
 RM	= /bin/rm -f
 CP	= /bin/cp -p
 EMACS	= emacs
@@ -49,7 +49,7 @@ tar: clean
 
 snapshot: clean
 	cd .. ; $(RM) ddskk-snapshot ddskk-*.tar.bz2 ;\
-	ln -sf main ddskk-snapshot ;\
+	ln -sf main `$(DATE) '+%Y%m%d'` ;\
 	$(TAR) cvpf ddskk-`$(DATE) '+%Y%m%d'`.tar --exclude-from=ddskk-snapshot/skk.ex --dereference ddskk-snapshot ;\
 	$(BZIP2) ddskk-`$(DATE) '+%Y%m%d'`.tar
 

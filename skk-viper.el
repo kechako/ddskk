@@ -6,9 +6,9 @@
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: Murata Shuuichirou <mrt@notwork.org>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.10 2000/07/07 22:13:40 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.11 2000/09/09 03:25:49 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:40 $
+;; Last Modified: $Date: 2000/09/09 03:25:49 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -30,7 +30,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'skk-vars))
+(eval-when-compile (require 'static) (require 'skk-macs) (require 'skk-vars))
 (require 'viper)
 
 ;; macros and inline functions.
@@ -63,22 +63,19 @@
 	;; 恐ろしや〜、必殺のバッファローカル...。
 	(make-variable-buffer-local 'viper-insert-state-cursor-color)
 	;; SKK-CURSOR related.
-	(defadvice skk-cursor-set-properly (around skk-viper-cursor-ad activate)
-	  "vi-state のときは、SKK モードになっていてもカーソルをディフォルトにしておく。"
+	(defadvice skk-cursor-current-color (around skk-viper-cursor-ad activate)
+	  "vi-state のときは、SKK モードになっていてもディフォルトカーソルを返す。"
 	  (if (static-cond ((boundp 'viper-current-state)
 			    (eq viper-current-state 'vi-state))
 			   ((boundp 'vip-current-state)
 			    (eq vip-current-state 'vi-state)))
-	      (progn
-		(ad-set-arg 0 skk-cursor-default-color)
-		ad-do-it)
-	    ad-do-it
+	      skk-cursor-default-color
 	    (cond ((not skk-mode)
 		   (setq viper-insert-state-cursor-color
-			 skk-viper-saved-cursor-color))
+			 skk-viper-saved-cursor-color)
+		   ad-do-it)
 		  (t
-		   (setq viper-insert-state-cursor-color
-			 (skk-cursor-current-color))))))
+		   (setq viper-insert-state-cursor-color ad-do-it)))))
 
 	;; cover to VIP/Viper functions.
 	(let ((funcs
@@ -93,17 +90,9 @@
 	     (`
 	      (defadvice (, (intern (symbol-name (car funcs))))
 		(after skk-viper-cursor-ad activate)
-		"入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-		;; skk-mode が nil か non-nil かの判定付き。
-		;; CLASS は after.
-		(and skk-mode (skk-cursor-set-properly)))))
+		"Set cursor color which represents skk mode."
+		(set-buffer-local-cursor-color (skk-cursor-current-color)))))
 	    (setq funcs (cdr funcs))))
-
-	;; first remove skk-cursor advice.
-	;;(ad-remove-advice 'skk-mode 'after 'skk-cursor)
-	;; then put on new advice specially made for viper.
-	;;(defadvice skk-mode (after skk-viper-ad activate)
-	;;  (add-hook 'viper-post-command-hooks 'skk-set-cursor-properly 'append 'local))
 
 	(if (boundp 'viper-insert-state-cursor-color)
 	    (let ((funcs '(skk-abbrev-mode skk-jisx0208-latin-mode
@@ -139,11 +128,11 @@
 
 (if skk-use-color-cursor
     (defadvice read-from-minibuffer (before skk-viper-ad activate)
-      "minibuffer-setup-hook に skk-cursor-setup-minibuffer をフックする。
+      "minibuffer-setup-hook に update-buffer-local-frame-params をフックする。
 viper-read-string-with-history は minibuffer-setup-hook を関数ローカル
 にしてしまうので、予め minibuffer-setup-hook にかけておいたフックが無効
 となる。"
-      (add-hook 'minibuffer-setup-hook 'skk-cursor-setup-minibuffer 'append)))
+      (add-hook 'minibuffer-setup-hook 'update-buffer-local-frame-params 'append)))
 
 (skk-viper-advice-select
  viper-forward-word-kernel vip-forward-word-kernel

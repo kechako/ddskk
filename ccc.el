@@ -2,9 +2,10 @@
 ;; Copyright (C) 2000 Masatake YAMATO <masata-y@is.aist-nara.ac.jp> 
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
-;; Version: $Id: ccc.el,v 1.1.2.1 2000/07/02 13:30:41 minakaji Exp $
-;; Keywords: 
-;; Last Modified: $Date: 2000/07/02 13:30:41 $
+;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
+;; Version: $Id: ccc.el,v 1.1.2.1 2000/09/09 03:25:48 minakaji Exp $
+;; Keywords: cursor
+;; Last Modified: $Date: 2000/09/09 03:25:48 $
 
 ;; This software is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -31,13 +32,10 @@
 (eval-when-compile (require 'static))
  
 ;;; user variables.
-(defvar ccc-before-update-function nil
-  "*Function to be funcalled before calling `update-buffer-local-frame-params'.")
 
 ;;; functions.
 ;;;###autoload
 (defun update-buffer-local-frame-params ()
-  (and ccc-before-update-function (funcall ccc-before-update-function))
   (update-buffer-local-cursor-color)
   (update-buffer-local-foreground-color)
   (update-buffer-local-background-color))

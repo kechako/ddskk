@@ -1,3 +1,33 @@
+2000-09-09  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+	
+	* experimental/skk-cursor2.el: Merged skk-cursor2 and skk-cursor3
+	into skk-cursor.el.
+	* experimental/skk-cursor3.el: Ditto.
+	* skk-cursor.el: Ditto.
+
+	* SKK-MK (SKK_MODULES): Remove skk-cursor2 and skk-cursor3.
+	Add ccc if FSF Emacs is running.
+	(SKK_DAREDEVIL_NOT_USE): Add `skk-cursor2' and `skk-cursor3'.
+
+	* experimental/ccc.el (ccc-before-update-function): Removed.
+	(update-buffer-local-frame-params): Do not call
+	`ccc-before-update-function'.
+	(buffer-local-cursor-color-default): Bug fixed. 
+	(buffer-local-foreground-color-default): Ditto.
+	(buffer-local-background-color-default): Ditto.
+
+	* experimental/skk-cursor2.el: Use `set-buffer-local-cursor-color'
+	for advice of each element of
+	`skk-cursor2-buffer-local-frame-params-ad-targets'.
+	Do not set `ccc-before-update-function'.
+
+	* skk-look.el (skk-look): Typo fixed.
+
+	* skk-viper.el (skk-cursor-set-properly): Removed advice.
+	(skk-cursor-current-color): 
+	(read-from-minibuffer): Add `update-buffer-local-frame-params' to
+	`minibuffer-setup-hook' instead of `skk-cursor-setup-minibuffer'.
+
 2000-09-08  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-look.el (skk-look-1): Do not put out originally handed word.

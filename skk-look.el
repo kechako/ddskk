@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.7 2000/09/08 00:50:13 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.8 2000/09/09 03:25:49 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/08 00:50:13 $
+;; Last Modified: $Date: 2000/09/09 03:25:49 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -123,7 +123,7 @@
 	     v)
 	 (if (not skk-look-use-ispell)
 	     (setq v (skk-look-1 args))
-	   (setq v (skk-look-ispell arg)))
+	   (setq v (skk-look-ispell args)))
 	 (if (not skk-look-recursive-search)
 	     v
 	   (let (skk-henkan-key v2 v3)

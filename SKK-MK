@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.41 2000/09/07 10:08:24 czkmt Exp $
-;; Last Modified: $Date: 2000/09/07 10:08:24 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.42 2000/09/09 03:25:48 minakaji Exp $
+;; Last Modified: $Date: 2000/09/09 03:25:48 $
 
 ;; Commentary
 ;;
@@ -189,7 +189,6 @@
 			    skk-jisx0201 skk-rdbms skk-study
 			    skk-tutcdef skk-tutcode skk-correct
 			    skk-exsearch skk-exserv
-			    skk-cursor2 ccc skk-cursor3 
 			    ;; VIP 3.7
 			    ;; vip
 			    )))
@@ -201,16 +200,22 @@
         ;;        (eq (device-class (selected-device)) 'color)
         ;;      (x-display-color-p))
         ;;    (setq list (nconc list (list 'skk-cursor))))
-	(and SKK-MK-running-xemacs
-	     (member "skk-leim" preloaded-file-list)
-	     (setq list (nconc list (list 'skk-xm20_4))))
-	(or (fboundp 'register-input-method)
-	    (setq list (delq 'skk-leim list)))
-	(if (= 18 emacs-major-version)
+	(if SKK-MK-running-xemacs
+	    ;; XEmacs
+	    (cond ((member "skk-leim" preloaded-file-list)
+		   (setq list (nconc list (list 'skk-xm20_4))))
+		  ((or (featurep 'gdbm) (featurep 'dbm) (featurep 'berkdb)
+		       (featurep 'berkeley-db))
+		   (setq list (nconc list (list 'skk-dbm)))))
+	  ;; FSFmacs
+	  (if (> emacs-major-version 18)
+	      (setq list (nconc list (list 'ccc)))
 	    (mapcar (function
 		     (lambda (elt)
 		       (setq list (delq elt list))))
-		    '(skk-cursor skk-isearch skk-jisx0201 skk-study)))
+		    '(skk-cursor skk-isearch skk-jisx0201 skk-study))))
+	(or (fboundp 'register-input-method)
+	    (setq list (delq 'skk-leim list)))
 	(condition-case nil
 	    ;; you might have to add lookup installed directory to `load-path'.
 	    (and (let ((lookup-byte-compile t)) (require 'lookup))
@@ -219,9 +224,6 @@
 	(condition-case nil
 	    (and (require 'viper) (setq list (nconc list (list 'skk-viper))))
 	  (error))
-	(and (or (featurep 'gdbm) (featurep 'dbm) (featurep 'berkdb)
-		 (featurep 'berkeley-db))
-	     (setq list (nconc list (list 'skk-dbm))))
 	list)))
 (defvar SKK_PREFIX (or (getenv "SKK_PREFIX") "skk"))
 (defvar SKK_TEXIS (or (getenv "SKK_TEXIS") '("skk.texi")))
@@ -265,7 +267,7 @@
 (if SKK-MK-debugging (princ (format "SKK_MODULES=%s\n" SKK_MODULES)))
 
 (defconst SKK_PACKAGE_NOT_USE '(skk-autoloads))
-(defconst SKK_DAREDEVIL_NOT_USE '(skk-vip skk-foreword stack-m))
+(defconst SKK_DAREDEVIL_NOT_USE '(skk-vip skk-foreword stack-m skk-cursor2 skk-cursor3))
 
 ;; This code is for skk-jisx0201.el.
 (cond ((fboundp 'make-translation-table) ;; Emacs 20.3 or later

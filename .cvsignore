@@ -1,8 +1,8 @@
 *.BAK
-ccc.el
 cvs.log
 leim-list.el
 make.log
+not_used
 skk-autoloads.el
 skk-cursor2.el
 skk-cursor3.el

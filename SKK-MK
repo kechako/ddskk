@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.36 2000/08/27 18:34:25 czkmt Exp $
-;; Last Modified: $Date: 2000/08/27 18:34:25 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.37 2000/08/28 14:53:52 czkmt Exp $
+;; Last Modified: $Date: 2000/08/28 14:53:52 $
 
 ;; Commentary
 ;;
@@ -314,6 +314,7 @@
   (cond ((= 18 emacs-major-version)
 	 (let ((SKK_MODULES (cons 'experimental/skk-isearch SKK_MODULES)))
 	   (SKK-MK-generate-autoloads-el))
+	 (require 'cl)
 	 (when (< emacs-minor-version 59)
 	   (with-temp-buffer
 	     (insert-file-contents (expand-file-name "SKK-MK"

@@ -1,3 +1,8 @@
+1999-11-21  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/CVS_digest: Add descriptions about creating encrypted
+	passwd.
+
 1999-11-18  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/AUTHORS: Add descriptions for Daredeveil branch.

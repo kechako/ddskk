@@ -1,7 +1,7 @@
 -*- outline -*-
 
-             $Date: 1999/11/17 14:13:07 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
-	     $Id: CVS_digest,v 1.1.2.3 1999/11/17 14:13:07 minakaji Exp $
+             $Date: 1999/11/21 09:04:11 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
+	     $Id: CVS_digest,v 1.1.2.4 1999/11/21 09:04:11 minakaji Exp $
 
 [CVS $B%@%$%8%'%9%H(B]
 
@@ -64,7 +64,7 @@ Daredevil branch $B$rF~<j$7$?$1$l$P!"2<5-$N$h$&$K$7$^$9!#(B
 
 openlab.ring.gr.jp $B$N(B cvs server $B>e$K%"%+%&%s%H$,$J$$$H(B update,
 commit, tag $B$G$-$^$;$s!#(Bminakaji@ring.gr.jp $B08$F$K4uK>$9$k%"%+%&%s%HL>(B
-$B$H!"(Bcrypt $B$5$l$?%Q%9%o!<%IJ8;zNs$rO"Mm$7$F2<$5$$!#(B
+$B$H!"(Bcrypt $B$5$l$?%Q%9%o!<%IJ8;zNs$rO"Mm$7$F2<$5$$(B(*$BCm(B4)$B!#(B
 
 $BEPO?$,40N;$7$?$i$4O"Mm?=$7>e$2$^$9!#(B
 
@@ -126,7 +126,7 @@ ML $B$KEj9F$9$k$?$a$N%j%j!<%9%N!<%H$r=q$$$F2<$5$$(B ($B<g$JJQ99E@$,J,$kDxEY(
 $B%3%T!<$r(B commit $B$7$F>e5-%j%j!<%9%N!<%H$r(B ML $B$KEj9F$7$F2<$5$$!#(B
 
 ChangeLog $B$N99?7$r$*K:$l$J$/(B ($B1Q8l$G=q$$$F$$$^$9$,!"1Q8l$,6lDK$J$iF|K\(B
-$B8l$G=q$$$F$bA4A3LdBj$"$j$^$;$s(B)(*$BCm(B4)$B!#(B
+$B8l$G=q$$$F$bA4A3LdBj$"$j$^$;$s(B)(*$BCm(B5)$B!#(B
 
   $ cd skk/main
   $ cvs commit -m "" ChangeLog
@@ -170,6 +170,20 @@ Maintrunk $B$K$O(B tag $BIU$1$7$J$$$G2<$5$$!#(BMaintrunk $B$N(B tag $BIU$
 CVS/Root $B$H$$$&%U%!%$%k$K%5!<%P>pJs$,J]B8$5$l$F$$$^$9!#(B
 
 ** $BCm(B4
+
+crypt $B$5$l$?%Q%9%o!<%IJ8;zNs$O(B /etc/passwd $B$+$iD>@\<h$j=P$9B>!"(Bperl,
+python, ruby $B$J$I$N(B interpreter $B7O$N%3%^%s%I$r;H$&$3$H$K$h$C$F$b@8@.$G(B
+$B$-$^$9!#(B
+
+  % perl -e 'print crypt("PASSWORD", "SALT"), "\n";'
+  % python -c 'import crypt; print crypt.crypt("PASSWORD", "SALT");'
+  % ruby -e 'print "PASSWORD".crypt("SALT"), "\n";'
+
+$B>e5-$N(B "SALT" $B$NItJ,$O!"=89g(B [a-zA-Z0-9./] $B$+$i(B 2 $BJ8;z$NJ8;zNs$rG$0U$K(B
+$BA*$s$G;XDj$7$^$9!#$3$NJ8;zNs$O%"%k%4%j%:%`$N=PNO$r(B 4096 $BDL$j$K$+$-Mp$9(B
+$B$N$K!"$^$?(B encrypt $B$7$F=PNO$5$l$kJ8;zNs$N@hF,(B 2 $BJ8;z$H$7$F;H$o$l$^$9!#(B
+
+** $BCm(B5
 
 ChangeLog $B$r=q$1$P!"(Bcvs $B$N(B -m $B%*%W%7%g%s$GEO$9%3%a%s%H$OFC$KITMW!"$H9M(B
 $B$($F$$$^$9$,!"$3$N%3%a%s%H$NJXMx$J;H$$J}$,$"$k$N$J$i!"$4;XF32<$5$$!#(B 

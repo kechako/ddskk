@@ -2,9 +2,9 @@
 ;; Copyright (C) 2000 Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
-;; Version: $Id: skk-kanagaki.el,v 1.1.2.3 2000/08/08 14:12:08 czkmt Exp $
+;; Version: $Id: skk-kanagaki.el,v 1.1.2.4 2000/08/09 09:41:38 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/08 14:12:08 $
+;; Last Modified: $Date: 2000/08/09 09:41:38 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -278,7 +278,9 @@ Mule2.3@19.28 では  [key-35]、 Mule2.3@19.34 では  [numbersign
 		 (const nil))
   :group 'skk-kanagaki)
 
+
 ;; Internal constants and variables.
+
 (defconst skk-kanagaki-106-jis-base-rule-list
   '(("1" nil ("ヌ" . "ぬ")) ("2" nil ("フ" . "ふ")) ("3" nil ("ア" . "あ"))
     ("4" nil ("ウ" . "う")) ("5" nil ("エ" . "え")) ("6" nil ("オ" . "お"))
@@ -386,9 +388,14 @@ Mule2.3@19.28 では  [key-35]、 Mule2.3@19.34 では  [numbersign
 
 (defvar skk-kanagaki-temp-dir (or (getenv "TMP") "/tmp"))
 
-;; Advice.
+
+;; Pieces of advice.
+
 (defadvice skk-regularize (before skk-kanagaki-ad activate compile)
   "SKK 起動時の適当なタイミングで仮名入力用の設定を行う。"
+  (when (memq skk-emacs-type '(nemacs mule1))
+    (if (not (keymapp (global-key-binding "\e[")))
+	(global-unset-key "\e[")))
   (mapcar (function
 	   (lambda (cons)
 	     (and (symbol-value (car cons))
@@ -458,7 +465,6 @@ keycode 34 = at grave\n")
 			     '(("~" nil "々")
 			       ("\\" nil "ー")
 			       ("|" nil "¬")
-			       ("`" nil "¢")
 			       ("!" nil ("ヲ" . "を"))
 			       ("\"" nil ("ロ" . "ろ"))
 			       ("_" nil "｜"))))
@@ -513,7 +519,9 @@ keycode 34 = at grave\n")
 	       (setq skk-rule-tree skk-kanagaki-rom-kana-rule-tree))
 	   ad-do-it))))
 
+
 ;; Functions.
+
 (defun skk-kanagaki-insert (&optional arg)
   "SPC キーだけこれを `skk-insert' の代わりに使う。"
   (interactive "*p")

@@ -5,9 +5,9 @@
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Murata Shuuichirou  <mrt@astec.co.jp>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.2 2000/08/12 14:24:08 czkmt Exp $
+;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.3 2000/08/13 03:00:38 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/12 14:24:08 $
+;; Last Modified: $Date: 2000/08/13 03:00:38 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -118,18 +118,23 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
           (t
            (setq expr1 "[$B<7H,6e(B]$BIC(B"
                  expr2 "$B!;IC(B")))
+    ;;
     (static-when (eq skk-emacs-type 'xemacs)
       ;; XEmacs $B$G(B sound $B$,%m!<%I$5$l$F$$$k$+$I$&$+!#(B
-      (setq snd (and (boundp 'sound-alist)
-		     (eq t (catch 'tag
-			     (mapc
-			      (function
-			       (lambda (list)
-				 (and
-				  (eq 'cuckoo
-				      (cadr (memq :sound list)))
-				  (throw 'tag t))))
-			      sound-alist))))))
+      (when (setq snd (and (boundp 'sound-alist)
+			   (eq t (catch 'tag
+				   (mapc
+				    (function
+				     (lambda (list)
+				       (and
+					(eq 'drum
+					    (cadr (memq :sound list)))
+					(throw 'tag t))))
+				    sound-alist)))))
+	;;
+	(or (assq 'clink sound-alist)
+	    (load-sound-file "clink" 'clink))))
+    ;;
     (save-match-data
       (condition-case nil
           (let (case-fold-search
@@ -139,7 +144,9 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
             (while (not quit-flag)
               (setq mes (skk-current-date t))
 	      (message "%s    Hit any key to quit" mes)
-	      (setq sec (if snd (/ (float 1) (float 200)) 0))
+	      (setq sec (static-if (eq skk-emacs-type 'xemacs)
+			    (/ (float 1) (float 200))
+			  0))
               (if time-signal
                   (if (string-match expr1 mes)
                       ;; [7890] $B$N$h$&$K@55,I=8=$r;H$o$:!"(B7 $B$@$1$GA4$F$N%^%7%s$,(B
@@ -147,7 +154,7 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
                       ;; collection $B$,8F$P$l$F$bI=<($5$l$k?t;z$,Ht$V>l9g$,$"$k!#(B
 		      (static-if (eq skk-emacs-type 'xemacs)
 			  ;; $B$$$$2;$,$J$$$J$!(B...
-			  (ding nil 'yeep)
+			  (ding nil 'drum)
 			(ding))
                     (if (string-match expr2 mes)
                         ;; 0 $B$@$1!V%]!A%s!W$H$$$-$?$$$H$3$m$G$9$,!"%^%7%s$K$h$C(B
@@ -161,7 +168,7 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
 			 ((eq skk-emacs-type 'xemacs)
 			  (if snd
 			      ;; $B$A$g$C$H$b$?$D$/(B ?
-			      (ding nil 'cuckoo)
+			      (ding nil 'clink)
 			    (ding)
 			    (unless (sit-for (setq sec (/ (float 1) (float 6))))
 			      (next-command-event)

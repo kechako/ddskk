@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.63 2000/08/07 13:01:47 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.64 2000/08/11 15:18:42 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/07 13:01:47 $
+;; Last Modified: $Date: 2000/08/11 15:18:42 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/08/07 13:01:47 $")
+      (let* ((raw-date "$Date: 2000/08/11 15:18:42 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -415,6 +415,7 @@ dependent."
 	      (require 'skk-xm20_4))
           (skk-setup-init-file)
           (load skk-init-file t)
+	  (if skk-use-kana-keyboard (require 'skk-kanagaki))
 	  (skk-setup-modeline)
 	  (require 'skk-autoloads)
 	  (static-if (or (memq skk-emacs-type '(mule3 mule4 mule5))

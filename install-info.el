@@ -40,7 +40,7 @@
     (` (jka-compr-get-compression-info (, filename)))))
 
 (defmacro install-info-forward-line (n)
-  (` (unless (eq 0 (forward-line (, n)))
+  (` (when (< 0 (forward-line (, n)))
        (insert "\n"))))
 
 (defmacro install-info-point-at-eol (&optional n)
@@ -114,6 +114,7 @@ from DIR-FILE; don't insert any new entries."
     ;;
     (save-excursion
       (set-buffer buf)
+      (setq buffer-read-only nil)
       (erase-buffer)
       (install-info-insert-file-contents info-file))
     ;;
@@ -223,6 +224,7 @@ from DIR-FILE; don't insert any new entries."
   (let ((buf (get-buffer-create " *install-info-dir*")))
     (save-excursion
       (set-buffer buf)
+      (setq buffer-read-only nil)
       (erase-buffer)
       (if (not (file-exists-p dir))
 	  (error "No such file or directory for %s" dir)
@@ -247,6 +249,7 @@ from DIR-FILE; don't insert any new entries."
   (let ((buf (get-buffer-create " *install-info-dir*")))
     (save-excursion
       (set-buffer buf)
+      (setq buffer-read-only nil)
       (erase-buffer)
       (when (file-exists-p dir)
 	(install-info-insert-file-contents dir))

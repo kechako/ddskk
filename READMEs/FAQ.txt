@@ -1,8 +1,8 @@
 
 -*- outline -*-
 
-             $Date: 2000/09/29 09:36:11 $
-	     $Id: FAQ.txt,v 1.1.2.2 2000/09/29 09:36:11 minakaji Exp $
+             $Date: 2000/10/02 20:05:08 $
+	     $Id: FAQ.txt,v 1.1.2.3 2000/10/02 20:05:08 minakaji Exp $
 
 $B$3$l$O(B SKK $B$KBP$9$k$h$/$"$k<ALd$H!"$=$l$KBP$9$k2sEz=8$G$9!#(B
 
@@ -479,4 +479,4 @@ Demacs $B$H8F$P$l$F$$$k$i$7$/!"K\7o$O$+$N0NBg$J(B Demacs $B$H$O4X78L5$$$@$m$&
 $B$H$b8@$o$l$F$$$^$9!#(B
 
 
-[end of skk-faq.txt]
+[end of FAQ.txt]

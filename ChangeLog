@@ -12,7 +12,7 @@
 	* skk-isearch.el (skk-isearch-mode-setup): Activate input method
 	in the working buffer, if `current-input-method' is
 	japanese-skk{-auto-fill}.
-	(skk-isearch-mode-cleanup): Inacticate input method in the working
+	(skk-isearch-mode-cleanup): Inactivate input method in the working
 	buffer, if `default-input-method' is japanese-skk{-auto-fill}.
 	(skk-isearch-find-keys-define): Don't overwrite the keymaps for
 	prefix keys.

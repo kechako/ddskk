@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.7 2000/01/19 13:34:25 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.8 2000/01/23 13:39:34 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/19 13:34:25 $
+;; Last Modified: $Date: 2000/01/23 13:39:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -33,6 +33,7 @@
   (require 'static) (require 'skk-vars)
   (defconst skk-emacs-type
     (cond ((string-match "XEmacs" emacs-version) 'xemacs)
+	  ((and (boundp 'NEMACS)) 'nemacs)
 	  ((and (boundp 'mule-version)
 		(string< "4.0" mule-version) 'mule4))
 	  ((and (boundp 'mule-version)
@@ -41,6 +42,7 @@
 		(string< "2.0" mule-version) 'mule2))))
   (defmacro skk-detect-emacs ()
     (` (or (eq (cond ((string-match "XEmacs" emacs-version) 'xemacs)
+		     ((and (boundp 'NEMACS)) 'nemacs)
 		     ((and (boundp 'mule-version)
 			   (string< "4.0" mule-version) 'mule4))
 		     ((and (boundp 'mule-version)
@@ -124,7 +126,7 @@
 		   (set-extent-face (, object) (, face))
 		 (set-extent-properties
 		  (, object) (list 'face (, face) 'priority (, priority)))))
-	   (set-extent-endpoints (, object) (, start) (, end)) ))))
+	   (set-extent-endpoints (, object) (, start) (, end))))))
    (t
     (` (let ((inhibit-quit t))
 	 (if (not (overlayp (, object)))
@@ -217,7 +219,7 @@
 	      (condition-case nil
 		  (delete-region start (+ start (length skk-prefix)))
 		(error
-		 (skk-set-marker skk-kana-start-point nil) 
+		 (skk-set-marker skk-kana-start-point nil)
 		 (setq skk-prefix ""
 		       skk-current-rule-tree nil))))))
   (and clean (setq skk-prefix ""
@@ -404,7 +406,7 @@
   (let ((l (skk-str-length string)))
     (and (> l 2) (eq (aref string 0) ?\()
 	 ;; second character is ascii or not.
-	 (< ?\37 (aref string 1)) (< (aref string 1) ?\200) 
+	 (< ?\37 (aref string 1)) (< (aref string 1) ?\200)
          (eq (skk-str-ref string (1- l)) ?\)))))
 
 (defsubst skk-eval-string (string)
@@ -430,7 +432,7 @@
   (static-cond
    ((eq skk-emacs-type 'xemacs) (eq (device-class (selected-device)) 'color))
    ((fboundp 'x-display-color-p) (and window-system (x-display-color-p)))))
- 
+
 (defsubst skk-str-length (str)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4))
@@ -487,7 +489,7 @@
     (eq (char-charset char) 'ascii))
    ((eq skk-emacs-type 'mule2)
     (= (char-leading-char char) 0))))
- 
+
 (defsubst skk-str-ref (str pos)
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4))

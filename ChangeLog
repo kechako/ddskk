@@ -1,3 +1,7 @@
+1999-12-14  FURUE Hideyuki  <furue@kke.co.jp>
+
+	* skk-cursor.el (set-buffer, erase-buffer): Remove advices.
+
 1999-12-14  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* SKK-MK (SKK_DAREDEVIL_NOT_USE): Add skk-vip.
@@ -75,7 +79,6 @@
 	(after-make-frame-hook): Remove hook.
 	(minibuffer-setup-hook): Simplify hook.
 	
->>>>>>> 1.1.2.4.2.65
 1999-12-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-cursor.el (skk-cursor-set-properly) : Bug fixed.

@@ -28,7 +28,7 @@
 	* skk-isearch.el: Require `skk-vars' also at the load time.
 	(skk-isearch-mode-setup): Make sure `skk-isearch-mode-map' is a
 	keymap.
-	(isearch-repeat): Rewrite the advice so that it look like an
+	(isearch-repeat): Rewrite the advice so that it look like
 	advice. :-)
 	There should be no changes in its behaviour.
 

@@ -2,9 +2,9 @@
 ;; Copyright (C) 2000 Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
-;; Version: $Id: skk-kanagaki.el,v 1.1.2.1 2000/08/07 12:58:55 czkmt Exp $
+;; Version: $Id: skk-kanagaki.el,v 1.1.2.2 2000/08/07 14:03:11 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/07 12:58:55 $
+;; Last Modified: $Date: 2000/08/07 14:03:11 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -434,7 +434,7 @@ keycode 34 = at grave\n")
     (setq char1
 	  (save-excursion
 	    (backward-char (* len 1))
-	    (buffer-substring (point) pt1)))
+	    (buffer-substring-no-properties (point) pt1)))
     (cond ((setq char2 (cadr (assoc char1 list)))
 	   (delete-char -1)
 	   (insert char2))
@@ -451,7 +451,7 @@ keycode 34 = at grave\n")
     (setq char1
 	  (save-excursion
 	    (backward-char (* len 1))
-	    (buffer-substring (point) pt1)))
+	    (buffer-substring-no-properties (point) pt1)))
     (cond ((setq char2 (caddr (assoc char1 list)))
 	   (delete-char -1)
 	   (insert char2))
@@ -469,14 +469,14 @@ keycode 34 = at grave\n")
     (setq okuri-char
 	  (save-excursion
 	    (backward-char (* len 1))
-	    (buffer-substring (setq pt2 (point)) pt1)))
+	    (buffer-substring-no-properties (setq pt2 (point)) pt1)))
     (when okuri-char
       (setq rom (copy-sequence (cdr (assoc okuri-char list))))
       (unless no-sokuon
 	(setq sokuon
 	      (save-excursion
 		(backward-char (* len 2))
-		(buffer-substring (point) pt2)))
+		(buffer-substring-no-properties (point) pt2)))
 	(if (member sokuon '("っ" "ッ"))
 	    ;; 促音を見つけたときは、ローマ字リストの先頭の字を繰り返す。
 	    (setcdr rom (copy-sequence rom))

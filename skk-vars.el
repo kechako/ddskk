@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.41 2000/10/01 21:04:53 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.42 2000/10/12 10:09:17 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/01 21:04:53 $
+;; Last Modified: $Date: 2000/10/12 10:09:17 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -42,7 +42,7 @@
   (require 'pcustom))
 
 (eval-and-compile
-  (defconst skk-emacs-type (cond ((string-match "XEmacs" emacs-version) 'xemacs)
+  (defconst skk-emacs-type (cond ((featurep 'xemacs) 'xemacs)
 				 ((and (boundp 'NEMACS)) 'nemacs)
 				 ((and (boundp 'mule-version)
 				       (string< "5.0" mule-version) 'mule5))

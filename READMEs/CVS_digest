@@ -1,7 +1,7 @@
 -*- outline -*-
 
-             $Date: 1999/11/22 02:39:50 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
-	     $Id: CVS_digest,v 1.1.2.5 1999/11/22 02:39:50 minakaji Exp $
+             $Date: 1999/11/22 04:52:09 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
+	     $Id: CVS_digest,v 1.1.2.6 1999/11/22 04:52:09 minakaji Exp $
 
 [CVS ダイジェスト]
 
@@ -171,11 +171,11 @@ CVS/Root というファイルにサーバ情報が保存されています。
 
 ** 注4
 
-crypt されたパスワード文字列を生成するには、いくつかの方法があります。
+crypt されたパスワード文字列を生成するには、いくつかの方法があります
+(但し、openlab.ring.gr.jp の crypt() が DES based なため、貴殿のシステ
+ムライブラリーの crypt() が DES base な場合に限り利用できます)。
 
-1. /etc/passwd から直接取り出す (但し、openlab.ring.gr.jp の crypt()
-   が DES based なため、貴殿のシステムライブラリーの crypt() が DES
-   base な場合に限り利用できます。)。
+1. /etc/passwd から直接取り出す。
 
 2. perl, python, ruby などの interpreter 系のコマンドを使うことによっ
    ても生成できます。
@@ -190,8 +190,8 @@ crypt されたパスワード文字列を生成するには、いくつかの方法があります。
         指定します。この文字列はアルゴリズムの出力を 4096 通りにかき乱すのに、また
         encrypt して出力される文字列の先頭 2 文字として使われます。
 
-3. crypt() 関数を使う他のコマンドを利用する (Debian Linux の mkpasswd
-   や makepasswd など)。
+3. crypt() 関数を使う他のコマンドを利用する (Debian GNU/Linux の
+   mkpasswd や makepasswd など)。
 
 4. 上記の方法のいずれも利用できない方は、素のパスワードを送って下さっ
    ても結構です。

@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/14 14:50:19 $
+;; Last Modified: $Date: 2000/09/17 15:03:55 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -230,7 +230,7 @@ keycode 131 = underscore\n"))
 ;; Functions.
 
 (defun skk-nicola-setup ()
-  ;;
+  ;; SKK の初回起動時のみ実行されるべきものはこの関数に入れる。
   (when skk-nicola-use-space-as-rshift
     (define-key skk-j-mode-map " " 'skk-nicola-self-insert-rshift))
   ;;
@@ -275,12 +275,14 @@ keycode 131 = underscore\n"))
 
 ;;;###autoload
 (defun skk-nicola-help (&optional arg)
+  ;; キー配列を表示する。
   (interactive "p")
   (describe-variable
    (intern (format "skk-%s-keymap-display" skk-kanagaki-keyboard-type))))
 
 ;;;###autoload
 (defun skk-nicola-2nd-help ()
+  ;; skk-nicola.el 独自のキー定義一覧を表示する。
   (interactive)
   (skk-kanagaki-help-1
    "* SKK 親指シフト入力 ヘルプ*"
@@ -347,6 +349,8 @@ keycode 131 = underscore\n"))
 
 ;;;###autoload
 (defun skk-nicola-turn-on-j-mode (&optional arg)
+  ;; `skk-latin-mode' において、 左右親指キーの同時打鍵によって 'skk-j-mode' に
+  ;; 入る。
   (interactive "*p")
   (if (skk-kanagaki-sit-for skk-nicola-latin-interval t)
       ;; then
@@ -389,6 +393,7 @@ keycode 131 = underscore\n"))
 				  (list " ")))))
 	       (skk-j-mode-on)
 	       (when (skk-color-display-p)
+		 ;; 新しい skk-cursor 対策
 		 (static-cond
 		  ((eq skk-emacs-type 'xemacs)
 		   (set-face-property
@@ -552,9 +557,12 @@ keycode 131 = underscore\n"))
 			     (eq next last-command-char))
 		  ;; Emacs 18 で単独打鍵を同一キー連続打鍵で代用できるように。
 		  (skk-nicola-insert-kana next skk-nicola-plain-rule)))))))))
+  ;; `skk-kana-input' が何も入力しないように、nil を返しておく。
   nil)
 
 (defun skk-nicola-insert-kana (char rule &optional arg)
+  ;; CHAR を RULE の中から探して入力すべき文字列を決定する。
+  ;; ARG を与えられた場合はその数だけ文字列を連結して入力する。
   (let* ((el (cadr (assq char rule)))
 	 (str (and el (cond ((stringp el) el)
 			    (skk-katakana (car el))
@@ -569,9 +577,11 @@ keycode 131 = underscore\n"))
 	  (t
 	   ;;
 	   (and skk-henkan-active (skk-kakutei))))
+    ;; 何かに使うことがあるかもしれないので、STR を返しておく。
     str))
 
 (defun skk-nicola-process-okuri ()
+  ;; 送り開始の標識により送り開始点を認識し、送りあり変換を開始する。
   (let ((okuri (buffer-substring-no-properties
                               (1+ skk-nicola-okuri-flag) (point)))
 	(len (if (eq skk-emacs-type 'nemacs) 2 1)) tag)
@@ -599,32 +609,39 @@ keycode 131 = underscore\n"))
 	     (skk-kanagaki-set-okurigana tag)))))))
 
 (defun skk-nicola-set-okuri-flag ()
+  ;; 送り開始点を marker で標識するとともに、`*' を挿入することで送りあり変換の
+  ;; 待ち状態であることを明示する。
   (interactive)
   (when (and skk-henkan-on (not skk-henkan-active))
+    ;; ▽モードのときだけ機能する。
     (let ((pt (point)))
       (unless (and (string= "*" (buffer-substring-no-properties (1- pt) pt))
 		   (markerp skk-nicola-okuri-flag))
+	;; 既に標識済みなら何もしない。
 	(skk-set-marker skk-nicola-okuri-flag pt)
 	(insert-and-inherit "*")))))
 
 (defun skk-nicola-space-function (&optional arg)
   (let ((last-command-char ?\ ))
     (if (or skk-henkan-on skk-henkan-active)
+	;; 変換する。
 	(skk-kanagaki-insert arg)
       (self-insert-command arg))))
 
 (defun skk-nicola-lshift-function (&optional arg)
   (cond ((and skk-henkan-on (not skk-henkan-active)
 	      (not (markerp skk-nicola-okuri-flag)))
+	 ;; 試験中の機能。標識無しの送りあり変換開始。
 	 (skk-kanagaki-set-okurigana))
 	((or skk-henkan-active skk-henkan-on)
+	 ;; 確定に使う。
 	 (let ((skk-egg-like-newline t))
 	   (newline arg)))
 	(skk-nicola-use-lshift-as-space
 	 ;;
 	 (skk-nicola-space-function arg))
 	(t
-	 ;;
+	 ;; 改行に使う。
 	 (newline arg))))
 
 
@@ -652,6 +669,7 @@ keycode 131 = underscore\n"))
   ;;
   (when (and skk-j-mode skk-henkan-on (not skk-henkan-active)
 	     (markerp skk-nicola-okuri-flag))
+    ;; 確定するときは送り開始の標識を消す。
     (save-excursion
       (goto-char skk-nicola-okuri-flag)
       (and (eq (following-char) ?*)
@@ -662,6 +680,7 @@ keycode 131 = underscore\n"))
 (defadvice skk-kanagaki-toggle-rom-kana (around skk-nicola-ad activate compile)
   (setq skk-nicola-okuri-flag nil)
   ad-do-it
+  ;; モード行の表示の調節。
   (cond (skk-use-kana-keyboard
 	 (setq skk-hiragana-mode-string skk-nicola-hiragana-mode-string
 	       skk-katakana-mode-string skk-nicola-katakana-mode-string))
@@ -684,12 +703,13 @@ keycode 131 = underscore\n"))
 
 (static-unless (memq skk-emacs-type '(nemacs mule1))
   ;;
-  (defadvice skk-isearch-setup-keymap (before skk-nicola-ad activate
-					      compile)
+  (defadvice skk-isearch-setup-keymap (before skk-nicola-ad activate compile)
+    ;; 親指キーでサーチが終了してしまわないように。
     (define-key (ad-get-arg 0) skk-nicola-lshift-key 'skk-isearch-wrapper)
     (define-key (ad-get-arg 0) skk-nicola-rshift-key 'skk-isearch-wrapper))
   ;;
   (defadvice isearch-char-to-string (around skk-nicola-ad activate compile)
+    ;; エラーが出ると検索が中断して使い辛いので、黙らせる。
     (cond ((and skk-use-kana-keyboard (featurep 'skk-isearch)
 		(with-current-buffer
 		    (get-buffer-create skk-isearch-working-buffer)
@@ -702,6 +722,7 @@ keycode 131 = underscore\n"))
   ;;
   (defadvice isearch-text-char-description (around skk-nicola-ad activate
 						   compile)
+    ;; エラーが出ると検索が中断して使い辛いので、黙らせる。
     (cond ((and skk-use-kana-keyboard (featurep 'skk-isearch)
 		(with-current-buffer
 		    (get-buffer-create skk-isearch-working-buffer)
@@ -715,12 +736,14 @@ keycode 131 = underscore\n"))
 (static-when (eq skk-emacs-type 'mule2)
   ;;
   (defadvice isearch-char-to-string (after skk-nicola-ad activate compile)
+    ;; この関数が日本語をちゃんと扱えないことに対策。
     (when (integerp (ad-get-arg 0))
       (setq ad-return-value (skk-char-to-string (ad-get-arg 0))))))
 
 (static-when (memq skk-emacs-type '(nemacs mule1))
   ;;
   (defadvice skk-insert (around skk-nicola-ad-e18 activate)
+    ;; バグの原因が明らかになるまでの work around。
     (cond (skk-nicola-okuri-flag
 	   (let ((tag (catch 'okuri (skk-nicola-insert (ad-get-arg 0)))))
 	     (when (memq tag '(ari no-sokuon))
@@ -729,6 +752,7 @@ keycode 131 = underscore\n"))
 	   ad-do-it)))
   ;;
   (defadvice skk-nicola-self-insert-lshift (around skk-nicola-ad-e18 activate)
+    ;; バグの原因が明らかになるまでの work around。
     (cond (skk-nicola-okuri-flag
 	   (let ((tag (catch 'okuri (skk-nicola-insert (ad-get-arg 0)))))
 	     (when (memq tag '(ari no-sokuon))

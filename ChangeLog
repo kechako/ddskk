@@ -1,3 +1,11 @@
+2000-09-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-isearch.el: Add comments.
+
+	* skk-jisx0201.el: No real changes. Just a matter of appearance.
+
+	* skk-leim.el: Don't check for `register-input-method'.
+
 2000-09-16  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* SKK-CFG: Rewrite.

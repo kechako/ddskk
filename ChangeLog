@@ -5,6 +5,9 @@
 	* skk-vars.el (skk-isearch-switch): Default to nil.
 
 	* skk.el (comint-send-input): New advice.
+	(skk-make-temp-jisyo): Use short file name under MS-DOS.
+	(skk-make-temp-file): Expand DIR before passing it to
+	`expand-file-name'.
 
 2000-08-20  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 

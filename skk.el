@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.62 2000/08/04 18:19:38 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.63 2000/08/07 13:01:47 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/04 18:19:38 $
+;; Last Modified: $Date: 2000/08/07 13:01:47 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/08/04 18:19:38 $")
+      (let* ((raw-date "$Date: 2000/08/07 13:01:47 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -463,8 +463,9 @@ dependent."
     (define-key skk-j-mode-map skk-kakutei-key 'skk-kakutei)
     (define-key skk-j-mode-map (char-to-string skk-try-completion-char)
       'skk-insert)
-    (define-key skk-j-mode-map (char-to-string skk-previous-candidate-char)
-      'skk-previous-candidate)
+    (unless (featurep 'skk-kanagaki)
+      (define-key skk-j-mode-map (char-to-string skk-previous-candidate-char)
+	'skk-previous-candidate))
     (define-key skk-jisx0208-latin-mode-map skk-kakutei-key 'skk-kakutei)
     (define-key minibuffer-local-map skk-kakutei-key 'skk-kakutei)
     (define-key minibuffer-local-completion-map skk-kakutei-key 'skk-kakutei)
@@ -1466,13 +1467,18 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	     (condition-case nil
 		 (let* ((event (skk-read-event))
 			(char (event-to-character event))
+			(key (cond ((eq skk-emacs-type 'xemacs)
+				    (event-key event))
+				   (t
+				    (let ((keys (recent-keys)))
+				      (vector (aref keys (1- (length keys))))))))
 			num)
-		   (static-if (eq skk-emacs-type 'xemacs)
+		   (if (eq skk-emacs-type 'xemacs)
 		       (message ""))	; clear out candidates in echo area
-		   (if (null char)
+		   (if (and (null char) (null key))
 		       (skk-unread-event event)
 		     (setq key-num-alist (nthcdr (- 7 n) key-num-alist1))
-		     (and key-num-alist
+		     (and key-num-alist char
 			  (setq num (cdr (or (assq char key-num-alist)
 					     (if (skk-lower-case-p char)
 						 (assq (upcase char) key-num-alist)
@@ -1497,14 +1503,26 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 				;; --- nil)を指す。
 				(setq skk-henkan-count (+ last-showed-index n)
 				      loop nil))))
-			   ((eq char skk-previous-candidate-char) ; ?x
+			   ((or (eq char skk-previous-candidate-char) ; ?x
+				(member (key-description key)
+					(mapcar
+					 (function
+					  (lambda (key)
+					    (key-description key)))
+					 (where-is-internal 'skk-previous-candidate
+							    skk-j-mode-map))))
 			    (if (= loop 0)
 				;; skk-henkan-show-candidates を呼ぶ前の状態に戻
 				;; す。
 				(progn
 				  (setq skk-henkan-count 4)
-				  (skk-unread-event (character-to-event
-						     skk-previous-candidate-char))
+				  (skk-unread-event
+				   (character-to-event
+				    (aref
+				     (car (where-is-internal
+					   'skk-previous-candidate
+					   skk-j-mode-map))
+				     0)))
 				  ;; skk-henkan まで一気に throw する。
 				  (throw 'unread nil))
 			      ;; 一つ前の候補群をエコーエリアに表示する。
@@ -1520,7 +1538,11 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	       (quit
 		;; skk-previous-candidate へ
 		(setq skk-henkan-count 0)
-		(skk-unread-event (character-to-event skk-previous-candidate-char))
+		(skk-unread-event
+		 (character-to-event
+		  (aref
+		   (car (where-is-internal 'skk-previous-candidate skk-j-mode-map))
+		   0)))
 		;; skk-henkan まで一気に throw する。
 		(throw 'unread nil)))))) ; end of while loop
      (if (consp new-one)
@@ -1733,7 +1755,8 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   (skk-with-point-move
    (if (not skk-henkan-active)
        (if (not (eq last-command 'skk-kakutei-henkan))
-	   (skk-kana-input arg)
+	   (and last-command-char (characterp last-command-char)
+		(skk-kana-input arg))
 	 ;; restore the state just before the last kakutei henkan.
 	 (delete-region skk-henkan-start-point (point))
 	 (skk-set-henkan-point-subr)

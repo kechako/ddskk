@@ -47,7 +47,7 @@
 	(skk-%-to-%%): Removed.
 
 	* skk-vars.el (skk-branch-name): New constant.
-	* skk-vars.el (skk-ml-command-address): New constant.
+	(skk-ml-command-address): New constant.
 	(skk-codename): Contain rail company name.
 
 1999-11-28  FURUE Hideyuki  <furue@kke.co.jp>

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.8 1999/11/25 05:43:30 tsumura Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.9 1999/11/25 19:01:02 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/25 05:43:30 $
+;; Last Modified: $Date: 1999/11/25 19:01:02 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -82,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/25 05:43:30 $")
+      (let* ((raw-date "$Date: 1999/11/25 19:01:02 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -3509,13 +3509,13 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	       (setq-default default-modeline-format
 			     (append '("" skk-input-mode-string)
 				     default-modeline-format) ))
-	   (mapc
-	    (function
-	     (lambda (buf)
-	       (if (buffer-live-p buf)
-		   (save-excursion
-		     (set-buffer buf)
-		     (or (memq 'skk-input-mode-string modeline-format)
+	   (mapc (function
+		  (lambda (buf)
+		    (if (buffer-live-p buf)
+			(save-excursion
+			  (set-buffer buf)
+			  (or (not (listp modeline-format))
+			      (memq 'skk-input-mode-string modeline-format)
 			      (setq modeline-format
 				    (append '("" skk-input-mode-string)
 					    modeline-format) ))))))

@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.6 1999/12/05 08:29:46 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.7 1999/12/06 23:31:21 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/05 08:29:46 $
+;; Last Modified: $Date: 1999/12/06 23:31:21 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -143,7 +143,7 @@
       (unwind-protect ad-do-it (skk-cursor-set-properly))
     ad-do-it ))
 
-(defadvice completing-read (around skk-cursor-ad activate)
+(defadvice completing-read (around skk-cursor-ad disable)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (if skk-mode
       (unwind-protect ad-do-it (skk-cursor-set-properly))

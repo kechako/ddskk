@@ -1,3 +1,11 @@
+1999-12-07  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-macs.el (skk-detect-emacs): New macro.
+
+	* skk-cursor.el (completing-read): Disabled.
+
+	* SKK-MK (write-region): New advice, but does not work (;_;)...
+
 1999-12-06  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (isearch-repeat): Compile the advice at the

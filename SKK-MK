@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.8 1999/12/05 14:21:53 kawamura Exp $
-;; Last Modified: $Date: 1999/12/05 14:21:53 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.9 1999/12/06 23:31:21 minakaji Exp $
+;; Last Modified: $Date: 1999/12/06 23:31:21 $
 
 ;; Commentary
 ;;
@@ -240,6 +240,27 @@ end with `skk'." )
 
 (defconst SKK_PACKAGE_NOT_USE '(skk-autoloads))
 (defconst SKK_DAREDEVIL_NOT_USE '(skk-foreword stack-m))
+
+;;; [ADVICES]
+(defadvice write-region (before SKK-MK-ad disable)
+  (save-excursion
+    (let ((filename (ad-get-arg 2)))
+      (if (string= "skk-macs.elc" (file-name-nondirectory filename))
+	  (progn
+	    (goto-char (point-min))
+	    (re-search-forward "^$")
+	    (insert 
+	     (format
+	      "\n(or (eq (cond ((string-match \"XEmacs\" emacs-version) 'xemacs)
+	      ((and (boundp 'mule-version)
+		    (string< \"4.0\" mule-version) 'mule4 ))
+	      ((and (boundp 'mule-version)
+		    (string< \"3.0\" mule-version) 'mule3 ))
+	      ((and (boundp 'mule-version)
+		    (string< \"2.0\" mule-version) 'mule2 )))
+	'%s )
+    (error \"This SKK was byte compiled by different type of Emacs!\") )\n"
+	      (symbol-value 'skk-emacs-type) )))))))
 
 ;;; [FUNCTIONS]
 (defun SKK-MK-compile ()

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.59 2000/07/17 20:59:18 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.60 2000/08/02 14:35:27 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/17 20:59:18 $
+;; Last Modified: $Date: 2000/08/02 14:35:27 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/07/17 20:59:18 $")
+      (let* ((raw-date "$Date: 2000/08/02 14:35:27 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1543,6 +1543,11 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		       count (1+ count))
 	       (setq count 7)))
 	   (nreverse v)))
+	(string-width-function
+	 (static-cond ((memq skk-emacs-type '(mule4 mule5))
+		       'string-bytes)
+		      (t
+		       'string-width)))
 	(n 0) str cand message-log-max)
     (if (not (car workinglst))
         nil
@@ -1562,7 +1567,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		 "%s  [残り %d%s]"
 		 str (length (nthcdr n candidates))
 		 (make-string (length skk-current-search-prog-list) ?+)))
-      (if (> (frame-width) (string-width str))
+      (if (> (frame-width) (funcall string-width-function str))
 	  (message str)
 	(let ((buff (get-buffer-create "*候補*"))
 	      (case-fold-search t))
@@ -1571,14 +1576,26 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	    (erase-buffer)
 	    (insert str)
 	    (goto-char (point-min))
-	    (while (and (move-to-column (frame-width))
+	    ;; 1 候補に 1 行をわりあてる。
+	    (forward-char 2)
+	    (while (re-search-forward
+		    (concat "  "
+			    (mapconcat 'identity keys ":\\|  ") ":\\|"
+			    "  \\[残り [0-9]+\\(\\++\\)?\\]") nil t)
+	      (goto-char (match-beginning 0))
+	      (delete-char 2)
+	      (insert "\n"))
+	    (goto-char (point-min))
+	    (while (and (move-to-column (- (frame-width) 2))
 			(not (eobp))
 			(>= (frame-width) (current-column)))
-	      (re-search-backward
-	       (concat "  " (mapconcat 'identity keys ":\\|  ") ":") nil t nil)
-	      (delete-char 2)
-	      (insert "\n")
+	      (when (not (eolp))
+		(backward-char 1)
+		(insert "\n  "))
 	      (forward-line 1)))
+	  ;; *候補* バッファを見易くする。
+	  ;; (save-window-excursion の中なので大丈夫なはず)
+	  (delete-other-windows)
 	  (display-buffer buff))))
     ;; 表示する候補数を返す。
     n))
@@ -2761,10 +2778,15 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 (defun skk-search ()
   ;; skk-current-search-prog-list の要素になっているプログラムを評価して、
   ;; skk-henkan-keyをキーにして検索を行う。
-  (let (l)
+  (let (l prog)
     (while (and (null l) skk-current-search-prog-list)
-      (setq l (eval (car skk-current-search-prog-list))
-	    skk-current-search-prog-list (cdr skk-current-search-prog-list)))
+      (setq l (eval (setq prog (car skk-current-search-prog-list)))
+	    skk-current-search-prog-list (cdr skk-current-search-prog-list))
+      (when skk-use-numeric-conversion
+	(setq l
+	      (append l
+		      (let (skk-use-numeric-conversion)
+			(eval prog))))))
     l))
 
 (defun skk-search-jisyo-file (file limit &optional nomsg)

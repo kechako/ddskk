@@ -6,13 +6,13 @@
 @c          Yukiyoshi Kameyama <kameyama@@kuis.kyoto-u.ac.jp>
 @c          Mikio Nakajima <minakaji@osaka.email.ne.jp>
 @c  Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-@c  Version: $Id: skk.texi,v 1.9.2.1.2.2 1999/11/28 04:55:27 minakaji Exp $
+@c  Version: $Id: skk.texi,v 1.9.2.1.2.3 1999/12/08 19:26:57 furue Exp $
 @c  Keywords: japanese
-@c  Last Modified: $Date: 1999/11/28 04:55:27 $
+@c  Last Modified: $Date: 1999/12/08 19:26:57 $
 @c
 @set EDITION 1.4
 @set SKK-VERSION 10.51
-@set UPDATED $Date: 1999/11/28 04:55:27 $
+@set UPDATED $Date: 1999/12/08 19:26:57 $
 @c @set UPDATED-MONTH Oct 1998
 
 @direntry
@@ -3185,11 +3185,11 @@ SKK$B%b!<%I$K$J$C$F$$$J$$(BEmacs$B%*%j%8%J%k%P%C%U%!$G$O!"O"B3$9$k(B20$BJ8;
 @end group
 
 @samp{.}
+@footnote{@samp{$B$5$H$&(B}$B$N<!$KJd40$5$l$k8+=P$78l$O!"8D?M<-=q$NFbMF$K0MB8$9$k!#(B}
 
 @group
 ------ Buffer: foo ------
-$B"&$5$$$H$&(B@footnote{@samp{$B$5$H$&(B}$B$N<!$KJd40$5$l$k8+=P$78l$O!"8D?M<-=q$N(B
-$BFbMF$K0MB8$9$k!#(B}
+$B"&$5$$$H$&(B
 ------ Buffer: foo ------
 @end group
 

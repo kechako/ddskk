@@ -43,6 +43,15 @@
   (` (unless (eq 0 (forward-line (, n)))
        (insert "\n"))))
 
+(defmacro install-info-point-at-eol (&optional n)
+  (if (fboundp 'point-at-eol)
+      (` (point-at-eol (, n)))
+    (` (save-excursion
+	 (unless (or (null (, n)) (= 1 (, n)))
+	   (forward-line (- (, n) 1)))
+	 (end-of-line)
+	 (point)))))
+
 ;; Functions.
 (defun install-info-groups (section entry)
   (let (groups)
@@ -115,10 +124,11 @@ from DIR-FILE; don't insert any new entries."
 	(set-buffer buf)
 	(goto-char (point-min))
 	(while (re-search-forward "^INFO-DIR-SECTION " nil t)
-	  (end-of-line)
 	  (setq section
 		(nconc section
-		       (list (buffer-substring (match-end 0) (point)))))))
+		       (list (buffer-substring
+			      (match-end 0)
+			      (install-info-point-at-eol)))))))
       (unless section
 	(setq section (list "Miscellaneous")))
       (setq groups (install-info-groups section entry)))
@@ -129,11 +139,10 @@ from DIR-FILE; don't insert any new entries."
 	(while (re-search-forward "^START-INFO-DIR-ENTRY" nil t)
 	  (install-info-forward-line 1)
 	  (while (not (looking-at "^END-INFO-DIR-ENTRY"))
-	    (let (start str)
-	      (setq start (point))
+	    (let ((start (point))
+		  str)
 	      (unless (eolp)
-		(end-of-line)
-		(setq str (buffer-substring start (point)))
+		(setq str (buffer-substring start (install-info-point-at-eol)))
 		(if (string-match "^* " str)
 		    (setq entry (cons str entry))
 		  (when entry
@@ -152,21 +161,21 @@ from DIR-FILE; don't insert any new entries."
 	  (let (section entry)
 	    (beginning-of-line)
 	    (while (looking-at "^INFO-DIR-SECTION ")
-	      (end-of-line)
 	      (setq section
 		    (nconc section
-			   (list (buffer-substring (match-end 0) (point)))))
+			   (list (buffer-substring
+				  (match-end 0) (install-info-point-at-eol)))))
 	      (install-info-forward-line 1))
 	    (while (and (eolp) (not (eobp)))
 	      (install-info-forward-line 1))
 	    (when (looking-at "^START-INFO-DIR-ENTRY")
 	      (install-info-forward-line 1)
 	      (while (not (looking-at "^END-INFO-DIR-ENTRY"))
-		(let (start str)
-		  (setq start (point))
+		(let ((start (point))
+		      str)
 		  (unless (eolp)
-		    (end-of-line)
-		    (setq str (buffer-substring start (point)))
+		    (setq str (buffer-substring start
+						(install-info-point-at-eol)))
 		    (if (string-match "^* " str)
 			(setq entry (cons str entry))
 		      (when entry
@@ -184,11 +193,11 @@ from DIR-FILE; don't insert any new entries."
 	  (while (re-search-forward "^START-INFO-DIR-ENTRY" nil t)
 	    (install-info-forward-line 1)
 	    (while (not (looking-at "^END-INFO-DIR-ENTRY"))
-	      (let (start str)
-		(setq start (point))
+	      (let ((start (point))
+		    str)
 		(unless (eolp)
-		  (end-of-line)
-		  (setq str (buffer-substring start (point)))
+		  (setq str (buffer-substring start
+					      (install-info-point-at-eol)))
 		  (if (string-match "^* " str)
 		      (setq entry (cons str entry))
 		    (when entry
@@ -264,11 +273,9 @@ File: dir,	Node: Top	This is the top of the INFO tree
 
 * Menu:
 "))
-      (dolist (group
-	       (sort groups
-		     (function
-		      (lambda (g1 g2)
-			(string-lessp (car g1) (car g2))))))
+      (dolist (group (sort groups (function
+				   (lambda (g1 g2)
+				     (string-lessp (car g1) (car g2))))))
 	(let ((sec (car group))
 	      (entry (cdr group)))
 	  (goto-char (point-min))
@@ -294,10 +301,9 @@ File: dir,	Node: Top	This is the top of the INFO tree
 		(save-excursion
 		  (catch 'here
 		    (while (not (eolp))
-		      (let ((line
-			     (buffer-substring
-			      (point)
-			      (save-excursion (end-of-line) (point)))))
+		      (let ((line (buffer-substring
+				   (point)
+				   (install-info-point-at-eol))))
 			(if (string-lessp line en)
 			    (install-info-forward-line 1)
 			  (throw 'here t)))))

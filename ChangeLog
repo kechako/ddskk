@@ -1,3 +1,13 @@
+1999-12-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-dos.el: New file.
+
+	* skk-jisx0201.el (skk-setup-modeline): Don't check the feature
+	`xemacs'. Refer to `skk-emacs-type' instead.
+
+	* skk-vars.el (skk-cursor-change-width): Ugh, fix the default
+	value.
+
 1999-12-27  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-vars.el (skk-background-mode): Don't call `x-color-values'

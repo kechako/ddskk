@@ -1,7 +1,17 @@
+1999-12-16  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-isearch.el (skk-isearch-abbrev-mode-p): New function.
+	(skk-isearch-current-mode): Enable to recognize abbrev mode.
+	(isearch-repeat): This should be `after' advice.
+	(isearch-edit-string): New advice.
+
+	* skk-vars.el (skk-isearch-mode-string-alist): Add a string for
+	abbrev mode.
+
 1999-12-16  Yuh Ohmura <yutopia@t3.rim.or.jp>
 
-        * make.bat : correct bug.
-	
+	* make.bat : correct bug.
+
 1999-12-15  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (skk-isearch-setup-keymap): No longer check if

@@ -1,3 +1,8 @@
+2000-09-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-look.el (skk-look-ispell): Use the original word as well as
+	misses and guesses.
+
 2000-09-09  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-look.el (skk-look-ispell): Call `skk-look-1' for a word

@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-# Version: $Id: Makefile,v 1.13.4.19 2000/09/11 00:35:14 minakaji Exp $
-# Last Modified: $Date: 2000/09/11 00:35:14 $
+# Version: $Id: Makefile,v 1.13.4.20 2000/09/18 16:11:08 czkmt Exp $
+# Last Modified: $Date: 2000/09/18 16:11:08 $
 
 
 VERSION = 11.3
@@ -24,7 +24,7 @@ elc:
 	$(EMACS) $(FLAGS) -f SKK-MK-compile
 
 package:
-	$(XEMACS) $(FLAGS) -f SKK-MK-compile
+	$(XEMACS) $(FLAGS) -f SKK-MK-compile-package
 
 info:
 	$(EMACS) $(FLAGS) -f SKK-MK-compile-info

@@ -2,9 +2,9 @@
 ;; Copyright (C) 2000 Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
-;; Version: $Id: skk-kanagaki.el,v 1.1.2.2 2000/08/07 14:03:11 czkmt Exp $
+;; Version: $Id: skk-kanagaki.el,v 1.1.2.3 2000/08/08 14:12:08 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/07 14:03:11 $
+;; Last Modified: $Date: 2000/08/08 14:12:08 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -24,19 +24,26 @@
 
 ;;; Commentary:
 ;;
-;; {使いかた (暫定バージョン)}
+;; {てっとり早い使いかた (暫定バージョン)}
 ;;
 ;; ~/.skk に
 ;;
 ;; (require 'skk-kanagaki)
 ;;
-;; と書く。
+;; と書く (将来的には require する必要はなくなる、と思う)。
+;;
 ;;
 ;; {説明}
 ;;
 ;; このプログラムは  SKK においてローマ字入力ならぬ仮名入力をサポートすることを
 ;; 目的とします。 AT 互換機用の日本語 106 キーボードは普通 JIS 配列の刻印があり
-;; ますが、まずはこれに対応する予定です。
+;; ますが、まずはこれに対応する予定です。PC-98 への対応はこれを少し変更すればで
+;; きると思います。
+;;
+;;  -*- 問題点 -*-
+;;
+;; 1. Emacs Lisp のレベルでの問題
+;;
 ;; 仮名入力においては SHIFT キーを利用して入力される仮名もあるため、 SKK 本来の
 ;; SHIFT の使い方ができません。その他いろいろ SKK らしくないのですが、 とりあえ
 ;; ず、
@@ -51,6 +58,8 @@
 ;;
 ;; のように打ちます。
 ;; (改善の余地があると思いますが、とりあえずアイデアがここで尽きています。)
+;;
+;; 2. システムレベルでの問題
 ;;
 ;; 第 2 の問題点として、 キーシンボルの設定により刻印通りの入力ができない場合が
 ;; あります。例えば日本語 106 キーボード使用時、XFree86 上では
@@ -83,6 +92,63 @@
 ;;
 ;; さらに、もしあなたが PC-98 ユーザ で XEmacs のベータテスターならば、おもむろ
 ;; に「かな」キーをロックしてみてください。 ;')
+;;
+;;  -*- 使い方 -*-
+;;
+;; 送りなしの変換については、通常の SKK と同様なので省略します。
+;;
+;; 1. 変換開始点の指定
+;;
+;; 通常の SKK においては、 SHIFT を押しながら入力することで変換開始位置を明示し
+;; ていましたが、仮名入力ではこれができません。そこで、コマンド
+;; skk-set-henkan-point-subr をキーにバインド (デフォルトは [f2]) し、 これを押
+;; すことで変換開始位置を指定するようにしました。 要は、abbrev モードと同様のや
+;; り方で変換を開始することになります。例えば「春」の入力は
+;;
+;; [f2] はる ⇒ ▽はる [SPC] ⇒ ▼春
+;;
+;; または
+;;
+;; はる ^B^B [f2] ⇒ ▽はる ^F^F [SPC] ⇒ ▼春
+;;
+;; のいずれかでできます。
+;;
+;; 2. 送りありの変換のしかた
+;;
+;; 通常の SKK においては、 SHIFT を押しながら入力することで送り仮名の位置を明示
+;; していました。仮名入力 SKK においてはそれはできません。そこで
+;;
+;; o C-u [SPC] が押されたときに、 直前の 1 文字を送り仮名と見倣して変換を開始す
+;;   る (C-u が押されなければ送りなしと見倣す)。
+;;
+;; という風にしてみました。 但し、促音があった場合には促音も含めて 2 文字を送り
+;; 仮名と見倣します。例えば、「待って」と入力したい場合は
+;;
+;; ▽まって C-u [SPC]  ⇒ ▼待って
+;;
+;; のようになります。
+;;
+;; 3. いくつかの重要なキー定義について
+;;
+;; カナ入力が 「q」、 abbrev モードが 「/」、latin モードが 「l」などは定番です
+;; が、仮名入力ではこれも使えません。仮名入力できるキーボードでファンクションキ
+;; ーが使えないことはあまり無いだろうと思い、デフォルトではこれらをファンクショ
+;; ンキーに任せてみました。デフォルトでは以下のようになっています。ユーザオプシ
+;; ョンなので自由に変更できます。
+;;
+;; [f2]  … 変換開始点の指定
+;; [f5]  … コード入力
+;; [f6]  … abbrev モード
+;; [f7]  … カナモードまたはカナ変換
+;; [f8]  … 全英モード
+;; [f9]  … 半角カナモードまたは半角カナ変換
+;; [f10] … latin モード
+;;
+;; {TODO}
+;;
+;; o このプログラムでサポート可能な入力方法 (キーボード) については、これをサポ
+;;   ートする。
+;; o このプログラムでサポート不可能なものは別のプログラムを書いてサポートする。
 
 ;;; Code:
 
@@ -93,6 +159,7 @@
   :group 'skk)
 
 ;; Variables.
+
 (defcustom skk-use-kana-keyboard t "\
 *Non-nil なら仮名入力用の設定をロードする。
 SKK 使用中にこの変数の値を切り替えることで  ローマ字入力 ←→ 仮名入力 のトグル
@@ -109,41 +176,69 @@ SKK 使用中にこの変数の値を切り替えることで  ローマ字入力 ←→ 
   :type 'symbol
   :group 'skk-kanagaki)
 
-(defcustom skk-kanagaki-set-henkan-point-key [f2] "\
+(defcustom skk-kanagaki-set-henkan-point-key
+  (cond ((memq skk-emacs-type '(nemacs mule1))
+	 "\e[12~")
+	(t
+	 [f2])) "\
 *このキーを押すことで変換開始位置を設定する。
 変換開始位置の設定は仮名を入力する前におこなっても、 入力し終わった後でおこなっ
 ても構わない。"
   :type 'sexp
   :group 'skk-kanagaki)
 
-(defcustom skk-kanagaki-abbrev-mode-key [f6] "\
+(defcustom skk-kanagaki-abbrev-mode-key
+  (cond ((memq skk-emacs-type '(nemacs mule1))
+	 "\e[17~")
+	(t
+	 [f6])) "\
 *このキーを押すことで abbrev モードに入る。"
   :type 'sexp
   :group 'skk-kanagaki)
 
-(defcustom skk-kanagaki-katakana-mode-key [f7] "\
+(defcustom skk-kanagaki-katakana-mode-key
+  (cond ((memq skk-emacs-type '(nemacs mule1))
+	 "\e[18~")
+	(t
+	 [f7])) "\
 *このキーを押すことでカナモードとかなモードを切りかえる。
 変換開始位置の設定後に押すことで対象文字列をカナに変換することもできる。"
   :type 'sexp
   :group 'skk-kanagaki)
 
-(defcustom skk-kanagaki-latin-jisx0208-mode-key [f8] "\
+(defcustom skk-kanagaki-latin-jisx0208-mode-key
+  (cond ((memq skk-emacs-type '(nemacs mule1))
+	 "\e[19~")
+	(t
+	 [f8])) "\
 *このキーを押すことで全角英数モードに入る。"
   :type 'sexp
   :group 'skk-kanagaki)
 
-(defcustom skk-kanagaki-hankaku-mode-key [f9] "\
+(defcustom skk-kanagaki-hankaku-mode-key
+  (cond ((memq skk-emacs-type '(nemacs mule1))
+	 "\e[20~")
+	(t
+	 [f9])) "\
 *このキーを押すことで半角カナモードに切りかえる。
 変換開始位置の設定後に押すことで対象文字列を半角カナに変換することもできる。"
   :type 'sexp
   :group 'skk-kanagaki)
 
-(defcustom skk-kanagaki-latin-mode-key [f10] "\
+(defcustom skk-kanagaki-latin-mode-key
+  (cond ((memq skk-emacs-type '(nemacs mule1))
+	 "\e[21~")
+	(t
+	 [f10])) "\
 *このキーを押すことで latin モードに入る。"
   :type 'sexp
   :group 'skk-kanagaki)
 
-(defcustom skk-kanagaki-code-input-key [f5] "\
+(defcustom skk-kanagaki-code-input-key
+  (cond ((memq skk-emacs-type '(nemacs mule1))
+	 "\e[15~")
+	(t
+	 [f5])) "\
 *このキーを押すことでコード入力ができる。"
   :type 'sexp
   :group 'skk-kanagaki)
@@ -152,7 +247,8 @@ SKK 使用中にこの変数の値を切り替えることで  ローマ字入力 ←→ 
 *前候補を表示するためのキー。
 XFree86 上で使用する場合、 例えばこの値を [henkan]  (XEmacs では [henkan-mode])
 にすれば、日本語キーボードの [前候補] キーに割り当てることができる。 同キーは、
-Mule2.3@19.28 では [key-35]、Mule2.3@19.34 では [numbersign] となるらしい。"
+Mule2.3@19.28 では  [key-35]、 Mule2.3@19.34 では  [numbersign] (??) となるらし
+い。"
   :type 'sexp
   :group 'skk-kanagaki)
 
@@ -162,15 +258,16 @@ Mule2.3@19.28 では [key-35]、Mule2.3@19.34 では [numbersign] 
 $B$rMQ$$$F$=$l$KBP1~$7$?@_Dj$r$9$k$3$H$,$G$-$k!#"
   :type '(repeat
 	  (list :tag "Rule"
-		(string :tag "1 (string)")
-		(choice :tag "2 (choice)"
+		(string :tag "1 (keyboard input)")
+		(choice :tag "2 (choose string if sokuon)"
 			string
 			(const nil))
 		(choice :tag "3 (choice)"
 			(symbol :tag "Function")
-			string
-			(cons (string :tag "3-1 (string)")
-			      (string :tag "3-2 (string)")))))
+			(string :tag "String (common)")
+			(cons :tag "Strings (katakana & hiragana)"
+			 (string :tag "3-1 (katakana string)")
+			 (string :tag "3-2 (hiragana string)")))))
   :group 'skk-kanagaki)
 
 (defcustom skk-kanagaki-jidou-key-symbol-kakikae-service nil "\

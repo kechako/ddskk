@@ -1,8 +1,8 @@
 -*- outline -*-
 
-             $Date: 2000/04/26 00:41:36 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
+             $Date: 2000/04/26 21:27:05 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
                                                          　　　　 <minakaji@pdx.ne.jp> 
-	     $Id: INSTALL,v 1.17.4.2 2000/04/26 00:41:36 minakaji Exp $ 
+	     $Id: INSTALL,v 1.17.4.3 2000/04/26 21:27:05 minakaji Exp $ 
 
 * APEL 
 
@@ -144,7 +144,7 @@ recommended to load skk-obsolete.el and
 
 * Easy setup
 
-You can easily setup .emacs.  Put the following form in your .emacs.
+You can easily setup SKK.  Put the following form in your .emacs.
 
    (require 'skk-setup)
 

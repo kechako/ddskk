@@ -1,3 +1,7 @@
+2000-04-27  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/INSTALL: Typo fixed.
+
 2000-04-26  Yuh Ohmura <yutopia@t3.rim.or.jp>
 
 	* make.bat: Change maintenner.
@@ -23,6 +27,8 @@
 
 	* Makefile (clean): Add `skk-setup.el'.
 
+	* dic/README: New file.
+	
 	* skk-setup.el.in: New file.
 
 2000-04-09  Takao KAWAMURA  <kawamura@debian.org>

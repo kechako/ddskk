@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/14 14:50:18 $
+;; Last Modified: $Date: 2000/10/11 11:21:13 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -28,6 +28,9 @@
 ;; す。
 
 ;;; Code:
+
+(eval-when-compile
+  (require 'static))
 
 ;; Variables.
 

@@ -1,5 +1,10 @@
 1999-11-22  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-isearch.el : Use `static-if', requiring "static" at the
+	compile time.
+
+1999-11-22  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* skk-isearch.el (skk-isearch-setup-keymap): Define
 	`skk-kakutei-key' instead of "\C-j" if the symbol value is already
 	set. Define backward-deleting keys to run

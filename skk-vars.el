@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.47 2000/10/25 14:47:43 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.48 2000/10/27 09:42:15 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/25 14:47:43 $
+;; Last Modified: $Date: 2000/10/27 09:42:15 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2654,6 +2654,12 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
 (defvar skk-lookup-default-module nil)
 (defvar skk-lookup-module-list nil)
 (defvar skk-lookup-prefix-and-kana-map nil)
+
+;; SKK-ANNORTATION related variables.
+(defcustom skk-show-annotation nil
+  "*Non-nil $B$G$"$l$P!"<-=q$N8uJd$K4^$^$l$k(B`;'$B0J9_$NJ8;zNs$rJQ49$N:]!"Cm5-$H$7$FJL(B Window $B$KI=<($9$k!#(B"
+  :type 'boolean
+  :group 'skk-misc)
 
 (require 'product)
 (product-provide (provide 'skk-vars) (require 'skk-version))

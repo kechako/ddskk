@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-jisx0213.el,v 1.1.2.2 2000/10/15 20:34:48 minakaji Exp $
+;; Version: $Id: skk-jisx0213.el,v 1.1.2.3 2000/10/27 09:42:15 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Sep. 30, 2000.
-;; Last Modified: $Date: 2000/10/15 20:34:48 $
+;; Last Modified: $Date: 2000/10/27 09:42:15 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -28,6 +28,7 @@
 ;;; Commentary:
 ;;
 ;;; Code:
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 (require 'jisx0213)
 ;;(require 'un-define)
 

@@ -1,3 +1,18 @@
+2000-10-27  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-MK (SKK_MODULES): Add skk-annotation.
+
+	* skk-vars.el (skk-show-annotation): New user option.
+
+	* skk-jisx0213.el: Require `skk-macs' and `skk-vars'.
+
+	* skk.el (skk-quote-char): Quote ";".
+	(skk-insert-new-word): Divide WORD into two pieace, real WORD and
+	ANNOTATION and call `skk-annotation-show' if `skk-show-annotation'
+	is non-nil.
+
+	* experimental/skk-annotation.el: New experimental program.
+
 2000-10-26  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* READMEs/FAQ.txt (Emacs 20 に SKK 9.6 がインストールできません。,

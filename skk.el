@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.84 2000/10/22 05:14:57 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.85 2000/10/27 09:42:16 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/22 05:14:57 $
+;; Last Modified: $Date: 2000/10/27 09:42:16 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -1880,14 +1880,22 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
   ;; 見出し語を消し、その場所へ変換結果の文字列を挿入する。
   ;; Emacs 19.28 だと Overlay を消しておかないと、次に insert される
   ;; skk-henkan-key に何故か Overlay がかかってしまう。
-  (and skk-use-face (skk-henkan-face-off))
-  (delete-region skk-henkan-start-point skk-henkan-end-point)
-  (goto-char skk-henkan-start-point)
-  (insert-and-inherit (if (skk-lisp-prog-p word) (skk-eval-string word) word))
-  (skk-set-marker skk-henkan-end-point (point))
-  (and skk-use-face (skk-henkan-face-on))
-  (and skk-insert-new-word-function
-       (funcall skk-insert-new-word-function)))
+  (save-match-data
+    (let (annotation)
+      (if (string-match ";" word)
+	  (setq annotation (substring word (match-end 0))
+		word (substring word 0 (match-beginning 0))))
+      (setq word (if (skk-lisp-prog-p word) (skk-eval-string word) word))
+      (and skk-use-face (skk-henkan-face-off))
+      (delete-region skk-henkan-start-point skk-henkan-end-point)
+      (goto-char skk-henkan-start-point)
+      (insert-and-inherit word)
+      (skk-set-marker skk-henkan-end-point (point))
+      (and skk-use-face (skk-henkan-face-on))
+      (if (and skk-show-annotation annotation)
+	  (skk-annotation-show annotation))
+      (and skk-insert-new-word-function
+	   (funcall skk-insert-new-word-function)))))
 
 (defun skk-kakutei (&optional word)
   "現在表示されている語で確定し、辞書の更新を行う。
@@ -3260,6 +3268,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
         (concat "(concat \""
                 (mapconcat (function (lambda (c)
                                        (cond ((eq c ?/) "\\057")
+					     ((eq c ?\;) "\\073")
                                              ((eq c ?\n) "\\n")
                                              ((eq c ?\r) "\\r")
                                              ((eq c ?\") "\\\"")

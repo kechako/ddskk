@@ -1,5 +1,8 @@
 2000-11-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
+	* experimental/skk-annotation.el, skk-macs.el: Sync with main
+	trunk.
+
 	* SKK-MK (SKK_INFODIR): See `Info-directory-list' when
 	$INFOPATH is set.
 

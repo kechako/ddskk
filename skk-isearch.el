@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.24 2000/08/20 04:36:05 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.25 2000/09/04 14:44:33 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/20 04:36:05 $
+;; Last Modified: $Date: 2000/09/04 14:44:33 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -217,6 +217,11 @@ kakutei'ed and erase the buffer contents."
 	(setq skk-isearch-mode-map
 	      (skk-isearch-setup-keymap (cons 'keymap isearch-mode-map))))))
   (set skk-isearch-overriding-local-map skk-isearch-mode-map)
+  (when (and (boundp 'current-input-method) current-input-method
+	     (string-match "^japanese-skk" current-input-method))
+    (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
+      (or current-input-method
+	  (toggle-input-method))))
   (setq skk-isearch-switch t)
   (setq skk-isearch-in-editing nil)
   (setq skk-isearch-incomplete-message ""
@@ -251,6 +256,10 @@ kakutei'ed and erase the buffer contents."
   (setq skk-isearch-switch nil)
   (or skk-isearch-in-editing
       (setq skk-isearch-state nil))
+  (when (and (boundp 'default-input-method)
+	     (string-match "^japanese-skk" (format "%s" default-input-method)))
+    (with-current-buffer (get-buffer-create skk-isearch-working-buffer)
+      (inactivate-input-method)))
   (remove-hook 'pre-command-hook 'skk-pre-command 'local)
   (skk-remove-minibuffer-setup-hook
    'skk-j-mode-on 'skk-setup-minibuffer
@@ -269,7 +278,7 @@ Optional argument PREFIX is apppended if given."
 ;;
 
 (defun skk-isearch-find-keys-define (map commands command)
-  (let (keys)
+  (let (keys prefs)
     (mapcar
      (function (lambda (c)
 		 (setq keys (where-is-internal c (current-global-map)))
@@ -280,8 +289,10 @@ Optional argument PREFIX is apppended if given."
 				  (cond ((> len 2)
 					 (throw 'tag nil))
 					((= len 2)
-					 (define-key map (vector (aref key 0))
-					   (make-sparse-keymap))))
+					 (unless (member (aref key 0) prefs)
+					   (define-key map (vector (aref key 0))
+					     (make-sparse-keymap))
+					   (setq prefs (cons (aref key 0) prefs)))))
 				  (define-key map key command)))))
 		  keys)))
      commands)))
@@ -306,7 +317,7 @@ Optional argument PREFIX is apppended if given."
   ;; Keys for `skk-isearch-skk-mode'.
   (let ((commands '(skk-mode skk-auto-fill-mode)))
     (if (and (boundp 'default-input-method)
-	     (equal default-input-method "japanese-skk"))
+	     (string-match "^japanese-skk" (format "%s" default-input-method)))
 	(setq commands (cons 'toggle-input-method commands)))
     (skk-isearch-find-keys-define map commands 'skk-isearch-skk-mode))
 
@@ -494,6 +505,7 @@ If the current mode is different from previous, remove it first."
       (skk-isearch-mode-message)
       (isearch-message))))
 
+;;;###autoload
 (defun skk-isearch-skk-mode (&rest args)
   (interactive "P")
   (skk-isearch-redo-function)

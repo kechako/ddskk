@@ -1,3 +1,8 @@
+1999-11-22  FURUE Hideyuki  <furue@kke.co.jp>
+
+	* skk-isearch.el (skk-isearch-mode-setup): Call `skk-erase-prefix'
+	with its argument non-nil in `skk-isearch-working-buffer'.
+
 1999-11-23  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-jisx0201.el (skk-setup-modeline): Fix typo -- use
@@ -16,7 +21,7 @@
 
 1999-11-22  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
-	* skk-isearch.el : Use `static-if', requiring "static" at the
+	* skk-isearch.el: Use `static-if', requiring "static" at the
 	compile time.
 
 1999-11-22  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.26 1999/12/23 06:33:35 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.27 1999/12/23 08:37:30 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/23 06:33:35 $
+;; Last Modified: $Date: 1999/12/23 08:37:30 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/12/23 06:33:35 $")
+      (let* ((raw-date "$Date: 1999/12/23 08:37:30 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1636,7 +1636,8 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	;; ユーザの指示に従い送り仮名を取り除く。
 	(progn
 	  (message "")
-	  (substring word 0 (match-beginning 0))))))
+	  (setq word (substring word 0 (match-beginning 0))))))
+  word )
 
 (defun skk-setup-minibuffer ()
   ;; カレントバッファの入力モードに従いミニバッファの入力モードを設定する。

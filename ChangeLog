@@ -1,6 +1,7 @@
 2000-01-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (skk-insert-new-word): Use `skk-eval-string'.
+	(skk-insert-new-word): Remove unnecessary temporary variable FUNC.
 
 	* skk-macs.el (skk-lisp-prog-p): Move from skk.el and make it
 	inline.

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.31 2000/01/19 13:34:25 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.32 2000/01/19 13:43:16 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/19 13:34:25 $
+;; Last Modified: $Date: 2000/01/19 13:43:16 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/19 13:34:25 $")
+      (let* ((raw-date "$Date: 2000/01/19 13:43:16 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -1723,19 +1723,18 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 
 (defun skk-insert-new-word (word)
   ;; 見出し語を消し、その場所へ変換結果の文字列を挿入する。
-  (let (func)
-    ;; Emacs 19.28 だと Overlay を消しておかないと、次に insert される
-    ;; skk-henkan-key に何故か Overlay がかかってしまう。
-    (and skk-use-face (skk-henkan-face-off))
-    (delete-region skk-henkan-start-point skk-henkan-end-point)
-    (goto-char skk-henkan-start-point)
-    (insert-and-inherit (if (not (skk-lisp-prog-p word))
-			    word
-			  (or (skk-eval-string word) word)))
-    (skk-set-marker skk-henkan-end-point (point))
-    (and skk-use-face (skk-henkan-face-on))
-    (and skk-insert-new-word-function
-	 (funcall skk-insert-new-word-function))))
+  ;; Emacs 19.28 だと Overlay を消しておかないと、次に insert される
+  ;; skk-henkan-key に何故か Overlay がかかってしまう。
+  (and skk-use-face (skk-henkan-face-off))
+  (delete-region skk-henkan-start-point skk-henkan-end-point)
+  (goto-char skk-henkan-start-point)
+  (insert-and-inherit (if (not (skk-lisp-prog-p word))
+			  word
+			(or (skk-eval-string word) word)))
+  (skk-set-marker skk-henkan-end-point (point))
+  (and skk-use-face (skk-henkan-face-on))
+  (and skk-insert-new-word-function
+       (funcall skk-insert-new-word-function)))
 
 (defun skk-kakutei (&optional word)
   "現在表示されている語で確定し、辞書の更新を行う。

@@ -1,3 +1,18 @@
+1999-12-04  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-isearch.el (skk-isearch-redo-function): Use list for handler
+	of condition-case.
+
+	* skk.el (skk-kakutei-initialize): Remove skk-num and skk-look
+	related code.
+	(skk-undo-kakutei): Use list for handler of condition-case.
+
+	* skk-look.el (skk-kakutei-initialize): New advice for initialize
+	skk-look related variables.
+
+	* skk-num.el (skk-kakutei-initialize): New advice for initialize
+	skk-num related variables.
+
 1999-12-04  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* etc/Emacs.ad: New file. This is for displaying menu items in
@@ -36,6 +51,18 @@
  	before pass it to `find-coding-system'.  xemacs's
  	`find-coding-system' doesn't like string argument.
 
+1999-12-03  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-study.el: Remove
+	``;; -*- mode: emacs-lisp; byte-compile-dynamic: t;-*-'' and
+        ``;; -*- byte-compile-dynamic-docstring: t;-*-'' cooklies.
+
+	* skk-isearch.el: Remove
+	``;; -*- byte-compile-dynamic-docstring: t;-*-'' cookie.
+
+	* skk-look.el: Remove ``;; -*-byte-compile-dynamic: t;-*-''
+	cookie.
+
 1999-12-03  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK (SKK_INFOS): Add skk.info-5 and skk.info-6.
@@ -64,6 +91,29 @@
 	* READMEs/CVS_on_Windows: update
 
 	* make.bat: add what-where and clean option
+	
+1999-12-01  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-abbrev.el: Do not require stack-m.
+	(skk-completion-original): Do not use stack-all.
+
+	* skk-look.el: Do not require stack-m and path-util.
+	(skk-look-completion): Do not use stack-all.
+	(skk-look-1): Use `with-temp-buffer'.  Do not use
+	`condition-case'.
+
+	* skk-comp.el: Do not require stack-m.
+	(skk-completion-original): Do not use stack-nth, stack-push,
+	stack-pop.
+	(skk-previous-completion-original): Ditto.
+
+	* skk-vars.el (skk-completion-depth): Doc modified slightly.
+	(skk-look-working-buffer): Ditto.
+
+	* SKK-MK (SKK_MODULES): Remove stack-m.
+	(SKK_DAREDEVIL_NOT_USE): Add stack-m.
+
+	* stack-m: Removed.
 	
 1999-11-30  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 

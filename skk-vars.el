@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.5 1999/11/30 13:25:03 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.6 1999/12/05 05:59:26 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/30 13:25:03 $
+;; Last Modified: $Date: 1999/12/05 05:59:26 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -31,7 +31,7 @@
 ;;; Code:
 
 ;; APEL
-(require 'path-util)
+(require 'path-util) ; for exec-installed-p.
 
 (eval-when-compile
   (defmacro skk-deflocalvar (var default-value &optional documentation)
@@ -2073,23 +2073,11 @@ skk-dabbrev-like-completion $B$,(B non-nil $B$N>l9g$O!">o$K:G8e$KJd40$7$?8+=P
 ;; $B<-=qEPO?;~%_%K%P%C%U%!$GJd40$7$?>l9g!"85$N%P%C%U%!$KLa$C$?$H$-$K(B
 ;; skk-completion-word $B$NCM$,GK2u$5$l$F$$$J$$J}$,%Y%?!<!#(B
 
-;; skk-completion-stack $B$O%P%C%U%!%m!<%+%kCM$G$"$j!"$7$+$b(B stack-m.el $B$G$OGK2u(B
-;; $BE*$K%j%9%H$rA`:n$9$k$N$G=i4|CM$O(B nil $B$K$7$F$*$/I,MW$,$"$k!#(B
 (skk-deflocalvar skk-completion-stack nil
   "$BJd40$7$?8l$rJ]B8$7$F$*$/%9%?%C%/!#(B" )
 
-;; `.'($B$*$h$S(BTAB)$B$H(B`,'$B$r$D$E$1$FF~NO$7$?$H$-$K!"F10l$NFI$_$,8=$l$k$h$&$K(B
-;; $B$9$k$?$a$N(B hack$B!#(B
-;;
-;; [$B%*%j%8%J%k(B]
-;; $B"&$5(B (TAB) -> $B"&$5$H$&(B (.) -> $B"&$5$$$H$&(B (,) -> $B"&$5$H$&(B(.) -> $B"&$5$/$i(B
-;;
-;; [$B2~B$HG(B]
-;; $B"&$5(B (TAB) -> $B"&$5$H$&(B (.) -> $B"&$5$$$H$&(B (,) -> $B"&$5$H$&(B(.) -> $B"&$5$$$H$&(B
-;;
-;; ($B$b$O$d%G!<%?9=B$$K(Bstack$B$r;H$&0UL#$O4uGv!#!#!#(B)
 (skk-deflocalvar skk-completion-depth 0
-  "$BJd40$7$?8l$r(B skk-completion-stack $B$+$i<h$j=P$90LCV(B(stack-top $B$+$i$N?<$5(B)$B!#(B" )
+  "$BJd40$7$?8l$r(B skk-completion-stack $B$+$i<h$j=P$90LCV!#(B" )
 
 ;;; -- SKK-GADGET.EL related internal variables
 (defconst skk-week-alist
@@ -2179,7 +2167,6 @@ This map should be derived from isearch-mode-map." )
 (defvar skk-input-by-code-or-menu-jump-default skk-code-n1-min)
 
 ;;; SKK-LOOK.EL related internal constant and variable.
-(defconst skk-look-working-buffer " *skk look*")
 (defvar skk-look-completion-words nil)
 
 ;;; SKK-NUM.EL related internal constants and variables

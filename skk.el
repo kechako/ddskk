@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.16 1999/12/04 08:40:23 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.17 1999/12/05 05:59:27 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/04 08:40:23 $
+;; Last Modified: $Date: 1999/12/05 05:59:27 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/12/04 08:40:23 $")
+      (let* ((raw-date "$Date: 1999/12/05 05:59:27 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -1810,9 +1810,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	skk-okuri-index-min -1
 	skk-okuri-index-max -1
 	;; skk-prefix ""
-	)
-  (and (skk-numeric-p) (skk-num-initialize))
-  (and skk-use-look (setq skk-look-completion-words nil)) )
+	))
 
 (defun skk-undo-kakutei ()
   "一番最後の確定をアンドゥし、見出しに対する候補を表示する。
@@ -1872,8 +1870,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	 (skk-henkan) )
      ;; skk-kakutei-undo から途中で抜けた場合は、各種フラグを初期化しておかない
      ;; と次の動作をしようとしたときにエラーになる。
-     (error (skk-kakutei))
-     (quit (skk-kakutei)) )))
+     ((error quit) (skk-kakutei)) )))
      
 (defun skk-set-henkan-point (&optional arg)
   ;;"変換を開始するポイントをマークし、対応する skk-prefix か、母音を入力する。"
@@ -2261,6 +2258,8 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
   オプショナル引数の QUIET が non-nil であれば、辞書セーブ時のメッセージを出さな
   い。"
   (interactive "P")
+  ;; skk.el 以外で提供される辞書セーブ機能を利用できるように関数を funcall する
+  ;; 形にしておく。
   (funcall skk-save-jisyo-function quiet) )
 
 (defun skk-save-jisyo-original (&optional quiet)

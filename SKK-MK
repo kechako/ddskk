@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.6 1999/12/03 10:50:55 czkmt Exp $
-;; Last Modified: $Date: 1999/12/03 10:50:55 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.7 1999/12/05 05:59:25 minakaji Exp $
+;; Last Modified: $Date: 1999/12/05 05:59:25 $
 
 ;; Commentary
 ;;
@@ -171,7 +171,7 @@ end with `skk'." )
 (defvar SKK_MODULES
   ;; こんなもんコマンドラインで指定する人いないよね？
   (or (getenv "SKK_MODULES")
-      (let ((list '(queue-m stack-m skk-macs skk-vars
+      (let ((list '(queue-m skk-macs skk-vars
 			    skk skk-auto skk-autoloads skk-comp 
 			    skk-cursor skk-develop skk-gadget
 			    skk-isearch skk-kakasi skk-kcode
@@ -239,7 +239,7 @@ end with `skk'." )
 (if SKK-MK-debugging (princ (format "SKK_MODULES=%s\n" SKK_MODULES)))
 
 (defconst SKK_PACKAGE_NOT_USE '(skk-autoloads))
-(defconst SKK_DAREDEVIL_NOT_USE '(skk-foreword))
+(defconst SKK_DAREDEVIL_NOT_USE '(skk-foreword stack-m))
 
 ;;; [FUNCTIONS]
 (defun SKK-MK-compile ()

@@ -1,12 +1,11 @@
-;; -*-byte-compile-dynamic: t;-*-
 ;;; skk-look.el --- UNIX look command interface for SKK
 ;; Copyright (C) 1998, 1999 Mikio Nakajima <minakaji@osaka.email.ne.jp>
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.1 1999/11/28 04:53:36 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.2 1999/12/05 05:59:26 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/28 04:53:36 $
+;; Last Modified: $Date: 1999/12/05 05:59:26 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -98,11 +97,6 @@
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
-;; Elib
-(require 'stack-m)
-;; APEL
-(require 'path-util)
-
 (and skk-look-command
      (null (member '(skk-look) skk-search-prog-list))
      (let ((pl skk-search-prog-list)
@@ -147,35 +141,29 @@
 
 (defun skk-look-1 (args)
   ;; core search engine
-  (condition-case nil
-      (save-excursion
-	(let (opt buffer-read-only)
-	  (set-buffer (get-buffer-create skk-look-working-buffer))
-	  (erase-buffer)
-	  (setq args (list args))
-	  (and skk-look-dictionary (nconc args (list skk-look-dictionary)))
-	  (and skk-look-dictionary-order (setq opt "d"))
-	  (and skk-look-ignore-case (setq opt (concat "f" opt)))
-	  (and skk-look-use-alternate-dictionary
-	       (setq opt (concat "a" opt)) )
-	  (and opt (setq args (cons (concat "-" opt) args)))
-	  (and skk-look-termination-character
-	       (setq args
-		     (cons (list "-t" skk-look-termination-character) args) ))
- 	  (and
-	   (= 0 (apply 'call-process skk-look-command nil t nil args))
-	   (> (buffer-size) 0)
-	   (split-string (buffer-substring-no-properties (point-min) (1- (point-max)))
-			 "\n" ))))
-    (file-error
-     (setq skk-search-prog-list (delete '(skk-look) skk-search-prog-list))
-     (skk-error "システム上に look コマンドが見つかりません"
-		"Sorry, can't find look command on your system" ))))
+  (with-temp-buffer 
+    (let (opt)
+      (setq args (list args))
+      (and skk-look-dictionary (nconc args (list skk-look-dictionary)))
+      (and skk-look-dictionary-order (setq opt "d"))
+      (and skk-look-ignore-case (setq opt (concat "f" opt)))
+      (and skk-look-use-alternate-dictionary
+	   (setq opt (concat "a" opt)) )
+      (and opt (setq args (cons (concat "-" opt) args)))
+      (and skk-look-termination-character
+	   (setq args
+		 (cons (list "-t" skk-look-termination-character) args) ))
+      (and
+       (= 0 (apply 'call-process skk-look-command nil t nil args))
+       (> (buffer-size) 0)
+       (split-string (buffer-substring-no-properties (point-min) (1- (point-max)))
+		     "\n" )))))
 
 ;;;###autoload
 (defun skk-look-completion ()
   (or skk-look-completion-words
-      (let ((stacked (stack-all skk-completion-stack)))
+      (let ((stacked skk-completion-stack))
+	;; look は複数の候補を吐くので、一旦貯めておいて、一つづつ complete する。
 	(setq skk-look-completion-words
 	      (delete skk-completion-word (skk-look-1 skk-completion-word)) )
 	(while stacked
@@ -185,6 +173,9 @@
   (prog1
       (car skk-look-completion-words)
     (setq skk-look-completion-words (cdr skk-look-completion-words)) ))
+
+(defadvice skk-kakutei-initialize (after skk-look-ad activate)
+  (setq skk-look-completion-words nil) )
 
 (provide 'skk-look)
 ;;; skk-look.el ends here

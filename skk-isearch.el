@@ -1,13 +1,12 @@
-;; -*- byte-compile-dynamic-docstring: t;-*-
 ;;; skk-isearch.el --- isearch mode for skk with Emacs 19 or later and XEmacs.
 ;; Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999
 ;; Enami Tsugutomo <enami@ba2.so-net.or.jp>
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.8 1999/12/04 15:56:09 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.9 1999/12/05 05:59:25 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/04 15:56:09 $
+;; Last Modified: $Date: 1999/12/05 05:59:25 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -320,8 +319,7 @@ Optional argument PREFIX is apppended if given."
 		       (this-command (key-binding keys)))
 		  (setq last-command-event (aref keys (1- (length keys))))
 		  (command-execute this-command))
-	      (quit (signal (car error) (cdr error)))
-	      (error (signal (car error) (cdr error)))))
+	      ((quit error) (signal (car error) (cdr error)))))
 	  (skk-isearch-mode-message))
       (set skk-isearch-overriding-local-map local-map))))
 

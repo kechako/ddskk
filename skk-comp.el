@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-comp.el,v 1.4.2.4.2.1 1999/11/30 13:25:03 minakaji Exp $
+;; Version: $Id: skk-comp.el,v 1.4.2.4.2.2 1999/12/05 05:59:25 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/30 13:25:03 $
+;; Last Modified: $Date: 1999/12/05 05:59:25 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -27,12 +27,10 @@
 ;; MA 02111-1307, USA.
 
 ;;; Commentary:
+;; ▽さ (TAB) -> ▽さとう (.) -> ▽さいとう (,) -> ▽さとう(.) -> ▽さいとう
 
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
-
-;; Elib version 1.0 required.
-(require 'stack-m)
 
 ;;;###autoload
 (defun skk-start-henkan-with-completion (arg)
@@ -49,15 +47,17 @@
 ;;;###autoload
 (defun skk-completion (first)
   ;; skk-try-completion のサブルーチン。
+  ;; skk-comp.el 以外の補完機能を利用できるように関数を funcall する形にしておく。
   (funcall skk-completion-function first) )
 
 (defun skk-completion-original (first)
+  ;; default の skk-completion-function.
   (let ((inhibit-quit t)
+	;; skk-num が require されてないと buffer-local 値を壊す恐れあり。
         skk-num-list
         completion-word c-word )
     (skk-kana-cleanup 'force)
-    (and first (setq skk-completion-stack (stack-create)
-		     skk-completion-depth 0))
+    (and first (setq skk-completion-stack nil skk-completion-depth 0))
     (and (or first skk-dabbrev-like-completion)
 	 (setq skk-completion-word
 	       (buffer-substring-no-properties skk-henkan-start-point (point)) ))
@@ -67,7 +67,7 @@
     (if (> skk-completion-depth 0)
 	;; (過去に探索済みの読みをアクセス中)
 	(setq skk-completion-depth (1- skk-completion-depth)
-	      c-word (stack-nth skk-completion-stack skk-completion-depth))
+	      c-word (nth skk-completion-depth skk-completion-stack))
       ;; (新規の読みを辞書バッファから探索)
       ;; skk-completion-word はバッファローカル値なので、辞書バッファに移る前に
       ;; 一時変数に移し変えておく。
@@ -93,46 +93,39 @@
 				    (point) (1- (search-forward " ")) )))))))
       (and (not c-word) skk-abbrev-mode skk-use-look
 	   (setq c-word (skk-look-completion)) )
-      ;; 辞書バッファの外。
-      (if (not c-word)
-	  (if skk-japanese-message-and-error
-	      (error "\"%s\" で補完すべき見出し語は%sありません"
-		     skk-completion-word (if first "" "他に") )
-	    (error "No %scompletions for \"%s\""
-		   (if first "" "more ") skk-completion-word ))
-	(stack-push skk-completion-stack c-word) )
-      )
-    (delete-region skk-henkan-start-point (point))
-    (insert c-word) ))
+      ;; 新規に見つけたときだけ cons する。
+      (setq skk-completion-stack (cons c-word skk-completion-stack)) )
+    ;; 辞書バッファの外。
+    (if (not c-word)
+	(if skk-japanese-message-and-error
+	    (error "\"%s\" で補完すべき見出し語は%sありません"
+		   skk-completion-word (if first "" "他に") )
+	  (error "No %scompletions for \"%s\""
+		 (if first "" "more ") skk-completion-word ))
+      (delete-region skk-henkan-start-point (point))
+      (insert c-word) )))
 
 ;;;###autoload
 (defun skk-previous-completion ()
   ;; skk-abbrev-comma, skk-insert-comma のサブルーチン。直前に補完を行った見
   ;; 出しを挿入する。
+  ;; skk-comp.el 以外の補完機能を利用できるように関数を funcall する形にしておく。
   (funcall skk-previous-completion-function) )
 
 (defun skk-previous-completion-original ()
+  ;; default の skk-previous-completion-function.
   (let ((inhibit-quit t)
-        c-word )
-    ;;(setq c-word (stack-pop skk-completion-stack))
-    (setq skk-completion-depth (1+ skk-completion-depth)
-	  c-word (stack-nth skk-completion-stack skk-completion-depth))
-;;    (if (string= c-word
-;;		   (buffer-substring-no-properties skk-henkan-start-point (point)) )
-;;	  ;; ポップした語がバッファのポイント直前にある文字列と同じだったら 1 つ
-;;	  ;; 捨てる。
-;;	  (setq c-word (stack-pop skk-completion-stack)) )
+        (c-word 
+	 (progn
+	   (setq skk-completion-depth (1+ skk-completion-depth))
+	   (nth skk-completion-depth skk-completion-stack) )))
     (if c-word
 	(progn
 	  (delete-region skk-henkan-start-point (point))
 	  (insert c-word) )
-      ;;(insert skk-completion-word)
-      (setq skk-completion-depth (1- skk-completion-depth))
       (skk-error "\"%s\"で補完すべき見出し語は他にありません"
                  "No more previous completions for \"%s\""
-                 skk-completion-word ))
-    ;;(setq this-command 'skk-completion)
-    ))
+                 skk-completion-word ))))
 
 (run-hooks 'skk-comp-load-hook)
 

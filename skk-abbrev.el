@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-abbrev.el,v 1.1.2.3.2.1 1999/11/14 15:10:07 minakaji Exp $
+;; Version: $Id: skk-abbrev.el,v 1.1.2.3.2.2 1999/12/05 05:59:25 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 23, 1999
-;; Last Modified: $Date: 1999/11/14 15:10:07 $
+;; Last Modified: $Date: 1999/12/05 05:59:25 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -56,9 +56,6 @@
 (eval-when-compile (require 'skk-macs) (require 'skk-vars)
 		   (require 'skk-comp) )
 
-;; Elib.
-(require 'stack-m)
-
 ;;; ;;;###autoload
 ;;(defgroup skk-abbrev nil "SKK abbrev related customization."
 ;;  :prefix "skk-abbrev-"
@@ -83,10 +80,9 @@
 	 (setq c-word (and (abbrev-expansion skk-completion-word)))
 	 (if (and skk-use-look
 		  (or (not c-word)
-		      (member c-word (stack-all skk-completion-stack)) ))
+		      (member c-word skk-completion-stack) ))
 	     ;; more searching by look when abbreviating is not enough.
-	     (while (or (not c-word)
-			(member c-word (stack-all skk-completion-stack)) )
+	     (while (or (not c-word) (member c-word skk-completion-stack))
 	       (setq c-word (skk-look-completion)) )))
        (if (not c-word)
 	   (if skk-japanese-message-and-error
@@ -94,7 +90,7 @@
 		      skk-completion-word (if first "" "他に") )
 	     (error "No %scompletions for \"%s\""
 		    (if first "" "more ") skk-completion-word ))
-	 (stack-push skk-completion-stack c-word)
+	 (setq skk-completion-stack (cons c-word skk-completion-stack))
 	 (delete-region skk-henkan-start-point (point))
 	 (insert c-word) )))))
 

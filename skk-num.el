@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-num.el,v 1.6.2.4.2.2 1999/11/28 08:14:47 kawamura Exp $
+;; Version: $Id: skk-num.el,v 1.6.2.4.2.3 1999/12/05 05:59:26 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/28 08:14:47 $
+;; Last Modified: $Date: 1999/12/05 05:59:26 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -460,6 +460,9 @@
 		       (cdr (assq c skk-num-alist-type1)) )
 		      (t (cdr (assq c skk-num-alist-type2))) )))
 	     str "" ))
+
+(defadvice skk-kakutei-initialize (after skk-num-ad activate)
+  (and (skk-numeric-p) (skk-num-initialize)) )
 
 (run-hooks 'skk-num-load-hook)
 

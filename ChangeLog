@@ -1,3 +1,13 @@
+2000-04-09  Takao KAWAMURA  <kawamura@debian.org>
+
+	* skk-vars.el (skk-keep-record): change type from 'boolean to
+	'(choice integer (const t) (const nil))
+
+	* skk.el (skk-save-jisyo-original): Move calling
+	`skk-record-jisyo-data' into `skk-before-kill-emacs-hook'.
+	(skk-record-jisyo-data): if `skk-keep-record' is a integer,
+	skk-record-file does not grow over it.
+
 2000-04-06  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* experimental/skk-exsearch.el (core-engine): Bug fixed.

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-obsolete.el,v 1.1 1999/08/29 06:35:28 minakaji Exp $
+;; Version: $Id: skk-obsolete.el,v 1.1.2.1 1999/11/07 14:45:20 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/08/29 06:35:28 $
+;; Last Modified: $Date: 1999/11/07 14:45:20 $
 
 ;; This file is not part of SKK yet.
 
@@ -27,21 +27,29 @@
 ;;; Commentary:
 ;;
 ;;; Code:
-(eval-when-compile (require 'skk))
+(eval-when-compile (require 'skk-macs))
 
 (defvar skk-obsolete-variable-alist
-  '((skk-ascii-mode . skk-latin-mode)
+  '((skk-abbrev-cursor-color . skk-cursor-abbrev-color)
+    (skk-ascii-mode . skk-latin-mode)
     (skk-ascii-mode-map . skk-latin-mode-map)
     (skk-ascii-mode-string . skk-latin-mode-string)
+    (skk-default-cursor-color . skk-cursor-default-color)
     (skk-default-zenkaku-vector . skk-default-jisx0208-vector)
+    (skk-hiragana-cursor-color . skk-cursor-hiragana-color)
     (skk-hirakana-cursor-color . skk-hiragana-cursor-color)
     (skk-hirakana-mode-string . skk-hiragana-mode-string)
+    (skk-jisx0208-latin-cursor-color . skk-cursor-jisx0208-latin-color)
+    (skk-katakana-cursor-color . skk-cursor-katakana-color)
+    (skk-latin-cursor-color . skk-cursor-latin-color)
     (skk-num-type-list . skk-num-type-alist)
     (skk-numeric-conversion-float-num . skk-num-convert-float)
     (skk-recompute-numerals-key . skk-num-recompute-key)
-    (skk-report-server-response . skk-server-report-response)
     (skk-remote-shell-program . skk-server-remote-shell-program)
+    (skk-report-server-response . skk-server-report-response)
+    (skk-report-set-cursor-error . skk-cursor-report-set-error)
     (skk-uniq-numerals . skk-num-uniq)
+    (skk-use-cursor-change . skk-cursor-change-width)
     (skk-zenkaku-cursor-color . skk-jisx0208-latin-cursor-color)
     (skk-zenkaku-mode . skk-jisx0208-latin-mode)
     (skk-zenkaku-mode-map . skk-jisx0208-latin-mode-map)
@@ -79,7 +87,8 @@
     (skk-raw-number-to-skk-rep . skk-num-rawnum-exp)
     (skk-raw-number-to-skk-rep-1 . skk-num-rawnum-exp-1)
     (skk-recompute-numerals . skk-num-recompute)
-    (skk-set-cursor-color-properly . skk-set-cursor-properly)
+    (skk-set-cursor-color . skk-cursor-set-color)
+    (skk-set-cursor-color-properly . skk-cursor-set-properly)
     (skk-shogi-num-str . skk-num-shogi)
     (skk-update-jisyo-for-numerals . skk-num-update-jisyo)
     (skk-uniq-numerals . skk-num-uniq)
@@ -110,11 +119,15 @@ C-u M-x skk-obsolete-check-all-files $B$N$h$&$K5/F0$7$?$H$-$O!"%G%#%U%)%k%H%G%#
 	  (system-files '("default.el" "site-start.el"))
 	  (program-files
 	   (if program-files-too
-	       '("skk-foreword.el" "skk-gadget.el" "skk-isearch.el" "skk-auto.el"
-		 "skk-comp.el" "skk-kakasi.el" "skk-kcode.el" "skk-leim.el"
-		 "skk-look.el" "skk-num.el" "skk-server.el" "skk-tut.el" "skk.el"
-		 "skk-vip.el" "skk-viper.el" "skk-dbm.el" "skk-rdbms.el"
-		 "skk-attr.el" "skk-assoc.el" )))
+	       '("skk-dcomp.el" "skk-attr.el" "skk-auto.el"
+		 "skk-autoloads.el" "skk-comp.el" "skk-cursor.el"
+		 "skk-def.el" "skk-develop.el" "skk-dbm.el"
+		 "skk-gadget.el" "skk-hankaku-mode.el" "skk-isearch.el"
+		 "skk-jisx0201.el" "skk-kakasi.el" "skk-kcode.el" "skk-leim.el"
+		 "skk-look.el" "skk-lookup.el" "skk-macs.el"
+		 "skk-num.el" "skk-rdbms.el" "skk-server.el"
+		 "skk-study.el" "skk-tut.el" "skk-tutcdef.el" "skk-tutcode.el"
+		 "skk-viper.el" "skk-xm20_4.el" "skk.el" )))
 	  files modified )
       (while lp
 	(setq files (nconc (skk-obsolete-check-all-files-1 system-files (car lp))

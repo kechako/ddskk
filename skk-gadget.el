@@ -5,9 +5,9 @@
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Murata Shuuichirou  <mrt@astec.co.jp>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-gadget.el,v 1.3 1999/10/03 12:11:10 minakaji Exp $
+;; Version: $Id: skk-gadget.el,v 1.3.2.1 1999/11/07 14:43:57 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/03 12:11:10 $
+;; Last Modified: $Date: 1999/11/07 14:43:57 $
 
 ;; This file is part of SKK.
 
@@ -50,35 +50,7 @@
 ;; から作られた造語らしい。
 
 ;;; Code:
-(eval-when-compile (require 'skk))
-(require 'skk-foreword)
-;; -- user variables
-
-;;;###autoload
-(defgroup skk-gadget nil "SKK gadget related customization."
-  :prefix "skk-"
-  :group 'skk )
-
-(defcustom skk-date-ad nil
-  "*Non-nil であれば、skk-today, skk-clock で西暦表示する。
-nil であれば、元号表示する。"
-  :type 'boolean
-  :group 'skk-gadget )
-
-(defcustom skk-number-style 1
-  "*skk-today, skk-clock で表示する数字の形式を変化させる。
-半角表: nil もしくは 0.
-全角表示: t もしくは、1.
-漢数字表: t, 0, 1 以外の non-nil 値。"
-  :type '(choice (choice :tag "Hankaku" (const nil) (integer 0))
-		 (choice :tag "Zenkaku" (const t) (integer 1))
-		 (integer :tag "Kansuuji" 3) )
-  :group 'skk-gadget )
-
-(defcustom skk-gadget-load-hook nil
-  "*skk-gadget.el をロードした後にコールされるフック。"
-  :type 'hook
-  :group 'skk-gadget )
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
 ;; --internal variables
 (defconst skk-week-alist

@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-lookup.el,v 1.22 1999/10/20 13:39:44 minakaji Exp $
+;; Version: $Id: skk-lookup.el,v 1.22.2.1 1999/11/07 14:46:12 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Sep. 23, 1999
-;; Last Modified: $Date: 1999/10/20 13:39:44 $
+;; Last Modified: $Date: 1999/11/07 14:46:12 $
 
 ;; This file is not part of SKK yet.
 
@@ -31,18 +31,6 @@
 ;; Lookup と SKK との gateway を行ない、Lookup で検索できる辞書を使っ
 ;; て候補を出力するプログラムです。当然ですが、Lookup がインストールされていて、
 ;; かつ、対応する辞書がマントされていないと使えません。
-;;
-;; skk.el にある kill-buffer の advice を次のものと入れ替えインストー
-;; ルし直す必要があります (SKK 10.55 は既に直っています)。
-;;
-;; (defadvice kill-buffer (around skk-ad activate)
-;;   "SKK の▼モードだったら、確定してからバッファをキルする。
-;;   バッファのキル後、SKK のモードに従いカーソルの色を変える。"
-;;   (and skk-mode skk-henkan-on (interactive-p) (skk-kakutei))
-;;   ad-do-it
-;;   ;; 別のバッファへ飛ぶコマンドは skk-mode が nil でもカーソル色を調整する必要
-;;   ;; がある。
-;;   (skk-set-cursor-properly) )
 ;;
 ;; 次のように skk-search-prog-list に加えて指定し使用します。
 ;; SKK が用意している検索プログラムの中で最も重いので、

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-auto.el,v 1.3 1999/10/03 11:31:50 minakaji Exp $
+;; Version: $Id: skk-auto.el,v 1.3.2.1 1999/11/07 14:43:09 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/03 11:31:50 $
+;; Last Modified: $Date: 1999/11/07 14:43:09 $
 
 ;; This file is part of SKK.
 
@@ -29,24 +29,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(eval-when-compile (require 'skk))
-(require 'skk-foreword)
-
-;;;###autoload
-(defgroup skk-auto nil "SKK auto okuri process related customization."
-  :prefix "skk-"
-  :group 'skk )
-
-;;; user variables
-(defcustom skk-okuri-search-function 'skk-okuri-search-subr-original
-  "*skk-okuri-search で使用する関数。"
-  :type 'function
-  :group 'skk-auto )
-
-(defcustom skk-auto-load-hook nil
-  "*skk-auto.el をロードした後にコールされるフック。"
-  :type 'hook
-  :group 'skk-auto )
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
 ;;;###autoload
 (defun skk-okuri-search ()

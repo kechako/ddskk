@@ -6,13 +6,13 @@
 @c          Yukiyoshi Kameyama <kameyama@@kuis.kyoto-u.ac.jp>
 @c          Mikio Nakajima <minakaji@osaka.email.ne.jp>
 @c  Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-@c  Version: $Id: skk.texi,v 1.9 1999/11/07 03:04:27 minakaji Exp $
+@c  Version: $Id: skk.texi,v 1.9.2.1 1999/11/07 14:46:01 minakaji Exp $
 @c  Keywords: japanese
-@c  Last Modified: $Date: 1999/11/07 03:04:27 $
+@c  Last Modified: $Date: 1999/11/07 14:46:01 $
 @c
 @set EDITION 1.4
 @set SKK-VERSION 10.51
-@set UPDATED $Date: 1999/11/07 03:04:27 $
+@set UPDATED $Date: 1999/11/07 14:46:01 $
 @c @set UPDATED-MONTH Oct 1998
 
 @direntry
@@ -2692,12 +2692,12 @@ Emacs$B$N%b!<%I8GM-$N%U%C%/$J$I$rMxMQ$7$F>e5-$N$h$&$J4X?t$r<B9T$9$l$P!"%b!<(B
 @node $BA41Q%b!<%I$K$*$1$kF~NO(B, 1$B2s$N(Badvertised-undo(undo)$B$NBP>](B, $B$+$J%b!<%I(B/$B%+%J%b!<%I$K$*$1$kF~NO(B, $B"#%b!<%I$K$*$1$kJ8;zF~NO(B
 @comment  node-name,  next,  previous,  up
 @subsection $BA41Q%b!<%I$K$*$1$kF~NO(B
-@vindex skk-zenkaku-vector
+@vindex skk-jisx0208-latin-vector
 @findex skk-zenkaku-insert
 
 $BA41Q%b!<%I$K$*$1$k0u;z2DG=$JA4$F$N%-!<$O(B@code{skk-zenkaku-insert}$B$K3d(B
-$B$jIU$1$i$l$F$*$j(B@code{skk-zenkaku-vector}$B$NCM$K$h$jA^F~$5$l$kJ8;z$,7h(B
-$BDj$5$l$k!#(B@code{skk-zenkaku-vector}$B$N%G%#%U%)%k%HCM$O!"2<5-$NDL$j!#(B
+$B$jIU$1$i$l$F$*$j(B@code{skk-jisx0208-latin-vector}$B$NCM$K$h$jA^F~$5$l$kJ8;z$,7h(B
+$BDj$5$l$k!#(B@code{skk-jisx0208-latin-vector}$B$N%G%#%U%)%k%HCM$O!"2<5-$NDL$j!#(B
 
 @lisp
 @group
@@ -3844,7 +3844,7 @@ FEP$B$N;EMM$r;29M$K$7$?!#(B}$B!#C18l$dJ8@a$N6h@Z$j$H$J$k$h$&$JJ8;zNs$O!"(B
 @cindex #5
 @cindex $B?t$r%Q%i%a!<%?$H$9$k8l$NJQ49(B[$B$+$9$r$O$i$a!<$?$H$9$k$3$N$X$s$+$s(B]
 @cindex $B?tCM:FJQ49(B[$B$9$&$A$5$$$X$s$+$s(B]
-@vindex skk-numeric-conversion-float-num
+@vindex skk-num-convert-float
 @vindex skk-use-numeric-conversion
 
 $B?t$r%Q%i%a!<%?(B($B0z?t(B)$B$H$9$k8l$K$O!"(B@samp{$B#47n#1#5F|(B}$B!"(B@samp{$BBh#1#22s(B}$B$J$I(B
@@ -3980,7 +3980,7 @@ p# /#4/
 @noindent
 $B$H$J$k!#(B
 
-$B$J$*!"(B@code{skk-numeric-conversion-float-num}$B$NCM$r(B@code{non-nil}$B$K$9$k(B
+$B$J$*!"(B@code{skk-num-convert-float}$B$NCM$r(B@code{non-nil}$B$K$9$k(B
 $B$H!"IbF0>.?tE@?t$r;H$C$?8+=P$78l$KBP1~$7$FJQ49$r9T$J$&!#C"$7!"$=$N>l9g$O!"(B
 
 @example
@@ -5335,7 +5335,7 @@ t
 @item skk-mode-string
 $B%"%9%-!<%b!<%I$r<($9J8;zNs!#%G%#%U%)%k%HCM$O!"(B``--SKK:''$B!#(B
 
-@item skk-hirakana-mode-string
+@item skk-hiragana-mode-string
 $B$+$J%b!<%I$r<($9J8;zNs!#%G%#%U%)%k%HCM$O!"(B``--$B$+$J(B''$B!#(B
 
 @item skk-katakana-mode-string
@@ -5351,7 +5351,7 @@ t
 @subsection $BF~NO%b!<%I$r<($9%+!<%=%k?'$K4X$9$k@_Dj(B
 @vindex minibuffer-setup-hook
 @vindex skk-minibuffer-checking-map-func
-@vindex skk-report-set-cursor-error
+@vindex skk-cursor-report-set-error
 
 $B%+%i!<%G%#%9%W%l%$$r;HMQ$7!"%+%i!<I=<($r%5%]!<%H$7$F$$$k(BWindow System$B2<(B
 $B$GBP1~$9$k(BEmacs$B$r;HMQ$7$F$$$k>l9g$K$O!"F~NO%b!<%I$NJQ99$K9g$o$;$F%+!<%=(B
@@ -5365,19 +5365,19 @@ t
 
 @vtable @code
 
-@item skk-default-cursor-color
+@item skk-cursor-default-color
 SKK$B%b!<%I$,%*%U$G$"$k$3$H$r<($9%+!<%=%k?'!#%+!<%=%k$N$"$k3:Ev%U%l!<%`$K(B
 $B$*$1$k%G%#%U%)%k%H$N%+!<%=%k?'$,BeF~$5$l$k!#(B
 
-@item skk-hiragana-cursor-color
+@item skk-cursor-hiragana-color
 $B$+$J%b!<%I$G$"$k$3$H$r<($9%+!<%=%k?'!#%G%#%U%)%k%HCM$O!"(BreverseVideo$B$,(B
 off$B$N$H$-$O(B``coral4''on$B$N$H$-$O(B``pink''$B!#(B
 
-@item skk-katakana-cursor-color
+@item skk-cursor-katakana-color
 $B%+%?%+%J%b!<%I$G$"$k$3$H$r<($9%+!<%=%k?'!#%G%#%U%)%k%HCM$O!"(BreverseVideo
 $B$,(Boff$B$N$H$-$O(B``forestgreen''on$B$N$H$-$O(B``green''$B!#(B
 
-@item skk-zenkaku-cursor-color
+@item skk-cursor-jisx0208-latin-color
 $BA43Q1Q;z%b!<%I$r<($9%+!<%=%k?'!#%G%#%U%)%k%HCM$O!"(B``gold''$B!#(B
 
 @item skk-ascii-cursor-color
@@ -5388,7 +5388,7 @@ off$B$N$H$-$O(B``coral4''on$B$N$H$-$O(B``pink''$B!#(B
 
 $B%+!<%=%k?'$NJQ99$N:]!"%+%i!<%^%C%W@Z$l$,5/$-$?>l9g$K$O%(%i!<%a%C%;!<%8$r(B
 $BI=<($7!"%G%#%U%)%k%H$N%+!<%=%k?'$r;H$&!#$3$N%(%i!<%a%C%;!<%8$NI=<($r;_$a(B
-$B$k$K$O!"(B@code{skk-report-set-cursor-error}$B$NCM$r(B@code{nil}$B$K$9$k!#(B
+$B$k$K$O!"(B@code{skk-cursor-report-set-error}$B$NCM$r(B@code{nil}$B$K$9$k!#(B
 
 @node $B"'%b!<%I$K$*$1$kJQ498uJd$N%O%$%i%$%HI=<((B, $B%(%i!<$J$I$NF|K\8lI=<((B, $BF~NO%b!<%I$r<($9%+!<%=%k?'$K4X$9$k@_Dj(B, $B%G%3%l!<%7%g%s(B
 @comment  node-name,  next,  previous,  up
@@ -5699,11 +5699,11 @@ SKK$B%b!<%I$GA43QJ8;z$rF~NO$7$?>l9g$K!"(B@key{BS}$B$GA43QJ8;z$,>C$;$J$$$3$H!#
 $B%5!<%P!<$,;HMQ$9$k%]!<%HHV9f$G!"%5!<%P!<$r%3%s%Q%$%k;~$NCM$r;HMQ$9$k>l9g(B
 $B$O(B@code{nil}$B$r;XDj$9$k!#(B
 
-@item skk-report-server-response
+@item skk-server-report-response
 @code{non-nil}$B$G$"$l$P!"JQ49;~%5!<%P!<$NAw=P$9$kJ8;z$r<u$1<h$k$^$G$K(B 
 @code{accept-process-output}$B$r2?2s<B9T$7$?$+$rJs9p$9$k!#(B
 
-@item skk-remote-shell-program
+@item skk-server-remote-shell-program
 $B%j%b!<%H%7%'%k$N%W%m%0%i%`L>!#%G%#%U%)%k%HCM$O2<5-$NDL$j!#(B
 @lisp
 @group

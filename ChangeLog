@@ -1,5 +1,95 @@
 1999-11-07  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk-jisx0201.el (skk-jisx0201-cursor-color): Renamed to
+	`skk-cursor-jisx0201-color'.
+
+	* skk-vars.el: New file for definitions of user variables.
+	
+	* skk-vars.el: Renamed to skk-xm20_4.el.
+
+	* SKK-MK (SKK_MODULES): Arrange for new files.
+
+	* skk.el (skk-terminal-face-p): Removed.
+	(skk-mode): Require skk-xm20_4.el.
+
+	* skk-viper.el: (viper-intercept-ESC-key): Remove cursor control
+	and change class to before.
+ 	(vip-intercept-ESC-key): Ditto.
+	(skk-set-cursor-properly): Renamed to `skk-cursor-set-properly'.
+
+	* skk-cursor.el: Revive to simplify skk.el.
+        (skk-default-cursor-color): Renamed to `skk-cursor-default-color'
+	(for grouping of customize).
+	(skk-hiragana-cursor-color): Renamed to
+	`skk-cursor-hiragana-color'.
+	(skk-katakana-cursor-color): Renamed to
+	`skk-cursor-katakana-color'.
+	(skk-jisx0208-latin-cursor-color): Renamed to
+	`skk-cursor-jisx0208-latin-color'.
+	(skk-latin-cursor-color): Renamed to `skk-cursor-latin-color'.
+	(skk-abbrev-cursor-color): Renamed to `skk-cursor-abbrev-color'.
+	(skk-report-set-cursor-error): Renamed to
+	`skk-cursor-report-set-error'.
+	(skk-use-cursor-change): Renamed to `skk-cursor-change-width'.
+	
+	* skk.el (abort-recursive-edit): Remove cursor control.
+	(exit-minibuffer): Ditto.
+	(kill-buffer): Ditto.  And change class to before.
+	(skk-kakutei): Ditto.
+	(skk-save-jisyo-original): Ditto.
+	(minibuffer-keyboard-quit): Ditto (as to XEmacs advice only).
+	(skk-auto-fill-mode): Ditto.
+	(skk-toggle-kana): Ditto.
+	(skk-katakana-region): Ditto.
+	(skk-hiragana-region): Ditto.
+	(skk-jisx0208-latin-region): Ditto.
+	(skk-latin-region): Ditto.
+	(skk-mode-off): Ditto.
+	(skk-j-mode-on): Ditto.
+	(skk-latin-mode-on): Ditto.
+	(skk-jisx0208-latin-mode-on): Ditto.
+	(skk-abbrev-mode-on): Ditto.
+	
+	(overwrite-mode): Moved to skk-cursor.el.
+	(goto-line): Ditto.
+	(yank): Ditto.
+	(yank-pop): Ditto.
+	(recenter): Ditto.
+	(insert-file): Ditto.
+	(bury-buffer): Ditto.
+	(switch-to-buffer): Ditto.
+	(hilit-yank): Ditto.
+	(hilit-yank-pop): Ditto.
+	(hilit-recenter): Ditto.
+	(execute-extended-command): Ditto.
+	(pop-to-buffer): Ditto.
+	(other-window): Ditto.
+	(skk-set-cursor-color): Ditto.
+	(skk-set-cursor-properly): Ditto.
+	(skk-change-cursor-when-ovwrt): Ditto.
+	(kill-buffer): Ditto.
+	(skk-default-cursor-color): Ditto.
+	(skk-hiragana-cursor-color): Ditto.
+	(skk-katakana-cursor-color): Ditto.
+	(skk-jisx0208-latin-cursor-color): Ditto.
+	(skk-latin-cursor-color): Ditto.
+	(skk-abbrev-cursor-color): Ditto.
+	(skk-report-set-cursor-error): Ditto.
+	(skk-use-cursor-change): Ditto.
+	(skk-mode): Require skk-cursor.el when `skk-use-color-cursor' or
+	`skk-use-cursor-change' is non-nil.
+
+	* skk-kakasi.el (skk-gyakubiki-region): Remove cursor control.
+	(skk-gyakubiki-message): Ditto.
+	(skk-gyakubiki-katakana-region): Ditto.
+	(skk-gyakubiki-katakana-message): Ditto.
+	(skk-hurigana-region): Ditto.
+	(skk-hurigana-message): Ditto.
+	(skk-hurigana-katakana-region): Ditto.
+	(skk-hurigana-katakana-message): Ditto.
+	(skk-romaji-region): Ditto.
+	(skk-romaji-message): Ditto.
+
 	* skk-develop.el (skk-submit-bug-report): Add
 	`skk-share-private-jisyo' to BASE list.
 

@@ -6,9 +6,9 @@
 ;;         Murata Shuuichirou <mrt@astec.co.jp>
 ;; Maintainer: Murata Shuuichirou <mrt@astec.co.jp>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5 1999/10/03 05:47:17 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.1 1999/11/07 14:45:33 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/03 05:47:17 $
+;; Last Modified: $Date: 1999/11/07 14:45:33 $
 
 ;; This file is not part of SKK yet.
 
@@ -30,13 +30,8 @@
 ;;; Commentary:
 
 ;;; Code:
-(eval-when-compile (require 'skk))
-(require 'skk-foreword)
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 (require 'viper)
-
-;;(defgroup skk-viper nil "SKK/Viper related customization."
-;;  :prefix "skk-"
-;;  :group 'skk )
 
 ;; internal constant.
 ;;;###autoload
@@ -74,28 +69,28 @@
 	 (fboundp 'viper-color-defined-p)
 	 (viper-color-defined-p viper-insert-state-cursor-color)
 	 ;;(member (x-color-values viper-insert-state-cursor-color)
-         ;;        (list (x-color-values skk-hiragana-cursor-color)
-         ;;              (x-color-values skk-katakana-cursor-color)
-         ;;              (x-color-values skk-jisx0208-latin-cursor-color)
-         ;;              (x-color-values skk-latin-cursor-color) )))
+         ;;        (list (x-color-values skk-cursor-hiragana-color)
+         ;;              (x-color-values skk-cursor-katakana-color)
+         ;;              (x-color-values skk-cursor-jisx0208-latin-color)
+         ;;              (x-color-values skk-cursor-latin-color) )))
 	 )
     (setq skk-use-color-cursor nil) )
 ;; とりあえず、外そうね、結構重いもんね。
 ;;(add-hook 'viper-post-command-hooks
-;; 	    (function (lambda () (and skk-mode (skk-set-cursor-properly)))) ))
+;; 	    (function (lambda () (and skk-mode (skk-cursor-set-properly)))) ))
 
 ;; advices.
 (or skk-viper-use-vip-prefix
     ;; vip-hide-replace-overlay はインライン関数
     (defadvice viper-hide-replace-overlay (after skk-ad activate)
       "SKK のモードに従いカーソルの色を変える。"
-      (and skk-mode (skk-set-cursor-properly)) ))
+      (and skk-mode (skk-cursor-set-properly)) ))
 
 (skk-viper-advice-select
  viper-insert vip-insert
  (after skk-ad activate)
  ("SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode (skk-set-cursor-properly)) ))
+  (and skk-mode (skk-cursor-set-properly)) ))
 
 (skk-viper-advice-select
  viper-forward-word-kernel vip-forward-word-kernel
@@ -158,11 +153,9 @@
 
 (skk-viper-advice-select
  viper-intercept-ESC-key vip-intercept-ESC-key
- (around skk-add activate)
+ (before skk-add activate)
  ("▽モード、▼モードだったら確定する。確定後、SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode skk-henkan-on (skk-kakutei))
-  ad-do-it
-  (and skk-mode (skk-set-cursor-properly)) ))
+  (and skk-mode skk-henkan-on (skk-kakutei)) ))
 
 (skk-viper-advice-select
  viper-join-lines vip-join-lines
@@ -205,7 +198,7 @@
 		  (funcall skk-viper-normalize-map-function) ))
 	    (setq buf (cdr buf)) ))))))
 
-(defun skk-set-cursor-properly ()
+(defun skk-cursor-set-properly ()
   ;; カレントバッファの SKK のモードに従い、カーソルの色を変更する。
   (if (and skk-use-color-cursor
 	   ;;(x-color-defined-p viper-insert-state-cursor-color)
@@ -218,14 +211,14 @@
 		     (eq viper-current-state 'vi-state) )
 		(and (boundp 'vip-current-state)
 		     (eq vip-current-state 'vi-state) )))
-	(skk-set-cursor-color skk-default-cursor-color) )
+	(skk-cursor-set-color skk-cursor-default-color) )
        (t
-	(skk-set-cursor-color (cond (skk-jisx0208-latin-mode
-				     skk-jisx0208-latin-cursor-color )
-				    (skk-katakana skk-katakana-cursor-color)
-				    (skk-j-mode skk-hiragana-cursor-color)
-				    (t skk-latin-cursor-color) )))))
-  (if skk-use-cursor-change
+	(skk-cursor-set-color (cond (skk-jisx0208-latin-mode
+				     skk-cursor-jisx0208-latin-color )
+				    (skk-katakana skk-cursor-katakana-color)
+				    (skk-j-mode skk-cursor-hiragana-color)
+				    (t skk-cursor-latin-color) )))))
+  (if skk-cursor-change-width
       (skk-change-cursor-when-ovwrt) ))
 
 (skk-viper-normalize-map)

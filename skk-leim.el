@@ -3,9 +3,9 @@
 ;; Murata Shuuichirou <mrt@astec.co.jp>
 ;;
 ;; Author: Murata Shuuichirou <mrt@mickey.ai.kyutech.ac.jp>
-;; Version: $Id: skk-leim.el,v 1.5 1999/10/24 21:40:32 minakaji Exp $
+;; Version: $Id: skk-leim.el,v 1.5.2.1 1999/11/07 14:44:58 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/24 21:40:32 $
+;; Last Modified: $Date: 1999/11/07 14:44:58 $
 
 ;; This file is not part of SKK yet.
 
@@ -25,8 +25,7 @@
 ;; MA 02111-1307, USA.
 
 ;;; Code:
-(eval-when-compile (require 'skk))
-(require 'skk-foreword)
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
 ;;;###autoload
 (defun skk-activate (&optional name)

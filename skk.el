@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.1 1999/11/07 06:06:42 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.2 1999/11/07 14:45:53 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 06:06:42 $
+;; Last Modified: $Date: 1999/11/07 14:45:53 $
 
 ;; SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -52,19 +52,372 @@
 ;; `Aloha'.
 
 ;;; Code:
-(require 'skk-foreword)
+(cond ((or (and (boundp 'epoch::version) epoch::version)
+	   (string< (substring emacs-version 0 2) "18") )
+       (error "THIS SKK requires Emacs 19 or later") )
+      ((not (featurep 'mule))
+       (error "THIS SKK requires MULE features") ))
 
-(defconst skk-version "1.0")
-(defconst skk-major-version (string-to-int (substring skk-version 0 2)))
-(defconst skk-minor-version (string-to-int (substring skk-version 3)))
+(eval-when-compile (require 'static))
+
+(require 'skk-vars)
+
+;; Emacs standard library.
+(require 'advice)
+(require 'easymenu)
+
+;; APEL 9.22 or later required.
+(require 'poe)
+(require 'poem) ; requires pces.
+(require 'pces)
+(require 'pcustom)
+(require 'alist)
+
+;; Elib 1.0 is required.
+(require 'queue-m)
 
 ;;;###autoload
+(eval-and-compile
+  (defconst skk-emacs-type (cond ((string-match "XEmacs" emacs-version) 'xemacs)
+				 ((and (boundp 'mule-version)
+				       (string< "4.0" mule-version) 'mule4 ))
+				 ((and (boundp 'mule-version)
+				       (string< "3.0" mule-version) 'mule3 ))
+				 ((and (boundp 'mule-version)
+				       (string< "2.0" mule-version) 'mule2 )))))
+
+(defconst skk-package-data-directory
+  (if (boundp 'early-packages)
+      (let ((dirs (append (if early-package-load-path early-packages)
+			  (if late-package-load-path late-packages)
+			  (if last-package-load-path last-packages) ))
+	    dir )
+	(while (not (file-exists-p (setq dir (car dirs))))
+	  (setq dirs (cdr dirs)) )
+	(and dir
+	     (expand-file-name "skk" (expand-file-name "etc" dir)) ))))
+
+;;;; inline functions
+;; inline functions to hook.
+(defsubst skk-after-point-move ()
+  (and (or (not skk-previous-point) (not (= skk-previous-point (point))))
+       (skk-get-prefix skk-current-rule-tree)
+       (skk-with-point-move (skk-erase-prefix 'clean)) ))
+
+;; inline functions to hook.
+(defsubst skk-pre-command ()
+  (and (memq last-command '(skk-insert skk-previous-candidate))
+       (null (memq this-command skk-kana-cleanup-command-list))
+       (skk-kana-cleanup t) ))
+
+(defsubst skk-file-exists-and-writable-p (file)
+  (and (setq file (expand-file-name file))
+       (file-exists-p file) (file-writable-p file) ))
+
+(defsubst skk-lower-case-p (char)
+  ;; CHAR が小文字のアルファベットであれば、t を返す。
+  (and (<= ?a char) (>= ?z char) ))
+
+(defsubst skk-downcase (char)
+  (or (cdr (assq char skk-downcase-alist)) (downcase char)) )
+
+(defsubst skk-mode-off ()
+  (setq skk-mode nil
+        skk-abbrev-mode nil
+        skk-latin-mode nil
+        skk-j-mode nil
+        skk-jisx0208-latin-mode nil
+        ;; j's sub mode.
+        skk-katakana nil )
+  ;; initialize
+  (setq skk-input-mode-string skk-hiragana-mode-string)
+  (force-mode-line-update)
+  (remove-hook 'pre-command-hook 'skk-pre-command 'local) )
+
+(defsubst skk-j-mode-on (&optional katakana)
+  (setq skk-mode t
+        skk-abbrev-mode nil
+        skk-latin-mode nil
+        skk-j-mode t
+        skk-jisx0208-latin-mode nil
+        ;; j's sub mode.
+        skk-katakana katakana )
+  (force-mode-line-update) )
+
+(defsubst skk-latin-mode-on ()
+  (setq skk-mode t
+        skk-abbrev-mode nil
+        skk-latin-mode t
+        skk-j-mode nil
+        skk-jisx0208-latin-mode nil
+        ;; j's sub mode.
+        skk-katakana nil
+        skk-input-mode-string skk-latin-mode-string )
+  (force-mode-line-update) )
+
+(defsubst skk-jisx0208-latin-mode-on ()
+  (setq skk-mode t
+        skk-abbrev-mode nil
+        skk-latin-mode nil
+        skk-j-mode nil
+        skk-jisx0208-latin-mode t
+        ;; j's sub mode.
+        skk-katakana nil
+        skk-input-mode-string skk-jisx0208-latin-mode-string )
+  (force-mode-line-update) )
+
+(defsubst skk-abbrev-mode-on ()
+  (setq skk-mode t
+        skk-abbrev-mode t
+        skk-latin-mode nil
+        skk-j-mode nil
+        skk-jisx0208-latin-mode nil
+        ;; j's sub mode.
+        skk-katakana nil
+        skk-input-mode-string skk-abbrev-mode-string )
+  (force-mode-line-update) )
+
+(defsubst skk-in-minibuffer-p ()
+  ;; カレントバッファがミニバッファかどうかをチェックする。
+  (window-minibuffer-p (selected-window)) )
+
+(defsubst skk-insert-prefix (&optional char)
+  ;; skk-echo が non-nil であればカレントバッファに skk-prefix を挿入する。
+  (and skk-echo
+       ;; skk-prefix の挿入をアンドゥの対象としない。挿入したプレフィックスは、
+       ;; かな文字を挿入する前に全て消去するので、その間、buffer-undo-list を
+       ;; t にしてアンドゥ情報を蓄えなくとも問題がない。
+       (let ((buffer-undo-list t))
+         (insert-and-inherit (or char skk-prefix)) )))
+
+(defsubst skk-erase-prefix (&optional clean)
+  ;; skk-echo が non-nil であればカレントバッファに挿入された skk-prefix を消
+  ;; す。オプショナル引数の CLEAN が指定されると、変数としての skk-prefix を
+  ;; null 文字に、skk-current-rule-tree を nil 初期化する。
+  ;;
+  ;; かな文字の入力がまだ完成していない場合にこの関数が呼ばれたときなどは、バッ
+  ;; ファに挿入されている skk-prefix は削除したいが、変数としての skk-prefix は
+  ;; null 文字にしたくない。
+  (and skk-echo skk-kana-start-point
+       (not (string= skk-prefix ""))	; fail safe.
+       ;; skk-prefix の消去をアンドゥの対象としない。
+       (let ((buffer-undo-list t)
+	     (start (marker-position skk-kana-start-point)) )
+	 (and start
+	      (condition-case nil
+		  (delete-region start (+ start (length skk-prefix)))
+		(error
+		 (skk-set-marker skk-kana-start-point nil) 
+		 (setq skk-prefix ""
+		       skk-current-rule-tree nil ))))))
+  (and clean (setq skk-prefix ""
+		   skk-current-rule-tree nil ))) ; fail safe
+
+(defsubst skk-string<= (str1 str2)
+  ;; STR1 と STR2 とを比較して、string< か string= であれば、t を返す。
+  (or (string< str1 str2) (string= str1 str2)) )
+
+(defsubst skk-do-auto-fill ()
+  ;; auto-fill-function に値が代入されておれば、do-auto-fill をコールする。
+  (and auto-fill-function (funcall auto-fill-function)) )
+
+(defsubst skk-current-insert-mode ()
+  (cond (skk-abbrev-mode 'abbrev)
+	(skk-latin-mode 'latin)
+	(skk-jisx0208-latin-mode 'jisx0208-latin)
+	(skk-katakana 'katakana)
+	(skk-j-mode 'hiragana) ))
+
+(defsubst skk-numeric-p ()
+  (and skk-use-numeric-conversion (require 'skk-num) skk-num-list) )
+
+(defsubst skk-substring-head-character (string)
+  (char-to-string (string-to-char string)) )
+
+(defsubst skk-get-current-candidate-simply (&optional noconv)
+  (if (> 0 skk-henkan-count)
+      (skk-error "候補を取り出すことができません"
+		 "Cannot get current candidate" )
+    ;; (nth -1 '(A B C)) は、A を返すので、負でないかどうかチェックする。
+    (let ((word (nth skk-henkan-count skk-henkan-list)))
+      (and word
+	   (if (and (skk-numeric-p) (consp word))
+	       (if noconv (car word) (cdr word))
+	     word )))))
+
+;; convert skk-rom-kana-rule-list to skk-rule-tree.
+;; The rule tree follows the following syntax:
+;; <branch-list>    ::= nil | (<tree> . <branch-list>)
+;; <tree>         ::= (<char> <prefix> <nextstate> <kana> <branch-list>)
+;; <kana>         ::= (<ひらがな文字列> . <カタカナ文字列>) | nil
+;; <char>         ::= <英小文字>
+;; <nextstate>    ::= <英小文字文字列> | nil
+
+;; ツリーにアクセスするためのインターフェース
+
+(defsubst skk-make-rule-tree (char prefix nextstate kana branch-list)
+  (list char
+	prefix
+	(if (string= nextstate "") nil nextstate)
+	kana
+	branch-list ))
+
+(defsubst skk-get-char (tree)
+  (car tree) )
+
+(defsubst skk-set-char (tree char)
+  (setcar tree char) )
+
+(defsubst skk-set-prefix (tree prefix)
+  (setcar (nthcdr 1 tree) prefix) )
+
+(defsubst skk-get-prefix (tree)
+  (nth 1 tree) )
+
+(defsubst skk-get-nextstate (tree)
+  (nth 2 tree) )
+
+(defsubst skk-set-nextstate (tree nextstate)
+  (if (string= nextstate "") (setq nextstate nil))
+  (setcar (nthcdr 2 tree) nextstate) )
+
+(defsubst skk-get-kana (tree)
+  (nth 3 tree) )
+
+(defsubst skk-set-kana (tree kana)
+  (setcar (nthcdr 3 tree) kana) )
+
+(defsubst skk-get-branch-list (tree)
+  (nth 4 tree) )
+
+(defsubst skk-set-branch-list (tree branch-list)
+  (setcar (nthcdr 4 tree) branch-list) )
+
+;; tree procedure for skk-kana-input.
+(defsubst skk-add-branch (tree branch)
+  (skk-set-branch-list tree (cons branch (skk-get-branch-list tree))) )
+
+(defsubst skk-select-branch (tree char)
+  (assq char (skk-get-branch-list tree)) )
+
+(defsubst skk-kana-cleanup (&optional force)
+  (let ((data (or
+	       (and skk-current-rule-tree
+		    (null (skk-get-nextstate skk-current-rule-tree))
+		    (skk-get-kana skk-current-rule-tree) )
+	       (and skk-kana-input-search-function
+		    (car (funcall skk-kana-input-search-function)) )))
+	kana )
+	(if (or force data)
+	    (progn
+	      (skk-erase-prefix 'clean)
+	      (setq kana (if (functionp data) (funcall data nil) data))
+	      (if (consp kana)
+		  (setq kana (if skk-katakana (car kana) (cdr kana))) )
+	      (if (stringp kana) (skk-insert-str kana))
+	      (skk-set-marker skk-kana-start-point nil)
+	      t ))))
+
+(defsubst skk-make-raw-arg (arg)
+  (cond ((= arg 1) nil)
+	((= arg -1) '-)
+	((numberp arg) (list arg)) ))
+
+(defsubst skk-unread-event (event)
+  ;; Unread single EVENT.
+  (setq unread-command-events (nconc unread-command-events (list event))) )
+
+;;(defsubst skk-get-current-henkan-data (key)
+;;  (cdr (assq key skk-current-henkan-data)) )
+
+;;(defsubst skk-put-current-henkan-data (key val)
+;;  (setq skk-current-henkan-data (put-alist key val skk-current-henkan-data)) )
+
+(defsubst skk-get-last-henkan-data (key)
+  (cdr (assq key skk-last-henkan-data)) )
+
+(defsubst skk-put-last-henkan-data (key val)
+  (setq skk-last-henkan-data (put-alist key val skk-last-henkan-data)) )
+
+;;;; version specific matter.
+;;; inline functions.
+(skk-defsubst-cond skk-str-length (str)
+  ((memq skk-emacs-type '(xemacs mule4))
+   (length str) )
+  ((eq skk-emacs-type 'mule3)
+   (length (string-to-vector str)) )
+  ((eq skk-emacs-type 'mule2)
+   (length (string-to-char-list str)) ))
+
+(skk-defsubst-cond skk-substring (str pos1 pos2)
+  ((memq skk-emacs-type '(xemacs mule4))
+   (substring str pos1 pos2) )
+  ((eq skk-emacs-type 'mule3)
+   (if (< pos1 0)
+       (setq pos1 (+ (skk-str-length str) pos1)) )
+   (if (< pos2 0)
+       (setq pos2 (+ (skk-str-length str) pos2)) )
+   (if (>= pos1 pos2)
+       ""
+     (let ((sl (nthcdr pos1 (string-to-char-list str))))
+       (setcdr (nthcdr (- pos2 pos1 1) sl) nil)
+       (concat sl) )))
+  ((eq skk-emacs-type 'mule2)
+   (if (< pos1 0)
+       (setq pos1 (+ (skk-str-length str) pos1)) )
+   (if (< pos2 0)
+       (setq pos2 (+ (skk-str-length str) pos2)) )
+   (if (>= pos1 pos2)
+       ""
+     (let ((sl (nthcdr pos1 (string-to-char-list str))))
+       (setcdr (nthcdr (- pos2 pos1 1) sl) nil)
+       (mapconcat 'char-to-string sl "") ))))
+
+;; no argument use only in SKK.
+(skk-defsubst-cond skk-read-event ()
+  ((eq skk-emacs-type 'xemacs)
+   (next-command-event) )
+  (t (read-event)) )
+
+(skk-defsubst-cond skk-char-to-string (char)
+  ((eq skk-emacs-type 'xemacs)
+   (char-to-string char) )
+  ((string< "20" emacs-version)
+   (condition-case nil (char-to-string char) (error)) )
+  (t (char-to-string char)) )
+
+(skk-defsubst-cond skk-ascii-char-p (char)
+  ;; CHAR が ascii 文字だったら t を返す。
+  ((memq skk-emacs-type '(xemacs mule4 mule3))
+   (eq (char-charset char) 'ascii) )
+  ((eq skk-emacs-type 'mule2)
+   (= (char-leading-char char) 0) ))
+ 
+(skk-defsubst-cond skk-str-ref (str pos)
+  ((memq skk-emacs-type '(xemacs mule4))
+   (aref str pos) )
+  ((eq skk-emacs-type 'mule3)
+   (aref (string-to-vector str) pos ) )
+  ((eq skk-emacs-type 'mule2)
+   (nth pos (string-to-char-list str)) ))
+
+(skk-defsubst-cond skk-jisx0208-p (char)
+  ((memq skk-emacs-type '(xemacs mule4 mule3))
+   (eq (char-charset char) 'japanese-jisx0208) )
+  ((eq skk-emacs-type 'mule2)
+   (= (char-leading-char char) lc-jp) ))
+
+(skk-defsubst-cond skk-char-octet (ch &optional n)
+  ((eq skk-emacs-type 'xemacs)
+   (or (nth (if n (1+ n) 1) (split-char ch)) 0) )
+  (t (char-octet ch n)) )
+
 (defun skk-version ()
   (interactive)
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/07 06:06:42 $")
+      (let* ((raw-date "$Date: 1999/11/07 14:45:53 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -77,1171 +430,156 @@
                  (concat (car (rassoc month skk-month-alist))
                          " " date ", " year ))))))
 
-;;;; variables declaration
-;;; user variables
+;;; normal functions.
+;; tiny function, but called once in skk-kcode.el.  So not make it inline.
+;; or should I think to move to skk-kcode.el?
+(skk-defun-cond skk-make-char (charset n1 n2)
+  ((eq skk-emacs-type 'xemacs)
+   (make-char charset (logand (lognot 128) n1) (logand (lognot 128) n2)) )
+  ((memq skk-emacs-type '(mule4 mule3))
+   (make-char charset n1 n2) )
+  ((eq skk-emacs-type 'mule2)
+   (make-character charset n1 n2) ))
+
+;; this one is called once in skk-kcode.el, too.
+(skk-defsubst-cond skk-charsetp (object)
+  ((and (eq skk-emacs-type 'xemacs) (fboundp 'charsetp))
+   (charsetp object) )
+  ((eq skk-emacs-type 'xemacs)
+   ;; Is there XEmacs that doesn't have `charsetp'?
+   (find-charset object) )
+  ((memq skk-emacs-type '(mule4 mule3))
+   (charsetp object) )
+  ((eq skk-emacs-type 'mule2)
+   (character-set object) ))
+
+(skk-defun-cond skk-jisx0208-to-ascii (string)
+  ((memq skk-emacs-type '(xemacs mule4 mule3))
+   (require 'japan-util)
+   (let ((char
+	  (get-char-code-property (string-to-char string) 'ascii) ))
+     (and char (char-to-string char)) ))
+  ((eq skk-emacs-type 'mule2)
+   (let ((char
+	  (let* ((ch (string-to-char string))
+		 (ch1 (char-component ch 1)) )
+	    (cond ((eq 161 ch1)		; ?\241
+		   (cdr (assq (char-component ch 2) skk-hankaku-alist)) )
+		  ((eq 163 ch1)		; ?\243
+		   (- (char-component ch 2) 128) ; ?\200
+		   )))))
+     (and char (char-to-string char)) )))
+
+;;;; aliases
+;; for backward compatibility.
+(define-obsolete-function-alias 'skk-zenkaku-mode 'skk-jisx0208-latin-mode)
+(define-obsolete-function-alias 'skk-zenkaku-mode-on 'skk-jisx0208-latin-mode-on)
+(define-obsolete-function-alias 'skk-zenkaku-insert 'skk-jisx0208-latin-insert)
+(define-obsolete-function-alias 'skk-zenkaku-region 'skk-jisx0208-latin-region)
+(define-obsolete-function-alias 'skk-zenkaku-henkan 'skk-jisx0208-latin-henkan)
+(define-obsolete-function-alias 'skk-ascii-mode-on 'skk-latin-mode-on)
+(define-obsolete-function-alias 'skk-ascii-mode 'skk-latin-mode)
+(define-obsolete-function-alias 'skk-ascii-region 'skk-latin-region)
+(define-obsolete-function-alias 'skk-ascii-henkan 'skk-latin-henkan)
+(define-obsolete-function-alias 'skk-convert-ad-to-gengo 'skk-ad-to-gengo)
+(define-obsolete-function-alias 'skk-convert-gengo-to-ad 'skk-gengo-to-ad)
+(define-obsolete-function-alias 'skk-isearch-forward 'isearch-forward)
+(define-obsolete-function-alias 'skk-isearch-forward-regexp 'isearch-forward-regexp)
+(define-obsolete-function-alias 'skk-isearch-backward 'isearch-backward)
+(define-obsolete-function-alias 'skk-isearch-backward-regexp 'isearch-backward-regexp)
+
+(defun skk-define-menu-bar-map (map)
+  ;; SKK メニューのトップに出現するコマンドのメニューへの定義を行なう。
+  (easy-menu-define
+   skk-menu map
+   "Menu used in SKK mode."
+   '("SKK"
+     ("Convert Region and Echo"
+      ("Gyakubiki"
+       ["to Hiragana" skk-gyakubiki-message
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Hiragana, All Candidates"
+        ;; あれれ、lambda 関数は定義できないのか？？？  動かないぞ...。
+        (function (lambda (start end) (interactive "r")
+                    (skk-gyakubiki-message start end 'all-candidates) ))
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Katakana" skk-gyakubiki-katakana-message
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Katakana, All Candidates"
+        (function (lambda (start end) (interactive "r")
+                    (skk-gyakubiki-katakana-message
+                     start end 'all-candidates ) ))
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       )
+      ("Hurigana"
+       ["to Hiragana" skk-hurigana-message
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Hiragana, All Candidates"
+        (function (lambda (start end) (interactive "r")
+                    (skk-hurigana-message start end 'all-candidates) ))
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Katakana" skk-hurigana-katakana-message
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Katakana, All Candidates"
+        (function (lambda (start end) (interactive "r")
+                    (skk-hurigana-katakana-message
+                     start end 'all-candidates) ))
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       )
+      )
+     ("Convert Region and Replace"
+      ["Ascii" skk-ascii-region
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+      ("Gyakubiki"
+       ["to Hiragana" skk-gyakubiki-region
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Hiragana, All Candidates"
+        (function (lambda (start end) (interactive "r")
+                    (skk-gyakubiki-region start end 'all-candidates) ))
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Katakana" skk-gyakubiki-katakana-region
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Katakana, All Candidates"
+        (function (lambda (start end) (interactive "r")
+                    (skk-gyakubiki-katakana-region
+                     start end 'all-candidates ) ))
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       )
+      ["Hiragana" skk-hiragana-region
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+      ("Hurigana"
+       ["to Hiragana" skk-hurigana-region
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Hiragana, All Candidates"
+        (function (lambda (start end) (interactive "r")
+                    (skk-hurigana-region start end 'all-candidates) ))
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Katakana" skk-hurigana-katakana-region
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       ["to Katakana, All Candidates" (function
+                                       (lambda (start end) (interactive "r")
+                                         (skk-hurigana-katakana-region
+                                          start end 'all-candidates) ))
+        (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+       )
+      ["Katakana" skk-katakana-region
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+      ["Romaji" skk-romaji-region
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+      ["Zenkaku" skk-jisx0208-latin-region
+       (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+      )
+     ["Count Jisyo Candidates" skk-count-jisyo-candidates
+      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+     ["Save Jisyo" skk-save-jisyo
+      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+     ["Undo Kakutei" skk-undo-kakutei
+      (or (not (boundp 'skktut-problem-count)) (eq skktut-problem-count 0)) ]
+     ["Version" skk-version
+      (or (not (boundp 'skktut-problem-count))
+          (eq skktut-problem-count 0)) ]
+     )))
 
-(defvar skk-init-file (convert-standard-filename "~/.skk")
-  "*SKK の初期設定ファイル名。
-skk.el 9.x より ~/.emacs でのカスタマイズも可能となった。"
-;  "*Name of the SKK initialization file.
-;From skk.el 9.x on all customization may be done in ~/.emacs."
-)
-
-;;;###autoload
-(defgroup skk nil "SKK basic customization."
-  :prefix "skk-"
-  :group 'japanese
-  :group 'input-method )
-
-(defgroup skk-faces nil
-  "Faces used by SKK."
-  :group 'skk
-  :group 'faces)
-
-(defcustom skk-special-midashi-char-list '(?> ?< ??)
-  "*接頭辞、接尾辞の入力のためのプレフィックスキー、サフィックスキーのリスト。"
-  ;;  "*List of prefix and suffix keys for entering `settoji' and `setsubiji'."
-  :type '(repeat character)
-  :group 'skk )
-
-(defcustom skk-mode-hook nil
-  "*SKK を起動したときのフック。
-他に、skk-auto-fill-mode-hook、skk-load-hook, skk-init-file でもカスタ
-マイズが可能。"
-  ;; "*Hook run at SKK startup.  This hook is also run
-  ;;in skk-auto-fill-mode after skk-auto-fill-mode-hook.
-  ;;skk-auto-fill-mode-hook, skk-load-hook, skk-init-file may also be used
-  ;;for customization."
-  :type 'hook
-  :group 'skk )
-
-(defcustom skk-auto-fill-mode-hook nil
-  "*skk-auto-fill-mode を起動したときのフック。
-他に、skk-mode-hook, skk-load-hook, skk-init-file でもカスタマイズが可
-能。"
-  ;;  "*Hook run at startup of skk-auto-fill-mode.
-  ;;skk-mode-hook、skk-load-hook, skk-init-file may also be used for
-  ;;customization."
-  :type 'hook
-  :group 'skk )
-
-(defcustom skk-load-hook nil
-  "*skk.el をロードしたときのフック。
-他に、skk-mode-hook, skk-auto-fill-mode-hook, skk-init-file でもカスタ
-マイズが可能。"
-  ;;  "*Hook run when SKK is loaded.
-  ;;skk-auto-fill-mode-hook、skk-mode-hook, skk-init-file may also be used
-  ;;for customization."
-  :type 'hook
-  :group 'skk )
-
-(defcustom skk-search-end-function nil
-  "*単語検索終了時にコールされる関数。
-この関数を利用して検索した単語の優先順位を変更するなどの作業が可能。
-HENKAN-BUFFER, MIDASI, OKURIGANA, ENTRY の 4 引数を伴なってコールされる。
-加工した ENTRY を返すこと。
-この関数は、辞書バッファでコールされるので、変換を行なったバッファローカルな情報を
-取り出したいときは、HENKAN-BUFFER を利用する。"
-  :type '(choice function (const nil))
-  :group 'skk )
- 
-(defcustom skk-update-end-function nil
-  "*個人辞書の更新終了時にコールされる関数。
-HENKAN-BUFFER, MIDASI, OKURIGANA, WORD, PURGE の 5 引数を伴なってコールされる。
-この関数は、辞書バッファでコールされるので、変換を行なったバッファローカルな情報を取り
-出したいときは、HENKAN-BUFFER を利用する。
-skk-kakutei-initialize がコールされる前にこの関数がコールされるので、最後の確定
-に関するフラグ類は、この関数の中から参照することができる。"
-  :type '(choice function (const nil))
-  :group 'skk )
-  
-(defcustom skk-kakutei-end-function nil
-  "*確定時にコールされる関数。
-KAKUTEI-WORD 引数を伴なって、変換を行なったバッファでコールされる。
-skk-kakutei-initialize がコールされる前にこの関数がコールされるので、最後の確定
-に関するフラグ類は、この関数の中から参照することができる。" 
-  :type '(choice function (const nil))
-  :group 'skk )
-
-(defcustom skk-kakutei-jisyo nil
-  "*最初に検索する辞書。
-Non-nil で、かつ skk-search-prog-list の要素の中にこの変数が使用されていれば、
-指定された辞書を検索のためバッファに読み込み、検索を行なう。
-見出し語は、ソートされていなければならない。
-各見出し語の最初のエントリしか検索しない (複数のエントリがあっても 2 番目以降の
-エントリは無視される)。
-skk-search-prog-list の値を設定することにより、検索対象の辞書の変更、検索の順
-序の変更が可能。"
-  ;;  "*The first dictionary to be searched.
-  ;;If non-nil, and this variable is used as a component of
-  ;;`skk-search-prog-list', the indicated dictionary is read into a
-  ;;buffer and searched.
-  ;;The keys must be sorted.
-  ;;Only the first entry in each key is checked; if several entries are
-  ;;present the second and following entries are ignored.
-  ;;By setting the value of `skk-search-prog-list' the dictionaries
-  ;;searched and the order of search can be changed."
-  :type '(choice file (const nil))
-  :group 'skk )
-
-(defcustom skk-initial-search-jisyo nil
-  "*ユーザー辞書の検索の前に検索する辞書。
-見出し語は、ソートされていなければならない。
-Non-nil で、かつ skk-search-prog-list の要素の中にこの変数が使用されていれば、
-指定された辞書を検索のためバッファに読み込み、検索を行なう。
-skk-search-prog-list の値を設定することにより、検索対象の辞書の変更、検索の順
-序の変更が可能。"
-  ;;  "*This dictionary is searched before the user's personal dictionary.
-  ;;The keys must be sorted.
-  ;;If non-nil, and this variable is used as a component of
-  ;;`skk-search-prog-list', the indicated dictionary is read into a
-  ;;buffer and searched.
-  ;;By setting the value of `skk-search-prog-list' the dictionaries
-  ;;searched and the order of search can be changed."
-  :type '(choice file (const nil))
-  :group 'skk )
-
-(defcustom skk-large-jisyo nil
-  "*ユーザー辞書の検索の後に検索する辞書。
-見出し語は、ソートされていなければならない。
-Non-nil で、かつ skk-search-prog-list の要素の中にこの変数が使用されていれば、
-指定された辞書を検索のためバッファに読み込み、検索を行なう。
-skk-search-prog-list の値を設定することにより、検索対象の辞書の変更、検索の順
-序の変更が可能。" 
-  :type '(choice file (const nil))
-  :group 'skk )
-
-(defcustom skk-aux-large-jisyo nil
-  "*SKK サーバーで最後に検索する辞書。
-見出し語は、ソートされていなければならない。
-Non-nil で、かつ skk-search-prog-list の要素の中にこの変数が使用されていれば、
-SKK サーバーを使い検索を行う。
-SKK サーバーが active でなければ、指定された辞書をバッファに読み込む。
-skk-search-prog-list の値を設定することにより、検索対象の辞書の変更、検索の順
-序の変更が可能。
-この値を設定することにより、skk-server.el が autoload される。" 
-  :type '(choice file (const nil))
-  :group 'skk )
-
-(defcustom skk-search-prog-list
-  '((skk-search-kakutei-jisyo-file skk-kakutei-jisyo 10000 t)
-    (skk-search-jisyo-file skk-initial-search-jisyo 10000 t)
-    (skk-search-jisyo-file skk-jisyo 0 t)
-    ;; skk-auto.el をロードすると下記の要素がプラスされる。
-    ;;(skk-okuri-search)
-    (skk-search-jisyo-file skk-large-jisyo 10000)
-    ;; skk-server.el をロードすると下記の要素がプラスされる。
-    ;;(skk-search-server skk-aux-large-jisyo 10000)
-    ;; skk-server-host もしくは skk-servers-list を指定すると、skk-server.el 
-    ;; が autoload される。
-    )
-  "*検索関数、検索対象の辞書を決定するためのリスト。
-変換した候補を返す S 式をリストの形に表記したもの。
-skk-search 関数が skk-search-prog-list の car から後方向へ順番に S 式の評価を
-行い変換を行なう。" 
-  :type '(repeat
-	  (list (function :tag "Search funcition")
-		(choice :tag "Dictionary" file (const nil))
-		(choice :tag "Minimum region size to be binary-searched"
-			integer (const nil) )
-		(choice :tag "Quietly reading dictionary to Emacs buffer"
-			(const t) (const nil) )))
-  :group 'skk )
-
-(defcustom skk-jisyo (convert-standard-filename "~/.skk-jisyo")
-  "*SKK のユーザー辞書。" 
-  :type 'file
-  :group 'skk )
-
-(defcustom skk-backup-jisyo (convert-standard-filename "~/.skk-jisyo.BAK")
-  "*SKK のユーザー辞書のバックアップファイル。" 
-  :type 'file
-  :group 'skk )
-
-(defcustom skk-jisyo-code nil
-  "*Non-nil であれば、その値で辞書バッファの漢字コードを設定する。
-Mule では、*euc-japan*, *sjis*, *junet*。
-また、\"euc\", \"ujis\", \"sjis\", \"jis\" などの文字列によっても指定が可能。" 
-  :type '(choice symbol string)
-  :group 'skk )
-
-(defcustom skk-keep-record t
-  "*Non-nil であれば、変換に関する記録を skk-record-file に取る。"
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-record-file (convert-standard-filename "~/.skk-record")
-  "*ユーザー辞書の統計を取るファイル。
-辞書セーブの時刻、単語の登録数、確定を行った回数、確定率、全体の語数の
-情報を収める。" 
-  :type 'file
-  :group 'skk )
-
-(defcustom skk-kakutei-key "\C-j"
-  "*漢字変換の確定動作を行うキー。"
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-previous-candidate-char ?x
-  "*skk-previous-candidate を割当てたキーキャラクタ。" 
-  :type 'character
-  :group 'skk )
-
-(defcustom skk-try-completion-char ?\011 ; TAB 
-  "*見出し語の補完動作を行なうキーキャラクタ。" 
-  :type 'character
-  :group 'skk )
-
-(defcustom skk-next-completion-char ?.
-  "*見出し語の補完動作で、次の候補を出力するキーキャラクタ。" 
-  :type 'character
-  :group 'skk )
-
-(defcustom skk-previous-completion-char ?,
-  "*見出し語の補完動作で、前の候補を出力するキーキャラクタ。" 
-  :type 'character
-  :group 'skk )
-
-(defcustom skk-start-henkan-char ?\040	; SPC
-  "*漢字変換を開始するキーキャラクタ。" 
-  :type 'character
-  :group 'skk )
- 
-(defcustom skk-use-viper nil
-  "*Non-nil であれば、VIPER に対応する。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-henkan-okuri-strictly nil
-  "*Non-nil であれば、見出し語と送り仮名が一致したときだけ候補として出力する。
-例えば、下記のような辞書エントリが、skk-jisyo \(プライベート辞書\) にあった場合に
-
-  \"おおk /大/多/[く/多/]/[き/大/]/\"
-
-\"▽おお*く\" を変換したとき、\"多く\" のみを出力し、\"大く\" を出力しない。
-
-SKK-JISYO.[SML] の送り仮名エントリは上記の形式になっていないので、skk-jisyo の
-送りありの辞書エントリがこの形式のものをあまり含んでいない場合は、このオプショ
-ンを on にすることで、すぐに単語登録に入ってしまうので注意すること。
-
-skk-process-okuri-early の値が nil ならば上記の形式で skk-jisyo が作られる。
-
-Emacs 19 ベースの Mule ならば、下記のフォームを評価することで、単語登録に入っ
-たときだけ一時的にこのオプションを nil にすることができる。
-
-    \(add-hook 'minibuffer-setup-hook
-              \(function
-               \(lambda \(\)
-                 \(if \(and \(boundp 'skk-henkan-okuri-strictly\)
-                          skk-henkan-okuri-strictly
-                          \(not \(eq last-command 'skk-purge-from-jisyo\)\) \)
-                     \(progn
-                       \(setq skk-henkan-okuri-strictly nil\)
-                       \(put 'skk-henkan-okuri-strictly 'temporary-nil t\) \)\)\)\)\)
-
-    \(add-hook 'minibuffer-exit-hook
-              \(function
-               \(lambda \(\)
-                 \(if \(get 'skk-henkan-okuri-strictly 'temporary-nil\)
-                     \(progn
-                       \(put 'skk-henkan-okuri-strictly 'temporary-nil nil\)
-                       \(setq skk-henkan-okuri-strictly t\) \)\)\)\)\)
-
-このオプション利用時は、skk-process-okuri-early の値は nil でなければならない
-\(メニューバーを利用してカスタマイズした場合は自動的に調整される\)。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-henkan-strict-okuri-precedence nil
-  "*Non-nil であれば、見出し語と送り仮名が一致した候補を優先して表示する。
-例えば、下記のような辞書エントリが、skk-jisyo \(プライベート辞書\) にあった場合に
-
-  \"おおk /大/多/[く/多/]/[き/大/]/\"
-
-\"▽おお*く\" を変換したとき、まず\"多く\" を出力し、
-次に \"大く\" を出力する。
-
-\"大く\"などの候補はうっとうしいが、すぐに単語登録にはいってしまうのも
-嫌なひとにおすすめ。
-
-このオプション利用時は、skk-process-okuri-early の値は nil でなければならない。
-また skk-henkan-okuri-strictly が non-nil のときは、この変数は無視される。
-\(メニューバーを利用してカスタマイズした場合は自動的に調整される\)。"
-  :type 'boolean
-  :group 'skk )
- 
-(defcustom skk-auto-okuri-process nil
-  "*Non-nil であれば、送り仮名部分を自動認識して変換を行う。
-例えば、
-
-    \"Uresii (\"UreSii\" ではなく) -> 嬉しい\"
-
-のように変換される。但し、skk-jisyo 辞書 \(プライベート辞書\) が、
-
-    \"うれs /嬉/[し/嬉/]/\"
-
-のような形式になっていることが必要である \(SKK-JISYO.[SML] はこの形式に対応し
-ていないので、skk-jisyo にこのエントリがなければならない\)。
-
-このオプション利用時は、skk-process-okuri-early の値は nil でなければならない
-\(メニューバーを利用してカスタマイズした場合は自動的に調整される\)。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-process-okuri-early nil
-  "*Non-nil であれば、送り仮名のローマ字プレフィックスの入力時点で変換を開始する。
-例えば、
-
-    \"UgoK -> ▼動k\"。
-
-送り仮名が分らないまま変換していることになるので、skk-jisyo が送り仮名に対応し
-た形に成長しない。つまり
-
-    \"うごk /動/\"
-
-のような形態のままとなる。ただし、既に
-
-    \"うごk /動/[く/動/]/[か/動/]/[け/動/]/[き/動/]/[こ/動/]/\"
-
-のようなエントリが skk-jisyo にあれば、それを破壊しない。
-
-nil であれば、送り仮名の入力が完了した時点で変換が開始する。例えば、
-
-    \"UgoK -> ▽うご*k\", \"UgoKu -> ▼動く\"
-
-このオプションを on にして skk-mode を起動すると、両立できないオプションである
-skk-kakutei-early, skk-auto-okuri-process, skk-henkan-okuri-strictly は nil に
-セットされる。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-egg-like-newline nil
-  "*Non-nil であれば、▼モードで改行をタイプしても確定するのみで改行しない。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-kakutei-early t
-  "*Non-nil であれば skk-insert が呼ばれたときに現在の候補を確定する。
-例えば、
-
-    \"▽かくてい -> ▼確定 -> 確定s -> 確定す\"
-
-のように変換後、「す」の prefix である \"s\" を入力した時点で確定する。
-nil であれば、例えば
-
-    \"▽かくてい -> ▼確定 -> ▼確定s -> ▼確定する -> 確定する。\"
-
-のように skk-kakutei を直接、間接にコールするまで \(句読点を入力したり、新たな
-▽モードに入ったりすると間接的に skk-kakutei をコールする\) は、確定しないので、
-その間は、変換候補を選びなおすことなどが可能。
-
-このオプション利用時は、skk-process-okuri-early の値は nil でなければならない
-\(メニューバーを利用してカスタマイズした場合は自動的に調整される\)。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-delete-implies-kakutei t
-  "*Non-nil であれば、▼モードで BS を押すと、前の一文字を削除し確定する。
-nil であれば、一つ前の候補を表示する。"
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-allow-spaces-newlines-and-tabs t
-  "*Non-nil であれば、見出し語の中にスペース、タブ、改行があってもそれを取り除いて変換することが可能。
-例えば、下記のように 中に改行が入っていても変換が可能である。
-
-     \"▽か
-  な\"
-   -> \"仮名\"
-
-この値が nil であれば、最初のスペースで見出し語を切り詰めてしまい、以降のスペー
-ス、タブ、改行は無視される。
-この値は、skk-start-henkan, skk-latin-henkan, skk-katakana-henkan,
-skk-hiragana-henkan, skk-jisx0208-latin-henkan 及び
-skk-backward-and-set-henkan-point の動作に影響する。"
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-convert-okurigana-into-katakana nil
-  "*Non-nil であれば、カタカナモードで変換したときに送り仮名もカタカナに変換する。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-delete-okuri-when-quit nil
-  "*Non-nil であれば、送りありの変換中に \"C-g\" を押すと送り仮名を消し▽モードに入る。
-例えば、
-
-    \"▽な*く -> ▼泣く -> \"C-g\" ->▽な\"
-
-nil であれば、送り仮名を含めた見出し語をそのまま残し、■モードに入る。例えば、
-
-    \"▽な*く -> ▼泣く -> \"C-g\" -> なく\"" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-henkan-show-candidates-keys '(?a ?s ?d ?f ?j ?k ?l)
-  "*メニュー形式で候補を選択するときの選択キーのリスト。
-\"x\", \" \" 及び \"C-g\" 以外の 7 つのキー (char type) を含む必要があ
-る。\"x\", \" \" 及び \"C-g\" は候補選択時にそれぞれ特別な仕事に割り当
-てられているので、このリストの中には含めないこと。"
-  :type '(repeat character)
-  :group 'skk )
-
-(defcustom skk-status-indicator 'minor-mode
-  "*SKK の状態をモード行のどこに表示するかを決める。
-left であれば左端に表示する。
-さもなければマイナーモードとしての表示法を取る。"
-  :type '(choice (const minor-mode)
-		 (const left))
-  :group 'skk )
-
-(defcustom skk-latin-mode-string " SKK"
-  "*SKK が latin (ascii) モードであるときにモードラインに表示される文字列。" 
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-hiragana-mode-string " かな"
-  "*ひらがなモードであるときにモードラインに表示される文字列。"
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-katakana-mode-string " カナ"
-  "*カタカナモードであるときにモードラインに表示される文字列。"
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-jisx0208-latin-mode-string " 全英"
-  "*全英モードであるときにモードラインに表示される文字列。"
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-abbrev-mode-string " aあ"
-  "*SKK abbrev モードであるときにモードラインに表示される文字列。"
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-echo t
-  "*Non-nil であれば、仮名文字のプレフィックスを表示する。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-use-numeric-conversion t
-  "*Non-nil であれば、数値変換を行う。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-rom-kana-base-rule-list
-  '(("a" nil ("ア" . "あ"))
-    ("bb" "b" ("ッ" . "っ"))
-    ("ba" nil ("バ" . "ば"))
-    ("be" nil ("ベ" . "べ"))
-    ("bi" nil ("ビ" . "び"))
-    ("bo" nil ("ボ" . "ぼ"))
-    ("bu" nil ("ブ" . "ぶ"))
-    ("bya" nil ("ビャ" . "びゃ"))
-    ("bye" nil ("ビェ" . "びぇ"))
-    ("byi" nil ("ビィ" . "びぃ"))
-    ("byo" nil ("ビョ" . "びょ"))
-    ("byu" nil ("ビュ" . "びゅ"))
-    ("cc" "c" ("ッ" . "っ"))
-    ("cha" nil ("チャ" . "ちゃ"))
-    ("che" nil ("チェ" . "ちぇ"))
-    ("chi" nil ("チ" . "ち"))
-    ("cho" nil ("チョ" . "ちょ"))
-    ("chu" nil ("チュ" . "ちゅ"))
-    ("cya" nil ("チャ" . "ちゃ"))
-    ("cye" nil ("チェ" . "ちぇ"))
-    ("cyi" nil ("チィ" . "ちぃ"))
-    ("cyo" nil ("チョ" . "ちょ"))
-    ("cyu" nil ("チュ" . "ちゅ"))
-    ("dd" "d" ("ッ" . "っ"))
-    ("da" nil ("ダ" . "だ"))
-    ("de" nil ("デ" . "で"))
-    ("dha" nil ("デャ" . "でゃ"))
-    ("dhe" nil ("デェ" . "でぇ"))
-    ("dhi" nil ("ディ" . "でぃ"))
-    ("dho" nil ("デョ" . "でょ"))
-    ("dhu" nil ("デュ" . "でゅ"))
-    ("di" nil ("ヂ" . "ぢ"))
-    ("do" nil ("ド" . "ど"))
-    ("du" nil ("ヅ" . "づ"))
-    ("dya" nil ("ヂャ" . "ぢゃ"))
-    ("dye" nil ("ヂェ" . "ぢぇ"))
-    ("dyi" nil ("ヂィ" . "ぢぃ"))
-    ("dyo" nil ("ヂョ" . "ぢょ"))
-    ("dyu" nil ("ヂュ" . "ぢゅ"))
-    ("e" nil ("エ" . "え"))
-    ("ff" "f" ("ッ" . "っ"))
-    ("fa" nil ("ファ" . "ふぁ"))
-    ("fe" nil ("フェ" . "ふぇ"))
-    ("fi" nil ("フィ" . "ふぃ"))
-    ("fo" nil ("フォ" . "ふぉ"))
-    ("fu" nil ("フ" . "ふ"))
-    ("fya" nil ("フャ" . "ふゃ"))
-    ("fye" nil ("フェ" . "ふぇ"))
-    ("fyi" nil ("フィ" . "ふぃ"))
-    ("fyo" nil ("フョ" . "ふょ"))
-    ("fyu" nil ("フュ" . "ふゅ"))
-    ("gg" "g" ("ッ" . "っ"))
-    ("ga" nil ("ガ" . "が"))
-    ("ge" nil ("ゲ" . "げ"))
-    ("gi" nil ("ギ" . "ぎ"))
-    ("go" nil ("ゴ" . "ご"))
-    ("gu" nil ("グ" . "ぐ"))
-    ("gya" nil ("ギャ" . "ぎゃ"))
-    ("gye" nil ("ギェ" . "ぎぇ"))
-    ("gyi" nil ("ギィ" . "ぎぃ"))
-    ("gyo" nil ("ギョ" . "ぎょ"))
-    ("gyu" nil ("ギュ" . "ぎゅ"))
-    ;;("h" "" ("オ" . "お"))
-    ("ha" nil ("ハ" . "は"))
-    ("he" nil ("ヘ" . "へ"))
-    ("hi" nil ("ヒ" . "ひ"))
-    ("ho" nil ("ホ" . "ほ"))
-    ("hu" nil ("フ" . "ふ"))
-    ("hya" nil ("ヒャ" . "ひゃ"))
-    ("hye" nil ("ヒェ" . "ひぇ"))
-    ("hyi" nil ("ヒィ" . "ひぃ"))
-    ("hyo" nil ("ヒョ" . "ひょ"))
-    ("hyu" nil ("ヒュ" . "ひゅ"))
-    ("i" nil ("イ" . "い"))
-    ("jj" "j" ("ッ" . "っ"))
-    ("ja" nil ("ジャ" . "じゃ"))
-    ("je" nil ("ジェ" . "じぇ"))
-    ("ji" nil ("ジ" . "じ"))
-    ("jo" nil ("ジョ" . "じょ"))
-    ("ju" nil ("ジュ" . "じゅ"))
-    ("jya" nil ("ジャ" . "じゃ"))
-    ("jye" nil ("ジェ" . "じぇ"))
-    ("jyi" nil ("ジィ" . "じぃ"))
-    ("jyo" nil ("ジョ" . "じょ"))
-    ("jyu" nil ("ジュ" . "じゅ"))
-    ("kk" "k" ("ッ" . "っ"))
-    ("ka" nil ("カ" . "か"))
-    ("ke" nil ("ケ" . "け"))
-    ("ki" nil ("キ" . "き"))
-    ("ko" nil ("コ" . "こ"))
-    ("ku" nil ("ク" . "く"))
-    ("kya" nil ("キャ" . "きゃ"))
-    ("kye" nil ("キェ" . "きぇ"))
-    ("kyi" nil ("キィ" . "きぃ"))
-    ("kyo" nil ("キョ" . "きょ"))
-    ("kyu" nil ("キュ" . "きゅ"))
-    ("ma" nil ("マ" . "ま"))
-    ("me" nil ("メ" . "め"))
-    ("mi" nil ("ミ" . "み"))
-    ("mo" nil ("モ" . "も"))
-    ("mu" nil ("ム" . "む"))
-    ("mya" nil ("ミャ" . "みゃ"))
-    ("mye" nil ("ミェ" . "みぇ"))
-    ("myi" nil ("ミィ" . "みぃ"))
-    ("myo" nil ("ミョ" . "みょ"))
-    ("myu" nil ("ミュ" . "みゅ"))
-    ("n" nil ("ン" . "ん"))
-    ("n'" nil ("ン" . "ん"))
-    ("na" nil ("ナ" . "な"))
-    ("ne" nil ("ネ" . "ね"))
-    ("ni" nil ("ニ" . "に"))
-    ("nn" nil ("ン" . "ん"))
-    ("no" nil ("ノ" . "の"))
-    ("nu" nil ("ヌ" . "ぬ"))
-    ("nya" nil ("ニャ" . "にゃ"))
-    ("nye" nil ("ニェ" . "にぇ"))
-    ("nyi" nil ("ニィ" . "にぃ"))
-    ("nyo" nil ("ニョ" . "にょ"))
-    ("nyu" nil ("ニュ" . "にゅ"))
-    ("o" nil ("オ" . "お"))
-    ("pp" "p" ("ッ" . "っ"))
-    ("pa" nil ("パ" . "ぱ"))
-    ("pe" nil ("ペ" . "ぺ"))
-    ("pi" nil ("ピ" . "ぴ"))
-    ("po" nil ("ポ" . "ぽ"))
-    ("pu" nil ("プ" . "ぷ"))
-    ("pya" nil ("ピャ" . "ぴゃ"))
-    ("pye" nil ("ピェ" . "ぴぇ"))
-    ("pyi" nil ("ピィ" . "ぴぃ"))
-    ("pyo" nil ("ピョ" . "ぴょ"))
-    ("pyu" nil ("ピュ" . "ぴゅ"))
-    ("rr" "r" ("ッ" . "っ"))
-    ("ra" nil ("ラ" . "ら"))
-    ("re" nil ("レ" . "れ"))
-    ("ri" nil ("リ" . "り"))
-    ("ro" nil ("ロ" . "ろ"))
-    ("ru" nil ("ル" . "る"))
-    ("rya" nil ("リャ" . "りゃ"))
-    ("rye" nil ("リェ" . "りぇ"))
-    ("ryi" nil ("リィ" . "りぃ"))
-    ("ryo" nil ("リョ" . "りょ"))
-    ("ryu" nil ("リュ" . "りゅ"))
-    ("ss" "s" ("ッ" . "っ"))
-    ("sa" nil ("サ" . "さ"))
-    ("se" nil ("セ" . "せ"))
-    ("sha" nil ("シャ" . "しゃ"))
-    ("she" nil ("シェ" . "しぇ"))
-    ("shi" nil ("シ" . "し"))
-    ("sho" nil ("ショ" . "しょ"))
-    ("shu" nil ("シュ" . "しゅ"))
-    ("si" nil ("シ" . "し"))
-    ("so" nil ("ソ" . "そ"))
-    ("su" nil ("ス" . "す"))
-    ("sya" nil ("シャ" . "しゃ"))
-    ("sye" nil ("シェ" . "しぇ"))
-    ("syi" nil ("シィ" . "しぃ"))
-    ("syo" nil ("ショ" . "しょ"))
-    ("syu" nil ("シュ" . "しゅ"))
-    ("tt" "t" ("ッ" . "っ"))
-    ("ta" nil ("タ" . "た"))
-    ("te" nil ("テ" . "て"))
-    ("tha" nil ("テァ" . "てぁ"))
-    ("the" nil ("テェ" . "てぇ"))
-    ("thi" nil ("ティ" . "てぃ"))
-    ("tho" nil ("テョ" . "てょ"))
-    ("thu" nil ("テュ" . "てゅ"))
-    ("ti" nil ("チ" . "ち"))
-    ("to" nil ("ト" . "と"))
-    ("tsu" nil ("ツ" . "つ"))
-    ("tu" nil ("ツ" . "つ"))
-    ("tya" nil ("チャ" . "ちゃ"))
-    ("tye" nil ("チェ" . "ちぇ"))
-    ("tyi" nil ("チィ" . "ちぃ"))
-    ("tyo" nil ("チョ" . "ちょ"))
-    ("tyu" nil ("チュ" . "ちゅ"))
-    ("u" nil ("ウ" . "う"))
-    ("vv" "v" ("ッ" . "っ"))
-    ("va" nil ("ヴァ" . "う゛ぁ"))
-    ("ve" nil ("ヴェ" . "う゛ぇ"))
-    ("vi" nil ("ヴィ" . "う゛ぃ"))
-    ("vo" nil ("ヴォ" . "う゛ぉ"))
-    ("vu" nil ("ヴ" . "う゛"))
-    ("ww" "w" ("ッ" . "っ"))
-    ("wa" nil ("ワ" . "わ"))
-    ("we" nil ("ウェ" . "うぇ"))
-    ("wi" nil ("ウィ" . "うぃ"))
-    ("wo" nil ("ヲ" . "を"))
-    ("wu" nil ("ウ" . "う"))
-    ("xx" "x" ("ッ" . "っ"))
-    ("xa" nil ("ァ" . "ぁ"))
-    ("xe" nil ("ェ" . "ぇ"))
-    ("xi" nil ("ィ" . "ぃ"))
-    ("xka" nil ("ヵ" . "か"))
-    ("xke" nil ("ヶ" . "け"))
-    ("xo" nil ("ォ" . "ぉ"))
-    ("xtsu" nil ("ッ" . "っ"))
-    ("xtu" nil ("ッ" . "っ"))
-    ("xu" nil ("ゥ" . "ぅ"))
-    ("xwa" nil ("ヮ" . "ゎ"))
-    ("xwe" nil ("ヱ" . "ゑ"))
-    ("xwi" nil ("ヰ" . "ゐ"))
-    ("xya" nil ("ャ" . "ゃ"))
-    ("xyo" nil ("ョ" . "ょ"))
-    ("xyu" nil ("ュ" . "ゅ"))
-    ("yy" "y" ("ッ" . "っ"))
-    ("ya" nil ("ヤ" . "や"))
-    ("ye" nil ("イェ" . "いぇ"))
-    ("yo" nil ("ヨ" . "よ"))
-    ("yu" nil ("ユ" . "ゆ"))
-    ("zz" "z" ("ッ" . "っ"))
-    ("z," nil "‥")
-    ("z-" nil "〜")
-    ("z." nil "…")
-    ("z/" nil "・")
-    ("z[" nil "『")
-    ("z]" nil "』")
-    ("za" nil ("ザ" . "ざ"))
-    ("ze" nil ("ゼ" . "ぜ"))
-    ("zh" nil "←")
-    ("zi" nil ("ジ" . "じ"))
-    ("zj" nil "↓")
-    ("zk" nil "↑")
-    ("zl" nil "→")
-    ("zo" nil ("ゾ" . "ぞ"))
-    ("zu" nil ("ズ" . "ず"))
-    ("zya" nil ("ジャ" . "じゃ"))
-    ("zye" nil ("ジェ" . "じぇ"))
-    ("zyi" nil ("ジィ" . "じぃ"))
-    ("zyo" nil ("ジョ" . "じょ"))
-    ("zyu" nil ("ジュ" . "じゅ"))
-    ("." nil skk-current-kuten)
-    ("," nil skk-current-touten)
-    ("-" nil "ー")
-    (":" nil "：")
-    (";" nil "；")
-    ("?" nil "？")
-    ("[" nil "「")
-    ("]" nil "」")
-    ("l" nil skk-latin-mode)
-    ("q" nil skk-toggle-kana)
-    ("L" nil skk-jisx0208-latin-mode)
-    ("Q" nil skk-set-henkan-point-subr)
-    ("X" nil skk-purge-from-jisyo)
-    ("/" nil skk-abbrev-mode)
-    ("$" nil skk-display-code-for-char-at-point)
-    ("@" nil skk-today)
-    ("\\" nil skk-input-by-code-or-menu)
-    )
-  ;; コンスタントにしてしまわないのは、ローマ字入力とは全く別の設定を
-  ;; する人もいるからです。
-  "*キー入力に対する変換文字を現わすオートマトン状態遷移規則。
-リストの各要素は、下記のリスト形式を満たしていなければならない。
-
-\(現在のキー入力状態[@次キー入力0][@次キー入力1]...[@次キー入力n] 最終のキー入力状態 出力\)
-
-\(但し、\"@\" は連接\) を意味する。
-
-出力に指定できるものは、文字列、文字列を car, cdr に持つ dot pair、
-関数名シンボルのいずれか。dot pair は、カナモードのときは car の文
-字列、かなモードのときは cdr の文字列が挿入される。文字列のみ指定され
-ている場合は、入力モードにかかわらずその文字が挿入される。
-文字列を挿入する関数については、insert を明示的に呼ぶ必要はなく、文字
-列を返せば良い。文字列を挿入しない関数についても指定は可。
-
-この変数の定義をベースに skk-rom-kana-rule-list が追加され、skk-mode
-起動時に skk-rule-tree という木の形にコンパイルされる。
-2 つのルールリストに重複するキーの設定がある場合は、
-skk-rom-kana-rule-list の定義が優先される。" 
-  :type '(repeat
-	  (list string string
-		(choice function string (cons string string)) ))
-  :group 'skk )
-
-(defcustom skk-rom-kana-rule-list
-  '(
-    ;; ユーザーの好みで設定が分れそうな要素は、
-    ;; skk-rom-kana-base-rule-list からこちらへ移しましょう...。
-    ("hh" "h" ("ッ" . "っ"))
-    ;; when you may want to insert 「がんま」by "gamma"...
-    ("mm" "m" ("ン" . "ん"))
-    )
-  "*キー入力に対する変換文字を現わすオートマトン状態遷移規則で、ユーザーの追加の設定を行なうもの。
-ベースとなる skk-rom-kana-base-rule-list にこの変数の定義が追加され、
-skk-mode 起動時に skk-rule-tree という木の形にコンパイルされる。
-2 つのルールリストに重複するキーの設定がある場合は、この変数の定義が優
-先される。
-
-リストの各要素は、下記のリスト形式を満たしていなければならない。
-
-\(現在のキー入力状態[@次キー入力0][@次キー入力1]...[@次キー入力n] 最終のキー入力状態 出力\)
-
-\(但し、\"@\" は連接\) を意味する。
-
-出力の種類については、skk-rom-kana-base-rule-list を参照のこと。
-ユーザーが追加したいルールを
-
-    \(setq skk-rom-kana-rule-list
-      '\(
-        \(\"hh\" \"h\" \(\"ッ\" . \"っ\"\)\)
-        \(\"@\" nil \"＠\"\)
-        ...
-        \)
-
-のように .emacs や skk-init-file に直接書くのが手軽。
-
-ディフォルトでは、\(\"hh\" \"h\" \(\"ッ\" . \"っ\"\)\) という要素が設
-定されているが、\"ohhira\" -> \"おおひら\" のように \"hh\" を促音処理
-したくなければ、skk-rom-kana-rule-list から
-
-    \(\"hh\" \"h\" \(\"ッ\" . \"っ\"\)\) 
-
-という要素を消す。
-また、`@' で skk-today (当日の日付の入力) を起動する代りに `＠' を入
-力したい場合は、skk-rom-kana-rule-list に
-
-    \(\"@\" nil \"＠\"\)
-
-という要素を加える。skk-mode の起動後 skk-rom-kana-rule-list の変更を
-行なった場合、その設定を反映させるには M-x skk-restart を実行する必要
-がある。" 
-  :type '(repeat
-	  (list string string
-		(choice function string (cons string string)) ))
-  :group 'skk )
-
-(defcustom skk-kana-input-search-function
-  (function
-   (lambda ()
-     (save-match-data
-       (and (string-match "^h\\([bcdfghjklmnpqrstvwxz]\\)$" skk-prefix)
-	    (member (char-to-string (preceding-char)) '("お" "オ"))
-	    (cons '("オ" . "お") (match-string 1 skk-prefix)) ))))
-  "*ルールリストの中に記せない変換ルールを処理する関数。
-skk-rom-kana-base-rule-list と skk-rom-kana-rule-list の要素を全て検索
-した後にコールされる。引数はない。
-
-\(現在の入力に対する出力 . \"続く unfixed prefix\"\)
-
-というセルを返す。出力の種類については、skk-rom-kana-base-rule-list を
-参照のこと。
-
-ディフォルトでは、\"お\" の後の \"h\" + 子音の入力を \"おお\" + 続く子
-音処理用の unfixed prefix に変換している。" 
-  :type 'function
-  :group 'skk )
-
-(defcustom skk-okuri-char-alist nil
-  "*ある送り仮名を別の送り仮名に変換するルールを記述するエーリスト。" 
-  :type '(repeat (cons string string))
-  :group 'skk )
-
-(defcustom skk-downcase-alist nil
-  "*変換キー (大文字ローマ字) の小文字への変換規則を表わすエーリスト。
-変換キーの入力を開始する際、SKK では大文字で入力を行なうので、
-skk-set-henkan-point の中でこれを小文字に変換する作業を行なう。このエー
-リストに大文字 -> 小文字の変換ルールを書いておくことで、キー入力のカス
-タマイズを行なうことができる。このエーリストが null の場合は、単に
-downcase される。" 
-  :type '(repeat (cons character character))
-  :group 'skk )
-
-(defcustom skk-jisx0208-latin-vector
-  [nil  nil  nil  nil  nil  nil  nil  nil
-   nil  nil  nil  nil  nil  nil  nil  nil
-   nil  nil  nil  nil  nil  nil  nil  nil
-   nil  nil  nil  nil  nil  nil  nil  nil
-   "　"  "！" "”" "＃" "＄" "％" "＆" "’"
-   "（" "）" "＊" "＋" "，" "−" "．" "／"
-   "０" "１" "２" "３" "４" "５" "６" "７"
-   "８" "９" "：" "；" "＜" "＝" "＞" "？"
-   "＠" "Ａ" "Ｂ" "Ｃ" "Ｄ" "Ｅ" "Ｆ" "Ｇ"
-   "Ｈ" "Ｉ" "Ｊ" "Ｋ" "Ｌ" "Ｍ" "Ｎ" "Ｏ"
-   "Ｐ" "Ｑ" "Ｒ" "Ｓ" "Ｔ" "Ｕ" "Ｖ" "Ｗ"
-   "Ｘ" "Ｙ" "Ｚ" "［" "＼" "］" "＾" "＿"
-   "‘" "ａ" "ｂ" "ｃ" "ｄ" "ｅ" "ｆ" "ｇ"
-   "ｈ" "ｉ" "ｊ" "ｋ" "ｌ" "ｍ" "ｎ" "ｏ"
-   "ｐ" "ｑ" "ｒ" "ｓ" "ｔ" "ｕ" "ｖ" "ｗ"
-   "ｘ" "ｙ" "ｚ" "｛" "｜" "｝" "〜" nil]
-  "*skk-jisx0208-latin-insert で参照される文字テーブル。
-キーに対応する位置に文字列があれば、全英モードで該当のキーを押すことで、対応す
-る文字が挿入される。
-例えば、スペースキーに対応して、半角スペースを挿入させるように変更したければ、
-skk.el のロード後 (もしくは skk-load-hook を利用して)、
-
-     \(aset skk-jisx0208-latin-vector 32 \" \"\)
-
-とするか、もしくは、skk-jisx0208-latin-vector の 32 番目 (0 番から数えて) の値を \" \"
-とするような skk-jisx0208-latin-vector を直接書き、setq で代入する。32 は、? (半角ス
-ペースの char type) を評価したときの値。" 
-  :type 'vector
-  :group 'skk )
-
-(defcustom skk-use-face (or window-system (skk-terminal-face-p))
-  "*Non-nil であれば、Emacs の face の機能を使用して変換表示を行なう。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-henkan-face 'highlight
-  "*変換候補の face 属性。skk-use-face が non-nil のときのみ有効。
-Emacs 標準フェイスの default, modeline, region, secondary-selection,
-highlight, underline, bold, italic, bold-italic の他、新たに face を作
-り指定することも可能。
-新たな face を作り指定するには skk-make-face を利用して、
-
-      \(skk-make-face 'DimGray/PeachPuff1\)
-      \(setq skk-henkan-face 'DimGray/PeachPuff1\)
-
-のようにするのが手軽。foreground と background の色指定だけでない凝った face
-を作る場合は、skk-make-face では対応できないので、Emacs の hilit19.el の
-hilit-lookup-face-create などを利用する。色を付ける場合の配色は、canna.el の
-canna:attribute-alist が良い例かもしれない。" 
-  :type 'face
-  :group 'skk )
-
-(defcustom skk-use-color-cursor (and window-system (fboundp 'x-display-color-p)
-				     (x-display-color-p) )
-  "*Non-nil であれば、SKK モードの入力モードに応じてカーソルに色を付ける。"
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-default-cursor-color
-  (if (eq skk-emacs-type 'xemacs)
-      (frame-property (selected-frame) 'cursor-color)
-    (cdr (assq 'cursor-color (frame-parameters (selected-frame)))))
-  "*SKK のオフを示すカーソル色。
-skk-use-color-cursor が non-nil のときに使用される。" 
-  :group 'skk )
-
-(defcustom skk-hiragana-cursor-color (if (eq skk-background-mode 'light)
-					 "coral4"
-				       "pink" )
-  "*かなモードを示すカーソル色。
-skk-use-color-cursor が non-nil のときに使用される。" 
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-katakana-cursor-color (if (eq skk-background-mode 'light)
-					 "forestgreen"
-				       "green" )
-  "*カタカナモードを示すカーソル色。
-skk-use-color-cursor が non-nil のときに使用される。" 
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-jisx0208-latin-cursor-color "gold"
-  "*全角英字モードを示すカーソル色。
-skk-use-color-cursor が non-nil のときに使用される。" 
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-latin-cursor-color (if (eq skk-background-mode 'light)
-				      "ivory4"
-				    "gray" )
-  "*アスキーモードを示すカーソル色。
-skk-use-color-cursor が non-nil のときに使用される。" 
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-abbrev-cursor-color "royalblue"
-  "*abbrev モードを示すカーソル色。
-skk-use-color-cursor が non-nil のときに使用される。" 
-  :type 'string
-  :group 'skk )
-
-(defcustom skk-report-set-cursor-error t
-  "*Non-nil であれば、カラーマップ切れが起きた場合、エラーメッセージを表示する。
-nil であれば、表示しない。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-use-cursor-change t
-  "*Non-nil であれば、Ovwrt マイナーモード時にカーソルの幅を縮める。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-auto-insert-paren nil
-  "*Non-nil であれば、2 つの文字列をまとめて挿入し、その文字列の間にカーソルを移動する。
-例えば、\"「\" を入力したときに \"」\" を自動的に挿入し、両かぎかっこの間に
-カーソルを移動する。
-挿入する文字列は、skk-auto-paren-string-alist で指定する。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-auto-paren-string-alist
-  '(("「" . "」") ("『" . "』") ("(" . ")") ("（" . "）")
-    ("{" . "}")("｛" . "｝") ("〈" . "〉") ("《" . "》")
-    ("[" . "]") ("［" . "］") ("〔" . "〕") ("【" . "】")
-    ("\"" . "\"")("“" . "”") ("`" . "'")
-    ;;("<" . ">") ;; skk-special-midashi-char-list の中にある文字。
-    )
-  "*自動的に対になる文字列を入力するための連想リスト。
- skk-auto-insert-paren が non-nil の場合、car の文字列が挿入されたとき
-に cdr の文字列を自動的に挿入され、カーソルはその 2 つの文字列の間に移
-動する。
-skk-special-midashi-char-list の要素になっている文字は、
-skk-auto-paren-string-alist に含めても削除される。 " 
-  :type '(repeat (cons string string))
-  :group 'skk ) 
-
-(defcustom skk-japanese-message-and-error nil
-  "*Non-nil であれば、SKK のメッセージとエラーを日本語で表示する。
-nil であれば、英語で表示する。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-set-henkan-point-key
-  '(?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?M ?N ?O ?P ?R ?S ?T ?U ?V ?W ?Y ?Z)
-  "*変換の開始地点を決めるキーのリスト。"
-  :type '(repeat character)
-  :group 'skk )
-
-
-(defcustom skk-emacs-id-file (convert-standard-filename "~/.skk-emacs-id")
-  "*skk-jisyo-file に最近アクセスした SKK の skk-emacs-id を保存するファイル。"
-  :type 'file
-  :group 'skk )
-
-(defcustom skk-share-private-jisyo nil
-  "*Non-nil であれば、複数の SKK が個人辞書を共有していることを考慮して辞書を更新する。"
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-jisyo-save-count 50
-  "*数値であれば、その回数辞書が更新されたときに辞書を自動的にセーブする。
-nil であれば、辞書のオートセーブを行なわない。" 
-  :type '(choice integer (const nil))
-  :group 'skk )
-
-(defcustom skk-byte-compile-init-file nil
-  "*Non-nil であれば、skk-mode 起動時に skk-init-file をバイトコンパイルする。
-正確に言うと、
-
-  (1)skk-init-file をバイトコンパイルしたファイルがないか、
-  (2)skk-init-file とそのバイトコンパイル済ファイルを比較して、前者の方が新し
-     いとき
-
-に skk-init-file をバイトコンパイルする。
-nil であれば、skk-init-file とそのバイトコンパイル済みファイルを比較して 
-skk-init-file の方が新しいときは、そのバイトコンパイル済ファイルを消す。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-count-private-jisyo-candidates-exactly nil
-  "*Non-nil であれば、Emacs を終了するときに正確に個人辞書の候補数を数える。
-nil であれば、1 行に複数の候補があっても 1 候補として数える。
-計算結果は、skk-record-file に保存される。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-compare-jisyo-size-when-saving t
-  "*Non-nil であれば、skk-jisyo のセーブ時にファイルサイズのチェックを行なう。
-前回セーブした skk-jisyo と今回セーブしようとする辞書とのサイズ比較を行ない、
-後者の方が大きいときにユーザーにセーブを続けるかどうかの確認を求める。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-auto-start-henkan t
-  "*単語や文節の区切りを示す文字の打鍵により自動的に変換を開始する。
-skk-auto-start-henkan-keyword-list により単語や文節の区切りを示す文字を指定する。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-auto-start-henkan-keyword-list
-  '("を" "、" "。" "．" "，" "？" "」" "！" "；" "：" ")" ";" ":"
-    "）" "”" "】" "』" "》" "〉" "｝" "］" "〕" "}" "]" "?" "."
-    "," "!" )
-  ;; あまりキーワードが多くなると、通常の変換を困難にする？
-  "*自動変換を開始するキーワード。
-skk-auto-start-henkan が non-nil のとき、このリストの要素の文字を挿入
-すると、SPC を押すことなく自動的に変換を開始する。" 
-  :type '(repeat string)
-  :group 'skk )
-
-(defcustom skk-search-excluding-word-pattern-function nil
-  "*個人辞書に取り込まない文字列のパターンを検索する関数を指定する。
-確定した文字列を引数に渡して funcall される。
-
-SKK では変換、確定を行なった文字列は全て個人辞書に取り込まれるが、この
-変数で指定された関数が non-nil を返すとその文字列は個人辞書に取り込ま
-れない。
-
-例えば、この変数に下記のような指定すると、変換により (SKK abbrev mode
-での変換を除く) カタカナのみからなる文字列を得て確定しても、それを個人
-辞書に取り込まない。
-
-  \(setq skk-search-excluding-word-pattern-function
-        \(function
-         \(lambda \(kakutei-word\)
-         ;; この関数が t を返したときは、その文字列は個人辞書に取り込まれない。
-           \(save-match-data
-             \(and
-            ;; 送りなし変換で、
-              \(not skk-okuri-char\)
-            ;; 確定語がカタカナのみから構成されていて、
-              \(string-match \"^[ーァ-ン]+$\" kakutei-word\)
-            ;; SKK abbrev mode 以外での変換か、
-              \(or \(not skk-abbrev-mode\)
-                ;; 見出し語がカタカナ、ひらがな以外のとき。
-                ;; \(後で▽マークを付けたときは、見出し語が英文字でも、
-                ;; skk-abbrev-modeが t になっていない\)。
-                  \(not \(string-match \"^[^ーァ-ンぁ-ん]+$\" skk-henkan-key\)\) \)\)\)\)\)\)
-
-カタカナを変換により求めたいが、個人辞書にはカタカナのみの候補を取り込みた
-くない、など、個人辞書が必要以上に膨れるのを抑える目的に使用できる。
-
-なお、個人辞書に取り込まない見出し語については補完が効かないので、注意すること。"
-  :type 'function
-  :group 'skk )
-
-(defcustom skk-update-jisyo-function 'skk-update-jisyo-original
-  "*skk-update-jisyo で使用する関数。" 
-  :type 'function
-  :group 'skk )
-
-(defcustom skk-save-jisyo-function 'skk-save-jisyo-original
-  "*skk-save-jisyo で使用する関数。" 
-  :type 'function
-  :group 'skk )
-
-(defcustom skk-count-jisyo-candidates-function
-  'skk-count-jisyo-candidates-original
-  "*skk-count-jisyo-candidates で使用する関数。" 
-  :type 'function
-  :group 'skk )
-
-(defcustom skk-public-jisyo-to-be-searched-function
-  'skk-public-jisyo-to-be-searched-original
-  "*skk-public-jisyo-has-entry-p で使用する関数。" 
-  :type 'function
-  :group 'skk )
-
-(defcustom skk-use-look nil
-  "*Non-nil であれば、UNIX look コマンドを利用した補完・変換を行なう。
-SKK abbrev モードで補完を行なうと、個人辞書を検索し尽した後で、UNIX look コマン
-ドによる英単語補完を行なう。例えば、 
-
-  ▽confe \(TAB\)
-  ---> ▽conference
-
-SKK abbrev モードで、「英文字 + アスタリスク」にて変換を行なうと、look コマンド
-によるあいまい検索を行なうことができる。例えば、
-
- ▽confere* \(SPC\)
-  ---> ▼conference
-
-この状態で確定すると、`confere*' を見出し語、`conference' を候補とするエントリ
-が個人辞書に追加される。`skk-search-excluding-word-pattern-function' によ
-り、確定してもこのようなエントリを追加しないように設定することができる。" 
-  :type 'boolean
-  :group 'skk )
-
-(defcustom skk-kana-rom-vector
-  ["x" "a" "x" "i" "x" "u" "x" "e" "x" "o" "k" "g" "k" "g" "k" "g"
-   "k" "g" "k" "g" "s" "z" "s" "j" "s" "z" "s" "z" "s" "z" "t" "d"
-   "t" "d" "x" "t" "d" "t" "d" "t" "d" "n" "n" "n" "n" "n" "h" "b"
-   "p" "h" "b" "p" "h" "b" "p" "h" "b" "p" "h" "b" "p" "m" "m" "m"
-   "m" "m" "x" "y" "x" "y" "x" "y" "r" "r" "r" "r" "r" "x" "w" "x"
-   "x" "w" "n"]
-  "*skk-remove-common で使用するかな文字からローマ字への変換ルール。
-下記の該当するかな文字をその文字のローマ字プレフィックスで現わしたもの。
-    ぁ  あ  ぃ  い  ぅ  う  ぇ  え  ぉ  お  か  が  き  ぎ  く  ぐ
-    け  げ  こ  ご  さ  ざ  し  じ  す  ず  せ  ぜ  そ  ぞ  た  だ
-    ち  ぢ  っ  つ  づ  て  で  と  ど  な  に  ぬ  ね  の  は  ば
-    ぱ  ひ  び  ぴ  ふ  ぶ  ぷ  へ  べ  ぺ  ほ  ぼ  ぽ  ま  み  む
-    め  も  ゃ  や  ゅ  ゆ  ょ  よ  ら  り  る  れ  ろ  ゎ  わ  ゐ
-    ゑ  を  ん
-それぞれのかな文字が送り仮名である場合にどのローマ字プレフィックスを対応させる
-のかを指定することができる。「じ」、「ち」、「ふ」の文字について、対応するロー
-マ字プレフィックスを \"z\", \"c\",\"f\" に変更を希望する場合もあるであろう。
-skk-auto-okuri-process の値が non-nil のとき、あるいはサ変補助変換が行なわれる
-とき参照される。" 
-  :type 'vector
-  :group 'skk )
-
-(defcustom skk-henkan-overlay-priority 600
-  "*変換した候補に重ねる overlay の priority。
-例えば、Viper で R コマンドにより replace を行なうときに、
-viper-replace-overlay という priority 400 の overlay を重ねられるが、
-skk-henkan-overlay-priority のディフォルト値はこの overlay より
-priority が高いので、優先して表示される。" 
-  :type 'integer
-  :group 'skk )
-
-(defcustom skk-kuten-touten-alist '((jp . ("。" . "、" )) (en . ("．" . "，")))
-  "*句点と読点のエーリスト。
-各要素の形式は、
-
-   \(シンボル . \(句点を表わす文字列 . 読点を表わす文字列\)\)
-
-という cons cell。シンボルの部分は、`jp' もしくは `en' とし、
-skk-toggle-kutouten はこれをトグルで切り換える。
-ディフォルトの句読点のタイプは、`skk-kutouten-type' で指定する。" 
-  :type '(repeat (cons (choice (const jp) (const en))
-		       (cons string string)  ))
-  :group 'skk )
-
-(skk-deflocalvar skk-kutouten-type 'jp
-  "*ディフォルトの句読点のタイプ。`jp' もしくは `en' というシンボル。" )
-
-(defcustom skk-read-from-minibuffer-function nil
-  "*単語登録モードで read-from-minibuffer の INITIAL-CONTENTS を提供する funcition。
-この function は文字列を返さなければならない。
-例えば、skk-henkan-key をそのまま initial-contents として利用したいとき
-は、
-  \(setq skk-read-from-minibuffer-function 
-        \(function \(lambda \(\) skk-henkan-key\)\) \)
-と指定する。"
-  :type 'function
-  :group 'skk )
-
-(defvar skk-latin-mode-map nil "*ASCII モードのキーマップ。")
 (or skk-latin-mode-map 
     (let ((map (make-sparse-keymap)))
       ;; .skk で skk-kakutei-key の変更が可能になるように。
@@ -1249,7 +587,6 @@ skk-toggle-kutouten はこれをトグルで切り換える。
       (skk-define-menu-bar-map map)
       (setq skk-latin-mode-map map) ))
 
-(defvar skk-j-mode-map nil "*かなモードのキーマップ。")
 (or skk-j-mode-map
     (let ((map (make-sparse-keymap)))
       (substitute-key-definition 'self-insert-command 'skk-insert map
@@ -1266,7 +603,6 @@ skk-toggle-kutouten はこれをトグルで切り換える。
       (skk-define-menu-bar-map map)
       (setq skk-j-mode-map map) ))
 
-(defvar skk-jisx0208-latin-mode-map nil "*全角モードのキーマップ。")
 (or skk-jisx0208-latin-mode-map 
     (let ((map (make-sparse-keymap))
 	  (i 0) )
@@ -1278,7 +614,6 @@ skk-toggle-kutouten はこれをトグルで切り換える。
       (skk-define-menu-bar-map map)
       (setq skk-jisx0208-latin-mode-map map) ))
 
-(defvar skk-abbrev-mode-map nil "*SKK abbrev モードのキーマップ。")
 (or skk-abbrev-mode-map 
     (let ((map (make-sparse-keymap)))
       (define-key map "," 'skk-abbrev-comma)
@@ -1289,580 +624,12 @@ skk-toggle-kutouten はこれをトグルで切り換える。
       (skk-define-menu-bar-map map)
       (setq skk-abbrev-mode-map map) ))
 
-;;; -- internal constants and variables
-;; ---- global ones.
-;;(defvar skk-henkan-face 'skk-henkan-face)
-(defconst skk-month-alist
-  '(("Jan" . "1") ("Feb" . "2") ("Mar" . "3") ("Apr" . "4") ("May" . "5")
-    ("Jun" . "6") ("Jul" . "7") ("Aug" . "8") ("Sep" . "9") ("Oct" . "10")
-    ("Nov" . "11") ("Dec" . "12") )
-  "英語の月名と算用数字の連想リスト。
-
-算用数字から英語の月名のみを出力するのであれば、ベクターを使った方が高速だが、
-英語の月名から算用数字を出力するのであれば連想リストでなければ無理なので、多
-目的に使用できるよう連想リストの形態を取る。"
-  ;;  "Alist of English month abbreviations and numerical values.
-  ;;
-  ;;Although it is faster to use a vector if we only want to output
-  ;;month abbreviations given the ordinal, without the alist it's
-  ;;unreasonable [sic] to output the ordinal given the abbreviation,
-  ;;so for multi-purpose utility we use the alist form."
-  )
-
-(defconst skk-coding-system-alist
-  (if (memq skk-emacs-type '(xemacs mule4 mule3))
-      '(("euc" . euc-japan)
-        ("ujis" . euc-japan)
-        ("sjis". sjis)
-        ("jis" . junet) )
-    '(("euc" . *euc-japan*)
-      ("ujis" . *euc-japan*)
-      ("sjis". *sjis*)
-      ("jis" . *junet*) ))
-  "coding-system の文字列表現と、シンボル表現の連想リスト。" )
-
-(defconst skk-default-jisx0208-latin-vector
-  ;; note that skk-jisx0208-latin-vector is a user variable.
-  ;; skk.el ロード前に .emacs などで、skk-jisx0208-latin-vector の別の値をユー
-  ;; ザーが直接書いたり、skk.el ロード後にこの値を aset で直接いじったりしな
-  ;; ければ default-value で skk-jisx0208-latin-vector にアクセスすることで
-  ;; skk-default-jisx0208-latin-vector の値を保持することもできようが、それは
-  ;; 望めない...。
-  [nil  nil  nil  nil  nil  nil  nil  nil
-   nil  nil  nil  nil  nil  nil  nil  nil
-   nil  nil  nil  nil  nil  nil  nil  nil
-   nil  nil  nil  nil  nil  nil  nil  nil
-   "　"  "！" "”" "＃" "＄" "％" "＆" "’"
-   "（" "）" "＊" "＋" "，" "−" "．" "／"
-   "０" "１" "２" "３" "４" "５" "６" "７"
-   "８" "９" "：" "；" "＜" "＝" "＞" "？"
-   "＠" "Ａ" "Ｂ" "Ｃ" "Ｄ" "Ｅ" "Ｆ" "Ｇ"
-   "Ｈ" "Ｉ" "Ｊ" "Ｋ" "Ｌ" "Ｍ" "Ｎ" "Ｏ"
-   "Ｐ" "Ｑ" "Ｒ" "Ｓ" "Ｔ" "Ｕ" "Ｖ" "Ｗ"
-   "Ｘ" "Ｙ" "Ｚ" "［" "＼" "］" "＾" "＿"
-   "‘" "ａ" "ｂ" "ｃ" "ｄ" "ｅ" "ｆ" "ｇ"
-   "ｈ" "ｉ" "ｊ" "ｋ" "ｌ" "ｍ" "ｎ" "ｏ"
-   "ｐ" "ｑ" "ｒ" "ｓ" "ｔ" "ｕ" "ｖ" "ｗ"
-   "ｘ" "ｙ" "ｚ" "｛" "｜" "｝" "〜" nil]
-  "skk-jisx0208-latin-region で参照する文字テーブル。
-\"ascii\" -> \"ａｓｃｉｉ\" のような全角文字への変換を行う際に利用する。" )
-
-(defconst skk-kanji-len (length "あ")
-  "漢字一文字の長さ。Mule[1-3] では 3 になる。Mule4, XEmacs では 1。" )
-
-(defconst skk-hankaku-alist
-  (if (eq skk-emacs-type 'mule2)
-      '((161 . 32)	; ?\ 
-	(170 . 33)	;?\!
-	(201 . 34)	;?\"
-	(244 . 35)	;?\#
-	(240 . 36)	;?\$
-	(243 . 37)	;?\%
-	(245 . 38)	;?\&
-	(199 . 39)	;?\'
-	(202 . 40)	;?\(
-	(203 . 41)	;?\)
-	(246 . 42)	;?\*
-	(220 . 43)	;?\+
-	(164 . 44)	;?\,
-	(221 . 45)	;?\-
-	(165 . 46)	;?\.
-	(191 . 47)	;?\/
-	(167 . 58)	;?\:
-	(168 . 59)	;?\;
-	(227 . 60)	;?\<
-	(225 . 61)	;?\=
-	(228 . 62)	;?\>
-	(169 . 63)	;?\?
-	(247 . 64)	;?\@
-	(206 . 91)	;?\[
-	(239 . 92)	;?\\
-	(207 . 93)	;?\]
-	(176 . 94)	;?^ 
-	(178 . 95)	;?\_
-	(208 . 123)	;?\{
-	(195 . 124)	;?\|
-	(209 . 125)	;?\}
-	(177 . 126)	;?\~
-	(198 . 96) ))	;?` 
-  "文字コードの 2 番目のバイトとその文字に対応する ascii 文字 \(char\) との連想リスト。
-Mule l もしくは  Mule 2 を使用する場合に skk-latin-region で参照する。
-Mule-2.3 添付の egg.el よりコピーした。" )
-
-(defconst skk-kana-cleanup-command-list
-  '(skk-delete-backward-char skk-insert skk-previous-candidate) )
-
-(defvar skk-rule-tree nil
-  "ローマ字 -> かな変換の状態遷移規則を表すツリーの初期状態。
-skk-mode の起動時に毎回 skk-rom-kana-base-rule-list と
-skk-rom-kana-rule-list から木の形にコンパイルされる。" )
-
-(defvar skk-insert-new-word-function nil
-  "候補を挿入したときに funcall される関数を保存する変数。" )
-
-(skk-deflocalvar skk-input-mode-string skk-hiragana-mode-string
-  "SKK の入力モードを示す文字列。skk-mode 起動時は、skk-hiragana-mode-string。" )
-
-(defvar skk-isearch-message nil
-  "skk-isearch 関数をコールするためのフラグ。
-Non-nil であれば、skk-isearch-message 関数をコールする。" )
-
-(defvar skk-mode-invoked nil
-  "Non-nil であれば、Emacs を起動後既に skk-mode を起動したことを示す。" )
-
-(defvar skk-kakutei-count 0
-  "変換候補を確定したカウントを保持する変数。
-skk-record-file の \"確定:\" 項目のカウンター。" )
-
-(defvar skk-touroku-count 0
-  "辞書登録したカウントを保持する変数。
-skk-record-file の \"登録:\" 項目のカウンター。" )
-
-(defvar skk-update-jisyo-count 0
-  "辞書を更新した回数。
-このカウンターの数字が skk-jisyo-save-count 以上となったときにユーザー辞書のオー
-トセーブが行なわれる。
-辞書のセーブが行なわれるとイニシャライズされる。" )
-
-(defvar skk-minibuffer-origin-mode nil
-  "入力モードを表わすシンボル。
-有効な値は、`hiragana', `katakana', `abbrev', `latin', `jisx0208-latin' もしくは
-nil のいずれか。" )
-
-;; ---- buffer local variables
-;; <フラグ類>
-;;(skk-deflocalvar skk-current-henkan-data
-;;  '(
-;;    ;; global variables
-;;    ;; バッファローカル変数のディフォルト値を設定すると、これを直接書換えしたと
-;;    ;; きに他のバッファから見える値も変わってしまう。global なフラグはこれを利
-;;    ;; 用してディフォルト値与えておく。
-;;    (invoked . nil) ; Emacs を起動後既に skk-mode を起動したことを示す
-;;    (isearch-message . nil) ; skk-isearch 関数をコールするためのフラグ
-;;    (kakutei-count . 0) ; 変換候補を確定したカウントを保持する変数
-;;    (minibuffer-origin-mode . nil) ;入力モードを表わすシンボル
-;;    (touroku-count . 0) ; 辞書登録したカウントを保持する変数
-;;    (update-jisyo-count . 0) ; 辞書を更新した回数
-;;    ;; buffer-local variables.
-;;    ;;(current-search-prog-list . nil) ;skk-search-prog-list の現在の値を保存するリスト
-;;    ;;(exit-show-candidates . nil) ;ミニバッファで候補を次々に表示して、候補が尽きたことを示す
-;;    ;;(henkan-active . nil) ; ▼モード (変換中) であることを示す
-;;    ;;(henkan-count . -1) ;skk-henkan-list のリストのインデクスで現在の候補を差すもの
-;;    ;;(henkan-end-point . nil ) ; 変換終了ポイントを示すマーカー
-;;    ;;(henkan-in-minibuff-flag . nil) ;ミニバッファで辞書登録を行ったときにこのフラグが立つ
-;;    ;;(henkan-key . nil) ;変換すべき見出し語
-;;    ;;(henkan-list . nil) ; 変換結果の候補のリスト
-;;    ;;(henkan-okurigana . nil) ;現在の変換の送り仮名部分
-;;    ;;(henkan-on . nil) ; ▽モード (変換対象の文字列決定のためのモード) であることを示す
-;;    ;;(henkan-start-point . nil) ; 変換開始ポイントを示すマーカー
-;;    ;;(kakutei-flag . nil) ; 確定して良い候補を見つけた状態であることを指す
-;;    ;;(kana-start-point . nil) ;かな文字の開始ポイントを示すマーカー
-;;    ;;(katakana . nil) ; 入力モードがカナモードであることを示す
-;;    ;;(okuri-ari-max . nil) ; 辞書の送り有りエントリの終了点を示すバッファポイント
-;;    ;;(okuri-ari-min . nil) ; 辞書の送り有りエントリの開始点を示すバッファポイント
-;;    ;;(okuri-char . nil) ;変換すべき語の送り仮名の部分のプレフィックス
-;;    ;;(okuri-index-max . -1) ;skk-henkan-list のインデクスで自動送り処理、もしくはサ変検索で検索した最後の候補を指すもの
-;;    ;;(okuri-index-min . -1) ;skk-henkan-list のインデクスで自動送り処理、もしくはサ変検索で検索した最初の候補を指すもの
-;;    ;;(okuri-nasi-min . nil) ; 辞書の送りなしエントリの開始点を示すバッファポイント
-;;    ;;(okurigana . nil) ; 送り仮名部分が入力中であることを示す
-;;    ;;(okurigana-start-point . nil) ; 送り仮名の開始ポイントを示すマーカー
-;;    ;;(prefix . "") ; 入力するかなを決定するためのプレフィックス
-;;    ;;(previous-point . nil) ;この変数に保持されるポイントが現在のポイントと異なる場合、skk-with-point-move が使われていないコマンドを動作させると、skk-after-point-move が作動する
-;;    ;;(self-insert-non-undo-count . 1) ;skk-insert もしくは skk-jisx0208-latin-insert で連続入力した文字数を表わすカウンター
-;;    ))
-
-(skk-deflocalvar skk-mode nil
-  "Non-nil であれば、カレントバッファで現在 skk-mode を起動していることを示す。" )
-
-(skk-deflocalvar skk-latin-mode nil
-  "Non-nil であれば、入力モードが ASCII モードであることを示す。" )
-
-(skk-deflocalvar skk-j-mode nil
-  "Non-nil であれば、入力モードがかな・カナモードであることを示す。" )
-
-(skk-deflocalvar skk-katakana nil
-  "Non-nil であれば、入力モードがカナモードであることを示す。
-\"(and (not skk-katakana) skk-j-mode))\" が t であれば、かなモードであることを
-示す。" )
-
-(skk-deflocalvar skk-jisx0208-latin-mode nil
-  "Non-nil であれば、入力モードが全英モードであることを示す。" )
-
-(skk-deflocalvar skk-abbrev-mode nil
-  "Non-nil であれば、入力モードが SKK abbrev モードであることを示す。" )
-
-(skk-deflocalvar skk-okurigana nil
-  "Non-nil であれば、送り仮名部分が入力中であることを示す。" )
-
-(skk-deflocalvar skk-henkan-on nil
-  "Non-nil であれば、▽モード \(変換対象の文字列決定のためのモード\) であることを示す。" )
-
-(skk-deflocalvar skk-henkan-active nil
-  "Non-nil であれば、▼モード \(変換中\) であることを示す。" )
-
-(skk-deflocalvar skk-kakutei-flag nil
-  "Non-nil なら確定して良い候補を見つけた状態であることを指す。
-skk-henkan, skk-search-kakutei-jisyo-file, skk-henkan-show-candidates,
-skk-henkan-in-minibuff と skk-kakutei-save-and-init-variables で変更、参照され
-る。" )
-
-(skk-deflocalvar skk-exit-show-candidates nil
-  "ミニバッファで候補を次々に表示して、候補が尽きたときに non-nil となる。
-その値はリストで、car に skk-henkan-show-candidate 関数で while ループを回っ
-た回数を示す一時変数 loop の値を、cdr 部に最後にミニバッファに表示した 1 つ前
-の候補群の最後の要素を指すインデクスが代入される。
-skk-henkan-show-candidates, skk-henkan-in-minibuff と
-skk-kakutei-save-and-init-variables で変更、参照される。" )
-
-;; <キーマップ関連>
-(skk-deflocalvar skk-current-rule-tree nil
-  "ローマ字 -> かな変換の状態遷移規則を表わすツリーの現時点の状態。
-ローマ字入力の初期では skk-rule-tree と同一の状態で、文字入力が進むに
-つれ、木をたどってゆく状態の遷移を表す。" )
-
-;; <辞書関連の変数>
-(skk-deflocalvar skk-okuri-ari-min nil
-  "SKK 辞書の送り有りエントリの開始点を示すバッファポイント。")
-
-(skk-deflocalvar skk-okuri-ari-max nil
-  "SKK 辞書の送り有りエントリの終了点を示すバッファポイント。
-skk-jisyo のバッファでは辞書の更新の必要があるためにマーカーが代入される。" )
-
-(skk-deflocalvar skk-okuri-nasi-min nil
-  "SKK 辞書の送りなしエントリの開始点を示すバッファポイント。
-skk-jisyo のバッファでは辞書の更新の必要があるためにマーカーが代入される。" )
-
-;; <その他>
-(skk-deflocalvar skk-mode-line nil
-  "SKK のモードを示すモードラインの文字列。
-skk-mode-string, skk-hiragana-mode-string, skk-katakana-mode-string
-and skk-jisx0208-latin-mode-string のいずれかが代入される。" )
-
-(skk-deflocalvar skk-previous-point nil
-  "skk-with-point-move 関連変数。
-この変数に保持されるポイントが現在のポイントと異なる場合、skk-with-point-move が
-使われていないコマンドを動作させると、skk-after-point-move が作動する。" )
-
-;; "" に対応したエントリが skk-roma-kana-[aiue] にあるため、"" を nil で代用
-;; できない。
-(skk-deflocalvar skk-prefix ""
-  "入力するかなを決定するためのプレフィックス。" )
-
-(skk-deflocalvar skk-henkan-start-point nil
-  "変換開始ポイントを示すマーカー。" )
-
-(skk-deflocalvar skk-henkan-end-point nil
-  "変換終了ポイントを示すマーカー。" )
-
-(skk-deflocalvar skk-kana-start-point nil
-  "かな文字の開始ポイントを示すマーカー。" )
-
-(skk-deflocalvar skk-okurigana-start-point nil
-  "送り仮名の開始ポイントを示すマーカー。" )
-
-(skk-deflocalvar skk-henkan-key nil
-  "変換すべき見出し語。
-例えば、\"▽かな\" を変換すれば、skk-henkan-key には \"かな\" が代入される。
-\"▽わら*う\" のような送りありの変換の場合には、\"わらu\" のように、漢字部分の
-読みがな + 送り仮名の最初の文字のローマ字のプレフィックスが代入される。" )
-
-(skk-deflocalvar skk-okuri-char nil
-  "変換すべき語の送り仮名の部分のプレフィックス。
-例えば、\"おく*り\" を変換するときは、skk-okuri-char は \"r\"。
-skk-okuri-char が non-nil であれば、送りありの変換であることを示す。" )
-
-(skk-deflocalvar skk-henkan-okurigana nil
-  "現在の変換の送り仮名部分。
-例えば、\"▽うまれ*る\" を変換すれば、skk-henkan-okurigana には \"る\" が代入
-される。" )
-
-(skk-deflocalvar skk-last-kakutei-henkan-key nil
-  "確定辞書により最後に確定したときの見出し語。
-確定辞書による確定の直後に x キーを押すと確定がアンドゥされて、確定前の状態で
-この見出し語がカレントバッファに挿入される。" )
-
-(skk-deflocalvar skk-henkan-list nil
-  "変換結果の候補のリスト。
-例えば、\"▽な*く\" という変換すれば、skk-henkan-list は
-(\"鳴\" \"泣\" \"無\" \"亡\") のようになる。" )
-
-(skk-deflocalvar skk-henkan-count -1
-  "skk-henkan-list のリストのインデクスで現在の候補を差すもの。" )
-
-(skk-deflocalvar skk-self-insert-non-undo-count 1
-  "skk-insert もしくは skk-jisx0208-latin-insert で連続入力した文字数を表わすカウンター。
-Emacs のオリジナルの動作では、self-insert-command にバインドされたキー入力は、
-連続 20 回までが 1 つのアンドゥの対象となる。この動作をエミュレートするための
-カウンター。このカウンターが、20 以下であるときは、入力のたびに 
-cancel-undo-boundary がコールされる。" )
-
-(skk-deflocalvar skk-current-search-prog-list nil
-  "skk-search-prog-list の現在の値を保存するリスト。
-最初の変換時は skk-search-prog-list の全ての値を保持し、変換を繰り返すたびに 1
-つづつ短くなってゆく。" )
-  
-;; for skk-undo-kakutei
-(skk-deflocalvar skk-last-henkan-data nil
-  "最後に行なった変換に関するデータのエーリスト。
-ディフォルトのキーは、henkan-key, henkan-okurigana,
-okuri-char, henkan-list の各シンボル。
-\(skk-num を require しているときは、num-list が追加される\)。" )
-
-(skk-deflocalvar skk-henkan-overlay nil
-  "候補を表示するときに使用する Overlay。" )
-
-(skk-deflocalvar skk-henkan-in-minibuff-flag nil
-  "ミニバッファで辞書登録を行ったときにこのフラグが立つ。
-skk-remove-common で参照される。" )
-
-(skk-deflocalvar skk-okuri-index-min -1
-  "skk-henkan-list のインデクスで自動送り処理、もしくはサ変検索で検索した最初の候補を指すもの。" )
-
-(skk-deflocalvar skk-okuri-index-max -1
-  "skk-henkan-list のインデクスで自動送り処理、もしくはサ変検索で検索した最後の候補を指すもの。" )
-
 (set-modified-alist
  'minor-mode-map-alist
  (list (cons 'skk-latin-mode skk-latin-mode-map)
        (cons 'skk-abbrev-mode skk-abbrev-mode-map)
        (cons 'skk-j-mode skk-j-mode-map)
        (cons 'skk-jisx0208-latin-mode skk-jisx0208-latin-mode-map) ))
-
-;;;; defadvices.
-;; defadvice で定義すると、後でユーザーが新規の機能を付けて更に defadvice して
-;; もちゃんと動く。
-
-;; cover to original functions.
-
-(defadvice keyboard-quit (around skk-ad activate)
-  "▼モードであれば、候補の表示をやめて▽モードに戻す (見出し語は残す)。
-▽モードであれば、見出し語を削除する。
-上記のどちらのモードでもなければ keyboard-quit と同じ動作をする。"
-  (cond 
-   ;; SKK is not invoked in the current buffer.
-   ((not skk-mode) ad-do-it)
-   ;; ■ mode (Kakutei input mode).
-   ((not skk-henkan-on)
-    (cond ((skk-get-prefix skk-current-rule-tree)
-	   (skk-erase-prefix 'clean) )
-	  (t ad-do-it) ))
-   ;; ▼ mode (Conversion mode).
-   (skk-henkan-active
-    (setq skk-henkan-count 0)
-    (if (and skk-delete-okuri-when-quit skk-henkan-okurigana)
-	(let ((count (/ (length skk-henkan-okurigana) skk-kanji-len)))
-	  (skk-previous-candidate)
-	  ;; ここでは delete-backward-char に第二引数を渡さない方がベター？
-	  (delete-backward-char count) )
-      (skk-previous-candidate) ))
-   ;; ▽ mode (Midashi imput mode).
-   (t (skk-erase-prefix 'clean)
-      (and (> (point) skk-henkan-start-point)
-	   (delete-region (point) skk-henkan-start-point) )
-      (skk-kakutei) )))
-
-(defadvice abort-recursive-edit (around skk-ad activate)
-  "▼モードであれば、候補の表示をやめて▽モードに戻す (見出し語は残す)。
-▽モードであれば、見出し語を削除する。
-上記のどちらのモードでもなければ abort-recursive-edit と同じ動作をする。"
-  (with-current-buffer (skk-minibuffer-origin) (skk-set-cursor-properly))
-  (skk-remove-minibuffer-setup-hook
-   'skk-j-mode-on 'skk-setup-minibuffer
-   (function (lambda () (add-hook 'pre-command-hook 'skk-pre-command nil 'local))) )
-  (cond ((not skk-mode) ad-do-it)
-	((not skk-henkan-on)
-	 (cond ((skk-get-prefix skk-current-rule-tree)
-		(skk-erase-prefix 'clean) )
-	       (t ad-do-it) ))
-        (skk-henkan-active
-         (setq skk-henkan-count 0)
-         (if (and skk-delete-okuri-when-quit skk-henkan-okurigana)
-             (let ((count (/ (length skk-henkan-okurigana) skk-kanji-len)))
-               (skk-previous-candidate)
-               ;; ここでは delete-backward-char に第二引数を渡さない方がベター？
-               (delete-backward-char count) )
-           (skk-previous-candidate) ))
-	(t (skk-erase-prefix 'clean)
-	   (and (> (point) skk-henkan-start-point)
-		(delete-region (point) skk-henkan-start-point) )
-	   (skk-kakutei) )))
-	
-(defadvice newline (around skk-ad activate)
-  "skk-egg-like-newline が non-nil だったら、変換中の newline で確定のみ行い、改行しない。"
-  (if (not (or skk-j-mode skk-abbrev-mode))
-      ad-do-it
-    (let (
-	  ;;(arg (ad-get-arg 0))
-          ;; skk-kakutei を実行すると skk-henkan-on の値が無条件に nil になる
-          ;; ので、保存しておく必要がある。
-          (no-newline (and skk-egg-like-newline skk-henkan-on))
-	  (auto-fill-function (and (interactive-p) auto-fill-function)) )
-      ;; fill されても nil が帰ってくる :-<
-      ;;(if (skk-kakutei)
-      ;;    (setq arg (1- arg)) )
-      ;;(if skk-mode
-      ;;    (let ((opos (point)))
-      ;;      ;; skk-kakutei (skk-do-auto-fill) によって行が折り返されたら arg を 1 つ減らす。
-      ;;      (skk-kakutei)
-      ;;      (if (and (not (= opos (point))) (integerp arg))
-      ;;          (ad-set-arg 0 (1- arg)) )))
-      (and skk-mode (skk-kakutei))
-      (if (not no-newline)
-	  ad-do-it ))))
-
-(defadvice newline-and-indent (around skk-ad activate)
-  "skk-egg-like-newline が non-nil だったら、変換中の newline-and-indent で確定のみ行い、改行しない。"
-  (if (not (or skk-j-mode skk-abbrev-mode))
-      ad-do-it
-    (let ((no-newline (and skk-egg-like-newline skk-henkan-on))
-	  (auto-fill-function (and (interactive-p) auto-fill-function)) )
-      (and skk-mode (skk-kakutei))
-      (or no-newline ad-do-it) )))
-
-(defadvice exit-minibuffer (around skk-ad activate)
-  "skk-egg-like-newline が non-nil だったら、変換中の exit-minibuffer で確定のみ行う。"
-  (skk-remove-minibuffer-setup-hook
-   'skk-j-mode-on 'skk-setup-minibuffer
-   (function (lambda ()
-	       (add-hook 'pre-command-hook 'skk-pre-command nil 'local) )))
-  (with-current-buffer (skk-minibuffer-origin) (skk-set-cursor-properly))
-  (if (not (or skk-j-mode skk-abbrev-mode))
-      ad-do-it
-    (let ((no-newline (and skk-egg-like-newline skk-henkan-on)))
-      (and skk-mode (skk-kakutei))
-      (or no-newline ad-do-it) )))
-
-(defadvice picture-mode-exit (before skk-ad activate)
-  "SKK のバッファローカル変数を無効にし、picture-mode-exit をコールする。
-picture-mode から出たときにそのバッファで SKK を正常に動かすための処理。"
-  (and skk-mode (skk-kill-local-variables)) )
-
-(defadvice undo (before skk-ad activate)
-  "SKK モードが on なら skk-self-insert-non-undo-count を初期化する。"
-  (and skk-mode (setq skk-self-insert-non-undo-count 0)) )
-
-(defadvice kill-buffer (around skk-ad activate)
-  "SKK の▼モードだったら、確定してからバッファをキルする。
-  バッファのキル後、SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode skk-henkan-on (interactive-p) (skk-kakutei))
-  ad-do-it
-  ;; 別のバッファへ飛ぶコマンドは skk-mode が nil でもカーソル色を調整する必要
-  ;; がある。
-  (skk-set-cursor-properly) )
-
-(defadvice overwrite-mode (after skk-ad activate)
-  "skk-use-cursor-change が non-nil だったら、カーソルの幅を縮める。"
-  (and skk-use-cursor-change (skk-change-cursor-when-ovwrt)) )
-
-;; これってどんなときに要るの？
-;;(defadvice eval-expression (before skk-ad activate)
-;;  (if skk-mode (skk-mode-off)) )
-
-(defadvice query-replace-regexp  (before skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (setq skk-minibuffer-origin-mode (skk-current-insert-mode))
-  (add-hook
-   'minibuffer-setup-hook
-   (function (lambda () (add-hook 'pre-command-hook 'skk-pre-command nil 'local))) )
-  (add-hook 'minibuffer-setup-hook 'skk-setup-minibuffer) )
-
-(defadvice query-replace (before skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (setq skk-minibuffer-origin-mode (skk-current-insert-mode))
-  (add-hook
-   'minibuffer-setup-hook
-   (function (lambda () (add-hook 'pre-command-hook 'skk-pre-command nil 'local))) )
-  (add-hook 'minibuffer-setup-hook 'skk-setup-minibuffer) )
-
-(defadvice goto-line (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode (skk-set-cursor-properly)) )
-
-(defadvice yank (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode (skk-set-cursor-properly)) )
-
-(defadvice yank-pop (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode (skk-set-cursor-properly)) )
-
-(defadvice recenter (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode (skk-set-cursor-properly)) )
-
-(defadvice insert-file (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode (skk-set-cursor-properly)) )
-
-;; 別のバッファへ飛ぶコマンドは skk-mode が nil でもカーソル色を調整する必要が
-;; ある。
-(defadvice bury-buffer (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (skk-set-cursor-properly) )
-
-(defadvice switch-to-buffer (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (skk-set-cursor-properly) ) 
-
-;; cover to hilit19 functions.
-(defadvice hilit-yank (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode (skk-set-cursor-properly)) )
-
-(defadvice hilit-yank-pop (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode (skk-set-cursor-properly)) )
-
-(defadvice hilit-recenter (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (and skk-mode (skk-set-cursor-properly)) )
-
-(defadvice execute-extended-command (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (skk-set-cursor-properly) )
-
-(defadvice pop-to-buffer (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (skk-set-cursor-properly) )
-
-(defadvice other-window (after skk-ad activate)
-  "SKK のモードに従いカーソルの色を変える。"
-  (skk-set-cursor-properly) )
-
-(defadvice save-buffers-kill-emacs (before skk-ad activate)
-  (run-hooks 'skk-before-kill-emacs-hook) )
-
-(if (eq skk-emacs-type 'xemacs)
-    ;; XEmacs has minibuffer-keyboard-quit that has nothing to do with delsel.
-    (defadvice minibuffer-keyboard-quit (around skk-ad activate)
-      (with-current-buffer (skk-minibuffer-origin) (skk-set-cursor-properly))
-      (skk-remove-minibuffer-setup-hook
-       'skk-j-mode-on 'skk-setup-minibuffer
-       (function (lambda ()
-		   (add-hook 'pre-command-hook 'skk-pre-command nil 'local) )))
-      (cond ((not skk-mode) ad-do-it)
-	    ((not skk-henkan-on)
-	     (cond ((skk-get-prefix skk-current-rule-tree)
-		    (skk-erase-prefix 'clean) )
-		    (t ad-do-it) ))
-            (skk-henkan-active
-             (setq skk-henkan-count 0)
-             (if (and skk-delete-okuri-when-quit skk-henkan-okurigana)
-                 (let ((count (/ (length skk-henkan-okurigana) skk-kanji-len)))
-                   (skk-previous-candidate)
-                   ;; ここでは delete-backward-char に第二引数を渡さない方がベター？
-                   (delete-backward-char count) )
-               (skk-previous-candidate) ))
-            (t (skk-erase-prefix 'clean)
-	       (and (> (point) skk-henkan-start-point)
-		    (delete-region (point) skk-henkan-start-point) )
-               (skk-kakutei) )))
-  (defadvice minibuffer-keyboard-quit (around skk-ad activate)
-    ;; for delsel.el
-    (if (and skk-mode
-	     (not (and delete-selection-mode transient-mark-mode mark-active)) )
-	(keyboard-quit)
-      ad-do-it )))
 
 ;;;; mode setup
 
@@ -1943,6 +710,11 @@ dependent."
     (if (not skk-mode-invoked)
         ;; enter skk-mode for the first time in this session
         (progn
+	  (and (eq skk-emacs-type 'xemacs)
+	       (boundp 'preloaded-file-list)
+	       (member "skk-leim" preloaded-file-list)
+	       ;; require dummy file.
+	       (require 'skk-xm20_4) )
           (setq skk-mode-invoked t)
           (skk-setup-init-file)
           (load skk-init-file t)
@@ -1978,6 +750,8 @@ dependent."
 	  (skk-regularize) ))
     ;; 以下は skk-mode に入るたびに毎度コールされるコード。
     (and skk-use-viper (require 'skk-viper))
+    (and (or skk-use-color-cursor skk-cursor-change-width)
+	 (require 'skk-cursor) )
     ;; .skk で skk-kakutei-key の変更が可能になるように。
     (define-key skk-abbrev-mode-map skk-kakutei-key 'skk-kakutei)
     (define-key skk-abbrev-mode-map (char-to-string skk-start-henkan-char)
@@ -2020,9 +794,6 @@ dependent."
                ((> (prefix-numeric-value arg) 0) t) )))
     (auto-fill-mode (if auto-fill 1 -1))
     (skk-mode arg)
-    (skk-set-cursor-color (if skk-mode
-                              skk-hiragana-cursor-color
-                            skk-default-cursor-color ))
     (run-hooks 'skk-auto-fill-mode-hook) ))
 
 (defun skk-kill-emacs-without-saving-jisyo (&optional query)
@@ -2273,12 +1044,6 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
          (skk-j-mode-on) )
         (t (setq skk-katakana (not skk-katakana))) )
   (skk-kakutei)
-  (if skk-katakana
-      (progn
-        (setq skk-input-mode-string skk-katakana-mode-string)
-        (skk-set-cursor-color skk-katakana-cursor-color) )
-    (setq skk-input-mode-string skk-hiragana-mode-string)
-    (skk-set-cursor-color skk-hiragana-cursor-color) )
   (force-mode-line-update) )
 
 (defun skk-misc-for-picture ()
@@ -3312,9 +2077,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
     (and skk-kakutei-end-function (funcall skk-kakutei-end-function))
     (skk-kakutei-initialize (if (skk-numeric-p) (cons kakutei-word converted)
 			      kakutei-word ))
-    (skk-do-auto-fill)
-    (skk-set-cursor-color (if skk-katakana skk-katakana-cursor-color
-			    skk-hiragana-cursor-color ))))
+    (skk-do-auto-fill) ))
 
 (defun skk-kakutei-cleanup-buffer ()
   ;; 確定直後のバッファの整形を行なう。
@@ -3884,8 +2647,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	      (fillarray skk-jisyo-update-vector nil)
 	      (insert skk-emacs-id "\n")
 	      (write-region 1 (point-max) skk-emacs-id-file nil 'nomsg)
-	      (unlock-buffer) )) )
-      (skk-set-cursor-properly) )))
+	      (unlock-buffer) ))))))
 
 (defun skk-save-jisyo-1 (file)
   (save-match-data
@@ -4749,8 +3511,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	       (let ((vu-len (length "ヴ")))
 		 (insert-and-inherit "ヴ")
 		 (delete-region (+ (match-beginning 0) vu-len)
-				(+ (match-end 0) vu-len) )))))
-       (skk-set-cursor-properly) ))))
+				(+ (match-end 0) vu-len) )))))))))
 
 
 (defun skk-hiragana-region (start end &optional vexpand)
@@ -4783,8 +3544,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	       (insert-and-inherit "う゛")
 	       (let ((vu-len (length "う゛")))
 		 (delete-region (+ (match-beginning 0) vu-len)
-				(+ (match-end 0) vu-len) )))))
-       (skk-set-cursor-properly) ))))
+				(+ (match-end 0) vu-len) )))))))))
 
 (defun skk-jisx0208-latin-region (start end)
   "リージョンの ascii 文字を対応する全角英文字に変換する。"
@@ -4799,8 +3559,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	      (c-len (length c)) )
 	 (insert-and-inherit c)
 	 (delete-region (+ (match-beginning 0) c-len)
-			(+ (match-end 0) c-len) )))
-     (skk-set-cursor-properly) )))
+			(+ (match-end 0) c-len) ))))))
 
 (defun skk-latin-region (start end)
   ;; リージョンの全角英数字を対応する ascii 文字に変換する。
@@ -4816,8 +3575,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	     (progn
 	       (insert-and-inherit val)
 	       (delete-region (+ (match-beginning 0) 1)
-			      (+ (match-end 0) 1) ))))
-       (skk-set-cursor-properly) ))))
+			      (+ (match-end 0) 1) ))))))))
 
 (defun skk-katakana-henkan (arg)
   "▽モードであれば、リージョンのひらがなをカタカナに変換する。
@@ -4949,37 +3707,6 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
    (and (extentp object) (detach-extent object)) )
   (t
    (and (overlayp object) (delete-overlay object)) ))
-
-(defun skk-set-cursor-color (color)
-  ;; カーソルの色を COLOR に変更する。
-  (and skk-use-color-cursor
-       (condition-case nil
-	   (set-cursor-color color)
-	 (error
-	  (set-cursor-color skk-default-cursor-color)
-	  (and skk-report-set-cursor-error
-	       (skk-message
-		"カラーマップ切れです。ディフォルトのカラーを使います。"
-		"Color map is exhausting, use default cursor color" ))))))
-
-;; Overwite by skk-viper.el
-(defun skk-set-cursor-properly ()
-  ;; カレントバッファの SKK のモードに従い、カーソルの色を変更する。
-  (if (and skk-use-color-cursor (get-buffer-window (current-buffer)))
-      (if (not skk-mode)
-	  (skk-set-cursor-color skk-default-cursor-color)
-	(skk-set-cursor-color (cond (skk-jisx0208-latin-mode
-				     skk-jisx0208-latin-cursor-color )
-				    (skk-katakana skk-katakana-cursor-color)
-				    (skk-j-mode skk-hiragana-cursor-color)
-				    (t skk-latin-cursor-color) ))))
-  (and skk-use-cursor-change (skk-change-cursor-when-ovwrt)) )
-
-(skk-defun-cond skk-change-cursor-when-ovwrt ()
-  ((eq skk-emacs-type 'xemacs) (setq bar-cursor overwrite-mode))
-  (t (if overwrite-mode
-	 (modify-frame-parameters (selected-frame) '((cursor-type bar . 3)))
-       (modify-frame-parameters (selected-frame) '((cursor-type . box))) )))
 
 (defun skk-make-face (face)
   ;; hilit-lookup-face-create のサブセット。tutorial で色付けを行なう場合でも
@@ -5121,8 +3848,6 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 (add-hook 'edit-picture-hook 'skk-misc-for-picture 'append)
 ;; add 'skk-save-jisyo only to remove easily.
 (add-hook 'skk-before-kill-emacs-hook 'skk-save-jisyo)
-(add-hook 'after-make-frame-hook 'skk-set-cursor-properly)
-(add-hook 'minibuffer-setup-hook 'skk-set-cursor-properly)
 (add-hook 'minibuffer-exit-hook
           (function
            (lambda ()
@@ -5130,8 +3855,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	     (skk-remove-minibuffer-setup-hook
 	      'skk-j-mode-on 'skk-setup-minibuffer
 	      (function (lambda ()
-			  (add-hook 'pre-command-hook 'skk-pre-command nil 'local) )))
-             (skk-set-cursor-properly) )))
+			  (add-hook 'pre-command-hook 'skk-pre-command nil 'local) ))))))
 
 (defun skk-setup-modeline ()
   "モード行へのステータス表示を準備する。"
@@ -5176,6 +3900,168 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	       (put-alist 'skk-mode
 			  ;; each element of minor-mode-alist is not cons cell.
 			  '(skk-input-mode-string) minor-mode-alist) ))))
+
+;; cover to original functions.
+
+(defadvice keyboard-quit (around skk-ad activate)
+  "▼モードであれば、候補の表示をやめて▽モードに戻す (見出し語は残す)。
+▽モードであれば、見出し語を削除する。
+上記のどちらのモードでもなければ keyboard-quit と同じ動作をする。"
+  (cond 
+   ;; SKK is not invoked in the current buffer.
+   ((not skk-mode) ad-do-it)
+   ;; ■ mode (Kakutei input mode).
+   ((not skk-henkan-on)
+    (cond ((skk-get-prefix skk-current-rule-tree)
+	   (skk-erase-prefix 'clean) )
+	  (t ad-do-it) ))
+   ;; ▼ mode (Conversion mode).
+   (skk-henkan-active
+    (setq skk-henkan-count 0)
+    (if (and skk-delete-okuri-when-quit skk-henkan-okurigana)
+	(let ((count (/ (length skk-henkan-okurigana) skk-kanji-len)))
+	  (skk-previous-candidate)
+	  ;; ここでは delete-backward-char に第二引数を渡さない方がベター？
+	  (delete-backward-char count) )
+      (skk-previous-candidate) ))
+   ;; ▽ mode (Midashi imput mode).
+   (t (skk-erase-prefix 'clean)
+      (and (> (point) skk-henkan-start-point)
+	   (delete-region (point) skk-henkan-start-point) )
+      (skk-kakutei) )))
+
+(defadvice abort-recursive-edit (around skk-ad activate)
+  "▼モードであれば、候補の表示をやめて▽モードに戻す (見出し語は残す)。
+▽モードであれば、見出し語を削除する。
+上記のどちらのモードでもなければ abort-recursive-edit と同じ動作をする。"
+  (skk-remove-minibuffer-setup-hook
+   'skk-j-mode-on 'skk-setup-minibuffer
+   (function (lambda () (add-hook 'pre-command-hook 'skk-pre-command nil 'local))) )
+  (cond ((not skk-mode) ad-do-it)
+	((not skk-henkan-on)
+	 (cond ((skk-get-prefix skk-current-rule-tree)
+		(skk-erase-prefix 'clean) )
+	       (t ad-do-it) ))
+        (skk-henkan-active
+         (setq skk-henkan-count 0)
+         (if (and skk-delete-okuri-when-quit skk-henkan-okurigana)
+             (let ((count (/ (length skk-henkan-okurigana) skk-kanji-len)))
+               (skk-previous-candidate)
+               ;; ここでは delete-backward-char に第二引数を渡さない方がベター？
+               (delete-backward-char count) )
+           (skk-previous-candidate) ))
+	(t (skk-erase-prefix 'clean)
+	   (and (> (point) skk-henkan-start-point)
+		(delete-region (point) skk-henkan-start-point) )
+	   (skk-kakutei) )))
+	
+(defadvice newline (around skk-ad activate)
+  "skk-egg-like-newline が non-nil だったら、変換中の newline で確定のみ行い、改行しない。"
+  (if (not (or skk-j-mode skk-abbrev-mode))
+      ad-do-it
+    (let (
+	  ;;(arg (ad-get-arg 0))
+          ;; skk-kakutei を実行すると skk-henkan-on の値が無条件に nil になる
+          ;; ので、保存しておく必要がある。
+          (no-newline (and skk-egg-like-newline skk-henkan-on))
+	  (auto-fill-function (and (interactive-p) auto-fill-function)) )
+      ;; fill されても nil が帰ってくる :-<
+      ;;(if (skk-kakutei)
+      ;;    (setq arg (1- arg)) )
+      ;;(if skk-mode
+      ;;    (let ((opos (point)))
+      ;;      ;; skk-kakutei (skk-do-auto-fill) によって行が折り返されたら arg を 1 つ減らす。
+      ;;      (skk-kakutei)
+      ;;      (if (and (not (= opos (point))) (integerp arg))
+      ;;          (ad-set-arg 0 (1- arg)) )))
+      (and skk-mode (skk-kakutei))
+      (if (not no-newline)
+	  ad-do-it ))))
+
+(defadvice newline-and-indent (around skk-ad activate)
+  "skk-egg-like-newline が non-nil だったら、変換中の newline-and-indent で確定のみ行い、改行しない。"
+  (if (not (or skk-j-mode skk-abbrev-mode))
+      ad-do-it
+    (let ((no-newline (and skk-egg-like-newline skk-henkan-on))
+	  (auto-fill-function (and (interactive-p) auto-fill-function)) )
+      (and skk-mode (skk-kakutei))
+      (or no-newline ad-do-it) )))
+
+(defadvice exit-minibuffer (around skk-ad activate)
+  "skk-egg-like-newline が non-nil だったら、変換中の exit-minibuffer で確定のみ行う。"
+  (skk-remove-minibuffer-setup-hook
+   'skk-j-mode-on 'skk-setup-minibuffer
+   (function (lambda ()
+	       (add-hook 'pre-command-hook 'skk-pre-command nil 'local) )))
+  (if (not (or skk-j-mode skk-abbrev-mode))
+      ad-do-it
+    (let ((no-newline (and skk-egg-like-newline skk-henkan-on)))
+      (and skk-mode (skk-kakutei))
+      (or no-newline ad-do-it) )))
+
+(defadvice picture-mode-exit (before skk-ad activate)
+  "SKK のバッファローカル変数を無効にし、picture-mode-exit をコールする。
+picture-mode から出たときにそのバッファで SKK を正常に動かすための処理。"
+  (and skk-mode (skk-kill-local-variables)) )
+
+(defadvice undo (before skk-ad activate)
+  "SKK モードが on なら skk-self-insert-non-undo-count を初期化する。"
+  (and skk-mode (setq skk-self-insert-non-undo-count 0)) )
+
+(defadvice kill-buffer (before skk-ad activate)
+  "SKK の▼モードだったら、確定してからバッファをキルする。
+  バッファのキル後、SKK のモードに従いカーソルの色を変える。"
+  (and skk-mode skk-henkan-on (interactive-p) (skk-kakutei)))
+
+(defadvice query-replace-regexp  (before skk-ad activate)
+  "SKK のモードに従いカーソルの色を変える。"
+  (setq skk-minibuffer-origin-mode (skk-current-insert-mode))
+  (add-hook
+   'minibuffer-setup-hook
+   (function (lambda () (add-hook 'pre-command-hook 'skk-pre-command nil 'local))) )
+  (add-hook 'minibuffer-setup-hook 'skk-setup-minibuffer) )
+
+(defadvice query-replace (before skk-ad activate)
+  "SKK のモードに従いカーソルの色を変える。"
+  (setq skk-minibuffer-origin-mode (skk-current-insert-mode))
+  (add-hook
+   'minibuffer-setup-hook
+   (function (lambda () (add-hook 'pre-command-hook 'skk-pre-command nil 'local))) )
+  (add-hook 'minibuffer-setup-hook 'skk-setup-minibuffer) )
+
+(defadvice save-buffers-kill-emacs (before skk-ad activate)
+  (run-hooks 'skk-before-kill-emacs-hook) )
+
+(if (eq skk-emacs-type 'xemacs)
+    ;; XEmacs has minibuffer-keyboard-quit that has nothing to do with delsel.
+    (defadvice minibuffer-keyboard-quit (around skk-ad activate)
+      (skk-remove-minibuffer-setup-hook
+       'skk-j-mode-on 'skk-setup-minibuffer
+       (function (lambda ()
+		   (add-hook 'pre-command-hook 'skk-pre-command nil 'local) )))
+      (cond ((not skk-mode) ad-do-it)
+	    ((not skk-henkan-on)
+	     (cond ((skk-get-prefix skk-current-rule-tree)
+		    (skk-erase-prefix 'clean) )
+		    (t ad-do-it) ))
+            (skk-henkan-active
+             (setq skk-henkan-count 0)
+             (if (and skk-delete-okuri-when-quit skk-henkan-okurigana)
+                 (let ((count (/ (length skk-henkan-okurigana) skk-kanji-len)))
+                   (skk-previous-candidate)
+                   ;; ここでは delete-backward-char に第二引数を渡さない方がベター？
+                   (delete-backward-char count) )
+               (skk-previous-candidate) ))
+            (t (skk-erase-prefix 'clean)
+	       (and (> (point) skk-henkan-start-point)
+		    (delete-region (point) skk-henkan-start-point) )
+               (skk-kakutei) )))
+  (defadvice minibuffer-keyboard-quit (around skk-ad activate)
+    ;; for delsel.el
+    (if (and skk-mode
+	     (not (and delete-selection-mode transient-mark-mode mark-active)) )
+	(keyboard-quit)
+      ad-do-it )))
 
 (run-hooks 'skk-load-hook)
 

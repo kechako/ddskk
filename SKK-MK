@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31 1999/10/31 11:19:57 minakaji Exp $
-;; Last Modified: $Date: 1999/10/31 11:19:57 $
+;; Version: $Id: SKK-MK,v 1.31.2.1 1999/11/07 14:42:14 minakaji Exp $
+;; Last Modified: $Date: 1999/11/07 14:42:14 $
 
 ;; Commentary
 ;;
@@ -169,20 +169,22 @@ end with `skk'." )
 (defvar SKK_MODULES
   ;; こんなもんコマンドラインで指定する人いないよね？
   (or (getenv "SKK_MODULES")
-      (let ((list '(queue-m stack-m skk-foreword
-			    skk-gadget skk-isearch skk-auto skk-comp
-			    skk-kakasi skk-kcode skk-leim skk-look
-			    skk-num skk-obsolete skk-server skk-tut
-			    skk skk-develop skk-autoloads
+      (let ((list '(queue-m stack-m skk-macs skk-vars
+			    skk skk-auto skk-autoloads skk-comp 
+			    skk-cursor skk-develop skk-gadget
+			    skk-isearch skk-kakasi skk-kcode
+			    skk-leim skk-look skk-num skk-obsolete
+			    skk-server skk-tut
 			    ;; EXPERIMENTAL
-			    skk-rdbms skk-study skk-tutcode skk-tutcdef skk-dcomp
-			    skk-abbrev skk-jisx0201 skk-hankaku-mode
+			    skk-abbrev skk-dcomp skk-hankaku-mode
+			    skk-jisx0201 skk-rdbms skk-study
+			    skk-tutcdef skk-tutcode
 			    ;; VIP 3.7
 			    ;; vip
 			    )))
 	(and SKK-MK-running-xemacs
 	     (member "skk-leim" preloaded-file-list)
-	     (setq list (nconc list (list 'skk-vars))) )
+	     (setq list (nconc list (list 'skk-xm20_4))) )
 	(condition-case nil
 	    ;; you might have to add lookup installed directory to `load-path'.
 	    (and (require 'lookup) (setq list (nconc list (list 'skk-lookup))))

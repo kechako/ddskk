@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-kcode.el,v 1.7 1999/10/03 11:39:09 minakaji Exp $
+;; Version: $Id: skk-kcode.el,v 1.7.2.1 1999/11/07 14:44:55 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/03 11:39:09 $
+;; Last Modified: $Date: 1999/11/07 14:44:55 $
 
 ;; This file is part of SKK.
 
@@ -29,41 +29,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(eval-when-compile (require 'skk))
-(require 'skk-foreword)
-
-;;;###autoload
-(defgroup skk-kcode nil "SKK Kanji Code related customization."
-  :prefix "skk-"
-  :group 'skk )
-
-(defcustom skk-input-by-code-menu-keys1 '(?a ?s ?d ?f ?g ?h ?q ?w ?e ?r ?t ?y)
-  "*メニュー形式で JIS 文字を入力するときに使用する選択キーのリスト。
-第 1 段階のメニューで使用する。
-12 個のキー (char type) を含む必要がある。"
-  :type '(repeat character)
-  :group 'skk-kcode )
-
-(defcustom skk-input-by-code-menu-keys2
-  '(?a ?s ?d ?f ?g ?h ?j ?k ?l ?q ?w ?e ?r ?t ?y ?u)
-  "*メニュー形式で JIS 文字を入力するときに使用する選択キーのリスト。
-第 2 段階のメニューで使用する。
-16 個のキー (char type) を含む必要がある。"
-  :type '(repeat character)
-  :group 'skk-kcode )
-
-(defcustom skk-kcode-charset
-  (if (memq skk-emacs-type '(xemacs mule4 mule3))
-      'japanese-jisx0208
-    lc-jp )
-  "*skk-input-by-code-or-menu で使われる文字セット。"
-  :type 'symbol
-  :group 'skk-kcode )
-
-(defcustom skk-kcode-load-hook nil
-  "*skk-kcode.el をロードした後にコールされるフック。"
-  :type 'hook
-  :group 'skk-kcode )
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
 ;; internal constants and variables.
 (defconst skk-code-n1-min 161)

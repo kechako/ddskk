@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-comp.el,v 1.4 1999/10/03 11:32:23 minakaji Exp $
+;; Version: $Id: skk-comp.el,v 1.4.2.1 1999/11/07 14:43:18 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/03 11:32:23 $
+;; Last Modified: $Date: 1999/11/07 14:43:18 $
 
 ;; This file is part of SKK.
 
@@ -29,44 +29,9 @@
 ;;; Commentary:
 
 ;;; Code:
-(eval-when-compile (require 'skk))
-(require 'skk-foreword)
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 ;; Elib version 1.0 required.
 (require 'stack-m)
-
-;;;###autoload
-(defgroup skk-comp nil "SKK completion related customization."
-  :prefix "skk-"
-  :group 'skk )
-
-;;; -- user variables
-(defcustom skk-dabbrev-like-completion nil
-  "*Non-nil であれば、見出し語の補完において、最後に補完された語について更に補完が行われる。
-例えば、
-
-  \"さ\" (,) -> \"さとう\" (,) -> \"さとうせんせい\"
-
-nil であれば、先頭の文字を共通にする文字列について補完が行なわれる。
-例えば、
-
-  \"さ\" (,) -> \"さとう\" (,) -> \"さいとう\" (,) -> \"さくら\""
-  :type 'boolean
-  :group 'skk-comp )
-
-(defcustom skk-completion-function 'skk-completion-original
-  "*skk-completion で使用する関数。"
-  :type 'function
-  :group 'skk-comp )
-
-(defcustom skk-previous-completion-function 'skk-previous-completion-original
-  "*skk-previous-completion で使用する関数。"
-  :type 'function
-  :group 'skk-comp )
-
-(defcustom skk-comp-load-hook nil
-  "*skk-comp.el をロードした後にコールされるフック。"
-  :type 'hook
-  :group 'skk-comp )
 
 ;;; -- internal variables
 ;; ---- buffer local variables

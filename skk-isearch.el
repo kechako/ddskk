@@ -5,9 +5,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5 1999/10/23 13:29:22 minakaji Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.1 1999/11/07 14:44:01 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/23 13:29:22 $
+;; Last Modified: $Date: 1999/11/07 14:44:01 $
 
 ;; This file is part of SKK.
 
@@ -43,7 +43,7 @@
 ;;            (lambda ()
 ;;              (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
 ;;              (and (boundp 'skk-mode-invoked) skk-mode-invoked
-;;                   (skk-set-cursor-properly) ))))
+;;                   (skk-cursor-set-properly) ))))
 ;; 
 ;; 
 ;; 3. invoke if current buffer has japanese characters.
@@ -53,97 +53,8 @@
 ;; skk-mode.
 
 ;;; Code:
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 (require 'skk)
-(require 'skk-foreword)
-
-;; user variables
-;;;###autoload
-(defgroup skk-isearch nil "SKK incremental search related customization."
-  :prefix "skk-isearch-"
-  :group 'skk )
-
-(defcustom skk-isearch-mode-string-alist
-  '((hiragana . "[か] ") (katakana . "[カ] ") (jisx0208-latin . "[英] ")
-    (latin . "[aa] ") (nil . "[--] ") )
-  ;;  "*Alist of \(MODE-SYMBOL . PROMPT-STRING\).
-  ;;MODE-SYMBOL is a symbol indicates canonical mode of skk for skk-isearch.
-  ;;Valid MODE-SYMBOL is one of `hiragana', `katakana', `jisx0208-latin',
-  ;;`latin' or nil.
-  ;;PROMPT-STRING is a string used in prompt to indicates current mode of
-  ;;skk for skk-isearch. "
-  "*isearch 時に入力モードに従い出すプロンプト指定のためのエーリスト。
-各要素は、
-
-  \(MODE-SYMBOL . PROMPT-STRING\)
-
-という cons cell。
-MODE-SYMBOL は入力モードを表わすシンボルで、
-下記のいずれかを指定する。
-
-   かなモード： `hiragana'
-   カナモード： `katakana'
-   全英モード： `jisx0208-latin'
-   アスキーモード： `latin'
-
-nil は、SKK モードオフを表わす。
-PROMPT-STRING は、該当の SKK モードに対し出すプロンプトの文字列。"
-  :type '(repeat (cons (choice :tag "Mode symbol"
-			       (const hiragana)
-			       (const katakana)
-			       (const jisx0208-latin)
-			       (const latin)
-			       (const nil) )
-		       (string :tag "Prompt string") ))
-  :group 'skk-isearch )
-
-(defcustom skk-isearch-start-mode nil
-  ;;  "*Specifies the search mode when isearch is called.
-  ;;This variable is valid only when `skk-isearch-use-previous-mode' is nil.
-  ;;If nil, it means that if skk-mode has been called in this buffer, same as
-  ;;the mode of the buffer, otherwise perform ascii search.
-  ;;If `latin' or `ascii' perfrom ascii search.
-  ;;If `hiragana', `hirakana' or `kana' -> hira kana search.
-  ;;If `jisx0208-latin' or `eiji', perform zenkaku eiji (i.e. JIS X0208 alphabet) search."
-  "*カレントバッファで isearch を行なう際の入力モード。
-`skk-isearch-use-previous-mode' が nil の場合のみ有効。
-isearch を行なう場合、常にこの変数で指定した入力モードが使用される (ユーザーが
-明示的に変更を行なうことは可)。
-下記のいずれかのシンボルで指定する。
-
-   nil:  カレントバッファで SKK モードが起動されていればそのモード、
-         起動されていなければ アスキーモード。
-   `hiragana' (`hiragana' or `kana'): かなモード
-   `jisx0208-latin' (`eiji') : 全英モード
-   `latin' (`ascii'): アスキーモード"
-  :type '(choice (const :tag "Succeed an input mode of current buffer" nil)
-		 (const :tag "Ascii search" latin)
-		 (const :tag "Hiragana search" hiragana)
-		 (const :tag "JISX0208 alphabet search" jisx0208-latin) )
-  :group 'skk-isearch )
-
-(defcustom skk-isearch-use-previous-mode nil
-  ;; "*Non-nil means use same search mode as the search mode of the last search in the buffer."
-  "*Non-nil であれば、カレントバッファで最後に行なった isearch の SKK モードと同じモードを使用する。"
-  :type 'boolean
-  :group 'skk-isearch )
-
-(defcustom skk-isearch-initial-mode-when-skk-mode-disabled 'latin
-  ;;  "*Symbol indicates the mode to use as initial mode for skk-isearch when
-  ;;skk is turned off in the current buffer."
-  "*SKK モードがオフのカレントバッファで、最初に isearch を行なう際の入力モード。"
-  :type '(choice (const :tag "Ascii search" latin)
-		 (const :tag "Hiragana search" hiragana)
-		 (const :tag "JISX0208 alphabet search" jisx0208-latin) )
-  :group 'skk-isearch )
-
-(defcustom skk-isearch-whitespace-regexp "\\(\\s \\|[ \t\n\r\f]\\)*"
-  ;;  "*Regular expression to match a sequence of whitespace chars.
-  ;;This applies to regular expression incremental search."
-  "空白文字の連続としてマッチさせるべき正規表現。
-regexp isearch の際、この正規表現にマッチする文字が検索文字列の間に含まれていて
-もマッチする。"
-  :type 'regexp
-  :group 'skk-isearch )
 
 ;; internal constants and variables.
 (defconst skk-isearch-mode-canonical-alist

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-develop.el,v 1.6.2.1 1999/11/07 06:09:58 minakaji Exp $
+;; Version: $Id: skk-develop.el,v 1.6.2.2 1999/11/07 14:43:54 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 06:09:58 $
+;; Last Modified: $Date: 1999/11/07 14:43:54 $
 
 ;; This file is not part of SKK yet.
 
@@ -27,7 +27,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(require 'skk)
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
 (defconst skk-ml-address "skk-develop@kuis.kyoto-u.ac.jp")
 

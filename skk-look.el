@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5 1999/10/15 02:20:17 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.1 1999/11/07 14:45:00 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/15 02:20:17 $
+;; Last Modified: $Date: 1999/11/07 14:45:00 $
 
 ;; This file is not part of SKK yet.
 
@@ -96,71 +96,15 @@
 ;; ました。難波さんに感謝いたします。
 
 ;;; Code:
-(eval-when-compile (require 'skk) (require 'skk-comp))
-(require 'skk-foreword)
+(eval-when-compile (require 'skk-macs)(require 'skk-vars))
 ;; Elib
 (require 'stack-m)
 ;; APEL
 (require 'path-util)
 
-;;;###autoload
-(defgroup skk-look nil "SKK look conversion related customization."
-  :prefix "skk-look-"
-  :group 'skk )
-
-;; user variable.
-(defcustom skk-look-command (exec-installed-p "look")
-  "*UNIX look コマンドの名前。"
-  :type 'file
-  :group 'skk-look )
-
-(defcustom skk-look-ignore-case t
-  "*Non-nil であれば、大文字・小文字を区別しないで検索を行なう。
-look コマンドにオプション \"-f\" を渡す。"
-  :type 'boolean
-  :group 'skk-look )
-
-(defcustom skk-look-dictionary-order t
-  "*Non-nil であれば、辞書順にソートされた検索ファイルを使用する。
-look コマンドにオプション \"-d\" を渡す。"
-  :type 'boolean
-  :group 'skk-look )
-
-(defcustom skk-look-use-alternate-dictionary nil
-  "*Non-nil であれば、/usr/dict/web2 を使い検索を行なう。
-ディフォルトの辞書は、/usr/dict/words。
-look コマンドにオプション \"-a\" を渡す。"
-  :type '(choice file (const nil))
-  :group 'skk-look )
-
-(defcustom skk-look-termination-character nil
-  "*Non-nil であれば、その文字列を UNIX look コマンドが使う終端文字列として明示的に指定する。
-look コマンドにオプション \"-t\" とその文字列を渡す。"
-  :type '(choice string (const nil))
-  :group 'skk-look )
-
-(defcustom skk-look-dictionary nil
-  "*look コマンドが検索する辞書ファイル。
-nil であれば、/usr/dict/words を使用する。"
-  :type '(choice file (const nil))
-  :group 'skk-look )
-
-(defcustom skk-look-recursive-search nil
-  "*Non-nil であれば、look コマンドが見つけた英単語を変換キーにし、再検索を行なう。
-再検索の結果、候補が見つからなければ、元の英単語自身を候補として出力する。"
-  :type 'boolean
-  :group 'skk-look )
-
-(defcustom skk-look-expanded-word-only t
-  "*Non-nil であれば、look の出力に対する再検索が成功した場合のみを最終的な候補として表示する。
-skk-look-recursive-search が non-nil であるときのみ有効。"
-  :type 'boolean
-  :group 'skk-look )
-
 ;; internal constant and variable.
 (defconst skk-look-working-buffer " *skk look*")
 (defvar skk-look-completion-words nil)
-
 
 (and skk-look-command
      (null (member '(skk-look) skk-search-prog-list))

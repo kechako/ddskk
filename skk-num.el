@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-num.el,v 1.6 1999/10/15 02:34:45 minakaji Exp $
+;; Version: $Id: skk-num.el,v 1.6.2.1 1999/11/07 14:45:17 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/15 02:34:45 $
+;; Last Modified: $Date: 1999/11/07 14:45:17 $
 
 ;; This file is part of SKK.
 
@@ -29,60 +29,7 @@
 ;;; Commentary:
 
 ;;; Code:
-(eval-when-compile (require 'skk) (require 'cl))
-(require 'skk-foreword)
-
-;;;###autoload
-(defgroup skk-num nil "SKK number conversion related customization."
-  :prefix "skk-num-"
-  :group 'skk )
-
-;; user variables.
-(defcustom skk-num-type-alist
-  '((0 . identity)
-    (1 . skk-num-jisx0208-latin)
-    (2 . skk-num-type2-kanji)
-    (3 . skk-num-type3-kanji)
-    (4 . skk-num-recompute)
-    (5 . skk-num-type5-kanji)
-    (9 . skk-num-shogi) )
-  "*数値の変換のための、インデクスと変換に使用する関数とのエーリスト。
-各要素は、`\(インデクス . 関数名\)' という構成になっている。
-インデクスには、例えば見出し語が \"平成#1年\" のとき、`#' 記号の直後に表示される
-integer `1' を代入する。
-
-インデクスと関数の関係 \(ディフォルト値\) は下記の通り。
-    0 -> 無変換
-    1 -> 全角数字へ変換
-    2 -> 漢数字へ変換 \(位取りなし\)
-    3 -> 漢数字へ変換 \(位取りをする\)
-    4 -> その数字そのものをキーにして辞書を再検索
-    5 -> 漢数字 (手形などで使用する文字を使用) へ変換 (位取りをする)
-    9 -> 将棋で使用する数字 \(\"３四\" など\) に変換" 
-  :type '(repeat (cons (choice :tag "Index"
-			       (integer 0) (integer 1) (integer 2) (integer 3)
-			       (integer 4) (integer 5) (integer 9) )
-		  (function :tag "Function") ))
-  :group 'skk-num )
-
-(defcustom skk-num-convert-float nil
-  "*Non-nil であれば、浮動小数点数を使った見出し語に対応して変換を行なう。
-この値を non-nil にすることで、\"#.# /#1．#1/#0月#0日/\" などの辞書見出しが使用
-できなくなるので、注意。"
-  :type 'boolean
-  :group 'skk-num )
-
-(defcustom skk-num-uniq (or (assq 4 skk-num-type-alist)
-			    (and (assq 2 skk-num-type-alist)
-				 (assq 3 skk-num-type-alist) ))
-  "*Non-nil であれば、異なる数値表現でも変換結果が同じ数値を重複して出力しない。"
-  :type 'boolean
-  :group 'skk-num )
-
-(defcustom skk-num-load-hook nil
-  "*skk-num.el をロードした後にコールされるフック。"
-  :type 'hook
-  :group 'skk-num )
+(eval-when-compile (require 'skk-macs) (require 'skk-vars) (require 'cl))
 
 ;; internal constants and variables
 (defconst skk-num-alist-type1

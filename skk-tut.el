@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tut.el,v 1.9 1999/10/03 11:51:49 minakaji Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.1 1999/11/07 14:45:27 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/03 11:51:49 $
+;; Last Modified: $Date: 1999/11/07 14:45:27 $
 
 ;; This file is part of SKK.
 
@@ -28,8 +28,10 @@
 
 ;;; Commentary:
 ;;; Code:
-(require 'skk)
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
+;; skk-tut.el 関連だけは日常使わないことの方が多いので、グループ、変数をあえて、
+;; skk-vars.el に入れない。
 ;;;###autoload
 (defgroup skk-tut nil "SKK tutorial conversion related customization."
   :prefix "skk-tut-"
@@ -118,7 +120,7 @@ The English version is SKK.tut.E."
   "SKK チュートリアル用のダミー辞書。" )
 
 (defconst skktut-init-variables-alist
-  '((skk-abbrev-cursor-color . "royalblue")
+  '((skk-cursor-abbrev-color . "royalblue")
     (skk-abbrev-mode-string . " aあ")
     (skk-allow-spaces-newlines-and-tabs . t)
     (skk-auto-fill-mode-hook . nil)
@@ -134,7 +136,7 @@ The English version is SKK.tut.E."
     (skk-count-private-jisyo-candidates-exactly . nil)
     (skk-dabbrev-like-completion . nil)
     (skk-date-ad . 1)
-    (skk-default-cursor-color . (if (eq skk-emacs-type 'xemacs)
+    (skk-cursor-default-color . (if (eq skk-emacs-type 'xemacs)
 				    (frame-property (selected-frame) 'cursor-color)
 				  (cdr (assq 'cursor-color (frame-parameters (selected-frame)))) ))
     (skk-delete-implies-kakutei . t)
@@ -153,7 +155,7 @@ The English version is SKK.tut.E."
     (skk-input-by-code-menu-keys1 . '(?a ?s ?d ?f ?g ?h ?q ?w ?e ?r ?t ?y))
     (skk-input-by-code-menu-keys2 . '(?a ?s ?d ?f ?g ?h ?j ?k ?l ?q ?w ?e ?r ?t ?y ?u))
     (skk-japanese-message-and-error . nil)
-    (skk-jisx0208-latin-cursor-color . "gold")
+    (skk-cursor-jisx0208-latin-color . "gold")
     (skk-jisx0208-latin-mode-string . " 全英")
     (skk-jisx0208-latin-vector . skk-default-jisx0208-latin-vector)
     (skk-jisyo . "~/skk-tut-jisyo")
@@ -174,7 +176,7 @@ The English version is SKK.tut.E."
     (skk-keep-record . nil)
     (skk-kuten-touten-alist . '((jp . ("。" . "、"))))
     (skk-kutouten-type . 'jp)
-    (skk-latin-cursor-color . "ivory4")
+    (skk-cursor-latin-color . "ivory4")
     (skk-latin-mode-string . " SKK")
     (skk-load-hook . nil)
     (skk-mode-hook . nil)
@@ -185,7 +187,7 @@ The English version is SKK.tut.E."
     (skk-previous-completion-key . ",")
     (skk-process-okuri-early . nil)
     (skk-public-jisyo-has-entry-p-function . 'skk-public-jisyo-has-entry-p-original)
-    (skk-report-set-cursor-error . t)
+    (skk-cursor-report-set-error . t)
     (skk-rom-kana-base-rule-list .
 				 '(("a" nil ("ア" . "あ")) ("bb" "b" ("ッ" . "っ"))
 				   ("ba" nil ("バ" . "ば")) ("be" nil ("ベ" . "べ"))
@@ -320,7 +322,7 @@ The English version is SKK.tut.E."
     (skk-try-completion-key . "\t")
     (skk-update-jisyo-function . 'skk-update-jisyo-original)
     (skk-use-color-cursor . (and window-system (fboundp 'x-display-color-p) (x-display-color-p)))
-    (skk-use-cursor-change . t)
+    (skk-cursor-change-width . t)
     (skk-use-face . (or window-system (skk-terminal-face-p)))
     (skk-use-look . nil)
     (skk-use-numeric-conversion . t)

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-server.el,v 1.3 1999/10/03 11:50:10 minakaji Exp $
+;; Version: $Id: skk-server.el,v 1.3.2.1 1999/11/07 14:45:24 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/03 11:50:10 $
+;; Last Modified: $Date: 1999/11/07 14:45:24 $
 
 ;; This file is part of SKK.
 
@@ -29,95 +29,7 @@
 ;;; Commentary:
 ;;
 ;;; Code:
-(eval-when-compile (require 'skk))
-(require 'skk-foreword)
-
-;;;###autoload
-(defgroup skk-server nil "SKK server related customization."
-  :prefix "skk-server-"
-  :group 'skk )
-
-;; user variables.
-(defcustom skk-server-host (getenv "SKKSERVER")
-  "*SKK 辞書サーバーを走らせているホスト名。"
-  :type 'string
-  :group 'skk-server )
-
-(defcustom skk-server-prog (getenv "SKKSERV")
-  "*SKK 辞書サーバープログラム名。フルパスで書く。"
-  :type 'file
-  :group 'skk-server )
-
-(defcustom skk-server-jisyo (getenv "SKK_JISYO")
-  "*SKK 辞書サーバープログラムに渡す辞書名。フルパスで書く。"
-  :type 'file
-  :group 'skk-server )
-
-(defcustom skk-server-portnum nil
-  "*Non-nil であれば、その値を port number として skkserv と TCP 接続する。
-/etc/services を直接書き換える権限がないユーザーのための変数。"
-  :type '(choice integer (const nil))
-  :group 'skk-server )
-
-;;(defvar skk-server-debug nil
-;;  "*Non-nil であれば、辞書サーバープログラムをディバッグモードで起動する。
-;;ディバッグ・モードで skkserv を走らせると、そのまま foreground で走り、メッセー
-;;ジを出力する。キーボードから割りこみをかけることもできる。" )
-
-(defcustom skk-servers-list nil
-  "*辞書サーバー毎の情報リスト。
-
-複数のホストで動いているサーバにアクセスできる場合には、以下のようにリストの
-各要素に順にホスト名、フルパスでの SKK サーバー名、SKK サーバーに渡す辞書名、
-SKK サーバーが使用するポート番号を書き、設定をすることができる。
-
-   \(setq skk-servers-list
-         '\(\(\"host1\" \"/path/to/skkserv\" \"/path/to/SKK-JISYO.L\" 1178\)
-           \(\"host2\" \"/path/to/skkserv\"\) \)\)
-
-この場合、最初に指定したサーバにアクセスできなくなると、自動的に順次リストにあ
-る残りのサーバにアクセスするようになる。
-サーバーのディフォルトの辞書およびポート番号を使用する場合は nil を指定するか、
-何も書かないで良い。
-
-なお、ユーザー自身に実行権限のないサーバーを指定する場合は、
-
-   \(setq skk-servers-list '\(\(\"host1\"\) \(\"host2\"\)\)\)
-
-のように、ホスト名だけを書くことができる。上記の設定例では、host1, host2 にお
-ける skkserv サービスの TCP 接続の開始のみ試み、サーバーの起動は試みない。"
-  :type '(repeat
-	  (list (string :tag "Hostname")
-		(choice :tag "Server" file (const nil))
-		(choice :tag "Dictionary" file (const nil))
-		(choice :tag "Port number" integer (const nil)) ))
-  :group 'skk-server )
-
-(defcustom skk-server-report-response nil
-  "*Non-nil であれば、変換時サーバーの送出する文字を受け取るまでに accept-process-output を何回実行したかを報告する。"
-  :type 'boolean
-  :group 'skk-server )
-
-(defcustom skk-server-remote-shell-program
-  (or (getenv "REMOTESHELL")
-      (and (boundp 'remote-shell-program) remote-shell-program)
-      (cond
-       ((eq system-type 'berkeley-unix)
-        (if (file-exists-p "/usr/ucb/rsh") "/usr/ucb/rsh" "/usr/bin/rsh") )
-       ((eq system-type 'usg-unix-v)
-        (if (file-exists-p "/usr/ucb/remsh") "/usr/ucb/remsh" "/bin/rsh"))
-       ((eq system-type 'hpux) "/usr/bin/remsh")
-       ((eq system-type 'EWS-UX/V) "/usr/ucb/remsh")
-       ((eq system-type 'pcux) "/usr/bin/rcmd")
-       (t "rsh") ))
-  "*リモートシェルのプログラム名。"
-  :type 'file
-  :group 'skk-server )
-
-(defcustom skk-server-load-hook nil
-  "*skk-server.el をロードした後にコールされるフック。"
-  :type 'hook
-  :group 'skk-server )
+(eval-when-compile (require 'skk-macs) (require 'skk-vars))
 
 ;; internal constants and variables.
 (defconst skk-network-open-status 'open)

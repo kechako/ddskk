@@ -1,3 +1,17 @@
+2000-08-15  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK (SKK-MK-install,SKK-MK-generate-autoloads-el): if
+	$(EMACS) is Emacs 20 or lator, generate autoloads by
+	`update-autoloads-from-directories'.
+	Don't install leim-list.el for Emacs 19 or earlier.
+	(SKK_MODULES): Don't install skk-leim.el for Emacs 19 or earlier.
+
+	* skk-leim.el: Register input methods here.
+	(skk-activate, skk-auto-fill-activate): Advise
+	`skk-setup-modeline' to do nothing.
+
+	* skk-setup.el.in: Don't register input methods here.
+
 2000-08-14  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-jisx0201.el: Modify doc string.

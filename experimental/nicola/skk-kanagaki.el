@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/11/04 15:58:00 $
+;; Last Modified: $Date: 2000/11/04 15:59:29 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -360,7 +360,7 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
 	(t
 	 (or (getenv "TMP") "/tmp"))))
 
-(skk-deflocalvar skk-kanagaki-state nil)
+(skk-deflocalvar skk-kanagaki-state 'kana)
 
 ;; Functions.
 

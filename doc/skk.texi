@@ -6,13 +6,13 @@
 @c          Yukiyoshi Kameyama <kameyama@@kuis.kyoto-u.ac.jp>
 @c          Mikio Nakajima <minakaji@osaka.email.ne.jp>
 @c  Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-@c  Version: $Id: skk.texi,v 1.9.2.1.2.3 1999/12/08 19:26:57 furue Exp $
+@c  Version: $Id: skk.texi,v 1.9.2.1.2.4 2000/04/26 00:41:37 minakaji Exp $
 @c  Keywords: japanese
-@c  Last Modified: $Date: 1999/12/08 19:26:57 $
+@c  Last Modified: $Date: 2000/04/26 00:41:37 $
 @c
 @set EDITION 1.4
 @set SKK-VERSION 10.51
-@set UPDATED $Date: 1999/12/08 19:26:57 $
+@set UPDATED $Date: 2000/04/26 00:41:37 $
 @c @set UPDATED-MONTH Oct 1998
 
 @direntry
@@ -143,7 +143,7 @@ SKK version 10$B$O(BMule$B5!G=$r;}$C$?3F<o(BEmacsen$B$N>e$K9bB.$G8zN(E*$JF|
 $BNO4D6-$rDs6!$9$k%7%9%F%`$G$"$j!"(BGNU General Public License$B$K=>$C$?%U%j!<!&(B
 $B%=%U%H%&%'%"$H$7$FG[I[$5$l$k!#(B
 
-SKK 10$B$,F0:n$rJ]>Z$9$k(BEmacsen$B$N%P!<%8%g%s$O2<5-$NDL$j$G$"$k!#(B
+Daredevil SKK$B$,%5%]!<%H$9$k(BEmacsen$B$N%P!<%8%g%s$O2<5-$NDL$j$G$"$k!#(B
 
 @table @asis
 @item Emacs 19.28 or later $B$r%Y!<%9$H$7$?(B Mule 2 or 3
@@ -282,16 +282,19 @@ is Elib?, ,Elib, elib.info, Elib - The Emacs Lisp Library}.}$B$NCf$N$$$/(B
 
 @enumerate
 @item
-$B$^$:(B APEL$B$r%$%s%9%H!<%k$9$k!#(BSKK 10$B$G$O!"(BAPEL 9.22$B0J9_$,I,?\$G$"$k!#(BAPEL
-$B$O!"(B
+$B$^$:(B APEL$B$r%$%s%9%H!<%k$9$k!#(BDaredevil SKK$B$G$O!"(BAPEL 9.22$B0J9_$G$NF0:n$r(B
+$B3NG'$7$F$$$k$,!"(BAPEL$B$O(BEmacs$B$N?J2=$K9g$o$;$FF|?J7nJb$7$F$$$k$N$G!"$G$-$k(B
+$B$@$1?7$7$$%P!<%8%g%s$r%$%s%9%H!<%k$9$k$3$H$r$*4+$a$9$k!#(BAPEL$B$O!"(B
 @samp{ftp://ftp.m17n.org/pub/mule/apel/}
 $B$b$7$/$O(B
 @samp{ftp://ftp.etl.go.jp/pub/mule/apel/}
 $B$+$iF~<j$G$-$k!#(B
 
 @item
-SKK 10$B$O(Bcustom package$B$r;H$C$?%+%9%?%^%$%:5!G=$r;}$D!#(BEmacsen$B$N<oN`$K$h(B
-$B$j$$$/$i$+:n6H$,I,MW$H$J$k!#(B
+Daredevil SKK$B$O(Bcustom package$B$r;H$C$?%+%9%?%^%$%:5!G=$r;}$D!#(Bcustom
+package$B$N8E$$%P!<%8%g%s$O!"8=9T%P!<%8%g%s$H$N%$%s%?%U%'%$%9$,0[$J$k$b$N(B
+$B$,$"$k$N$G!"(BEmacsen$B$N<oN`$K$h$j(Bcustom package$B$K$D$$$F$$$/$i$+:n6H$,I,MW(B
+$B$H$J$k>l9g$,$"$k!#(B
 @enumerate
 @item
 GNU Emacs 20.2$B0J9_!"$b$7$/$O(BXEmacs20.4$B0J9_$G$O!"(Bdefault$B$G$3$N5!G=$rMxMQ(B
@@ -313,10 +316,15 @@ GNU Emacs 19.28$B%Y!<%9$N(BMule$B$G$O(Bdefault$B$G(Bcustom$B$O%P%s%I%k$5$
 $B$+$bDI2C$N%Q%C%1!<%8$r%$%s%9%H!<%k$7$FF0:n$5$;$k$3$H$b:$Fq$J$h$&$G$"$k!#(B
 @samp{APEl}$B$G$O!"(B19.28$B%Y!<%9$N(BMule$B$N$?$a!"%(%_%e%l!<%7%g%s$NL\E*$G(B
 @file{tinycustom.el}$B$rMQ0U$7$F$$$k!#$3$N%W%m%0%i%`$K$h$jA4$F$N(B
-@code{defcustom}$B$O!"(B@code{defvar}$B$HEy2A$K$J$k!#(BSKK 10 $B$O!"(B@samp{APEL}$B$N(B
-@file{pcumstom.el}$B$r(Brequire$B$7!"$3$N%W%m%0%i%`$,I,MW$K1~$8(B
+@code{defcustom}$B$O!"(B@code{defvar}$B$HEy2A$K$J$k!#(BDaredevil SKK $B$O!"(B
+@samp{APEL}$B$N(B@file{pcumstom.el}$B$r(Brequire$B$7!"$3$N%W%m%0%i%`$,I,MW$K1~$8(B
 @file{tinycustom.el}$B$r(Brequire$B$9$k$N$G!":n6H$O2?$bI,MW$J$$!#(B
 @end enumerate
+
+@item
+SKK$B<-=q$r(B@samp{http://openlab.ring.gr.jp/skk/dic-ja.html}$B$h$j(Bget$B$7!"(B
+@file{./dic}$B%5%V%G%#%l%/%H%j$KG[CV$9$k!#(BSKK$B<-=q$K$O(BS,M,L$B$N(B3$B%5%$%:$"$k$,!"(B
+$B$$$:$l$+0l$D$r%$%s%9%H!<%k$9$k$3$H$GB-$j$k!#(B
 
 @item
 @file{SKK-CFG}$B$rI,MW$K1~$8JT=8$9$k!#$3$N%U%!%$%k$O(BEmacs Lisp$B$G5-=R$9$k!#(B
@@ -366,9 +374,16 @@ SKK 9$B$HHf3S$7$F!"JQ?tL>!"4X?tL>$,BgI}$KJQ99$5$l$?$N$G!"(B
 @vindex skk-server-prog
 @vindex skk-large-jisyo
 
-@file{.emacs}@footnote{OS$B$,(BMSDOS$B$N>l9g$O(B@file{_emacs}$B$G$"$k!#0J2<F1MM!#(B}
-$B$K0J2<$N%U%)!<%`$rA^F~$9$k!#(B
+$B4JC1$J%;%C%H%"%C%W$NJ}K!$O!"(B@file{.emacs}@footnote{OS$B$,(BMSDOS$B$N>l9g$O(B @file{_emacs}$B$G$"$k!#0J2<F1MM!#(B}
+$B$K<!$N%U%)!<%`$rA^F~$9$k!#(B
 
+@lisp
+(require 'skk-setup)
+@end lisp
+
+@file{skk-setup.el}$B$NFbMF$O2<5-$NJ#?t$N%U%)!<%`$G$"$k!#$3$l$i$H0[$J$k@_(B
+$BDj$r9T$J$$$?$$>l9g$J$I$O!"(B@file{skk-setup.el}$B$r(Brequire$B$7$J$$$G!"8DJL$K(B
+@file{.emacs}$B$K=q$$$F$bNI$$!#(B
 @lisp
 @group
 (autoload 'skk-mode "skk" nil t)
@@ -380,14 +395,16 @@ SKK 9$B$HHf3S$7$F!"JQ?tL>!"4X?tL>$,BgI}$KJQ99$5$l$?$N$G!"(B
 (add-hook 'isearch-mode-hook
           (function (lambda ()
                       (and (boundp 'skk-mode) skk-mode
-                           (skk-isearch-mode-setup) ))))
+                           (skk-isearch-mode-setup)))))
 
 (add-hook 'isearch-mode-end-hook
 	  (function
 	   (lambda ()
 	     (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
 	     (and (boundp 'skk-mode-invoked) skk-mode-invoked
-		  (skk-set-cursor-properly) ))))
+		  (skk-color-display-p)
+		  (skk-set-cursor-properly)))))
+
 @end group
 @end lisp
 
@@ -1541,7 +1558,7 @@ SKK$B%A%e!<%H%j%"%k%W%m%0%i%`!#(B
 VIPER$B%$%s%?!<%U%'%$%9%W%m%0%i%`$r=8$a$?%U%!%$%k!#(B
 
 @item skk-vars.el
-$B8E$$(BSKK 10$B$r%@%s%W$7$?(BXEmacs$B$G(BSKK 10$B$rF0$+$9$?$a$N%@%_!<%U%!%$%k!#(B
+$B8E$$(BSKK 10$B$r%@%s%W$7$?(BXEmacs$B$G(BDaredevil SKK$B$rF0$+$9$?$a$N%@%_!<%U%!%$%k!#(B
 
 @end table
 
@@ -1581,7 +1598,7 @@ SKK$B$N%+%9%?%^%$%:$O!"(B@file{~/.emacs}$B$"$k$$$O(B@file{~/.skk}$B$K5-=R$9
 $B$K=R$Y$k(B@footnote{$B0JA0$N%P!<%8%g%s$G$O!"$I$N$h$&$J%+%9%?%^%$%:$,9T$J$o$l(B
 $B$F$$$k>l9g$G$b%A%e!<%H%j%"%k;HMQ;~$KI8=`@_Dj$KLa$9L\E*$G!"JQ?t$N@k8@$K(B
 @code{defconst}$B$r;HMQ$7$F$$$?$N$G!"A4$F$N%+%9%?%^%$%:$O(B@file{~/.skk}$B$G9T(B
-$B$J$&I,MW$,$"$C$?$,!"(BSKK 10$B$G$O!"(B@code{defcustom}$B$r;HMQ$7$?@k8@$r9T$J$C$F(B
+$B$J$&I,MW$,$"$C$?$,!"(BDaredevil SKK$B$G$O!"(B@code{defcustom}$B$r;HMQ$7$?@k8@$r9T$J$C$F(B
 $B$$$k$N$G!"$3$N@)8B$O$J$/$J$C$?!#(B}$B!#(B
 
 @table @asis
@@ -1840,7 +1857,7 @@ Emacs$B$N%P%C%U%!$KFI$_9~$s$G8!:w$r9T$J$&!#6&M-<-=q$O@_Dj$K$h$j(BEmacs$B$N(B
   (skk-search-jisyo-file skk-jisyo 0 t)
   (skk-okuri-search)
   (skk-search-jisyo-file skk-large-jisyo 10000)
-  (skk-search-server skk-aux-large-jisyo 10000) )
+  (skk-search-server skk-aux-large-jisyo 10000))
 @end group
 @end lisp
 
@@ -2202,7 +2219,7 @@ file /$B#f#i#l#e(B/
 @c   ("ty" . ("$B$A$#(B" . "$B%A%#(B"))
 @c   ("v" . ("$B$&!+$#(B" . "$B%t%#(B")) ("w" . ("$B$&$#(B" . "$B%&%#(B"))
 @c   ("x" . ("$B$#(B" . "$B%#(B")) ("xw" . ("$B$p(B" . "$B%p(B"))
-@c   ("z" . ("$B$8(B" . "$B%8(B")) ("zy" . ("$B$8$#(B" . "$B%8%#(B")) )
+@c   ("z" . ("$B$8(B" . "$B%8(B")) ("zy" . ("$B$8$#(B" . "$B%8%#(B")))
 @c @end group
 @c @end lisp
 
@@ -2236,7 +2253,7 @@ file /$B#f#i#l#e(B/
 @c              (setq skk-roma-kana-i
 @c                    (delq (assoc "ch" skk-roma-kana-i) skk-roma-kana-i)
 @c                    skk-roma-kana-i
-@c                    (delq (assoc "f" skk-roma-kana-i) skk-roma-kana-i) ))))
+@c                    (delq (assoc "f" skk-roma-kana-i) skk-roma-kana-i)))))
 @c @end group
 @c @end lisp
 
@@ -2290,7 +2307,7 @@ file /$B#f#i#l#e(B/
 @c @lisp
 @c @group
 @c '(("nn" nil ("$B%s(B" . "$B$s(B"))
-@c   ("n'" nil ("$B%s(B" . "$B$s(B")) )
+@c   ("n'" nil ("$B%s(B" . "$B$s(B")))
 @c @end group
 @c @end lisp
 @c
@@ -2325,7 +2342,7 @@ file /$B#f#i#l#e(B/
 @c @group
 @c (setq skk-rom-kana-rule-list
 @c       '(("nn" "n" ("$B%s(B" . "$B$s(B"))
-@c         ("n'" nil ("$B%s(B" . "$B$s(B")) ))
+@c         ("n'" nil ("$B%s(B" . "$B$s(B"))))
 @c @end group
 @c @end lisp
 @c
@@ -2405,7 +2422,7 @@ file /$B#f#i#l#e(B/
 @c @group
 @c
 @c (setq skk-rom-kana-rule-tree
-@c       (skk-compile-rule-list skk-rom-kana-rule-list) )
+@c       (skk-compile-rule-list skk-rom-kana-rule-list))
 @c
 @c @end group
 @c @end lisp
@@ -2544,7 +2561,7 @@ skK @expansion{}SKK
 @lisp
 @group
 (setq skk-rom-kana-rule-tree
-      (skk-compile-rule-list skk-rom-kana-rule-list) )
+      (skk-compile-rule-list skk-rom-kana-rule-list))
 @end group
 @end lisp
 @item
@@ -2666,7 +2683,7 @@ skK @expansion{}SKK
   (aset skk-input-vector ?. nil)
   (aset skk-input-vector ?: nil)
   (aset skk-input-vector ?; nil)
-  (aset skk-input-vector ?? nil) )
+  (aset skk-input-vector ?? nil))
 @end group
 @end lisp
 
@@ -2832,7 +2849,7 @@ SKK$B%b!<%I$K$J$C$F$$$J$$(BEmacs$B%*%j%8%J%k%P%C%U%!$G$O!"O"B3$9$k(B20$BJ8;
 @group
 '(("$B!V(B" . "$B!W(B") ("$B!X(B" . "$B!Y(B") ("(" . ")") ("$B!J(B" . "$B!K(B") ("@{" . "@}")
   ("$B!P(B" . "$B!Q(B") ("$B!R(B" . "$B!S(B") ("$B!T(B" . "$B!U(B") ("[" . "]") ("$B!N(B" . "$B!O(B")
-  ("$B!L(B" . "$B!M(B") ("$B!Z(B" . "$B![(B") ("\"" . "\"") ("$B!H(B" . "$B!I(B") )
+  ("$B!L(B" . "$B!M(B") ("$B!Z(B" . "$B![(B") ("\"" . "\"") ("$B!H(B" . "$B!I(B"))
 @end group
 @end lisp
 
@@ -2905,7 +2922,7 @@ SKK$B%b!<%I$K$J$C$F$$$J$$(BEmacs$B%*%j%8%J%k%P%C%U%!$G$O!"O"B3$9$k(B20$BJ8;
                  (progn
                    (make-local-variable 'skk-auto-paren-string-alist)
                    (setq skk-auto-paren-string-alist
-                         (cons '("$" . "$") skk-auto-paren-string-alist) ))))))
+                         (cons '("$" . "$") skk-auto-paren-string-alist)))))))
 @end group
 @end lisp
 
@@ -2922,7 +2939,7 @@ SKK$B%b!<%I$K$J$C$F$$$J$$(BEmacs$B%*%j%8%J%k%P%C%U%!$G$O!"O"B3$9$k(B20$BJ8;
                    (setq skk-auto-paren-string-alist
                          (delete
                           '("$" . "$")
-                          (copy-sequence skk-auto-paren-string-alist) )))))))
+                          (copy-sequence skk-auto-paren-string-alist))))))))
 @end group
 @end lisp
 
@@ -3405,10 +3422,10 @@ SKK$B%b!<%I$K$J$C$F$$$J$$(BEmacs$B%*%j%8%J%k%P%C%U%!$G$O!"O"B3$9$k(B20$BJ8;
            (lambda ()
              (if (and (boundp 'skk-henkan-okuri-strictly)
                       skk-henkan-okuri-strictly
-                      (not (eq last-command 'skk-purge-jisyo)) )
+                      (not (eq last-command 'skk-purge-jisyo)))
                  (progn
                    (setq skk-henkan-okuri-strictly nil)
-                   (put 'skk-henkan-okuri-strictly 'temporary-nil t) )))))
+                   (put 'skk-henkan-okuri-strictly 'temporary-nil t))))))
 
 @end group
 @group
@@ -3418,7 +3435,7 @@ SKK$B%b!<%I$K$J$C$F$$$J$$(BEmacs$B%*%j%8%J%k%P%C%U%!$G$O!"O"B3$9$k(B20$BJ8;
              (if (get 'skk-henkan-okuri-strictly 'temporary-nil)
                  (progn
                    (put 'skk-henkan-okuri-strictly 'temporary-nil nil)
-                   (setq skk-henkan-okuri-strictly t) )))))
+                   (setq skk-henkan-okuri-strictly t))))))
 @end group
 @end lisp
 
@@ -3434,9 +3451,9 @@ SKK$B%b!<%I$K$J$C$F$$$J$$(BEmacs$B%*%j%8%J%k%P%C%U%!$G$O!"O"B3$9$k(B20$BJ8;
           (function
            (lambda ()
              (if (and (boundp 'skk-henkan-okuri-strictly)
-                      skk-henkan-okuri-strictly )
+                      skk-henkan-okuri-strictly)
                  (set (make-local-variable 'skk-henkan-okuri-strictly)
-                      nil )))))
+                      nil)))))
 @end group
 @end lisp
 
@@ -3815,7 +3832,7 @@ FEP$B$N;EMM$r;29M$K$7$?!#(B}$B!#C18l$dJ8@a$N6h@Z$j$H$J$k$h$&$JJ8;zNs$O!"(B
 @group
 '("$B$r(B" "$B!"(B" "$B!#(B" "$B!%(B" "$B!$(B" "$B!)(B" "$B!W(B" "$B!*(B" "$B!((B" "$B!'(B" ")" ";" 
   ":" "$B!K(B" "$B!I(B" "$B![(B" "$B!Y(B" "$B!U(B" "$B!S(B" "$B!Q(B" "$B!O(B" "$B!M(B" "@}"
-  "]" "?" "." "," "!" )
+  "]" "?" "." "," "!")
 @end group
 @end lisp
 
@@ -4103,7 +4120,7 @@ L$B<-=q(B@footnote{@xref{$B<-=q$N7A<0(B, , L$B<-=q(B}.}$B$K$O(B, $B8+=P
 @code{skk-mode-hook}$B$J$I$rMxMQ$7$F!"(B
 
 @lisp
-(add-hook 'skk-mode-hook (function (lambda () (local-unset-key "@@"))) )
+(add-hook 'skk-mode-hook (function (lambda () (local-unset-key "@@"))))
 @end lisp
 
 @noindent
@@ -4114,7 +4131,7 @@ L$B<-=q(B@footnote{@xref{$B<-=q$N7A<0(B, , L$B<-=q(B}.}$B$K$O(B, $B8+=P
 (aset skk-input-vector 64 "$B!w(B")
 (add-hook 'skk-mode-hook
           (function (lambda ()
-                      (define-key skk-map "@@" 'skk-self-insert) )))
+                      (define-key skk-map "@@" 'skk-self-insert))))
 @end lisp
 
 @noindent
@@ -4178,7 +4195,7 @@ today /(let ((skk-date-ad) (skk-number-style t)) (skk-today))/@dots{}/
   ;;@r{$BCm0U(B: '/ $B$O0z?t$H$7$FEO$;$J$$$N$G(B (defalias 'div '/) $B$J$I$H$7!"JL$N7A$G(B}
   ;;@r{skk-calc $B$KEO$9!#(B}
   ;;@r{$B<-=q8+=P$7Nc(B; #*# /(skk-calc '*)/}
-  (int-to-string (apply operator (mapcar 'string-to-int skk-num-list))) )
+  (int-to-string (apply operator (mapcar 'string-to-int skk-num-list))))
 @end group
 @end lisp
 
@@ -5688,7 +5705,7 @@ SKK$B%b!<%I$GA43QJ8;z$rF~NO$7$?>l9g$K!"(B@key{BS}$B$GA43QJ8;z$,>C$;$J$$$3$H!#
 
 (setq skk-servers-list
       '(("host1 "/your/path/to/skkserv" nil nil)
-        ("host2 "/your/path/to/skkserv" nil nil) ))
+        ("host2 "/your/path/to/skkserv" nil nil)))
 
 @end group
 @end lisp
@@ -5712,13 +5729,13 @@ SKK$B%b!<%I$GA43QJ8;z$rF~NO$7$?>l9g$K!"(B@key{BS}$B$GA43QJ8;z$,>C$;$J$$$3$H!#
     (and (boundp 'remote-shell-program) remote-shell-program)
     (cond
      ((eq system-type 'berkeley-unix)
-      (if (file-exists-p "/usr/ucb/rsh") "/usr/ucb/rsh" "/usr/bin/rsh") )
+      (if (file-exists-p "/usr/ucb/rsh") "/usr/ucb/rsh" "/usr/bin/rsh"))
      ((eq system-type 'usg-unix-v)
       (if (file-exists-p "/usr/ucb/remsh") "/usr/ucb/remsh" "/bin/rsh"))
      ((eq system-type 'hpux) "/usr/bin/remsh")
      ((eq system-type 'EWS-UX/V) "/usr/ucb/remsh")
      ((eq system-type 'pcux) "/usr/bin/rcmd")
-     (t "rsh") ))
+     (t "rsh")))
 
 @end group
 @end lisp
@@ -5745,12 +5762,12 @@ SKK$B%b!<%I$GA43QJ8;z$rF~NO$7$?>l9g$K!"(B@key{BS}$B$GA43QJ8;z$,>C$;$J$$$3$H!#
 (open-network-stream "skkservd-debug" (current-buffer) "foobar" "skkserv")
 @r{;; $B=i4|@_Dj(B}
 (let ((code (cdr (assoc "euc" skk-coding-system-alist)))
-      (proc (get-process "skkservd-debug")) )
+      (proc (get-process "skkservd-debug")))
   (cond ((eq skk-emacs-type 'xemacs)
 	 (set-process-input-coding-system proc code)
-	 (set-process-output-coding-system proc code) )
+	 (set-process-output-coding-system proc code))
 	((memq skk-emacs-type '(mule4 mule3 mule2))
-	 (set-process-coding-system proc code code) )))
+	 (set-process-coding-system proc code code))))
 @r{;; $BJQ49$9$Y$-J8;zNs$H$7$F(B `$B$+$s$8(B' $B$rAw?.$9$k!#(B}
 (process-send-string "skkservd-debug" "1$B$+$s$8(B ")
 @r{;; $B@.8y$9$k$H!"%+%l%s%H%P%C%U%!$K!"(B}

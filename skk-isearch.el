@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.20 2000/01/19 16:03:36 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.21 2000/04/26 00:41:34 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/19 16:03:36 $
+;; Last Modified: $Date: 2000/04/26 00:41:34 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -41,8 +41,11 @@
 ;; (add-hook 'isearch-mode-end-hook
 ;;           (function
 ;;            (lambda ()
-;;              (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup)))))
-;; 
+;;              (and (boundp 'skk-mode) skk-mode (skk-isearch-mode-cleanup))
+;;              (and (boundp 'skk-mode-invoked) skk-mode-invoked
+;;                   (skk-color-display-p)
+;;                   (skk-set-cursor-properly) ))))
+;;
 ;; 3. invoke if current buffer has japanese characters.
 ;; ...
 ;;

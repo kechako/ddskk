@@ -1,3 +1,24 @@
+2000-04-26  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/INSTALL: Add description about dictionaries.
+
+	* doc/skk.texi (Makefileの編集とインストール): Ditto.
+	(.emacsの設定): Add description about `skk-setup.el', and change
+	description about isearch-mode-end-hook.
+	Change open parens to closed ones.
+	Change `SKK 10' to `Daredevil SKK'.
+
+	* SKK-MK (SKK-MK-make-setup-file): New function.
+	(DICDIR): New variable.
+	(SKK_DICTIONARIES): Ditto.
+	(SKK-MK-install): Install dictionaries if they exist in ./dic
+	subdirectory.
+	(SKK-MK-install-package): Ditto.
+
+	* Makefile (clean): Add `skk-setup.el'.
+
+	* skk-setup.el.in: New file.
+
 2000-04-09  Takao KAWAMURA  <kawamura@debian.org>
 
 	* skk-vars.el (skk-keep-record): change type from 'boolean to

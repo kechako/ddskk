@@ -1,0 +1,14 @@
+-*- text -*-
+
+$Date: 2000/04/26 00:41:37 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
+                                            　　　　 <minakaji@pdx.ne.jp> 
+$Id: README,v 1.1.2.1 2000/04/26 00:41:37 minakaji Exp $
+
+  このディレクトリには、SKK 辞書を置きます。SKK 辞書は、
+
+    http://openlab.ring.gr.jp/skk/dic-ja.html
+
+から get することができます。
+
+SKK 辞書には S, M, L の 3 サイズありますが、全てを get する必要はあり
+ません。インストールしたい辞書だけを置いておけば良いです。

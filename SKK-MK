@@ -1,12 +1,12 @@
 ;;; -*-Emacs-Lisp-*-
 
 ;; SKK-MK: installer for SKK.
-;; Copyright (C) 1999 Mikio Nakajima <minakaji@osaka.email.ne.jp>
+;; Copyright (C) 1999, 2000 Mikio Nakajima <minakaji@osaka.email.ne.jp>
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.25 2000/03/24 13:57:21 minakaji Exp $
-;; Last Modified: $Date: 2000/03/24 13:57:21 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.26 2000/04/26 00:41:34 minakaji Exp $
+;; Last Modified: $Date: 2000/04/26 00:41:34 $
 
 ;; Commentary
 ;;
@@ -167,6 +167,7 @@
 ;; GENERIC VARIABLE.
 (defvar DOCDIR (or (getenv "DOCDIR") "./doc"))
 (defvar ETCDIR (or (getenv "ETCDIR") "./etc"))
+(defvar DICDIR (or (getenv "DICDIR") "./dic"))
 (defvar SKK_INFOS
   (cond ((= 18 emacs-major-version)
 	 nil)
@@ -220,6 +221,8 @@
 (defvar SKK_PREFIX (or (getenv "SKK_PREFIX") "skk"))
 (defvar SKK_TEXIS (or (getenv "SKK_TEXIS") '("skk.texi")))
 (defvar SKK_TUTORIALS (or (getenv "SKK_TUTORIALS") '("SKK.tut" "SKK.tut.E")))
+(defvar SKK_DICTIONARIES
+  (or (getenv "SKK_DICTIONARIES") '("SKK-JISYO.L" "SKK-JISYO.M" "SKK-JISYO.S")))
 
 ;; NON-PACKAGE INSTALL RELATED VARIABLE.
 (defvar SKK_DATADIR
@@ -276,6 +279,27 @@
   (copy-file "experimental/skk-is-n.el" "experimental/skk-isearch.el" nil t))
 
 ;;; [FUNCTIONS]
+(defun SKK-MK-make-setup-file (dictionary)
+  (with-temp-buffer
+    (save-excursion
+      (setq dictionary (expand-file-name dictionary))
+      (insert-file-contents "skk-setup.el.in")
+      (goto-char (point-min))
+      (when (looking-at ";;; -\\*- emacs-lisp -\\*-")
+	(delete-region (point) (progn (forward-line 1) (point))))
+      (when (search-forward ";;; skk-setup.el --- Initial setup for SKK")
+	(forward-char 1)
+	(insert ";; This file was generated automatically by SKK-MK at "
+		(current-time-string)
+		"\n"))
+      (while (re-search-forward "^;;[^@]+\\(@DIC@\\)" nil t nil)
+	(delete-region (match-beginning 1) (match-end 1))
+	(insert dictionary)
+	(beginning-of-line)
+	(while (looking-at ";")
+	  (delete-char 1)))
+      (write-region (point-min) (point-max) "skk-setup.el"))))
+	
 (defun SKK-MK-compile ()
   (cond ((= 18 emacs-major-version)
 	 (let ((SKK_MODULES (cons 'experimental/skk-isearch SKK_MODULES)))
@@ -296,7 +320,8 @@
   (SKK-MK-compile)
   (SKK-MK-compile-info)
   (setq DOCDIR (expand-file-name DOCDIR)
-	ETCDIR (expand-file-name ETCDIR))
+	ETCDIR (expand-file-name ETCDIR)
+	DICDIR (expand-file-name DICDIR))
   (or (file-exists-p SKK_LISPDIR)
       (make-directory SKK_LISPDIR t))
   (or (file-exists-p SKK_DATADIR)
@@ -326,7 +351,37 @@
 	   (SKK-MK-texinfo-format SKK_TEXIS)))
   (install-files SKK_INFOS DOCDIR SKK_INFODIR nil t nil)
   ;; install tutorials.
-  (install-files SKK_TUTORIALS ETCDIR SKK_DATADIR nil t nil))
+  (install-files SKK_TUTORIALS ETCDIR SKK_DATADIR nil t nil)
+  ;; install dictionaries if the files exist in ./dic directory.
+  (let ((dics SKK_DICTIONARIES) exist)
+    (while dics
+      (when (file-exists-p (expand-file-name (car dics) DICDIR))
+	(setq exist (cons (car dics) exist)))
+      (setq dics (cdr dics)))
+    (setq SKK_DICTIONARIES exist))
+  (and (member "SKK-JISYO.M" SKK_DICTIONARIES)
+       (setq SKK_DICTIONARIES
+	     (cons "SKK-JISYO.M" (delete "SKK-JISYO.M" SKK_DICTIONARIES))))
+  (and (member "SKK-JISYO.L" SKK_DICTIONARIES)
+       (setq SKK_DICTIONARIES
+	     (cons "SKK-JISYO.L" (delete "SKK-JISYO.L" SKK_DICTIONARIES))))
+  (if SKK_DICTIONARIES
+      (progn
+	(SKK-MK-make-setup-file
+	 (expand-file-name (car SKK_DICTIONARIES) SKK_DATADIR))
+	(install-files SKK_DICTIONARIES DICDIR SKK_DATADIR nil t nil))
+    ;; when dictionaries do not exist in ./dic subdirectory, check
+    ;; already installed dictionary and detect largest one to setup
+    ;; skk-setup.el.in.
+    (let ((dics '("SKK-JISYO.L" "SKK-JISYO.M" "SKK-JISYO.S")))
+      (while (not
+	      (file-exists-p (expand-file-name (car dics) SKK_DATADIR)))
+	(setq dics (cdr dics)))
+      (if dics
+	  (SKK-MK-make-setup-file (expand-file-name (car dics) SKK_DATADIR))
+	;; merely copy without setup dictionary information.
+	(copy-file "skk-setup.el.in" "skk-setup.el" 'ok-if-already-exists))))
+  (install-elisp-modules (list 'skk-setup) "." SKK_LISPDIR))
 
 (defun SKK-MK-install-package ()
   (or (featurep 'xemacs) (error "This directive is only for XEmacs."))
@@ -364,7 +419,38 @@
       (SKK-MK-texinfo-format SKK_TEXIS))
   (install-files SKK_INFOS DOCDIR PACKAGE_INFODIR nil t nil)
   ;; install tutorials.
-  (install-files SKK_TUTORIALS ETCDIR SKK_PACKAGE_DATADIR nil t nil))
+  (install-files SKK_TUTORIALS ETCDIR SKK_PACKAGE_DATADIR nil t nil)
+  ;; install dictionaries if the files exist in ./dic directory.
+  (let ((dics SKK_DICTIONARIES) exist)
+    (while dics
+      (when (file-exists-p (expand-file-name (car dics) DICDIR))
+	(setq exist (cons (car dics) exist)))
+      (setq dics (cdr dics)))
+    (setq SKK_DICTIONARIES exist))
+  (and (member "SKK-JISYO.M" SKK_DICTIONARIES)
+       (setq SKK_DICTIONARIES
+	     (cons "SKK-JISYO.M" (delete "SKK-JISYO.M" SKK_DICTIONARIES))))
+  (and (member "SKK-JISYO.L" SKK_DICTIONARIES)
+       (setq SKK_DICTIONARIES
+	     (cons "SKK-JISYO.L" (delete "SKK-JISYO.L" SKK_DICTIONARIES))))
+  (if SKK_DICTIONARIES
+      (progn
+	(SKK-MK-make-setup-file
+	 (expand-file-name (car SKK_DICTIONARIES) SKK_PACKAGE_DATADIR))
+	(install-files SKK_DICTIONARIES DICDIR SKK_PACKAGE_DATADIR nil t nil))
+    ;; when dictionaries do not exist in ./dic subdirectory, check
+    ;; already installed dictionary and detect largest one to setup
+    ;; skk-setup.el.in.
+    (let ((dics '("SKK-JISYO.L" "SKK-JISYO.M" "SKK-JISYO.S")))
+      (while (not
+	      (file-exists-p (expand-file-name (car dics) SKK_PACKAGE_DATADIR)))
+	(setq dics (cdr dics)))
+      (if dics
+	  (SKK-MK-make-setup-file
+	   (expand-file-name (car dics) SKK_PACKAGE_DATADIR))
+	;; merely copy without setup dictionary information.
+	(copy-file "skk-setup.el.in" "skk-setup.el" 'ok-if-already-exists))))
+  (install-elisp-modules (list 'skk-setup) "." SKK_PACKAGE_LISPDIR))
 
 (defun SKK-MK-texinfo-format (targets)
   (let (

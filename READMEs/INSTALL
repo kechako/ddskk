@@ -1,8 +1,8 @@
 -*- outline -*-
 
-             $Date: 1999/11/28 05:55:27 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
+             $Date: 2000/04/26 00:41:36 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
                                                          　　　　 <minakaji@pdx.ne.jp> 
-	     $Id: INSTALL,v 1.17.4.1 1999/11/28 05:55:27 minakaji Exp $ 
+	     $Id: INSTALL,v 1.17.4.2 2000/04/26 00:41:36 minakaji Exp $ 
 
 * APEL 
 
@@ -66,6 +66,15 @@ On those Emacsen pcustom.el will find that you do not have a custom
 package, and require tinycustom.el, so you have to do nothing.  After
 loading tinycustom.el, all `defcustom's defined in SKK package will be
 equal to `defvars'.
+
+* Get dictionaries and copy them to ./dic subdirectory.
+
+If you do not have SKK dictionaries, get them from 
+
+  http://openlab.ring.gr.jp/skk/dic-ja.html
+
+and copy them ./dic subdirectory.  You don't have to get all size of
+dictionaries.  Maybe you want one of them.
 
 * Edit SKK-CFG.
 
@@ -132,5 +141,11 @@ Many variables/functions names have been changed.  You are strongly
 recommended to load skk-obsolete.el and
 
     M-x skk-obsolete-check-all-files.
+
+* Easy setup
+
+You can easily setup .emacs.  Put the following form in your .emacs.
+
+   (require 'skk-setup)
 
 [End of INSTALL]

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.52 2000/10/29 21:11:31 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.53 2000/10/30 11:15:04 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/29 21:11:31 $
+;; Last Modified: $Date: 2000/10/30 11:15:04 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2502,11 +2502,11 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
     ;;"$B9aNI='(B($BD.(B)"
     ;;"$B%+%i%9(B ($B1((B)"
     ;;"$B%+%i%9(B(Maria Callas)"
-    ;;("MYPAEDIA" exact exact prefix t 
-    ;; ("\\([^ ]+\\)(.+)$\\|.+ (\\([^ ]+\\))$\\|^\\([^ ()]+\\)$" .
-    ;;  (cond ((match-beginning 1) 1) ((match-beginning 2) 2) ((match-beginning 3) 3)))
-    ;; nil nil)
-    ;;  mypaedia-fpw $B$+$i@8@.$7$?(B PC Success $BHG%^%$%Z%G%#%"(B
+    ("MYPAEDIA" exact exact prefix t 
+     ("\\([^ ]+\\)(.+)$\\|.+ (\\([^ ]+\\))$\\|^\\([^ ()]+\\)$" .
+      (cond ((match-beginning 1) 1) ((match-beginning 2) 2) ((match-beginning 3) 3)))
+     nil nil)
+    ;;  mypaedia-fpw $B$+$i@8@.$7$?(B PC Success $BHG%^%$%Z%G%#%"(B (FreePWING $B<-=q(B)
     ;; "$BBgOB74;3(B [$B$d$^$H$3$*$j$d$^(B] ($B;T(B)"
     ;; "$B%"%$%s%7%e%?%$%s(B (Albert Einstein)")
     ;; "$B%o%7%s%H%s(B (Washington) ($B=#(B)"
@@ -2515,10 +2515,10 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
     ;; "$B9aNI='(B [$B$+$i$9(B] ($BD.(B)"
     ;; "$B%+%i%9(B ($B1((B) [$B%+%i%9(B]"
     ;; "$B%+%i%9(B (Maria Callas)"
-    ("MYPAEDIA" exact exact prefix t 
-     ("^\\([^ ]+\\) \\[.+\\] (.+)$\\|^[^ ]+ (\\(.+\\)) \\[.+\\]$\\|^\\([^][() ]+\\)\\( .+\\)?$" .
-      (cond ((match-beginning 1) 1) ((match-beginning 2) 2) ((match-beginning 3) 3)))
-     nil nil)
+    ;;("MYPAEDIA" exact exact prefix t 
+    ;; ("^\\([^ ]+\\) \\[.+\\] (.+)$\\|^[^ ]+ (\\(.+\\)) \\[.+\\]$\\|^\\([^][() ]+\\)\\( .+\\)?$" .
+    ;;  (cond ((match-beginning 1) 1) ((match-beginning 2) 2) ((match-beginning 3) 3)))
+    ;; nil nil)
     ;; $B%K%e!<%"%s%+!<1QOB(B "$B$"$+#2(B $B9$(B"
     ("NEWANC" exact exact prefix t ("[$B#0(B-$B#9(B]* *\\([^ ]+\\)$" . 1) nil nil)
     ;; "$B!!$"$+(B <scud$B#2(B>", "$B!!!V$"$+!W(B <rust>"

@@ -1,5 +1,8 @@
 2000-10-30  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk-vars.el (skk-lookup-option-alist): Use "MYPAEDIA" spec of
+	「辞・典・盤」 version MYPAEDIA.
+
 	* skk-annotation.el (skk-nunion): New advice.
 
 2000-10-29  Mikio Nakajima  <minakaji@osaka.email.ne.jp>

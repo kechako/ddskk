@@ -244,7 +244,7 @@ from DIR-FILE; don't insert any new entries."
       (unless (let ((case-fold-search t))
 		(and (re-search-forward "^\037" nil t)
 		     (re-search-forward "Node:.*Top" nil t)
-		     (re-search-forward "^* Menu:" nil t)))
+		     (re-search-forward "^\\* Menu:" nil t)))
 	(unless (= 0 (buffer-size))
 	  (install-info-write-region (point-min) (point-max) (concat dir "~")))
 	(erase-buffer)

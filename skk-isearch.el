@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.23 2000/07/18 15:33:27 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.24 2000/08/20 04:36:05 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/18 15:33:27 $
+;; Last Modified: $Date: 2000/08/20 04:36:05 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -436,13 +436,21 @@ If the current mode is different from previous, remove it first."
 	(if (skk-isearch-conversion-active-p)
 	    (prog1
 		t
-	      (if (string= skk-prefix "")
-		  ;; now, we can't pass the universal argument within the
-		  ;; isearch-mode.  so hard code the value `1'.
-		  (delete-backward-char 1)
-		(skk-erase-prefix 'clean))
-	      (setq skk-isearch-incomplete-message (buffer-string))
-	      (skk-isearch-incomplete-message))))
+	      (cond
+	       ((save-excursion
+		  (condition-case nil (goto-char (point-max)) (error))
+		  (>= skk-henkan-start-point (point)))
+		(setq skk-henkan-count 0)
+		(skk-kakutei)
+		(isearch-message))
+	       (t
+		(if (string= skk-prefix "")
+		    ;; now, we can't pass the universal argument within the
+		    ;; isearch-mode.  so hard code the value `1'.
+		    (delete-backward-char 1)
+		  (skk-erase-prefix 'clean))
+		(setq skk-isearch-incomplete-message (buffer-string))
+		(skk-isearch-incomplete-message))))))
       (let ((str (skk-isearch-mode-string)))
 	(mapcar
 	 (function (lambda (cmd)

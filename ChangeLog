@@ -1,3 +1,16 @@
+1999-11-22  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-katakana-region): Use `skk-search-and-replace'.
+	(skk-hiragana-region): Ditto.
+	(skk-jisx0208-latin-region): Ditto.
+	(skk-latin-region): Ditto.
+
+	* skk-jisx0201.el (skk-jisx0201-search-and-replace): Moved to
+	skk.el and renamed to `skk-search-and-replace'.
+	(skk-hiragana-to-jisx0201-region): Use `skk-search-and-replace'.
+	Do not use `identity' to return just a string.
+	(skk-katakana-to-jisx0201-region): Ditto.
+
 1999-11-22  Takao KAWAMURA  <kawamura@debian.org>
 
 	* SKK-MK (SKK_MODULES): Bound `lookup-byte-compile' to t when

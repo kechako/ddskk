@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.3 1999/11/21 12:51:58 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.4 1999/11/22 11:15:58 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/21 12:51:58 $
+;; Last Modified: $Date: 1999/11/22 11:15:58 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -82,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/21 12:51:58 $")
+      (let* ((raw-date "$Date: 1999/11/22 11:15:58 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -90,7 +90,7 @@
             (setq month (substring month (match-end 0))) )
         (if (string-match "^0" date)
             (setq date (substring date (match-end 0))) )
-        (message "SKK version Daredevil %s, %s  of %s, APEL inside"
+        (message "SKK version Daredevil %s, %s of %s, APEL inside"
                  skk-version skk-codename
                  (concat (car (rassoc month skk-month-alist))
                          " " date ", " year ))))))
@@ -3149,31 +3149,12 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 る。
 引数の START と END は数字でもマーカーでも良い。"
   (interactive "*r\nP")
-  (skk-save-point
-   (let (katakana)
-     (save-match-data
-       (goto-char start)
-       (while (re-search-forward  "[ぁ-ん]+" end 'noerror)
-	 (setq katakana
-	       (skk-hiragana-to-katakana
-		(buffer-substring-no-properties (match-beginning 0)
-						(match-end 0) )))
-	 (backward-char (skk-str-length katakana))
-	 ;; firstly insert a new string, secondly delete an old string to save
-	 ;; the cursor position.
-	 (insert-and-inherit katakana)
-	 (delete-region (+ (match-beginning 0) (length katakana))
-			(+ (match-end 0) (length katakana)) ))
-       (if vcontract
-	   (progn
-	     (goto-char start)
-	     (while (re-search-forward  "ウ゛" end 'noerror)
-	       (backward-char (skk-str-length "ウ゛"))
-	       (let ((vu-len (length "ヴ")))
-		 (insert-and-inherit "ヴ")
-		 (delete-region (+ (match-beginning 0) vu-len)
-				(+ (match-end 0) vu-len) )))))))))
-
+  (if vcontract
+      (skk-search-and-replace
+       start end "う゛" (lambda (matched) "ヴ") ))
+  (skk-search-and-replace
+   start end "[ぁ-ん]+" 
+   (lambda (matched) (skk-hiragana-to-katakana matched)) ))
 
 (defun skk-hiragana-region (start end &optional vexpand)
   "リージョンのカタカナをひらがなに変換する。
@@ -3182,61 +3163,49 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 \"ヵ\" と \"ヶ\" は変更されない。この 2 つの文字は対応するひらがながないので、カ
 タカナとしては扱われない。"
   (interactive "*r\nP")
-  (skk-save-point
-   (let (hiragana)
-     (save-match-data
-       (goto-char start)
-       (while (re-search-forward  "[ァ-ン]+" end 'noerror)
-	 (setq hiragana
-	       (skk-katakana-to-hiragana
-		(buffer-substring-no-properties (match-beginning 0)
-						(match-end 0) )))
-	 (backward-char (skk-str-length hiragana))
-	 ;; firstly insert a new string, secondly delete an old string to save
-	 ;; the cursor position.
-	 (insert-and-inherit hiragana)
-	 (delete-region (+ (match-beginning 0) (length hiragana))
-			(+ (match-end 0) (length hiragana)) ))
-       (if vexpand
-	   (progn
-	     (goto-char start)
-	     (while (re-search-forward  "ヴ" end 'noerror)
-	       (backward-char (skk-str-length "ヴ"))
-	       (insert-and-inherit "う゛")
-	       (let ((vu-len (length "う゛")))
-		 (delete-region (+ (match-beginning 0) vu-len)
-				(+ (match-end 0) vu-len) )))))))))
+  (if vexpand
+      (skk-search-and-replace
+       start end "ヴ" (lambda (matched) "う゛") ))
+  (skk-search-and-replace
+   start end "[ァ-ン]+" 
+   (lambda (matched) (skk-katakana-to-hiragana matched)) ))
 
 (defun skk-jisx0208-latin-region (start end)
   "リージョンの ascii 文字を対応する全角英文字に変換する。"
   (interactive "*r")
-  (skk-save-point
-   (save-match-data
-     (goto-char end)
-     (while (re-search-backward "[ -~]" start 'noerror)
-       ;; firstly insert a new char, secondly delete an old char to save
-       ;; the cursor position.
-       (let* ((c (aref skk-default-jisx0208-latin-vector (following-char)))
-	      (c-len (length c)) )
-	 (insert-and-inherit c)
-	 (delete-region (+ (match-beginning 0) c-len)
-			(+ (match-end 0) c-len) ))))))
+  (skk-search-and-replace
+   start end "[ -~]" 
+   (lambda (matched)
+     (aref skk-default-jisx0208-latin-vector (string-to-char matched)) )))
 
 (defun skk-latin-region (start end)
   ;; リージョンの全角英数字を対応する ascii 文字に変換する。
-  ;; egg.el 3.09 の hankaku-region を参考にした。
   (interactive "*r")
-  (skk-save-point
-   (save-match-data
-     (let (val)
-       (goto-char end)
-       (while (re-search-backward "\\cS\\|\\cA" start 'noerror)
-	 (setq val (skk-jisx0208-to-ascii (char-to-string (following-char))))
-	 (if val
-	     (progn
-	       (insert-and-inherit val)
-	       (delete-region (+ (match-beginning 0) 1)
-			      (+ (match-end 0) 1) ))))))))
+  (skk-search-and-replace
+   start end "\\cS\\|\\cA" ; "゛" にマッチしちゃう...
+   (lambda (matched)
+     (let ((ascii (skk-jisx0208-to-ascii matched)))
+       (or ascii matched) ))))
+
+(defun skk-search-and-replace (start end regexp func)
+  (let (matched replace)
+    (save-match-data
+      (skk-save-point
+       ;; END may be changed when length of MATCHED and one of REPLACE
+       ;; are different.
+       (setq end (set-marker (make-marker) end))
+       (goto-char start)
+       (while (re-search-forward regexp end 'noerror)
+	 (setq matched (buffer-substring-no-properties
+			(match-beginning 0) (match-end 0) )
+	       replace (funcall func matched) )
+	 (backward-char (skk-str-length matched))
+	 ;; firstly insert a new string, secondly delete an old string to save
+	 ;; the cursor position.
+	 (insert-and-inherit replace)
+	 (delete-region (+ (match-beginning 0) (length replace))
+			(+ (match-end 0) (length replace)) ))
+       (set-marker end nil) ))))
 
 (defun skk-katakana-henkan (arg)
   "▽モードであれば、リージョンのひらがなをカタカナに変換する。

@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-CFG,v 1.10.4.1 1999/11/22 04:51:58 minakaji Exp $
-;; Last Modified: $Date: 1999/11/22 04:51:58 $
+;; Version: $Id: SKK-CFG,v 1.10.4.2 1999/11/22 11:15:58 minakaji Exp $
+;; Last Modified: $Date: 1999/11/22 11:15:58 $
 
 ;; Commentary
 ;;
@@ -52,7 +52,7 @@
 ;; APEL が APEL の提供する標準のインストール方法によりインストールされている場合は、指定
 ;; の必要がない (skk-lookup.el など外部プログラムを require する必要があるときは、この
 ;; 変数を利用して
-(setq VERSION_SPECIFIC_LISPDIR "/usr/local/lib/xemacs/site-lisp/lookup")
+;;   (setq VERSION_SPECIFIC_LISPDIR "/usr/local/lib/xemacs/site-lisp/lookup")
 ;; などとしても良い。
 ;; (setq VERSION_SPECIFIC_LISPDIR
 ;;       (or (getenv "VERSION_SPECIFIC_LISPDIR")

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.5 1999/11/22 16:01:55 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.6 1999/11/23 03:00:56 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/22 16:01:55 $
+;; Last Modified: $Date: 1999/11/23 03:00:56 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -82,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/22 16:01:55 $")
+      (let* ((raw-date "$Date: 1999/11/23 03:00:56 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -3504,7 +3504,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 		   (skk-abbrev-mode-string . ("--aあ:" . " aあ")) ))
 	 (static-cond
 	  ((eq skk-emacs-type 'xemacs)
-	   (or (memq 'skk-input-mode-string default-mode-line-format)
+	   (or (memq 'skk-input-mode-string default-modeline-format)
 	       (setq-default default-modeline-format
 			     (append '("" skk-input-mode-string)
 				     default-modeline-format) ))

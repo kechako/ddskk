@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.1 1999/11/22 11:15:58 minakaji Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.2 1999/11/23 03:00:56 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 1999/11/22 11:15:58 $
+;; Last Modified: $Date: 1999/11/23 03:00:56 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -652,7 +652,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。" )
 		   (skk-abbrev-mode-string . ("--aあ:" . " aあ"))
 		   (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201")) ))
 	 (cond ((featurep 'xemacs)
-		(or (memq 'skk-input-mode-string default-mode-line-format)
+		(or (memq 'skk-input-mode-string default-modeline-format)
 		    (setq-default default-modeline-format
 				  (append '("" skk-input-mode-string)
 					  default-modeline-format) ))

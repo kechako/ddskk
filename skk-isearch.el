@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.14 1999/12/15 12:14:18 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.15 1999/12/16 17:16:25 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/15 12:14:18 $
+;; Last Modified: $Date: 1999/12/16 17:16:25 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -97,6 +97,10 @@
   "Non-nil if skk is jisx0208 latin (zenkaku) input mode."
   skk-jisx0208-latin-mode )
 
+(defsubst skk-isearch-skk-abbrev-mode-p ()
+  "Non-nil if skk is Abbrev mode."
+  skk-abbrev-mode )
+
 (defsubst skk-isearch-skk-turn-on-jix0208-latin-mode ()
   "Set current skk mode to jisx0208 latin (zenkaku) input mode."
   (skk-jisx0208-latin-mode-on) )
@@ -116,6 +120,7 @@
 	((skk-isearch-skk-katakana-mode-p) 'katakana)
 	((skk-isearch-skk-hiragana-mode-p) 'hiragana)
 	((skk-isearch-skk-jisx0208-latin-mode-p) 'jisx0208-latin)
+	((skk-isearch-skk-abbrev-mode-p) 'abbrev)
 	(t 'latin)))
 
 (defun skk-isearch-set-initial-mode (mode)
@@ -505,20 +510,23 @@ If the current mode is different from previous, remove it first."
 ;; Advice.
 ;;
 
-(defadvice isearch-repeat (around skk-isearch-ad activate preactivate)
+(defadvice isearch-repeat (after skk-isearch-ad activate preactivate)
   "`isearch-message' を適切に設定する。"
-  (cond ((equal isearch-string "")
-	 ad-do-it
-	 (setq isearch-message
-	       (concat
-		(skk-isearch-mode-string)
-		(mapconcat 'isearch-text-char-description isearch-string "")))
-	 (setq isearch-cmds (cdr isearch-cmds))
-	 (isearch-push-state)
-	 (isearch-update))
-	(t
-	 ad-do-it)))
+  (unless (string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
+			isearch-message)
+    (setq isearch-message
+	  (concat
+	   (skk-isearch-mode-string)
+	   (mapconcat 'isearch-text-char-description isearch-string "")))
+    (setq isearch-cmds (cdr isearch-cmds))
+    (isearch-push-state)
+    (isearch-update)))
 
+(defadvice isearch-edit-string (before skk-isearch-ad activate preactivate)
+  "`isearch-message' を適切に設定する。"
+  (when (string-match (concat "^" (regexp-quote (skk-isearch-mode-string)))
+		      isearch-message)
+    (setq isearch-message (substring isearch-message (match-end 0)))))
 
 (put 'skk-isearch-wrapper 'isearch-command t)
 (put 'skk-isearch-keyboard-quit 'isearch-command t)

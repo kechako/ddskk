@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.91 2000/11/08 15:43:18 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.92 2000/11/09 08:22:06 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/11/08 15:43:18 $
+;; Last Modified: $Date: 2000/11/09 08:22:06 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -1546,7 +1546,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 	 (setq n (skk-henkan-show-candidate-subr candidate-keys henkan-list))
 	 (if (> n 0)
 	     (condition-case nil
-		 (let* ((event (skk-read-event))
+		 (let* ((event (next-command-event))
 			(char (event-to-character event))
 			(key (static-cond
 			      ((eq skk-emacs-type 'xemacs)
@@ -1734,8 +1734,11 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 			  skk-read-from-minibuffer-function)
 		     (funcall skk-read-from-minibuffer-function))
 		 (static-when (memq skk-emacs-type '(nemacs mule1))
+		   ;; Emacs 18 では minibuffer-setup-hook が効かないので、直接
+		   ;; skk-mode を起動する。keymap も適切に与える必要がある。
 		   (with-current-buffer
-		       (get-buffer-create (format " *Minibuf-%d*" (minibuffer-depth)))
+		       (get-buffer-create
+			(format " *Minibuf-%d*" (minibuffer-depth)))
 		     (skk-j-mode-on))
 		   (append skk-j-mode-map (cdr minibuffer-local-map)))))
         (quit
@@ -3670,7 +3673,8 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	 nil)
 	((string= okurigana "ん")
 	 "n")
-	((string= okurigana "っ")
+	((and (string= okurigana "っ")
+	      (not (string= skk-henkan-okurigana "っ")))
 	 (aref skk-kana-rom-vector
 	       ;; assume the character is hiragana of JIS X 0208.
 	       (static-cond

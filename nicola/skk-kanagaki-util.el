@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/11/07 10:10:14 $
+;; Last Modified: $Date: 2000/11/08 09:32:30 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -30,6 +30,7 @@
 ;;; Code:
 
 (eval-when-compile
+  (require 'cl)
   (require 'static))
 
 ;; Variables.
@@ -53,6 +54,7 @@
 
 ;; Macros
 
+;;;###autoload
 (defmacro skk-kanagaki-help-1 (bufname title list)
   (`
    (let ((buf (get-buffer-create (, bufname))))
@@ -87,9 +89,9 @@
 ;;;###autoload
 (put 'skk-kanagaki-call-xmodmap 'lisp-indent-function 1)
 
+;;;###autoload
 (defmacro skk-kanagaki-call-xmodmap (string &rest form)
   ;; STRING の内容を xmodmap に渡す。成功したら FORM を実行する。
-  ;; macro である必然性ゼロ。ひとつないと寂しいから…
   (list
    'let '((x (eq window-system 'x))
 	  (prog (exec-installed-p "xmodmap"))
@@ -114,23 +116,21 @@
     '(t
       (message "xmodmap の呼び出しに失敗しました")))))
 
-
-;; Inline functions.
-
-(defsubst skk-kanagaki-sit-for (seconds &optional nodisplay)
-  (static-cond
-   ((memq skk-emacs-type '(nemacs mule1 xemacs))
-    (sit-for seconds nodisplay))
+;;;###autoload
+(defmacro skk-kanagaki-sit-for (seconds &optional nodisplay)
+  (case skk-emacs-type
+   ((nemacs mule1 xemacs)
+    (` (sit-for (, seconds) (, nodisplay))))
    (t
-    (sit-for seconds nil nodisplay))))
+    (` (sit-for (, seconds) nil (, nodisplay))))))
 
-(defsubst skk-kanagaki-make-string (n str)
-  (static-cond
-   ((memq skk-emacs-type '(xemacs mule4 mule5))
-    (make-string n (string-to-char str)))
+;;;###autoload
+(defmacro skk-kanagaki-make-string (n str)
+  (case skk-emacs-type
+   ((xemacs mule4 mule5)
+    (` (make-string (, n) (string-to-char (, str)))))
    (t
-    (mapconcat 'identity (make-vector n str) ""))))
-
+    (` (mapconcat 'identity (make-vector (, n) (, str)) "")))))
 
 ;; Functions.
 

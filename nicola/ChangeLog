@@ -1,3 +1,10 @@
+2000-11-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-kanagaki.el: Modify comments.
+
+	* skk-kanagaki-util.el (skk-kanagaki-sit-for,
+	skk-kanagaki-make-string): Redefine as macros.
+
 2000-11-07  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* *: From "experimental/nicola" to "nicola".

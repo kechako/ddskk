@@ -1,5 +1,34 @@
 1999-12-13  FURUE Hideyuki  <furue@kke.co.jp>
 
+	* skk-cursor.el (skk-cursor-current-color): Change order again.
+	(keyboard-quit): New advice.
+	(newline): Revive advice.
+	(skk-latin-mode): Ditto.
+	(skk-jisx0208-latin-mode): Ditto.
+	(skk-abbrev-mode): Ditto.
+	(skk-auto-fill-mode): Ditto.
+	(skk-toggle-kana): Ditto.
+	(skk-kakutei): Ditto.
+	(skk-save-jisyo-original): Ditto.
+	(skk-katakana-region): Ditto.
+	(skk-hiragana-region): Ditto.
+	(skk-jisx0208-latin-region): Ditto.
+	(skk-latin-region): Ditto.
+	(skk-jisx0201-region): Ditto.
+	(skk-gyakubiki-message): Ditto.
+	(skk-gyakubiki-katakana-region): Ditto.
+	(skk-gyakubiki-katakana-message): Ditto.
+	(skk-hurigana-region): Ditto.
+	(skk-hurigana-message): Ditto.
+	(skk-hurigana-katakana-region): Ditto.
+	(skk-romaji-region): Ditto.
+	(skk-romaji-message): Ditto.
+	(skk-delete-backward-char): Ditto.
+	(skk-start-henkan): Ditto.
+	(force-mode-line-update): Remove advice.
+
+1999-12-13  FURUE Hideyuki  <furue@kke.co.jp>
+
 	* skk-comp.el (skk-completion-original): Bug fixed.
 	(skk-previous-completion-original): Ditto.
 

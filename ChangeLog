@@ -1,3 +1,7 @@
+2000-01-29   Daiki Ueno  <ueno@ueda.info.waseda.ac.jp>
+
+	* skk-macs.el (skk-charsetp): Rearrange conditionals.
+
 2000-01-28  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk.el (skk-e18-setup): Add `skk-abbrev-mode-map'.

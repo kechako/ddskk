@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-annotation.el,v 1.1.2.4 2000/10/29 00:16:51 minakaji Exp $
+;; Version: $Id: skk-annotation.el,v 1.1.2.5 2000/10/29 08:19:04 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 27, 2000.
-;; Last Modified: $Date: 2000/10/29 00:16:51 $
+;; Last Modified: $Date: 2000/10/29 08:19:04 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -48,7 +48,7 @@
     nil
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-c\C-c" 'skk-annotation-save-and-quit)
-    (define-key map "\C-c\C-k" 'skk-annotation-quit)
+    (define-key map "\C-c\C-k" 'skk-annotation-kill)
     (setq skk-annotation-mode-map map)))
 
 (or (assq 'skk-annotation-mode minor-mode-alist)
@@ -169,7 +169,7 @@ no-previous-annotation $B$r;XDj$9$k$H(B \(C-u M-x skk-annotation-add $B$G;XDj
 			  ", ")
 
 	       (mapconcat 'key-description
-			  (where-is-internal 'skk-annotation-quit
+			  (where-is-internal 'skk-annotation-kill
 					     skk-annotation-mode-map)
 			  ", ")))))
 

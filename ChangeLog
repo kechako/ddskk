@@ -1,5 +1,7 @@
 2000-10-29  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* experimental/skk-annotation.el (skk-annotation-add): Bug fixed.
+	
 	* experimental/skk-annotation.el (skk-annotation-mode-map): Change
 	key bind skk-annotation-quit to "\C-c\C-k".
 	(skk-annotation-add): Document updated.  Use `skk-annotation-setup'.

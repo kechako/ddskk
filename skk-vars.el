@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.19 2000/01/28 05:21:42 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.20 2000/01/29 19:15:33 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/28 05:21:42 $
+;; Last Modified: $Date: 2000/01/29 19:15:33 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1100,8 +1100,7 @@ skk-comp.el $B0J30$NJd405!G=$rMxMQ$G$-$k$h$&$K4X?t$r(B funcall $B$9$k7A$K$7$F
   :type 'hook
   :group 'skk-comp)
 
-(defcustom skk-use-color-cursor (and (not (eq skk-emacs-type 'nemacs))
-				     (not (eq system-type 'ms-dos))
+(defcustom skk-use-color-cursor (and (not (memq skk-emacs-type '(ms-dos nemacs mule1)))
 				     window-system (fboundp 'x-display-color-p)
 				     (x-display-color-p))
   "*Non-nil $B$G$"$l$P!"(BSKK $B%b!<%I$NF~NO%b!<%I$K1~$8$F%+!<%=%k$K?'$rIU$1$k!#(B"
@@ -1401,8 +1400,7 @@ nil $B$G$"$l$P!"I=<($7$J$$!#(B"
   :type 'boolean
   :group 'skk-cursor)
 
-(defcustom skk-cursor-change-width (and (not (eq skk-emacs-type 'nemacs))
-					(not (eq system-type 'ms-dos))
+(defcustom skk-cursor-change-width (and (not (memq skk-emacs-type '(ms-dos nemacs mule1)))
 					window-system)
   "*Non-nil $B$G$"$l$P!"(BOvwrt $B%^%$%J!<%b!<%I;~$K%+!<%=%k$NI}$r=L$a$k!#(B"
   :type 'boolean

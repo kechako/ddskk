@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.45 2000/01/29 18:56:51 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.46 2000/01/29 19:15:33 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/29 18:56:51 $
+;; Last Modified: $Date: 2000/01/29 19:15:33 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -59,7 +59,7 @@
 (require 'alist)
 ;; Elib 1.0 is required.
 (require 'queue-m)
-;; Nemacs.
+;; Emacs 18.
 (static-when (= 18 emacs-major-version) (require 'skk-e18))
 ;; Emacs standard library.
 (require 'advice)
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/29 18:56:51 $")
+      (let* ((raw-date "$Date: 2000/01/29 19:15:33 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -442,7 +442,7 @@ dependent."
 	  (skk-regularize)
           (setq skk-mode-invoked t)))
     ;; 以下は skk-mode に入るたびに毎度コールされるコード。
-    (static-if (eq skk-emacs-type 'nemacs) (skk-e18-setup))
+    (static-if (memq skk-emacs-type '(nemacs mule1)) (skk-e18-setup))
     (and (or skk-use-color-cursor skk-cursor-change-width)
 	 (require 'skk-cursor))
     (and skk-use-viper (require 'skk-viper))
@@ -606,7 +606,7 @@ dependent."
         ;; no alternative commands.  may be invoked by M-x.
         nil
       (static-if (not (memq skk-emacs-type '(nemacs mule1)))
-	  (let (skk-mode skk-latin-mode skk-j-mode skk-abbrev-mode 
+	  (let (skk-mode skk-latin-mode skk-j-mode skk-abbrev-mode
 			 skk-jisx0208-latin-mode command)
 	    ;; have to search key binding after binding 4 minor mode flags to nil.
 	    (setq command (key-binding keys))

@@ -1,3 +1,36 @@
+1999-11-28  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-study.el (skk-study-file-format-version): Change version
+	number to string.
+
+	* SKK-MK (SKK_PACKAGE_NOT_USE): New constant.
+	(SKK_DAREDEVIL_NOT_USE): Ditto.
+	(SKK-MK-install): Make directories, SKK_LISPDIR, SKK_DATADIR and 
+	SKK_INFODIR if they do not exist.
+	Remove SKK_DAREDEVIL_NOT_USE from SKK_MODULES and delete related
+	files.
+	(SKK-MK-install-package): Remove SKK_PACKAGE_NOT_USE and
+	SKK_DAREDEVIL_NOT_USE from SKK_MODULES and delete related files.
+
+	* doc/skk.texi (Makefileの編集とインストール): Doc fixed.
+
+	* skk-tut.el (skktut-end-tutorial): Refer to `skk-branch-name',
+	`skk-ml-command-address' and `skk-ml-address'. Doc fixed.
+
+	* skk.el (skk-version): Refer to `skk-branch-name'.
+	(skk-%-to-%%): Removed.
+
+	* skk-vars.el (skk-branch-name): New constant.
+	* skk-vars.el (skk-ml-command-address): New constant.
+	(skk-codename): Contain rail company name.
+
+1999-11-28  FURUE Hideyuki  <furue@kke.co.jp>
+	
+	* skk-num.el (skk-num-convert): Bug fixed.
+	* skk.el (skk-henkan-show-candidates): Ditto.
+	(skk-henkan-show-candidate-subr): Do not use `skk-%-to-%%'.
+	* skk-kcode.el (skk-char-to-hex): Bug fixed.
+	
 1999-11-25  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-jisx0201.el (skk-setup-modeline): Make sure, under XEmacs,
@@ -134,6 +167,13 @@
 
 	* skk-abbrev.el (skk-completion-original): Bug fixed.
 
+1999-11-09  Shuhei KOBAYASHI <shuhei@aqua.ocn.ne.jp>
+	
+	* skk-look.el (skk-look): Use copy-sequence instead of `copy-list'
+	not to depend on CL package on FSF Emacs.
+	* skk-num.el (skk-num-flatten-list): Do not use `mapcan' not to
+	depend on CL package on FSF Emacs.
+	
 1999-11-09  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-develop.el: Remove def-edebug-spec for `skk-defun-cond',

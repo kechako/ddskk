@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.10 1999/11/27 22:28:09 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.11 1999/11/28 04:53:38 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/27 22:28:09 $
+;; Last Modified: $Date: 1999/11/28 04:53:38 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -47,9 +47,9 @@
 ;;; Code:
 (cond ((or (and (boundp 'epoch::version) epoch::version)
 	   (string< (substring emacs-version 0 2) "18") )
-       (error "Daredevil SKK requires Emacs 19 or later") )
+       (error "%s SKK requires Emacs 19 or later" skk-branch-name) )
       ((not (featurep 'mule))
-       (error "Daredevil SKK requires MULE features") ))
+       (error "%s SKK requires MULE features" skk-branch-name) ))
 
 ;; APEL 9.22 or later required.
 (eval-when-compile (require 'static))
@@ -82,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/27 22:28:09 $")
+      (let* ((raw-date "$Date: 1999/11/28 04:53:38 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -90,8 +90,8 @@
             (setq month (substring month (match-end 0))) )
         (if (string-match "^0" date)
             (setq date (substring date (match-end 0))) )
-        (message "SKK version Daredevil %s, %s of %s, APEL inside"
-                 skk-version skk-codename
+        (message "SKK version %s %s, %s of %s, APEL inside"
+                 skk-branch-name skk-version skk-codename
                  (concat (car (rassoc month skk-month-alist))
                          " " date ", " year ))))))
 
@@ -1372,7 +1372,8 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
                (let* ((event (skk-read-event))
                       (char (event-to-character event))
                       num )
-		 (message "") ; clear out candidates in echo area
+		 (if (eq skk-emacs-type 'xemacs)
+		     (message "")) ; clear out candidates in echo area
                  (if (null char)
                      (skk-unread-event event)
                    (setq key-num-alist (nthcdr (- 7 n) key-num-alist1))
@@ -1418,7 +1419,9 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
                             (setq reverse t
                                   str nil )))
 			 ;; これがないと quit できない。何故？
-			 ((eq char (quit-char)) (signal 'quit nil))
+			 ((and (eq skk-emacs-type 'xemacs)
+			       (eq char (quit-char)))
+			  (signal 'quit nil))
                          (t (skk-message "\"%c\" は有効なキーではありません！"
                                          "\"%c\" is not valid here!"
                                          char )
@@ -1453,13 +1456,12 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
       (setq n 1
             ;; 最初の候補の前に空白をくっつけないように最初の候補だけ先に取り
             ;; 出す。
-            str (concat (car keys) ":" (skk-%-to-%%
-                                        (if (consp (car workinglst))
-                                            (cdr (car workinglst))
-                                          (car workinglst) ))))
+            str (concat (car keys) ":" (if (consp (car workinglst))
+					   (cdr (car workinglst))
+					 (car workinglst) )))
       ;; 残りの 6 つを取り出す。候補と候補の間を空白でつなぐ。
       (while (and (< n 7) (setq cand (nth n workinglst)))
-        (setq cand (skk-%-to-%% (if (consp cand) (cdr cand) cand))
+        (setq cand (if (consp cand) (cdr cand) cand)
               str (concat str "  " (nth n keys) ":" cand)
               n (1+ n) ))
       (message "%s  [残り %d%s]"
@@ -1467,20 +1469,6 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
                (make-string (length skk-current-search-prog-list) ?+) ))
     ;; 表示する候補数を返す。
     n ))
-
-(defun skk-%-to-%% (str)
-  ;; STR 中に % を含む文字があったら、%% にして message でエラーにならないよう
-  ;; にする。
-  (let ((tail str)
-        temp beg end )
-    (save-match-data
-      (while (string-match "%+" tail)
-        (setq beg (match-beginning 0)
-              end (match-end 0)
-              temp (concat temp (substring tail 0 beg)
-                           (make-string (* 2 (- end beg)) ?%) )
-              tail (substring tail end) ))
-      (concat temp tail) )))
 
 (defun skk-truncate-message (l)
   (let* (

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.1 1999/11/25 04:05:59 kawamura Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.2 1999/11/28 04:53:37 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/25 04:05:59 $
+;; Last Modified: $Date: 1999/11/28 04:53:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -931,25 +931,29 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
     (insert
      (if skktut-japanese-tut
 	 (concat "SKK $B%A%e!<%H%j%"%k$O$3$l$G=*$j$G$9!#(B\n\n"
-		 "Daredevil SKK $B$K4X$9$k<ALd!"%3%a%s%H!"(Bbug report $BEy$O(B\n\n"
-		 "\tskk@ring.gr.jp\n\n"
-		 "$BKx$*Aw$j2<$5$$!#$J$*!"$3$N%"%I%l%9$O(BSKK Ring Server Openlab Mailing list\n"
-		 "$B$N%"%I%l%9$G$9!#2sEz$ODL>o$3$N%"%I%l%9$KBP$7$F$J$5$l$k$N$G!"(B\n"
+		 (format "%s SKK $B$K4X$9$k<ALd!"%3%a%s%H!"(Bbug report $BEy$O(B\n\n"
+			 skk-branch-name )
+		 (format "\t%s\n\n" skk-ml-address)
+		 "$BKx$*Aw$j2<$5$$!#$J$*!"$3$N%"%I%l%9$O(B SKK Ring Server Openlab Mailing list\n"
+		 "$B$N%"%I%l%9$G$9!#$I$J$?$G$bEj9F$O$G$-$^$9$,!"%a%s%P!<$K$7$+G[Aw$5$l$J$$$N$G!"(B\n"
                  "$B%a%s%P!<$G$J$$J}$O$=$N;]$rL@5-$7$F%a!<%k$r$*Aw$j$/$@$5$$!#(B\n"
-                 "SKK Ring Server Openlab ML$B$X;22C4uK>$N>l9g$O(B\n\n"
-		 "\tskk-request@ring.gr.jp\n\n"
-		 "$B$XK\J8$K(Bsubscribe$B$H5-$7$?%a!<%k$r$*Aw$j$/$@$5$$(B\n\n"
+                 "SKK Ring Server Openlab ML $B$X;22C4uK>$N>l9g$O(B\n\n"
+		 (format "\t%s\n\n" skk-ml-command-address)
+		 "$B$XK\J8$K(B($BI=Bj$K$G$O$"$j$^$;$s(B) subscribe $B$H5-$7$?%a!<%k$r$*Aw$j$/$@$5$$!#(B\n\n"
 		 "!! $B:G8e$K(B <return> $B%-!<$r2!$7$F$/$@$5$$!#(B" )
        (concat "Now we end the SKK tutorial.\n\n"
-	       "Please send comments, questions and bug reports on Daredevil SKK to:\n\n"
-	       "\tskk@ring.gr.jp\n\n"
-	       "This is the address of the SKK Ring Server Openlab Mailing list,\n"
-	       "and normally the responces will be sent only to the ML members.\n"
+	       (format 
+		"Please send comments, questions and bug reports on %s SKK to:\n\n"
+		skk-branch-name )
+	       (format "\t%s\n\n" skk-ml-address)
+	       "This is the address of the SKK Ring Server Openlab Mailing list.\n"
+	       "Anyone can post, but responces will be sent only to the ML members.\n"
                "So, if you are not a ML member, please say so in your mail.\n"
                "If you are interested in joining the SKK Ring Server Openlab ML,\n"
-               "send mail to skk-request@ring.gr.jp with the following command\n"
-               "in the body of your email message:\n\n"
-	       "\tunsubscribe\n\n"
+               (format "send mail to %s with the following command\n"
+		       skk-ml-command-address )
+               "in the body of your email message (not in subject):\n\n"
+	       "\tsubscribe\n\n"
 	       "!! Hit <return> key when you are ready." )))
     (if skk-tut-use-face
 	(save-match-data

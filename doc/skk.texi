@@ -6,13 +6,13 @@
 @c          Yukiyoshi Kameyama <kameyama@@kuis.kyoto-u.ac.jp>
 @c          Mikio Nakajima <minakaji@osaka.email.ne.jp>
 @c  Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-@c  Version: $Id: skk.texi,v 1.9.2.1.2.1 1999/11/14 15:11:47 minakaji Exp $
+@c  Version: $Id: skk.texi,v 1.9.2.1.2.2 1999/11/28 04:55:27 minakaji Exp $
 @c  Keywords: japanese
-@c  Last Modified: $Date: 1999/11/14 15:11:47 $
+@c  Last Modified: $Date: 1999/11/28 04:55:27 $
 @c
 @set EDITION 1.4
 @set SKK-VERSION 10.51
-@set UPDATED $Date: 1999/11/14 15:11:47 $
+@set UPDATED $Date: 1999/11/28 04:55:27 $
 @c @set UPDATED-MONTH Oct 1998
 
 @direntry
@@ -298,7 +298,7 @@ GNU Emacs 20.2$B0J9_!"$b$7$/$O(BXEmacs20.4$B0J9_$G$O!"(Bdefault$B$G$3$N5!G=
 $B$9$k$3$H$,2DG=!#(B
 
 @item
-GNU Emacs 19.30 or later$B%Y!<%9$N(BMule$B$G$O!"(Bdefault$B$G(Bcustom$B$,%P%s%I%k$5$l(B
+GNU Emacs 19.32 or later$B%Y!<%9$N(BMule$B$G$O!"(Bdefault$B$G(Bcustom$B$,%P%s%I%k$5$l(B
 $B$F$$$k$,!"(BSKK$B$N%+%9%?%^%$%:5!G=$,A0Ds$H$7$F$$$k%$%s%?!<%U%'%$%9$r;}$C$F(B
 $B$$$J$$$N$G!"(Bdefault$B$N$^$^$G$O%+%9%?%^%$%:5!G=$,;H$($J$$!#=>$$!"(B
 @samp{ftp://ftp.dina.kvl.dk/pub/Staff/Per.Abrahamsen/custom/}

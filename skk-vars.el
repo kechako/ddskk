@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.3 1999/11/22 09:47:21 kawamura Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.4 1999/11/28 04:53:37 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/22 09:47:21 $
+;; Last Modified: $Date: 1999/11/28 04:53:37 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -53,8 +53,10 @@
 (defconst skk-version "11.1")
 (defconst skk-major-version (string-to-int (substring skk-version 0 2)))
 (defconst skk-minor-version (string-to-int (substring skk-version 3)))
-(defconst skk-codename "Mino-o (Osaka)")
+(defconst skk-branch-name "Daredevil")
+(defconst skk-codename "Mino-o (Hankyu, Osaka)")
 (defconst skk-ml-address "skk@ring.gr.jp")
+(defconst skk-ml-command-address "skk-request@ring.gr.jp")
 (defconst skk-background-mode
   ;; from font-lock-make-faces of font-lock.el  Welcome!
   (cond

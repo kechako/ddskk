@@ -1,7 +1,12 @@
+2000-10-25  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* READMES/FAQ.txt (左手の小指を SHIFT で酷使したくありません。):
+	New question.
+
 2000-10-25  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
-	
+
 	* skk-vars.el (skk-lookup-option-alist): Bug fixed.
-	
+
 2000-10-25  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-vars.el (skk-lookup-option-alist): Bug fixed.

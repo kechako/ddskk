@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/04 15:13:20 $
+;; Last Modified: $Date: 2000/09/05 15:23:20 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -44,9 +44,6 @@
 
 (eval-when-compile
   (require 'skk-kanagaki-util))
-
-(eval-and-compile
-  (autoload 'skk-cursor-set-properly "skk-cursor"))
 
 (require 'skk-kanagaki)
 
@@ -389,7 +386,13 @@ keycode 131 = underscore\n"))
 				(when skk-nicola-use-space-as-rshift
 				  (list " ")))))
 	       (skk-j-mode-on)
-	       (and (featurep 'skk-cursor) (skk-cursor-set-properly)))
+	       (when (skk-color-display-p)
+		 (cond ((eq skk-emacs-type 'xemacs)
+			(set-face-property
+			 'text-cursor 'background skk-cursor-hiragana-color
+			 (current-buffer)))
+		       (t
+			(update-buffer-local-frame-params)))))
 	      (char
 	       (let ((last-command-char ?\ ))
 		 (call-interactively 'self-insert-command t))
@@ -438,16 +441,17 @@ keycode 131 = underscore\n"))
 	      (case this-command
 		(skk-nicola-self-insert-rshift
 		 ;; [右 右]
-		 (cond ((>= skk-nicola-interval 1)
-			;; Emacs 18  で 単独打鍵を 同一キー連続打鍵で代用できる
-			;; ように。
-			(if (or skk-henkan-on skk-henkan-active)
-			    (let ((last-command-char ?\ ))
-			      (skk-kanagaki-insert arg))
-			  (skk-insert-str " ")))
-		       (t
-			(skk-insert-str " ")
-			(skk-insert-str " "))))
+		 (let ((last-command-char ?\ ))
+		   (cond ((or skk-henkan-on skk-henkan-active)
+			  (skk-kanagaki-insert arg)
+			  (skk-kanagaki-insert arg))
+			 (t
+			  (self-insert-command
+			   (if (>= skk-nicola-interval 1)
+			       ;; Emacs 18 で単独打鍵を同一キー連続打鍵で代用で
+			       ;; きるように。
+			       arg
+			     (1+ arg)))))))
 		(skk-nicola-self-insert-lshift
 		 ;; [左 右]
 		 (cond ((and skk-j-mode (not skk-katakana))
@@ -470,7 +474,7 @@ keycode 131 = underscore\n"))
 			(unless (>= skk-nicola-interval 1)
 			  ;; Emacs 18  で単独打鍵を同一キー連続打鍵で代用できる
 			  ;; ように。
-			  (skk-nicola-lshift-function arg)))))
+			  (skk-nicola-lshift-function 1)))))
 		(skk-nicola-self-insert-rshift
 		 ;; [右 左]
 		 (if (and skk-j-mode (not skk-katakana))
@@ -542,8 +546,7 @@ keycode 131 = underscore\n"))
 			     (eq next last-command-char))
 		  ;; Emacs 18 で単独打鍵を同一キー連続打鍵で代用できるように。
 		  (skk-nicola-insert-kana next skk-nicola-plain-rule)))))))))
-  ;; Is it necessary?
-  (and (featurep 'skk-cursor) (skk-cursor-set-properly)))
+  nil)
 
 (defun skk-nicola-insert-kana (char rule &optional arg)
   (let* ((el (cadr (assq char rule)))
@@ -708,13 +711,6 @@ keycode 131 = underscore\n"))
   (defadvice isearch-char-to-string (after skk-nicola-ad activate compile)
     (when (integerp (ad-get-arg 0))
       (setq ad-return-value (skk-char-to-string (ad-get-arg 0))))))
-
-(static-when (eq skk-emacs-type 'xemacs)
-  (defadvice skk-cursor-setup-minibuffer (after skk-nicola-ad activate compile)
-    (when (and (eq this-command 'skk-nicola-self-insert-rshift)
-	       (with-current-buffer (skk-minibuffer-origin)
-		 (or skk-j-mode skk-abbrev-mode)))
-      (skk-cursor-set-color skk-cursor-hiragana-color))))
 
 (static-when (memq skk-emacs-type '(nemacs mule1))
   ;;

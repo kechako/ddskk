@@ -1,9 +1,15 @@
 2000-09-04  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
-	* (Changelog, Changelog.1, Changelog.2, Makefile,
+	* skk-nicola.el (skk-nicola-insert): Sync with a new
+	cursor-controlling functions.
+	Fix the behaviour of right-shift-key simultaneous typing.
+
+2000-09-04  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* Changelog, Changelog.1, Changelog.2, Makefile,
 	NICOLA-DDSKK-CFG, NICOLA-DDSKK-ELS, NICOLA-DDSKK-MK, README.URIs,
 	README.ja, skk-106-jis.el, skk-kanagaki-menu-oe.el,
 	skk-kanagaki-menu.el, skk-kanagaki-util.el, skk-kanagaki.el,
 	skk-nicola-dvorak.el, skk-nicola-jis.el, skk-nicola-us.el,
 	skk-nicola.el, skk-oasys.el, skk-omelet-dvorak.el,
-	skk-omelet-jis.el, skk-omelet-us.el): New files.
+	skk-omelet-jis.el, skk-omelet-us.el: New files.

@@ -71,7 +71,7 @@ LISPDIR=%s\n" PREFIX LISPDIR))))
   (add-to-list 'command-line-args-left ".")
   (Custom-make-dependencies)
 
-  (load "./auto-autoloads.el")
+  (require 'nicola-ddskk-autoloads "./auto-autoloads.el")
   (require 'advice)
   (require 'cl)
   (require 'pcustom)

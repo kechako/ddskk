@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.9 1999/11/25 19:01:02 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.10 1999/11/27 22:28:09 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/25 19:01:02 $
+;; Last Modified: $Date: 1999/11/27 22:28:09 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -82,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/25 19:01:02 $")
+      (let* ((raw-date "$Date: 1999/11/27 22:28:09 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -400,6 +400,9 @@ dependent."
 	      (skk-create-file skk-record-file
 			       "SKK の記録用ファイルを作りました"
 			       "I have created an SKK record file for you" ))
+	  (skk-create-file skk-jisyo
+			   "SKK の空辞書を作りました"
+			   "I have created an empty SKK Jisyo file for you" )
 	  (skk-regularize)
 	  (and (or skk-use-color-cursor skk-cursor-change-width)
 	       (require 'skk-cursor)

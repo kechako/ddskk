@@ -76,6 +76,8 @@ Message-ID: <380bc098380b2426@tkcs11.tkccc.nasda.go.jp>
          (setq skk-large-jisyo "(SKK-JISYOのパス)")
        
 
+  デフォルトでは、SKK-JISYO, skk-tut 等は %PREFIX%\share 以下にイン
+ストールされる。 
   cygwin32などがインストールされていて、Makefile でインストールする
 場合は SKK-CFG にインストール先のディレクトリを指定する必要がある。
 
@@ -157,4 +159,7 @@ Message-ID: <380bc098380b2426@tkcs11.tkccc.nasda.go.jp>
          ;;(add-hook 'isearch-mode-end-hook 'skk-isearch-mode-cleanup)
          (setq skk-large-jisyo "(SKK-JISYOのパス)")
 
+
+  デフォルトでは、SKK-JISYO, skk-tut 等は %PREFIX%\share 以下にイン
+ストールされる。 
 [End of README.win]

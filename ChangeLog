@@ -1,3 +1,7 @@
+2000-08-12  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-vars.el (skk-use-kana-keyboard): Default to nil.
+
 2000-08-11  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* Makefile (tar, snapshot): Fix the problem that the resulting tar

@@ -1,4 +1,12 @@
 2000-10-16  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/README.win (SKK95 (Windows 95/98/NT)): Remove the
+	sentence 「Windows 95 では上記の SKKIME が動作しないためこちらを使
+	用します。」.  SKKIME98 now works on Windows 95 (using Winsock
+	version 1).
+	Updated the link to kmc.
+	(wskkserve): Merged into "skkserve on Windows".
+	(skkserve on Windows): Moved before the section "SKK on Windows".
 	
 	* skk-develop.el (skk-submit-bug-report): Do not put out
 	skk-henkan-face information.

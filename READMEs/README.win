@@ -2,8 +2,8 @@
 
 README.win
 
-$Date: 2000/04/27 03:54:03 $
-$Id: README.win,v 1.1.4.6 2000/04/27 03:54:03 minakaji Exp $
+$Date: 2000/10/16 09:13:34 $
+$Id: README.win,v 1.1.4.7 2000/10/16 09:13:34 minakaji Exp $
 Yuh Ohmura <yutopia@t3.rim.or.jp>
 Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
                　　　　 <minakaji@pdx.ne.jp> 
@@ -16,10 +16,10 @@ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
 
 *** APEL のインストール
 
-まず APELをインストールする。Daredevil SKK では、APEL 9.22以降での動作
-が確認されたが、APEL は Emacs/XEmacs のバージョンアップに合わせて日進
-月歩なので、できるだけ新しいバージョンをインストールすることをお勧めす
-る。
+まず APELをインストールする。Daredevil SKK では、APEL 10.2以降での動作
+が確認されているが、APEL は Emacs/XEmacs のバージョンアップに合わせて
+日進月歩なので、できるだけ新しいバージョンをインストールすることをお勧
+めする。
 
 **** APEL の get
 
@@ -186,6 +186,20 @@ MAKE.BAT を使う時の注意点は、DOSPROMPT のプロパティで、環境変数のメモ
 cygwin32などがインストールされていて、Makefile でインストールする場合は
 SKK-CFG にインストール先のディレクトリを指定する必要がある。
 
+* skkserve on Windows
+
+Windows 上で動作する skkserv には次のようなものがあります。
+
+wskkserve; Windows 上で動作する skkserve です。
+
+  http://member.nifty.ne.jp/Tatari_SAKAMOTO/wskkserv.htm
+
+cygwin が使用できる環境では skkserve を直接コンパイル
+して使用することができます。
+
+また、perl, ruby が使用できるならば、pskkserve や、
+rskkserve も使用できます。
+
 * SKK on Windows
 
 Windows 上で動作する SKK ライクの IME があります。
@@ -195,27 +209,13 @@ Windows 上で動作する SKK ライクの IME があります。
 設定がある程度 elisp でできるようになっていることと、
 SKK と共通の辞書が使用できます。
 
- http://member.nifty.ne.jp/Tatari_SAKAMOTO/index.htm
+  http://member.nifty.ne.jp/Tatari_SAKAMOTO/index.htm
 
 ** SKK95 (Windows 95/98/NT)
 
 アルファステータスです。現在開発が中断しています。
-Windows 95 では上記の SKKIME が動作しないためこちらを
-使用します。
 辞書は SKK と独立で、設定にも難があります。
 
- http://www.kmc.kyoto-u.ac.jp/proj/skk95/
-
-* skkserve on Windows
-
-cygwin が使用できる環境では skkserve を直接コンパイル
-して使用することができます。
-また、perl, ruby が使用できるならば、pskkserve や、
-rskkserve も使用できます。
-
-** wskkserve
-Windows 上で動作する skkserve です。
-
- http://member.nifty.ne.jp/Tatari_SAKAMOTO/wskkserv.htm
+  http://www.kmc.kyoto-u.ac.jp/proj/skk95/
 
 [End of README.win]

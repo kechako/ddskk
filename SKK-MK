@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.33 2000/08/16 09:54:11 czkmt Exp $
-;; Last Modified: $Date: 2000/08/16 09:54:11 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.34 2000/08/16 09:54:50 czkmt Exp $
+;; Last Modified: $Date: 2000/08/16 09:54:50 $
 
 ;; Commentary
 ;;
@@ -599,9 +599,8 @@ SKK tutorials:
 ;;; Code:\n\n")
       (cond
        ((and (condition-case nil
-		 (and
-		   (require 'autoload)
-		   (require 'poem))
+		 (and (require 'autoload)
+		      (require 'poem))
 	       (error))
 	     (fboundp 'generate-file-autoloads))
 	(mapcar

@@ -1,6 +1,6 @@
 -*- mode: outline -*-
 
-	$Id: README.ja,v 1.1.2.2 2000/09/08 17:23:15 czkmt Exp $
+	$Id: README.ja,v 1.1.2.3 2000/09/09 06:45:32 czkmt Exp $
 
 
 このディレクトリには SKK の仮名入力対応コードを置いています。
@@ -195,4 +195,5 @@ http://www.eva.hi-ho.ne.jp/%7Eminoura/kbd/keymap.html
 # eval: (setq font-lock-keywords
 	      (append outline-font-lock-keywords
 		      '(("\\(ht\\|f\\)tp://.+$" 0 'bold))))
+# eval: (set-buffer-modified-p nil)
 # End:

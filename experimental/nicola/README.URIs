@@ -1,6 +1,6 @@
 -*- mode: fundamental -*-
 
-	$Id: README.URIs,v 1.1.2.2 2000/09/08 17:23:15 czkmt Exp $
+	$Id: README.URIs,v 1.1.2.3 2000/09/09 06:45:32 czkmt Exp $
 
 
 o 日本語入力コンソーシアム (NICOLA)
@@ -48,4 +48,5 @@ http://www.fujitsu.co.jp/people/kanda/
 	    (put-text-property (match-beginning 0) (match-end 0)
 			       'mouse-face 'highlight)
 	    (put-text-property (match-beginning 0) (match-end 0) 'face 'bold)))
+# eval: (set-buffer-modified-p nil)
 # End:

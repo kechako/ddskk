@@ -66,4 +66,5 @@ CVS の入手
 	    (put-text-property (match-beginning 0) (match-end 0)
 			       'mouse-face 'highlight)
 	    (put-text-property (match-beginning 0) (match-end 0) 'face 'bold)))
+# eval: (set-buffer-modified-p nil)
 # End:

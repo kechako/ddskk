@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.1 1999/11/17 15:46:33 tsumura Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.2 1999/11/28 13:17:02 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/17 15:46:33 $
+;; Last Modified: $Date: 1999/11/28 13:17:02 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -101,6 +101,10 @@
   (and skk-mode (skk-cursor-set-properly)) )
 
 (defadvice insert-file (after skk-cursor-ad activate)
+  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+  (and skk-mode (skk-cursor-set-properly)) )
+
+(defadvice newline (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (and skk-mode (skk-cursor-set-properly)) )
 
@@ -241,8 +245,21 @@
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (skk-cursor-set-properly) )
 
+(defadvice skk-delete-backward-char (after skk-cursor-ad activate)
+  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+  (skk-cursor-set-properly) )
+
+(defadvice skk-start-henkan (after skk-cursor-ad activate)
+  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+  (skk-cursor-set-properly) )
+
 (add-hook 'after-make-frame-hook 'skk-cursor-set-properly)
-(add-hook 'minibuffer-setup-hook 'skk-cursor-set-properly)
+(add-hook 'minibuffer-setup-hook
+	  (function
+	   (lambda ()
+	     (if (memq this-command '(skk-insert skk-start-henkan))
+		 (skk-cursor-set-properly)
+	       (skk-cursor-set-color skk-cursor-default-color)))))
 (add-hook 'minibuffer-exit-hook 'skk-cursor-set-properly 'append)
 
 (provide 'skk-cursor)

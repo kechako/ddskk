@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.28 2000/09/27 13:42:06 minakaji Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.29 2000/10/12 10:08:20 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/09/27 13:42:06 $
+;; Last Modified: $Date: 2000/10/12 10:08:20 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -355,7 +355,7 @@
 
 (defun skk-jisx0201-insert (&optional arg)
   "SKK JISX0201 モードの文字入力を行なう。"
-  (interactive "p*")
+  (interactive "*p")
   (skk-with-point-move
    (let ((ch last-command-char))
      (cond (
@@ -380,7 +380,14 @@
 		    (delete-region skk-henkan-start-point
 				   (- (point) (length jisx0208)))))
 	      (let ((skk-katakana t)) (skk-start-henkan arg)))
-	    (and skk-use-color-cursor (skk-cursor-set-properly)))
+	    (when skk-use-color-cursor
+		 (static-cond
+		  ((eq skk-emacs-type 'xemacs)
+		   (set-face-property
+		    'text-cursor 'background (skk-cursor-current-color)
+		    (current-buffer)))
+		  (t
+		   (set-buffer-local-cursor-color (skk-cursor-current-color))))))
 	   ;; for completion.
 	   ((and skk-henkan-on (not skk-henkan-active))
 	    (cond ((eq ch skk-try-completion-char)
@@ -621,7 +628,14 @@
       (static-when (eq skk-emacs-type 'xemacs)
 	(let ((cons (rassq 'skk-input-mode-string mode-line-format)))
 	  (and cons (setcar cons skk-xmas-jisx0201-extent))))))
-  (and skk-use-color-cursor (skk-cursor-set-properly)))
+  (when skk-use-color-cursor
+    (static-cond
+     ((eq skk-emacs-type 'xemacs)
+      (set-face-property
+       'text-cursor 'background (skk-cursor-current-color)
+       (current-buffer)))
+     (t
+      (set-buffer-local-cursor-color (skk-cursor-current-color))))))
 
 (defun skk-jisx0201-henkan (arg)
   "▽モードであれば、リージョンのひらがな/カタカナをﾊﾝｶｸｶﾀｶﾅに変換する。

@@ -1,6 +1,15 @@
+2000-10-19  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-leim.el: In "auto-autoloads.el", require "skk-setup".
+
+	* skk-setup.el.in: Override "C-x C-j" under XEmacs.
+
+	* skk.el (skk-save-jisyo-original): Check if `skk-emacs-id-file'
+	exists.
+
 2000-10-19  Tsuyoshi AKIHO  <akiho@media.osaka-cu.ac.jp>
 
- 	* SKK-MK (SKK_LISPDIR) : "make PREFIX=dir install" で PREFIX のと
+	* SKK-MK (SKK_LISPDIR) : "make PREFIX=dir install" で PREFIX のと
 	おりに elisp がインストールされるように修正.
 
 2000-10-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>

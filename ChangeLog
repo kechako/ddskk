@@ -1,5 +1,10 @@
 1999-12-06  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-isearch.el (isearch-repeat): Compile the advice at the
+	compile time.
+
+1999-12-06  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* READMEs/CVS_00readme: New file, whose contents written by
 	酒井 清隆 <ksakai@kso.netwk.ntt-at.co.jp>
 

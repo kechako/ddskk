@@ -1,5 +1,18 @@
 2000-09-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
+	* Makefile (package): New target.
+
+	* SKK-MK (SKK-MK-running-xemacs): Abolish. Check the feature
+	xemacs instead.
+	(SKK_INFOS): Abolish. Stop guessing how many files resulting
+	info will be split into.
+	(SKK_INFO): New variable.
+	(PACKAGE_DATADIR): <= `SKK_PACKAGE_DATADIR'.
+	(PACKAGE_LISPDIR): <= `SKK_PACKAGE_LISPDIR'
+	(SKK_PACKAGE_NOT_USE): Abolish.
+	(SKK-MK-install-package): Use `SKK-MK-compile'.
+	(SKK-MK-generate-autoloads-el): Modify for XEmacs.
+
 	* skk-look.el (skk-look-ispell): Use the original word as well as
 	misses and guesses.
 

@@ -37,13 +37,7 @@
 (defmacro install-info-compressed-name-p (filename)
   (if (not (featurep 'jka-compr))
       nil
-    (` (let ((list jka-compr-compression-info-list)
-	     tag)
-	 (while (and list (not tag))
-	   (when (string-match (aref (car list) 0) (, filename))
-	     (setq tag t))
-	   (setq list (cdr list)))
-	 tag))))
+    (` (jka-compr-get-compression-info (, filename)))))
 
 (defmacro install-info-forward-line (n)
   (` (unless (eq 0 (forward-line (, n)))

@@ -1,5 +1,8 @@
 2000-07-09  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk-setup.el.in (isearch-mode-end-hook): Check if skk-cursor
+	feature is provided or not.
+
 	* SKK-MK (SKK_MODULES): Add skk-cursor3.
 
 2000-07-09  YOSHIZAWA Masahiro <manbou@ceres.dti.ne.jp>

@@ -129,7 +129,7 @@ be applied to `file-coding-system-for-read'."
 		 (save-match-data
 		   (let ((start 0))
 		     (while (string-match "[ァ-ン]" katakana start)
-		       (aset hiragana (match-beginning 0) ?\244)
+		       (aset katakana (match-beginning 0) ?\244)
 		       (setq start (match-end 0)))
 		     katakana)))
 	       ;; end case nemacs

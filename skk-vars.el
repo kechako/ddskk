@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.15 1999/12/27 15:43:11 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.16 1999/12/30 02:06:57 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/27 15:43:11 $
+;; Last Modified: $Date: 1999/12/30 02:06:57 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1392,7 +1392,8 @@ nil であれば、表示しない。"
   :type 'boolean
   :group 'skk-cursor)
 
-(defcustom skk-cursor-change-width (not (eq system-type 'ms-dos))
+(defcustom skk-cursor-change-width (and (not (eq system-type 'ms-dos))
+					window-system)
   "*Non-nil であれば、Ovwrt マイナーモード時にカーソルの幅を縮める。" 
   :type 'boolean
   :group 'skk-cursor)

@@ -4,9 +4,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.4 2000/09/27 13:42:05 minakaji Exp $
+;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.5 2000/10/12 10:07:28 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:05 $
+;; Last Modified: $Date: 2000/10/12 10:07:28 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -131,8 +131,8 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
 					(throw 'tag t))))
 				    sound-alist)))))
 	;;
-	(or (assq 'clink sound-alist)
-	    (load-sound-file "clink" 'clink))))
+	(unless (assq 'clink sound-alist)
+	  (load-sound-file "clink" 'clink))))
     ;;
     (save-match-data
       (condition-case nil
@@ -141,11 +141,9 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
                 skk-mode skk-latin-mode skk-j-mode skk-abbrev-mode
 		skk-jisx0208-latin-mode)
             (while (not quit-flag)
-              (setq mes (skk-current-date t))
+              (setq mes (skk-current-date t)
+		    sec 0)
 	      (message "%s    Hit any key to quit" mes)
-	      (setq sec (static-if (eq skk-emacs-type 'xemacs)
-			    (/ (float 1) (float 200))
-			  0))
               (if time-signal
                   (if (string-match expr1 mes)
                       ;; [7890] $B$N$h$&$K@55,I=8=$r;H$o$:!"(B7 $B$@$1$GA4$F$N%^%7%s$,(B
@@ -169,13 +167,20 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
 			      ;; $B$A$g$C$H$b$?$D$/(B ?
 			      (ding nil 'clink)
 			    (ding)
-			    (unless (sit-for (setq sec (/ (float 1) (float 6))))
+			    (unless (sit-for (setq sec
+						   (+ sec
+						      (/ (float 1) (float 6))))
+					     'nodisplay)
 			      (next-command-event)
 			      (signal 'quit nil))
 			    (ding)))
 			 ((featurep 'lisp-float-type)
 			  (ding)
-			  (unless (sit-for (setq sec (/ (float 1) (float 6))))
+			  (unless (sit-for (setq sec
+						 (+ sec
+						    (/ (float 1) (float 6))))
+					   nil
+					   'nodisplay)
 			    (next-command-event)
 			    (signal 'quit nil))
 			  (ding))
@@ -183,7 +188,11 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
 			  ;; Emacs 18
 			  (ding)
 			  (ding))))))
-	      (unless (sit-for (- 1 sec))
+	      (unless (static-cond
+		       ((memq skk-emacs-type '(nemacs mule1 xemacs))
+			(sit-for (- 1 sec) 'nodisplay))
+		       (t
+			(sit-for (- 1 sec) nil 'nodisplay)))
 		(next-command-event)
 		(signal 'quit nil))))
         (quit

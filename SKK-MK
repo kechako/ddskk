@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.1 1999/11/22 09:46:27 kawamura Exp $
-;; Last Modified: $Date: 1999/11/22 09:46:27 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.2 1999/11/27 22:25:47 minakaji Exp $
+;; Last Modified: $Date: 1999/11/27 22:25:47 $
 
 ;; Commentary
 ;;
@@ -268,6 +268,7 @@ end with `skk'." )
       (make-directory SKK_PACKAGE_DATADIR t) )
   (or (file-exists-p PACKAGE_INFODIR)
       (make-directory PACKAGE_INFODIR t) )
+  (setq SKK_MODULES (delq 'skk-autoloads SKK_MODULES))
   ;; install Emacs Lisp programs.
   (compile-elisp-modules SKK_MODULES ".")
   (install-elisp-modules SKK_MODULES "." SKK_PACKAGE_LISPDIR)

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.2 1999/11/17 14:24:27 tsumura Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.3 1999/11/21 12:51:58 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/17 14:24:27 $
+;; Last Modified: $Date: 1999/11/21 12:51:58 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -82,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/17 14:24:27 $")
+      (let* ((raw-date "$Date: 1999/11/21 12:51:58 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -401,11 +401,13 @@ dependent."
 			       "SKK の記録用ファイルを作りました"
 			       "I have created an SKK record file for you" ))
 	  (skk-regularize)
+	  (and (or skk-use-color-cursor skk-cursor-change-width)
+	       (require 'skk-cursor)
+	       (interactive-p)
+	       (skk-cursor-set-color skk-cursor-hiragana-color) )
           (setq skk-mode-invoked t)))
     ;; 以下は skk-mode に入るたびに毎度コールされるコード。
     (and skk-use-viper (require 'skk-viper))
-    (and (or skk-use-color-cursor skk-cursor-change-width)
-	 (require 'skk-cursor) )
     ;; .skk で skk-kakutei-key の変更が可能になるように。
     (define-key skk-abbrev-mode-map skk-kakutei-key 'skk-kakutei)
     (define-key skk-abbrev-mode-map (char-to-string skk-start-henkan-char)

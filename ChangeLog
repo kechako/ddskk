@@ -1,3 +1,8 @@
+2000-09-26  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk-num.el (skk-num-type3-kanji-1, skk-num-type5-kanji-1): Don't
+	miss "万" {"萬"}, "億", "兆", "京".
+
 2000-09-25  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/skk-faq.txt: Update a description about how to get

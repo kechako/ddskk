@@ -1,8 +1,8 @@
 # Makefile: makefile for SKK.
 #
 # Maintainer: SKK Development Team <skk@ring.gr.jp>
-# Version: $Id: Makefile,v 1.44.2.4 2001/09/11 12:16:31 czkmt Exp $
-# Last Modified: $Date: 2001/09/11 12:16:31 $
+# Version: $Id: Makefile,v 1.44.2.5 2001/09/11 12:17:18 czkmt Exp $
+# Last Modified: $Date: 2001/09/11 12:17:18 $
 
 
 VERSION = 11.5.0.1
@@ -58,7 +58,7 @@ tar: clean
 	cd .. ;\
 	$(RM) ddskk-11.{1,2,3} ddskk-$(VERSION) ddskk-snapshot ddskk$(VERSION).tar.gz ddskk$(VERSION).tar.bz2 ;\
 	$(RM) ddskk-$(VERSION) ;\
-	ln -sf ddskk-ne ddskk-$(VERSION) ;\
+	ln -sf ddskk-e18 ddskk-$(VERSION) ;\
 	$(TAR) cvpf ddskk$(VERSION).tar --exclude-from=ddskk-$(VERSION)/skk.ex --dereference ddskk-$(VERSION) ;\
 	$(BZIP2) -cf ddskk$(VERSION).tar > ddskk$(VERSION).tar.bz2 ;\
 	$(GZIP) -cf ddskk$(VERSION).tar > ddskk$(VERSION).tar.gz ;\
@@ -71,7 +71,7 @@ snapshot: clean
 	cd .. ;\
 	$(RM) ddskk-11.{1,2,3} ddskk-$(VERSION) ddskk-snapshot $(SNAPBASE).tar.gz $(SNAPBASE).tar.bz2 ;\
 	$(RM) $(SNAPBASE) ;\
-	ln -sf ddskk-ne $(SNAPBASE) ;\
+	ln -sf ddskk-e18 $(SNAPBASE) ;\
 	$(TAR) cvpf $(SNAPBASE).tar --exclude-from=$(SNAPBASE)/skk.ex --dereference $(SNAPBASE);\
 	$(BZIP2) -cf $(SNAPBASE).tar > $(SNAPBASE).tar.bz2 ;\
 	$(GZIP) -cf $(SNAPBASE).tar > $(SNAPBASE).tar.gz ;\

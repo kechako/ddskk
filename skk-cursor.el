@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.32 2000/10/12 10:07:04 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.33 2000/10/13 13:38:08 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/12 10:07:04 $
+;; Last Modified: $Date: 2000/10/13 13:38:08 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -96,6 +96,11 @@
 				 (skk-j-mode skk-cursor-hiragana-color))
 			   (current-buffer)))
 
+      (defadvice minibuffer-keyboard-quit (before skk-cursor-ad activate)
+	(unless (or skk-henkan-on skk-henkan-active)
+	  (set-face-property 'text-cursor 'background
+			     skk-cursor-default-color (current-buffer))))
+
       ;; Hooks
       (add-hook 'isearch-mode-end-hook
 		(lambda ()
@@ -113,7 +118,9 @@
 		(lambda ()
 		  (with-current-buffer (nth 1 (buffer-list))
 		    (set-face-property 'text-cursor 'background
-				       (skk-cursor-current-color) (current-buffer))))
+				       (skk-cursor-current-color) (current-buffer)))
+		  (set-face-property 'text-cursor 'background
+				     skk-cursor-default-color (current-buffer)))
 		'append)
       )
   ;; FSF Emacs

@@ -3,9 +3,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: ccc.el,v 1.1.2.5 2000/10/17 14:40:33 minakaji Exp $
+;; Version: $Id: ccc.el,v 1.1.2.6 2000/10/18 10:55:04 czkmt Exp $
 ;; Keywords: cursor
-;; Last Modified: $Date: 2000/10/17 14:40:33 $
+;; Last Modified: $Date: 2000/10/18 10:55:04 $
 
 ;; This software is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -120,6 +120,12 @@
 	  (set-background-color buffer-local-background-color)
 	(error (setq buffer-local-background-color nil)))))
 
+;;
+;; Macros.
+;;
+(defmacro ccc-apply (func args)
+  (cons (eval func) (eval args)))
+
 ;;; internal variables.
 (defvar buffer-local-cursor-color-default (buffer-local-cursor-color-default))
 (defvar buffer-local-cursor-color (buffer-local-cursor-color-default))
@@ -134,69 +140,70 @@
 (make-variable-buffer-local 'buffer-local-background-color)
 
 ;;; advices.
-(eval
- (cons 'progn
-       (eval-when-compile
-	 (let ((funcs '(
-			;; cover to original Emacs functions.
-			;; subr, but no argument.
-			bury-buffer 
-			delete-frame
-			delete-window
+(defconst ccc-ads
+  (eval-when-compile
+    (let ((funcs '(
+		   ;; cover to original Emacs functions.
+		   ;; subr, but no argument.
+		   bury-buffer 
+		   delete-frame
+		   delete-window
+		   
+		   overwrite-mode
+		   ;; subr, but non-command.
+		   pop-to-buffer 
+		   select-window 
+		   
+		   ;; subrs possibly with interactive specs.
+		   (execute-extended-command . "P")
+		   (kill-buffer . "bKill buffer: ")
+		   (other-window . "p")
+		   (select-frame . "e")
+		   (switch-to-buffer . "BSwitch to buffer: ")
+		   
+		   ;;goto-line 
+		   ;;insert-file 
+		   ;;recenter 
+		   ;;yank
+		   ;;yank-pop 
+		   ))
+	  func list)
+      (while (setq func (car funcs))
+	;; check if it is really subr command.
+	(if (and (consp func) (not (and (commandp (car func)) (subr-fboundp (car func)))))
+	    (setq func (car func)))
+	(if (consp func)
+	    ;; command that has an interactive spec.
+	    (setq list
+		  (nconc
+		   list
+		   (`
+		    ((defadvice (, (intern (symbol-name (car func))))
+		       (after buffer-local-frame-params-ad activate)
+		       "Update frame frame parameters if `buffer-local-*-color' given."
+		       (interactive (, (cdr func)))
+		       (update-buffer-local-frame-params))))))
+	  ;; non-command or command that has not an interactice spec.
+	  (if (and (commandp func) (subr-fboundp func)
+		   ;; subr, but no argument.
+		   (null (memq func
+			       ;; XXX posibilly Emacs version dependent
+			       '(bury-buffer delete-frame delete-window))))
+	      (message
+	       "WARNING: Adding advice to %s without mirroring its interactive spec"
+	       func))
+	  (setq list
+		(nconc
+		 list
+		 (`
+		  ((defadvice (, (intern (symbol-name func)))
+		     (after buffer-local-frame-params-ad activate)
+		     "Update frame frame parameters if `buffer-local-*-color' given."
+		     (update-buffer-local-frame-params)))))))
+	(setq funcs (cdr funcs)))
+      (prog1 list (defconst ccc-ads list)))))
 
-			overwrite-mode
-			;; subr, but non-command.
-			pop-to-buffer 
-			select-window 
-	       
-			;; subrs possibly with interactive specs.
-			(execute-extended-command . "P")
-			(kill-buffer . "bKill buffer: ")
-			(other-window . "p")
-			(select-frame . "e")
-			(switch-to-buffer . "BSwitch to buffer: ")
-
-			;;goto-line 
-			;;insert-file 
-			;;recenter 
-			;;yank
-			;;yank-pop 
-			))
-	       func list)
-	   (while (setq func (car funcs))
-	     ;; check if it is really subr command.
-	     (if (and (consp func) (not (and (commandp (car func)) (subr-fboundp (car func)))))
-		 (setq func (car func)))
-	     (if (consp func)
-		 ;; command that has an interactive spec.
-		 (setq list
-		       (nconc
-			list
-			(`
-			 ((defadvice (, (intern (symbol-name (car func))))
-			    (after buffer-local-frame-params-ad activate)
-			    "Update frame frame parameters if `buffer-local-*-color' given."
-			    (interactive (, (cdr func)))
-			    (update-buffer-local-frame-params))))))
-	       ;; non-command or command that has not an interactice spec.
-	       (if (and (commandp func) (subr-fboundp func)
-			;; subr, but no argument.
-			(null (memq func
-				    ;; XXX posibilly Emacs version dependent
-				    '(bury-buffer delete-frame delete-window))))
-		   (message
-		    "WARNING: Adding advice to %s without mirroring its interactive spec"
-		    func))
-	       (setq list
-		     (nconc
-		      list
-		      (`
-		       ((defadvice (, (intern (symbol-name func)))
-			  (after buffer-local-frame-params-ad activate)
-			  "Update frame frame parameters if `buffer-local-*-color' given."
-			  (update-buffer-local-frame-params)))))))
-	     (setq funcs (cdr funcs)))
-	   list))))
+(ccc-apply 'progn ccc-ads)
 
 ;;; Hooks
 (add-hook 'isearch-mode-end-hook 'update-buffer-local-frame-params 'append)
@@ -204,7 +211,7 @@
 (add-hook 'minibuffer-exit-hook
 	  (lambda ()
 	    (with-current-buffer (nth 1 (buffer-list))
-	      'update-buffer-local-frame-params 'append) 'append))
+	      (update-buffer-local-frame-params))) 'append)
 
 (provide 'ccc)
 ;;; Local Variables:

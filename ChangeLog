@@ -1,3 +1,13 @@
+2000-10-31  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* SKK-MK (SKK-MK-install): Update info/dir entries.
+
+	* install-info.el: New file.
+
+	* ptexinfmt.el: Sync with Wanderlust.
+
+	* doc/skk.texi: Add dircategory.
+
 2000-10-31  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* doc/skk-faq.texi: Sync up with maintrunk.

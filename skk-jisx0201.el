@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.13 1999/12/30 11:27:16 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.14 1999/12/30 12:06:40 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 1999/12/30 11:27:16 $
+;; Last Modified: $Date: 1999/12/30 12:06:40 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -407,11 +407,14 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
  (list (cons 'skk-jisx0201-mode skk-jisx0201-mode-map)))
 
 ;; inline functions.
-(defsubst skk-jisx0201-mode-on ()
+(defsubst skk-jisx0201-mode-on (&optional arg)
   (setq skk-mode t
         skk-jisx0201-mode t
-	skk-jisx0201-roman nil
-	skk-jisx0201-rule-tree skk-jisx0201-base-rule-tree
+	skk-jisx0201-roman arg
+	skk-jisx0201-rule-tree (cond (arg
+				      skk-jisx0201-roman-rule-tree)
+				     (t
+				      skk-jisx0201-base-rule-tree))
         skk-abbrev-mode nil
         skk-latin-mode nil
         skk-j-mode nil
@@ -423,14 +426,16 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 ;; advices.
 (defadvice skk-regularize (before skk-jisx0201-ad activate)
   (setq skk-jisx0201-base-rule-tree
-	(skk-compile-rule-list skk-jisx0201-base-rule-list skk-jisx0201-rule-list)))
+	(skk-compile-rule-list skk-jisx0201-base-rule-list skk-jisx0201-rule-list))
+  (setq skk-jisx0201-roman-rule-tree
+	(skk-compile-rule-list skk-jisx0201-roman-rule-list)))
 
 (defadvice skk-mode (after skk-jisx0201-ad activate)
   (define-key skk-jisx0201-mode-map skk-kakutei-key 'skk-kakutei)
   (setq skk-jisx0201-mode nil))
 
 (defadvice skk-kakutei (after skk-jisx0201-ad activate)
-  (and skk-jisx0201-mode (skk-jisx0201-mode-on)))
+  (and skk-jisx0201-mode (skk-jisx0201-mode-on skk-jisx0201-roman)))
 
 (defadvice skk-latin-mode (after skk-jisx0201-ad activate)
   (setq skk-jisx0201-mode nil))
@@ -496,9 +501,6 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 (defun skk-toggle-jisx0201 (arg)
   "半角カナモードとローマ字モードを切り替える。"
   (interactive "P")
-  (or skk-jisx0201-roman-rule-tree
-      (setq skk-jisx0201-roman-rule-tree
-	    (skk-compile-rule-list skk-jisx0201-roman-rule-list)))
   (cond ((and skk-henkan-on (not skk-henkan-active))
 	 (skk-jisx0201-henkan arg))
 	(t

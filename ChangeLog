@@ -4,6 +4,8 @@
 	(skk-jisx0201-roman-rule-list, skk-jisx0201-base-rule-tree,
 	skk-jisx0201-roman-rule-tree. skk-jisx0201-roman): New variables.
 	(skk-toggle-jisx0201): New function.
+	(skk-jisx0201-mode-on): Accept an optional argument.
+	(skk-kakutei): Refer to `skk-jisx0201-roman'.
 
 1999-12-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 

@@ -4,7 +4,7 @@
 ;; Author: Itsushi Minoura <minoura@eva.hi-ho.ne.jp>
 ;;      Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard, nicola
-;; Last Modified: $Date: 2000/09/10 12:06:44 $
+;; Last Modified: $Date: 2000/09/10 16:00:39 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -189,85 +189,91 @@ Emacs 18 用の変数。")
      ;; Emacs 18 では Muhenkan, Henkan は使えないようなので、使えるキーに書換え
      ;; る。
      (skk-kanagaki-call-xmodmap
-	 (cond ((eq skk-emacs-type 'mule3)
-		"keycode 129 = F19 Mode_switch
+	 (case skk-emacs-type
+	   (mule3
+	    "keycode 129 = F19 Mode_switch
 keycode 131 = F18\n")
-	       (t
-		"keycode 129 = space Mode_switch
+	   (t
+	    "keycode 129 = space Mode_switch
 keycode 131 = underscore\n"))
-       (cond ((eq skk-emacs-type 'mule3)
-	      (setq skk-nicola-lshift-key [f18]
-		    skk-nicola-rshift-key [f19]))
-	     (t
-	      (setq skk-nicola-lshift-key "_"
-		    skk-nicola-rshift-key " ")))))))
+       (case skk-emacs-type
+	 (mule3
+	  (setq skk-nicola-lshift-key [f18]
+		skk-nicola-rshift-key [f19]))
+	 (t
+	  (setq skk-nicola-lshift-key "_"
+		skk-nicola-rshift-key " ")))))))
 
 ;; Hooks.
+
+(add-hook 'skk-mode-hook 'skk-nicola-setup)
 
 (add-hook 'skk-mode-hook
 	  (function
 	   (lambda ()
-	     (static-cond
-	      ((memq skk-emacs-type '(nemacs mule1))
-	       ;; Emacs  18  ではマイナーモードがキーマップを管理できないので、
-	       ;; SKK が管理している。
-	       (setq skk-nicola-lshift-original
+	     ;;
+	     (setq skk-nicola-lshift-original
+		   (static-cond
+		    ((memq skk-emacs-type '(nemacs mule1))
 		     (or (lookup-key (or skk-current-local-map
 					 (make-sparse-keymap))
 				     skk-nicola-lshift-key)
 			 (lookup-key (current-global-map)
-				     skk-nicola-lshift-key))))
-	      (t
-	       (let (skk-mode skk-j-mode)
-		 (setq skk-nicola-lshift-original
+				     skk-nicola-lshift-key)))
+		    (t
+		     (let (skk-mode skk-j-mode)
 		       (key-binding skk-nicola-lshift-key)))))
-	     ;;
-	     (when skk-nicola-use-space-as-rshift
-	       (define-key skk-j-mode-map " " 'skk-nicola-self-insert-rshift))
-	     ;;
-	     (define-key skk-j-mode-map skk-nicola-lshift-key
-	       'skk-nicola-self-insert-lshift)
-	     (define-key skk-j-mode-map skk-nicola-rshift-key
-	       'skk-nicola-self-insert-rshift)
-	     ;;
-	     (when skk-nicola-use-space-as-rshift
-	       (define-key skk-latin-mode-map " "
-		 'skk-nicola-turn-on-j-mode))
-	     ;;
-	     (define-key skk-latin-mode-map skk-nicola-lshift-key
-	       'skk-nicola-turn-on-j-mode)
-	     (define-key skk-latin-mode-map skk-nicola-rshift-key
-	       'skk-nicola-turn-on-j-mode)
-	     ;;
-	     (when skk-nicola-help-key
-	       (define-key help-map skk-nicola-help-key
-		 'skk-nicola-help))
-	     (when skk-nicola-2nd-help-key
-	       (define-key help-map skk-nicola-2nd-help-key
-		 'skk-nicola-2nd-help))
 	     ;;
 	     (setq skk-hiragana-mode-string skk-nicola-hiragana-mode-string
 		   skk-katakana-mode-string skk-nicola-katakana-mode-string
-		   skk-input-mode-string skk-hiragana-mode-string)
-	     ;;
-	     (setq skk-nicola-plain-rule
-		   (symbol-value
-		    (intern
-		     (format "skk-%s-plain-rule-list"
-			     skk-kanagaki-keyboard-type))))
-	     (setq skk-nicola-lshift-rule
-		   (symbol-value
-		    (intern
-		     (format "skk-%s-lshift-rule-list"
-			     skk-kanagaki-keyboard-type))))
-	     (setq skk-nicola-rshift-rule
-		   (symbol-value
-		    (intern
-		     (format "skk-%s-rshift-rule-list"
-			     skk-kanagaki-keyboard-type)))))))
+		   skk-input-mode-string skk-hiragana-mode-string))))
 
 
 ;; Functions.
+
+(defun skk-nicola-setup ()
+  ;;
+  (when skk-nicola-use-space-as-rshift
+    (define-key skk-j-mode-map " " 'skk-nicola-self-insert-rshift))
+  ;;
+  (define-key skk-j-mode-map skk-nicola-lshift-key
+    'skk-nicola-self-insert-lshift)
+  (define-key skk-j-mode-map skk-nicola-rshift-key
+    'skk-nicola-self-insert-rshift)
+  ;;
+  (when skk-nicola-use-space-as-rshift
+    (define-key skk-latin-mode-map " "
+      'skk-nicola-turn-on-j-mode))
+  ;;
+  (define-key skk-latin-mode-map skk-nicola-lshift-key
+    'skk-nicola-turn-on-j-mode)
+  (define-key skk-latin-mode-map skk-nicola-rshift-key
+    'skk-nicola-turn-on-j-mode)
+  ;;
+  (when skk-nicola-help-key
+    (define-key help-map skk-nicola-help-key
+      'skk-nicola-help))
+  (when skk-nicola-2nd-help-key
+    (define-key help-map skk-nicola-2nd-help-key
+      'skk-nicola-2nd-help))
+  ;;
+  (setq skk-nicola-plain-rule
+	(symbol-value
+	 (intern
+	  (format "skk-%s-plain-rule-list"
+		  skk-kanagaki-keyboard-type))))
+  (setq skk-nicola-lshift-rule
+	(symbol-value
+	 (intern
+	  (format "skk-%s-lshift-rule-list"
+		  skk-kanagaki-keyboard-type))))
+  (setq skk-nicola-rshift-rule
+	(symbol-value
+	 (intern
+	  (format "skk-%s-rshift-rule-list"
+		  skk-kanagaki-keyboard-type))))
+  ;;
+  (remove-hook 'skk-mode-hook 'skk-niola-setup))
 
 ;;;###autoload
 (defun skk-nicola-help (&optional arg)

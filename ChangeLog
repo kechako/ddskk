@@ -6,6 +6,8 @@
 
 	* SKK-MK: Tiny bug fix for Emacs 18.
 
+	* skk-look.el (skk-look-ispell): Set VAR.
+
 2000-09-10  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* Makefile (snapshot): Bug fixed.

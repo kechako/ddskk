@@ -1,5 +1,12 @@
 2000-09-10  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
+	* NICOLA-DDSKK-MK: Use `dolist' or `do' instead of `mapcar' or
+	`while' if possible.
+
+	* skk-nicola.el (skk-nicola-setup): New function.
+
+2000-09-10  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
 	* README.URIs: Use overlays instead of text properties.
 
 	* README.ja: Ditto.

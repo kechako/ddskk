@@ -1,3 +1,12 @@
+2000-09-04  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-look.el (skk-look-ispell): New function.
+	(skk-look-completion): Use `skk-look-ispell' if
+	`skk-look-use-ispell' is non-nil.
+	(skk-look): Ditto.
+
+	* skk-vars.el (skk-look-use-ispell): New user option.
+
 2000-08-31  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK: Under Emacs 18, Use `if' instead of `when' where it is

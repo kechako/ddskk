@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.4 2000/08/02 14:34:49 czkmt Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.5 2000/09/04 09:06:44 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/02 14:34:49 $
+;; Last Modified: $Date: 2000/09/04 09:06:44 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -122,9 +122,11 @@
        (let ((args (substring skk-henkan-key 0 (1- (length skk-henkan-key))))
 	     v)
 	 (setq v (skk-look-1 args))
+	 (if skk-look-use-ispell
+	     (setq v (skk-nunion v (skk-look-ispell arg))))
 	 (if (not skk-look-recursive-search)
 	     v
-	   (let (skk-henkan-key v2 v3)
+	   (let (skk-henkan-key v2 v3)pell
 	     (while v
 	       (let ((skk-current-search-prog-list
 		      (delete '(skk-look) (copy-sequence skk-search-prog-list))))
@@ -165,7 +167,12 @@
       (let ((stacked skk-completion-stack))
 	;; look は複数の候補を吐くので、一旦貯めておいて、一つづつ complete する。
 	(setq skk-look-completion-words
-	      (delete skk-completion-word (skk-look-1 skk-completion-word)))
+	      ;; 他の機能を使った補完
+	      (delete skk-completion-word
+		      (if skk-look-use-ispell
+			  (skk-nunion (skk-look-1 skk-completion-word)
+				      (skk-look-ispell skk-completion-word))
+			(skk-look-1 skk-completion-word))))
 	(while stacked
 	  (setq skk-look-completion-words
 		(delete (car stacked) skk-look-completion-words)
@@ -176,6 +183,26 @@
 
 (defadvice skk-kakutei-initialize (after skk-look-ad activate)
   (setq skk-look-completion-words nil))
+
+
+;;;###autoload
+(defun skk-look-ispell (args)
+  (require 'ispell)
+  (ispell-accept-buffer-local-defs)
+  (message "")
+  (process-send-string ispell-process "%\n") ;put in verbose mode
+  (process-send-string ispell-process (concat "^" args "\n"))
+  (while (progn
+	   (accept-process-output ispell-process)
+	   (not (string= "" (car ispell-filter)))))
+  (setq ispell-filter (cdr ispell-filter)) ; remove extra \n
+  (if (listp ispell-filter)
+      (setq poss (ispell-parse-output (car ispell-filter))))
+  (setq ispell-filter nil)
+  (cond ((or (eq poss t) (stringp poss)) nil)
+	((null poss) (skk-error "ispell process でエラーが発生しました。"
+				"error in ispell process"))
+	(t (car (cdr (cdr poss))))))
 
 (provide 'skk-look)
 ;;; skk-look.el ends here

@@ -1,3 +1,9 @@
+1999-12-04  Murata Shuuichirou  <mrt@notwork.org>
+
+	* skk-macs.el (skk-find-coding-system): Check symbolicity of arg,
+ 	before pass it to `find-coding-system'.  xemacs's
+ 	`find-coding-system' doesn't like string argument.
+
 1999-12-03  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* SKK-MK (SKK_INFOS): Add skk.info-5 and skk.info-6.

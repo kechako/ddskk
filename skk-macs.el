@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.1 1999/11/29 12:51:44 mrt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.2 1999/12/04 04:16:19 mrt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/29 12:51:44 $
+;; Last Modified: $Date: 1999/12/04 04:16:19 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -371,6 +371,7 @@
   (cond ((and code
 	      (or (coding-system-p code)
 		  (and (fboundp 'find-coding-system)
+		       (symbolp code)
 		       (find-coding-system code) )))
 	 code )
 	((and code (stringp code))

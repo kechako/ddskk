@@ -148,7 +148,7 @@
 
 1999-11-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
-	* skk-cursor,el (skk-cursor-set-properly): Set color properly on
+	* skk-cursor.el (skk-cursor-set-properly): Set color properly on
 	`skk-abbrev-mode'.
 
 1999-11-29  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>

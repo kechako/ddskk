@@ -6,8 +6,8 @@
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
 ;; Created: 1996/08/18
 ;; Keywords: install, byte-compile, directory detection
-;; Version: $Id: tinyinstall.el,v 1.5 2000/11/15 15:59:47 czkmt Exp $
-;; Last Modified: $Date: 2000/11/15 15:59:47 $
+;; Version: $Id: tinyinstall.el,v 1.5.2.1 2001/09/11 12:08:06 czkmt Exp $
+;; Last Modified: $Date: 2001/09/11 12:08:06 $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -32,6 +32,12 @@
 				   (match-beginning 0)(match-end 0))))
   "Major version number of this version of Emacs.")
 
+(defvar emacs-minor-version
+  (progn (string-match "^[0-9]+\\.\\([0-9]+\\)" emacs-version)
+	 (string-to-int (substring emacs-version
+				   (match-beginning 1)(match-end 1))))
+  "Minor version number of this version of Emacs.")
+
 (defvar data-directory exec-directory) ; For Emacs 18.
 
 (if (= emacs-major-version 18)
@@ -46,7 +52,7 @@ The value is actually the tail of LIST whose car is ELT."
 
 (defvar install-prefix
   (cond ((<= emacs-major-version 18)	; running-emacs-18
-	 (expand-file-name "../.." exec-directory))
+	 (expand-file-name ".." exec-directory))
 	((featurep 'xemacs)		; running-xemacs
 	 (expand-file-name "../../.." exec-directory))
 	((memq system-type '(ms-dos windows-nt))
@@ -54,10 +60,7 @@ The value is actually the tail of LIST whose car is ELT."
 	(t
 	 (expand-file-name "../../../.." data-directory))))
 
-(defvar install-elisp-prefix
-  (if (>= emacs-major-version 19)
-      "site-lisp"
-    "local.lisp"))
+(defvar install-elisp-prefix "site-lisp")
 
 ;; from path-util.el
 (defvar default-load-path load-path
@@ -86,23 +89,32 @@ subdirectory under load-path.")
 					(car rest))))
 		 (throw 'tag (car rest))))
 	 (setq rest (cdr rest)))))
-   (expand-file-name (concat
-		      (if (and		; running-emacs-19_29-or-later
-			   (not (featurep 'xemacs))
-			   (or (>= emacs-major-version 20)
-			       (and (= emacs-major-version 19)
-				    (>= emacs-minor-version 29))))
-			  "share/"
-			"lib/")
-		      (cond ((boundp 'NEMACS) "nemacs/")
-			    ((boundp 'MULE)   "mule/")
-			    ((featurep 'xemacs)	; running-xemacs
-			     (if (featurep 'mule)
-				 "xmule/"
-			       "xemacs/"))
-			    (t "emacs/"))
-		      elisp-prefix)
-		     prefix)))
+   (expand-file-name
+    (cond
+     ((<= emacs-major-version 18)
+      (concat
+       install-prefix
+       "/"
+       elisp-prefix))
+     (t
+      (concat
+       (cond
+	((and		; running-emacs-19_29-or-later
+	  (not (featurep 'xemacs))
+	  (or (>= emacs-major-version 20)
+	      (and (= emacs-major-version 19)
+		   (>= emacs-minor-version 29))))
+	 "share/")
+	(t
+	 "lib/"))
+       (cond ((boundp 'MULE)   "mule/")
+	     ((featurep 'xemacs)	; running-xemacs
+	      (if (featurep 'mule)
+		  "xmule/"
+		"xemacs/"))
+	     (t "emacs/"))
+       elisp-prefix)))
+    prefix)))
 
 (defun tinyinstall-add-load-path (directory path)
   (setq directory (expand-file-name directory))

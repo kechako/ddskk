@@ -4,9 +4,9 @@
 
 ;; Author: SKK Development Team <skk@ring.gr.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-macs.el,v 1.36 2001/09/07 21:07:59 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.36.2.1 2001/09/11 12:08:06 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2001/09/07 21:07:59 $
+;; Last Modified: $Date: 2001/09/11 12:08:06 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -669,11 +669,22 @@ BUFFER defaults to the current buffer."
   (or (string< str1 str2) (string= str1 str2)))
 
 (defsubst skk-do-auto-fill ()
-  ;; auto-fill-function/auto-fill-hook に値が代入されていれば、それをコールする。
+  ;; auto-fill-function/auto-fill-hook に値が代入されていれば、それを呼ぶ。
   (static-cond
    ((memq skk-emacs-type '(nemacs mule1))
-    (and auto-fill-hook (run-hooks 'auto-fill-hook)))
-   (t (and auto-fill-function (funcall auto-fill-function)))))
+    (and auto-fill-hook
+	 (let* ((c (current-column)) (cont (> c fill-column)))
+	   (while cont
+	     (run-hooks 'auto-fill-hook)
+	     ;; if current-column doesn't change after do-auto-fill,
+	     ;; we exit from the while loop by setting cont to be nil.
+	     ;; also, it is necessary that current-column >
+	     ;; fill-column to continue the loop.
+	     (setq cont (and (< (current-column) c)
+			     (> (current-column) fill-column))
+		   c (current-column))))))
+   (t
+    (and auto-fill-function (funcall auto-fill-function)))))
 
 (defsubst skk-current-input-mode ()
   (cond (skk-abbrev-mode 'abbrev)

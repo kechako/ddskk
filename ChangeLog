@@ -1,3 +1,8 @@
+2001-07-11  NAKAJIMA Mikio  <minakaji@osaka.email.ne.jp>
+
+	* READMEs/INSTALL: Remove my name indications and put on [end of
+	INSTALL] tag at the end of file.
+
 2000-11-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* doc/skk.texi (送りあり変換中のC-g): Doc fixed.

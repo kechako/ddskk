@@ -3,6 +3,9 @@
 	* experimental/skk-annotation.el, skk-macs.el, skk.el: Sync with
 	main trunk.
 
+	* install-info.el (install-info-forward-line): Don't insert a new
+	line when bolp.
+
 2000-11-10  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk.el (skk-remove-redundant-okurgana): Remove the kana even if

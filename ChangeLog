@@ -1,3 +1,10 @@
+2000-10-05  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk.el (skk-count-jisyo-candidates): Show "candidates", not
+	"entries".
+	(skk-count-jisyo-candidates-original): Don't search slashes in
+	midashi words.
+
 2000-10-03  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/FAQ.txt: Change filename description in end of filename

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.11 2000/01/25 14:55:29 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.12 2000/01/25 23:55:54 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/25 14:55:29 $
+;; Last Modified: $Date: 2000/01/25 23:55:54 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -220,7 +220,8 @@
   (static-cond
    ((memq skk-emacs-type '(xemacs mule4 mule3))
     (eq (char-charset char) 'ascii))
-   ((e skk-emacs-type 'mule2)
+   ((eq skk-emacs-type 'mule2)
+    ;; Can I use this for mule1?
     (= (char-leading-char char) 0))
    (t (and (< ?\37 char) (< char ?\200)))))
  

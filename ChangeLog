@@ -1,3 +1,7 @@
+2000-01-26  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-macs.el (skk-ascii-char-p): typo fixed.
+
 2000-01-26  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-e18.el (skk-hankaku-alist): New variable.

@@ -1,6 +1,6 @@
 -*- text -*-
 
-     $Id: README.ja,v 1.1.2.1 2000/09/12 10:35:24 czkmt Exp $
+     $Id: README.ja,v 1.1.2.2 2000/09/12 11:00:26 czkmt Exp $
 
 このディレクトリには、Emacs 18 上で Daredevil SKK を利用する際に、必要
 なもの、およびあると便利なものを収録します。
@@ -10,9 +10,18 @@
 Daredevil SKK に於ける Emacs 18 (Nemacs 3.3.2 または Mule 1.1) 対応は
 正式なものではなく、将来続けられるという保証もありません。バグ報告とパッ
 チは歓迎しますが、Daredevil SKK 及びここにあるファイルを使用した結果に
-ついては、すべて利用者本人がこれを負うものとします。
+ついては、すべて利用者本人がその責任を負うものとします。
 
-1. 簡単な利用法
+
+1. いそがしい人のための使い方
+
+ main/patch/e18% nemacs -batch -q -l ./advice.el -f batch-byte-compile ./advice.el
+ main/patch/e18% cp advice.el* cl.elc /usr/local/emacs/lisp/
+ main/patch/e18% cd ../..
+ main% make install EMACS=nemacs
+
+
+2. 説明つき利用法
 
 i. advice.el
 
@@ -43,7 +52,8 @@ iii. bytecomp 2.07
    Daredevil SKK を利用するのには必要ではありません。使いたい人だけ使っ
    て下さい。
 
-2. ファイルに関する説明
+
+3. ファイルに関する説明
 
 i. advice.el 
 

@@ -1,3 +1,11 @@
+1999-12-21  Murata Shuuichirou  <mrt@notwork.org>
+
+	* skk-macs.el (skk-color-display-p): Check whether X or not,
+	before use `x-display-color-p'.
+
+	* skk-viper.el (read-from-minibuffer): Advice only when
+	skk-use-color-cursor is no-nil.
+
 1999-12-20  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (kill-buffer): Doc fixed.
@@ -1606,7 +1614,7 @@
 1999-08-25  Masahiko Sato  <masahiko@kuis.kyoto-u.ac.jp>
 	
 	* skk.el: vip 関連のコードをすべて削除。
-	(skk-mode): 最初に skk-mode に入ったとき： 
+	(skk-mode): 最初に skk-mode に入ったとき: 
 	
 	    (require 'skk-autoloads)
 	    (if skk-use-numeric-conversion (require 'skk-num))

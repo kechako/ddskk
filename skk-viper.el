@@ -6,9 +6,9 @@
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: Murata Shuuichirou <mrt@notwork.org>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.5 1999/12/19 12:37:50 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.6 1999/12/20 15:52:00 mrt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/19 12:37:50 $
+;; Last Modified: $Date: 1999/12/20 15:52:00 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -137,12 +137,13 @@
    (function (lambda ()
 	       (add-hook 'pre-command-hook 'skk-pre-command nil 'local)))))
 
-(defadvice read-from-minibuffer (before skk-viper-ad activate)
-  "minibuffer-setup-hook に skk-cursor-setup-minibuffer をフックする。
+(if skk-use-color-cursor
+    (defadvice read-from-minibuffer (before skk-viper-ad activate)
+      "minibuffer-setup-hook に skk-cursor-setup-minibuffer をフックする。
 viper-read-string-with-history は minibuffer-setup-hook を関数ローカル
 にしてしまうので、予め minibuffer-setup-hook にかけておいたフックが無効
 となる。"
-  (add-hook 'minibuffer-setup-hook 'skk-cursor-setup-minibuffer 'append))
+      (add-hook 'minibuffer-setup-hook 'skk-cursor-setup-minibuffer 'append)))
 
 (skk-viper-advice-select
  viper-forward-word-kernel vip-forward-word-kernel

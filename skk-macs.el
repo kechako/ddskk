@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.4 1999/12/19 09:01:40 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.5 1999/12/20 15:52:00 mrt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/19 09:01:40 $
+;; Last Modified: $Date: 1999/12/20 15:52:00 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -400,7 +400,7 @@
 (defsubst skk-color-display-p ()
   (static-if (eq skk-emacs-type 'xemacs)
       (eq (device-class (selected-device)) 'color)
-    (x-display-color-p)))
+    (and (eq window-system 'x) (x-display-color-p))))
     
 (defsubst skk-str-length (str)
   (static-cond

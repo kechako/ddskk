@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.27 2000/10/19 11:48:31 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.28 2000/10/19 12:11:31 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/19 11:48:31 $
+;; Last Modified: $Date: 2000/10/19 12:11:31 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -68,7 +68,7 @@
 		      (ad-get-orig-definition function)
 		    (symbol-function function)))
 	   (null (memq function	; XXX possibilly Emacs version dependent
-		       ;; interactive commands which does not have interactive specs.
+		       ;; interactive commands which do not have interactive specs.
 		       '(abort-recursive-edit bury-buffer delete-frame delete-window 
 					      exit-minibuffer)))
 	   (not (memq 'interactive (list (car-safe (nth 1 everything-else))

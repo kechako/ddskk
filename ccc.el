@@ -3,9 +3,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: ccc.el,v 1.1.2.8 2000/10/19 11:49:21 czkmt Exp $
+;; Version: $Id: ccc.el,v 1.1.2.9 2000/10/19 12:11:31 czkmt Exp $
 ;; Keywords: cursor
-;; Last Modified: $Date: 2000/10/19 11:49:21 $
+;; Last Modified: $Date: 2000/10/19 12:11:31 $
 
 ;; This software is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -130,7 +130,7 @@
 		      (ad-get-orig-definition function)
 		    (symbol-function function)))
 	   (null (memq function	; XXX possibilly Emacs version dependent
-		       ;; interactive commands which does not have interactive specs.
+		       ;; interactive commands which do not have interactive specs.
 		       '(abort-recursive-edit bury-buffer delete-frame delete-window 
 					      exit-minibuffer)))
 	   (not (memq 'interactive (list (car-safe (nth 1 everything-else))

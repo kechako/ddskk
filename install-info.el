@@ -51,6 +51,7 @@ itself.
 
 If optional fifth arg DELETE is non-nil, delete existing entries for INFO-FILE
 from DIR-FILE; don't insert any new entries."
+  (interactive "fInfo File: \nFDir File: ")
   (let ((buf (get-buffer-create " *install-info-tmp*"))
 	groups)
     ;;

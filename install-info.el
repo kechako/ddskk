@@ -246,11 +246,10 @@ File: dir,	Node: Top	This is the top of the INFO tree
 	  (goto-char (point-min))
 	  (cond
 	   ((re-search-forward (concat "^" sec "$") nil t)
-	    (let (pt)
-	      (if (eq 1 (forward-line 1))
-		  (newline 1)
-		(beginning-of-line))
-	      (setq pt (point))
+	    (if (eq 1 (forward-line 1))
+		(newline 1)
+	      (beginning-of-line))
+	    (save-excursion
 	      (while (not (eolp))
 		(cond
 		 ((looking-at
@@ -265,9 +264,8 @@ File: dir,	Node: Top	This is the top of the INFO tree
 		    (delete-region start (point))))
 		 (t
 		  (when (eq 0 (forward-line 1))
-		    (beginning-of-line)))))
-	      (goto-char pt)
-	      (insert (format "%s\n" en))))
+		    (beginning-of-line))))))
+	    (insert (format "%s\n" en)))
 	   (t
 	    (goto-char (point-max))
 	    (unless (bolp)

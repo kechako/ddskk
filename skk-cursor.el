@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.8 1999/12/07 07:02:26 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.9 1999/12/07 12:55:43 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/07 07:02:26 $
+;; Last Modified: $Date: 1999/12/07 12:55:43 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -147,21 +147,27 @@
   (defadvice completing-read (around skk-cursor-ad activate preactivate)
     "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
     (if skk-mode
-	(condition-case nil
+	(condition-case err
 	    (progn ad-do-it (skk-cursor-set-properly))
-	  ((quit error)
+	  (error
+	   (skk-cursor-set-properly)
+	   (signal (car err) nil)) 
+	  (quit
 	   (skk-cursor-set-properly)
 	   (signal 'quit nil)))
       ad-do-it ))
   (defadvice read-from-minibuffer (around skk-cursor-ad activate preactivate)
     "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
     (if skk-mode
-	(condition-case nil
+	(condition-case err
 	    (progn ad-do-it (skk-cursor-set-properly))
-	  ((quit error)
+	  (error
+	   (skk-cursor-set-properly)
+	   (signal (car err) nil)) 
+	  (quit
 	   (skk-cursor-set-properly)
 	   (signal 'quit nil)))
-      ad-do-it )) )
+      ad-do-it )))
 
 (defadvice pop-to-buffer (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"

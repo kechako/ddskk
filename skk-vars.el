@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.10 1999/12/12 05:10:13 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.11 1999/12/16 17:17:02 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/12 05:10:13 $
+;; Last Modified: $Date: 1999/12/16 17:17:02 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1402,7 +1402,7 @@ nil であれば、元号表示する。"
 ;;; SKK-ISEARCH.EL related.
 (defcustom skk-isearch-mode-string-alist
   '((hiragana . "[か] ") (katakana . "[カ] ") (jisx0208-latin . "[英] ")
-    (latin . "[aa] ") (nil . "[--] ") )
+    (latin . "[aa] ") (abbrev . "[aあ] ") (nil . "[--] ") )
   ;;  "*Alist of \(MODE-SYMBOL . PROMPT-STRING\).
   ;;MODE-SYMBOL is a symbol indicates canonical mode of skk for skk-isearch.
   ;;Valid MODE-SYMBOL is one of `hiragana', `katakana', `jisx0208-latin',

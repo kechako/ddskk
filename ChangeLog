@@ -1,3 +1,10 @@
+2000-01-15  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-jisx0201.el: Require 'static' at the compile time.
+	(skk-jisx0201-zenkaku): Use `static-cond'.
+	(skk-jisx0201-hankaku): Ditto.
+	(skk-setup-modeline): Ditto.
+
 2000-01-08  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (skk-setup-delete-selection-mode): Setup for pending-del

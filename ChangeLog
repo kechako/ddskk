@@ -21,6 +21,12 @@
 	* experimental/skk-e18.el (insert-and-inherit): Sync with APEL.
 	(number-to-string): Ditto.
 
+2000-01-31  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-auto-fill-mode): Add defition for Emacs 18.
+
+	* skk-macs.el (skk-do-auto-fill): Add defition for Emacs 18.
+
 2000-01-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-dos.el (require): Fix.

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.53 2000/02/06 04:32:54 okada Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.54 2000/02/16 09:50:40 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/02/06 04:32:54 $
+;; Last Modified: $Date: 2000/02/16 09:50:40 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/02/06 04:32:54 $")
+      (let* ((raw-date "$Date: 2000/02/16 09:50:40 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -497,7 +497,9 @@ dependent."
 負の引数を与えると auto-fill-mode 及び SKK モードから抜ける。"
   (interactive "P")
   (let ((auto-fill
-         (cond ((null arg) (not auto-fill-function))
+         (cond ((null arg)
+		(static-if (string< (substring emacs-version 0 2) "19")
+		    (not auto-fill-hook) (not auto-fill-function)))
                ((> (prefix-numeric-value arg) 0) t))))
     (auto-fill-mode (if auto-fill 1 -1))
     (skk-mode arg)

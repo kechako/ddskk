@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.19 2000/02/06 04:32:54 okada Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.20 2000/02/16 09:50:40 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/02/06 04:32:54 $
+;; Last Modified: $Date: 2000/02/16 09:50:40 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -465,8 +465,11 @@
   (or (string< str1 str2) (string= str1 str2)))
 
 (defsubst skk-do-auto-fill ()
-  ;; auto-fill-function に値が代入されておれば、do-auto-fill をコールする。
-  (and auto-fill-function (funcall auto-fill-function)))
+  ;; auto-fill-function/auto-fill-hook に値が代入されていれば、それをコールする。
+  (static-cond
+   ((string< (substring emacs-version 0 2) "19")
+    (and auto-fill-hook (run-hooks 'auto-fill-hook)))
+   (t (and auto-fill-function (funcall auto-fill-function)))))
 
 (defsubst skk-current-insert-mode ()
   (cond (skk-abbrev-mode 'abbrev)

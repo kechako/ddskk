@@ -1,7 +1,7 @@
 -*- outline -*-
 
-             $Date: 1999/11/15 22:25:37 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
-	     $Id: PROPOSAL.branch,v 1.1.2.3 1999/11/15 22:25:37 minakaji Exp $
+             $Date: 1999/11/16 13:02:38 $ Mikio Nakajima/$BCfEg44IW(B <minakaji@osaka.email.ne.jp>
+	     $Id: PROPOSAL.branch,v 1.1.2.4 1999/11/16 13:02:38 minakaji Exp $
 
 * CVS $B%@%$%8%'%9%H(B
 
@@ -60,13 +60,13 @@ Checkout $B$7$F(B cvs server $B$+$i%=!<%9$r$b$i$C$F$-$^$9(B ($B$3$N%U%!%$%k
 
 openlab.ring.gr.jp $B>e$K%"%+%&%s%H$,$J$$$H(B update, commit, tag $B$G$-$^$;(B
 $B$s!#(Bminakaji@ring.gr.jp $B08$F$K4uK>$9$k%"%+%&%s%HL>$H!"(Bcrypt $B$5$l$?%Q%9(B
-$B%o!<%IJ8;zNs$rO"Mm$7$F2<$5$$(B ($BCm(B4)$B!#(B
+$B%o!<%IJ8;zNs$rO"Mm$7$F2<$5$$!#(B
 
 $BEPO?$,40N;$7$?$i$4O"Mm?=$7>e$2$^$9!#(B
 
 *** Login
 
-$B$^$:!"(Bopenlab.ring.gr.jp $B$K%m%0%$%s$7$^$9!#(B
+$B$^$:!"(Bopenlab.ring.gr.jp $B$N(B cvs server $B$K%m%0%$%s$7$^$9!#(B
 
   $ cvs -d :pserver:your_account@openlab.ring.gr.jp:/circus/cvsroot login
                     ^^^^^^^^^^^^
@@ -77,6 +77,18 @@ openlab.ring.gr.jp $B>e$K%"%+%&%s%H$,$J$$$H(B update, commit, tag $B$G$-$^$;
 
 $B<!$+$i$O(B login $B<jB3$-$OMW$j$^$;$s!#(B
  
+*** Checkout 
+
+$B>e5-$N(B guest $B$N(B checkout $B$H<jB3$-E*$K$OF1$8$G$9(B ($B%"%+%&%s%H$r<+J,$N%"(B
+$B%+%&%s%H$K$9$k$@$1(B)$B!#(B
+
+guest $B$G(B checkout $B$7$?%o!<%-%s%0%3%T!<$O(B guest@openlab.ring.gr.jp $B$G(B
+login $B$9$k$h$&(B CVS/Root $B$K>pJs$,<}G<$5$l$F$$$^$9$N$G!"(Bcommit $B$9$k$J$I!"(B
+cvs server $B>e$N%=!<%9$KJQ99$r2C$($k>l9g$O!"$3$N>pJs$r(B
+   `$B<+J,$N%"%+%&%s%HL>(B @ring.gr.jp'
+
+$B$KJQ99$9$k$+!"<+J,$N%"%+%&%s%H$r;H$C$F:FEY(B checkout $B$9$kI,MW$,$"$j$^$9!#(B
+
 
 *** Update
 

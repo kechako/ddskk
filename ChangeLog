@@ -1,3 +1,9 @@
+2000-10-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* skk.el (skk-count-jisyo-candidates): Use `default-directory'
+	instead of "~/".
+	Show "candidate" instead of "candidates" if `count' is 0.
+
 2000-10-05  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk.el (skk-count-jisyo-candidates): Show "candidates", not

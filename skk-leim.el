@@ -4,9 +4,9 @@
 ;;
 ;; Author: Murata Shuuichirou <mrt@mickey.ai.kyutech.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-leim.el,v 1.5.2.3.2.10 2000/10/15 20:34:48 minakaji Exp $
+;; Version: $Id: skk-leim.el,v 1.5.2.3.2.11 2000/10/19 08:45:46 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:48 $
+;; Last Modified: $Date: 2000/10/19 08:45:46 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -95,4 +95,14 @@
 
 (require 'product)
 (product-provide (provide 'skk-leim) (require 'skk-version))
+
+;;;###autoload
+(when (and (featurep 'xemacs)
+	   (file-exists-p
+	    (expand-file-name "auto-autoloads.el"
+			      (file-name-directory (locate-library "skk"))))
+	   (not (featurep 'skk-leim)))
+  ;; auto-autoloads.el 内。
+  (require 'skk-setup))
+
 ;;; skk-leim.el ends here

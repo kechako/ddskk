@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.20 2000/01/29 19:15:33 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.21 2000/01/30 14:33:51 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/29 19:15:33 $
+;; Last Modified: $Date: 2000/01/30 14:33:51 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -364,7 +364,7 @@ Mule では、*euc-japan*, *sjis*, *junet*。
 
 (defcustom skk-kakutei-key "\C-j"
   "*漢字変換の確定動作を行うキー。"
-  :type 'string
+  :type 'sexp
   :group 'skk)
 
 (defcustom skk-previous-candidate-char ?x

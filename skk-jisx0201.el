@@ -1,12 +1,12 @@
 ;;; skk-jisx0201.el --- SKK 用 JISX 0201 コード文字入力プログラム
-;; Copyright (C) 1999 Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
+;; Copyright (C) 1999, 2000 Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.20 2000/01/30 04:21:08 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.21 2000/07/17 20:59:17 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 2000/01/30 04:21:08 $
+;; Last Modified: $Date: 2000/07/17 20:59:17 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -923,7 +923,7 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 		   (buffer-list))))
 	 (setq-default skk-input-mode-string "")
 	 (force-mode-line-update t))
-	(t
+	((eq skk-status-indicator 'minor-mode)
 	 (setq minor-mode-alist
 	       (put-alist 'skk-mode
 			  ;; each element of minor-mode-alist is not cons cell.

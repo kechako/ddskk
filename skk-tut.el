@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.4 2000/07/07 22:13:39 minakaji Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.5 2000/07/17 20:59:17 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:39 $
+;; Last Modified: $Date: 2000/07/17 20:59:17 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -39,12 +39,9 @@
   :group 'skk)
 
 ;; User variables.  prefix should be `skk-tut-'.
-(defcustom skk-tut-file
-  (cond
-   ((and skk-package-data-directory
-	 (file-exists-p (expand-file-name "SKK.tut" skk-package-data-directory)))
-    (expand-file-name "SKK.tut" skk-package-data-directory))
-   (t "/usr/local/share/skk/SKK.tut"))
+(defcustom skk-tut-file 
+  (static-cond ((eq skk-emacs-type 'xemacs) (locate-data-file "SKK.tut"))
+	       (t "/usr/local/share/skk/SKK.tut"))
   "*SKK チュートリアルのファイル名。
 The English version is SKK.tut.E."
   :type 'file

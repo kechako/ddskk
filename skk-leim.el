@@ -3,9 +3,9 @@
 ;; Murata Shuuichirou <mrt@astec.co.jp>
 ;;
 ;; Author: Murata Shuuichirou <mrt@mickey.ai.kyutech.ac.jp>
-;; Version: $Id: skk-leim.el,v 1.5.2.3.2.2 2000/07/07 22:13:37 minakaji Exp $
+;; Version: $Id: skk-leim.el,v 1.5.2.3.2.3 2000/07/17 20:59:17 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:37 $
+;; Last Modified: $Date: 2000/07/17 20:59:17 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -45,15 +45,58 @@
 (defun skk-auto-fill-inactivate ()
   (skk-auto-fill-mode -1))
 
-(register-input-method
- "japanese-skk" "Japanese"
- 'skk-activate nil
- "Simple Kana to Kanji conversion program")
+(defun skk-leim-change-input-method-title (title)
+  (setq current-input-method-title title)
+  ;;(setcar (nthcdr 3 (assoc input-method input-method-alist)) title)
+  ;;(force-mode-line-update t)
+  )
 
-(register-input-method
- "japanese-skk-auto-fill" "Japanese"
- 'skk-auto-fill-activate nil
- "Simple Kana to Kanji conversion program with auto-fill")
+(defadvice skk-abbrev-mode (after skk-leim-ad activate)
+  (skk-leim-change-input-method-title (substring skk-abbrev-mode-string 1)))
+
+(defadvice skk-auto-fill-mode (after skk-leim-ad activate)
+  (skk-leim-change-input-method-title
+   (substring
+    (if skk-katakana skk-katakana-mode-string skk-hiragana-mode-string)
+    1)))
+
+(defadvice skk-jisx0201-mode (after skk-leim-ad activate)
+  (skk-leim-change-input-method-title (substring skk-jisx0201-mode-string 1)))
+
+(defadvice skk-jisx0208-latin-mode (after skk-leim-ad activate)
+  (skk-leim-change-input-method-title
+   (substring skk-jisx0208-latin-mode-string 1)))
+
+(defadvice skk-kakutei (after skk-leim-ad activate)
+  (skk-leim-change-input-method-title
+   (substring
+    (if skk-katakana skk-katakana-mode-string skk-hiragana-mode-string)
+    1)))
+
+(defadvice skk-latin-mode (after skk-leim-ad activate)
+  (skk-leim-change-input-method-title (substring skk-latin-mode-string 1)))
+
+(defadvice skk-mode (after skk-leim-ad activate)
+  (skk-leim-change-input-method-title
+   (substring
+    (if skk-katakana skk-katakana-mode-string skk-hiragana-mode-string)
+    1)))
+
+(defadvice skk-toggle-kana (after skk-leim-ad activate)
+  (skk-leim-change-input-method-title
+   (substring
+    (if skk-katakana skk-katakana-mode-string skk-hiragana-mode-string)
+    1)))
+
+;; (register-input-method
+;;  "japanese-skk" "Japanese"
+;;  'skk-activate nil
+;;  "Simple Kana to Kanji conversion program")
+;;
+;; (register-input-method
+;;  "japanese-skk-auto-fill" "Japanese"
+;;  'skk-auto-fill-activate nil
+;;  "Simple Kana to Kanji conversion program with auto-fill")
 
 (provide 'skk-leim)
 ;;; skk-leim.el ends here

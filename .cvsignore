@@ -5,6 +5,7 @@ leim-list.el
 make.log
 skk-autoloads.el
 skk-cursor2.el
+skk-cursor3.el
 skk-exsearch.el
 skk-exserv.el
 skk-setup.el

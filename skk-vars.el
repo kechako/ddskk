@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.25 2000/07/07 22:13:39 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.26 2000/07/17 20:59:17 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:39 $
+;; Last Modified: $Date: 2000/07/17 20:59:17 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -2112,17 +2112,6 @@ skk-remove-common で参照される。")
 (skk-deflocalvar skk-okuri-index-max -1
   "skk-henkan-list のインデクスで自動送り処理、もしくはサ変検索で検索した最後の候補を指すもの。")
 
-(defconst skk-package-data-directory
-  (if (boundp 'early-packages)
-      (let ((dirs (append (if early-package-load-path early-packages)
-			  (if late-package-load-path late-packages)
-			  (if last-package-load-path last-packages)))
-	    dir)
-	(while (not (file-exists-p (setq dir (car dirs))))
-	  (setq dirs (cdr dirs)))
-	(and dir
-	     (expand-file-name "skk" (expand-file-name "etc" dir))))))
-
 ;;; -- SKK-COMP.EL related internal variables
 ;; ---- buffer local variables
 ;; 空文字列に対して skk-completion を呼ぶこともありうるので、"" を nil では代
@@ -2260,10 +2249,15 @@ This map should be derived from isearch-mode-map.")
   "ascii 数字の char type と漢数字の string type の連想リスト。
 \"1995\" -> \"壱阡九百九拾伍\" のような文字列の変換を行う際に利用する。")
 
-(skk-deflocalvar skk-num-list nil
+;;;###autoload
+(defvar skk-num-list nil
   "skk-henkan-key の中に含まれる数字を表す文字列のリスト。
 例えば、\"▽へいせい7ねん10がつ\" の変換を行うとき、skk-henkan-key は
-\"へいせい7ねん10がつ\" であり、skk-num-list は \(\"7\" \"10\"\) となる。")
+\"へいせい7ねん10がつ\" であり、skk-num-list は \(\"7\" \"10\"\) となる。
+\(buffer local\)" )
+
+;;###autoload
+(make-variable-buffer-local 'skk-num-list)
 
 (defvar skk-num-recompute-key nil
   "#4 タイプのキーにより数値の再計算を行なったときの検索キー。")

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-exsearch.el,v 1.1.2.6 2000/07/02 13:30:42 minakaji Exp $
+;; Version: $Id: skk-exsearch.el,v 1.1.2.7 2000/07/17 20:59:23 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/02 13:30:42 $
+;; Last Modified: $Date: 2000/07/17 20:59:23 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -36,7 +36,7 @@
 ;;
 ;;; Code:
 (eval-when-compile (require 'skk-macs) (require 'skk-vars))
-
+(require 'path-util) ; for exec-installed-p.
 (require 'eieio)
 
 (defclass search-engine ()
@@ -61,10 +61,10 @@ nil (discard standard error output), t (mix it with ordinary output),\
 or a file name string.")
    (success-exit-code :initarg :success-exit-code 
 		      :initform 0
-		      :documentation "Numeric exit status of success." )
+		      :documentation "Numeric exit status of success.")
    (error-exit-code :initarg :error-exit-code
 		    :initform 2
-		    :documentation "Numeric exit status of error." ))
+		    :documentation "Numeric exit status of error."))
   "External synchronous search engine class.")
 
 (defclass regular-engine (synchronous-search-engine)
@@ -88,12 +88,13 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
 	      'process (oref engine program) (cons code code))))))
 
 (defvar cdbget (make-instance regular-engine
-			      :program "/usr/local/bin/cdbget"
+			      :program (exec-installed-p "cdbget")
 			      :infile "/usr/local/share/skk/SKK-JISYO.L.cdb")
   "*cdbget search engine object.")
 (setup-synchronous-engine cdbget)
 
-(defvar look (make-instance look-engine :program "/usr/bin/look")
+(defvar look (make-instance look-engine :program 
+			    (exec-installed-p "look"))
   "*look search engine object.")
 			       
 (defmethod core-engine ((engine synchronous-search-engine) argument)
@@ -133,14 +134,14 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
       (and skk-look-dictionary-order (setq opt "d"))
       (and skk-look-ignore-case (setq opt (concat "f" opt)))
       (and skk-look-use-alternate-dictionary
-	   (setq opt (concat "a" opt)) )
+	   (setq opt (concat "a" opt)))
       (and opt (setq argument (cons (concat "-" opt) argument)))
       (and skk-look-termination-character
 	   (setq argument
-		 (cons (list "-t" skk-look-termination-character) argument) ))
+		 (cons (list "-t" skk-look-termination-character) argument)))
       (and (core-engine engine argument)
 	   (split-string (buffer-substring-no-properties (point-min) (1- (point-max)))
-			 "\n" )))))
+			 "\n")))))
 
 ;;;###autoload
 (defun skk-cdbget-search ()
@@ -153,14 +154,17 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
   (and skk-abbrev-mode
        (eq (skk-str-ref skk-henkan-key (1- (length skk-henkan-key))) ?*)
        (let ((args (substring skk-henkan-key 0 (1- (length skk-henkan-key))))
-	     v )
+	     v)
 	 (setq v (search-engine look args))
 	 (if (not skk-look-recursive-search)
 	     v
 	   (let (skk-henkan-key v2 v3)
 	     (while v
-	       (let ((skk-current-search-prog-list
-		      (delete '(skk-look) (copy-sequence skk-search-prog-list)) ))
+	       (let ((skk-current-search-prog-list (copy-sequence skk-search-prog-list)))
+		 (setq skk-current-search-prog-list
+		       (delete '(skk-look) skk-current-search-prog-list))
+		 (setq skk-current-search-prog-list
+		       (delete '(skk-look-search) skk-current-search-prog-list))
 		 (setq skk-henkan-key (car v))
 		 (while skk-current-search-prog-list
 		   (setq v3 (skk-search)
@@ -168,9 +172,9 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
 				(skk-nunion v2 (cons (car v) v3))
 			      (if v3
 				  (skk-nunion v2 (cons (car v) v3))
-				v2 )))))
-	       (setq v (cdr v)) )
-	     v2 )))))
+				v2)))))
+	       (setq v (cdr v)))
+	     v2)))))
 
 (provide 'skk-exsearch)
 ;;; skk-exsearch.el ends here

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor3.el,v 1.1.2.1 2000/07/07 23:55:46 minakaji Exp $
+;; Version: $Id: skk-cursor3.el,v 1.1.2.2 2000/07/17 20:59:23 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 23:55:46 $
+;; Last Modified: $Date: 2000/07/17 20:59:23 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -49,43 +49,47 @@
 
 ;;; advices.
 (defadvice skk-kakutei (after skk-cursor3-ad activate)
-  (set-face-property 'text-cursor 'foreground (skk-cursor-current-color)
+  ;;At 10 Jul 2000 16:37:49 +0900,
+  ;;Yoshiki Hayashi <t90553@mail.ecc.u-tokyo.ac.jp> wrote:
+  ;;> foreground を background に変える必要があること以外は、今の
+  ;;> ところそのままで動いているようです。しばらく test してみます。
+  ;;> どうも、text-cursor も普通の face のようで、foreground が文
+  ;;> 字の色を、background が文字の背景の色を表しているようです。
+  (set-face-property 'text-cursor 'background (skk-cursor-current-color)
 		     (current-buffer)))
 
 (defadvice skk-mode (after skk-cursor3-ad activate)
-  (set-face-property 'text-cursor 'foreground
+  (set-face-property 'text-cursor 'background
 		     (cond ((not skk-mode) skk-cursor-default-color)
 			   (skk-katakana skk-cursor-katakana-color)
-			   (skk-j-mode skk-cursor-hiragana-color)
-			   (t skk-cursor-latin-color))
+			   (skk-j-mode skk-cursor-hiragana-color))
 		     (current-buffer)))
 
 (defadvice skk-auto-fill-mode (after skk-cursor3-ad activate)
-  (set-face-property 'text-cursor 'foreground
+  (set-face-property 'text-cursor 'background
 		     (cond ((not skk-mode) skk-cursor-default-color)
 			   (skk-katakana skk-cursor-katakana-color)
-			   (skk-j-mode skk-cursor-hiragana-color)
-			   (t skk-cursor-latin-color))
+			   (skk-j-mode skk-cursor-hiragana-color))
 		     (current-buffer)))
 
 (defadvice skk-abbrev-mode (after skk-cursor3-ad activate)
-  (set-face-property 'text-cursor 'foreground skk-cursor-abbrev-color
+  (set-face-property 'text-cursor 'background skk-cursor-abbrev-color
 		     (current-buffer)))
 
 (defadvice skk-jisx0201-mode (after skk-cursor3-ad activate)
-  (set-face-property 'text-cursor 'foreground skk-cursor-jisx0201-color
+  (set-face-property 'text-cursor 'background skk-cursor-jisx0201-color
 		     (current-buffer)))
 
 (defadvice skk-jisx0208-latin-mode (after skk-cursor3-ad activate)
-  (set-face-property 'text-cursor 'foreground skk-cursor-jisx0208-latin-color
+  (set-face-property 'text-cursor 'background skk-cursor-jisx0208-latin-color
 		     (current-buffer)))
 
 (defadvice skk-latin-mode (after skk-cursor3-ad activate)
-  (set-face-property 'text-cursor 'foreground skk-cursor-latin-color
+  (set-face-property 'text-cursor 'background skk-cursor-latin-color
 		     (current-buffer)))
 
 (defadvice skk-toggle-kana (after skk-cursor3-ad activate)
-  (set-face-property 'text-cursor 'foreground
+  (set-face-property 'text-cursor 'background
 		     (cond (skk-katakana skk-cursor-katakana-color)
 			   (skk-j-mode skk-cursor-hiragana-color))
 		     (current-buffer)))
@@ -93,20 +97,20 @@
 ;;; Hooks
 (add-hook 'isearch-mode-end-hook
 	  (lambda ()
-	    (set-face-property 'text-cursor 'foreground
+	    (set-face-property 'text-cursor 'background
 			       (skk-cursor-current-color) (current-buffer)))
 	  'append)
 
 (add-hook 'minibuffer-setup-hook 
 	  (lambda ()
-	    (set-face-property 'text-cursor 'foreground
+	    (set-face-property 'text-cursor 'background
 			       (skk-cursor-current-color) (current-buffer)))
 	  'append)
 
 (add-hook 'minibuffer-exit-hook
 	  (lambda ()
 	    (with-current-buffer (nth 1 (buffer-list))
-	      (set-face-property 'text-cursor 'foreground
+	      (set-face-property 'text-cursor 'background
 				 (skk-cursor-current-color) (current-buffer))))
 	      'append)
 

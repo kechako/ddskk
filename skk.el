@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.58 2000/07/07 22:13:41 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.59 2000/07/17 20:59:18 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:41 $
+;; Last Modified: $Date: 2000/07/17 20:59:18 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -90,7 +90,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/07/07 22:13:41 $")
+      (let* ((raw-date "$Date: 2000/07/17 20:59:18 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -397,8 +397,9 @@ dependent."
         (skk-mode-off)
 	(remove-hook 'pre-command-hook 'skk-pre-command 'local)
 	(remove-hook 'post-command-hook 'skk-after-point-move 'local)
-	(and (eq skk-status-indicator 'left)
-	     (setq skk-input-mode-string ""))
+	;; 途中で切り替えたときのために。
+	(or (eq skk-status-indicator 'minor-mode)
+	    (setq skk-input-mode-string ""))
 	(static-if (eq skk-emacs-type 'xemacs) (easy-menu-remove skk-menu)))
     ;; enter skk-mode
     (if (not skk-mode-invoked)
@@ -487,8 +488,9 @@ dependent."
     (add-hook 'pre-command-hook 'skk-pre-command nil 'local)
     (make-local-hook 'post-command-hook)
     (add-hook 'post-command-hook 'skk-after-point-move nil 'local)
-    ;;(and (eq skk-status-indicator 'left)
-    ;;     (setq skk-input-mode-string skk-hiragana-mode-string))
+    ;; 途中で切り替えたときのために。
+    (and (eq skk-status-indicator 'left)
+         (setq skk-input-mode-string skk-hiragana-mode-string))
     (skk-j-mode-on)
     (static-if (eq skk-emacs-type 'xemacs) (easy-menu-add skk-menu))
     (run-hooks 'skk-mode-hook)))
@@ -3622,7 +3624,7 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 		   (buffer-list))))
 	 (setq-default skk-input-mode-string "")
 	 (force-mode-line-update t))
-	(t
+	((eq skk-status-indicator 'minor-mode)
 	 (static-if (eq skk-emacs-type 'xemacs)
 	     (add-minor-mode 'skk-mode 'skk-input-mode-string)
 	   (setq minor-mode-alist

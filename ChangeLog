@@ -1,3 +1,49 @@
+2000-07-18  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-vars.el (skk-package-data-directory): Removed.
+
+	* experimental/skk-exsearch.el: Require path-util.
+	Remove all unnecessary spaces between paren.
+	(skk-look-search): Remove `(skk-look-search)' from
+	`skk-current-search-prog-list'.
+	(look): Use `exec-installed-p'.
+	(cdbget): Ditto.
+
+2000-07-11  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* experimental/skk-cursor3.el: Change all the second argument of
+	set-face-property to `background'.
+	(skk-mode): Remove t condition (set cursor to
+	`skk-cursor-latin-color').
+	(skk-auto-fill-mode): Ditto.
+
+	* skk-leim.el Do not register input-method.
+	(skk-leim-change-input-method-title): New function.
+	(skk-abbrev-mode): New advice.
+	(skk-auto-fill-mode): Ditto.
+	(skk-jisx0201-mode): Ditto.
+	(skk-jisx0208-latin-mode): Ditto.
+	(skk-kakutei): Ditto.
+	(skk-latin-mode): Ditto.
+	(skk-mode): Ditto.
+	(skk-toggle-kana): Ditto. 
+	
+	* skk-setup.el.in (isearch-mode-end-hook): Separate into two
+	parts, isearch cleanup parts and cursor parts.
+	Add advice to `toggle-input-method'.
+	Add title of japanese-skk.
+	Add hook `isearch-mode-hook' only when 
+
+	* skk.el (skk-setup-modeline): Change condition t to
+	`(eq skk-status-indicator 'minor-mode)'.
+	(skk-mode): When exit, set `skk-input-mode-string' null string
+	unless `skk-status-indicator' is `minor-mode'.
+	When entering into skk-mode, set `skk-input-mode-string'
+	`skk-hiragana-mode-string' if `skk-status-indicator' is `left'.
+	
+	* skk-jisx0201.el: Change condition t to
+	`(eq skk-status-indicator 'minor-mode)'.
+	
 2000-07-09  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-setup.el.in (isearch-mode-end-hook): Check if skk-cursor

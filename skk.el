@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.6 1999/11/23 03:00:56 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.7 1999/11/25 04:07:58 kawamura Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/23 03:00:56 $
+;; Last Modified: $Date: 1999/11/25 04:07:58 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -82,7 +82,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/23 03:00:56 $")
+      (let* ((raw-date "$Date: 1999/11/25 04:07:58 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -1015,6 +1015,7 @@ skk-convert-okurigana-into-katakana の値を non-nil にする。
 ;; <kana>         ::= (<ひらがな文字列> . <カタカナ文字列>) | nil
 ;; <char>         ::= <英小文字>
 ;; <nextstate>    ::= <英小文字文字列> | nil
+;;;###autoload
 (defun skk-compile-rule-list (&rest l)
   ;; rule-list を木の形にコンパイルする。
   (let ((tree (skk-make-rule-tree nil "" nil nil nil))

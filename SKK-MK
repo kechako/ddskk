@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.12 1999/12/19 09:01:40 minakaji Exp $
-;; Last Modified: $Date: 1999/12/19 09:01:40 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.13 1999/12/30 09:05:50 czkmt Exp $
+;; Last Modified: $Date: 1999/12/30 09:05:50 $
 
 ;; Commentary
 ;;
@@ -59,7 +59,11 @@ end with `skk'." )
 (defvar PREFIX (or (getenv "PREFIX") install-prefix))
 (defvar LISPDIR
   (let ((dir (expand-file-name
-	      (or (getenv "LISPDIR") (install-detect-elisp-directory PREFIX)))))
+	      (or (getenv "LISPDIR")
+		  (cond ((memq system-type '(ms-dos windows-nt))
+			 (expand-file-name "site-lisp" PREFIX))
+			(t
+			 (install-detect-elisp-directory PREFIX)))))))
     (if (file-exists-p dir)
 	(progn
 	  ;; default-load-path takes effect for detecting directory.
@@ -68,7 +72,10 @@ end with `skk'." )
 (defvar VERSION_SPECIFIC_LISPDIR
   (let ((dir (expand-file-name
 	      (or (getenv "VERSION_SPECIFIC_LISPDIR")
-		  (install-detect-elisp-directory PREFIX nil 'version-specific)))))
+		  (cond ((memq system-type '(ms-dos windows-nt))
+			 (expand-file-name "site-lisp" PREFIX))
+			(t
+			 (install-detect-elisp-directory PREFIX nil 'version-specific)))))))
     (if (file-exists-p dir) dir)))
 (defvar APEL_SPECIFIC_LISPDIR (let ((dir (getenv "APEL_SPECIFIC_LISPDIR")))
 				(and dir (file-exists-p dir) (expand-file-name dir))))
@@ -115,7 +122,7 @@ end with `skk'." )
 			(not (string= emutmp VERSION_SPECIFIC_LISPDIR))
 			(file-exists-p emutmp)
 			(file-exists-p (expand-file-name "emu.el" emutmp))))))
-	       emutmp )
+	       emutmp)
 	      ((and
 		apeldir 
 		(setq emutmp (expand-file-name (concat "../" EMU_PREFIX) apeldir))
@@ -129,7 +136,7 @@ end with `skk'." )
 			(not (string= emutmp VERSION_SPECIFIC_LISPDIR))
 			(file-exists-p emutmp)
 			(file-exists-p (expand-file-name "emu.el" emutmp))))))
-	       emutmp ))))
+	       emutmp))))
   (and emudir 
        (setq load-path (tinyinstall-add-load-path emudir load-path)))
   (and apeldir
@@ -159,7 +166,7 @@ end with `skk'." )
 	  (and (boundp 'mule-version)
 	       (or (string< "4.0" mule-version) (string< "3.0" mule-version))))
       'junet
-    *junet* ))
+    *junet*))
 
 ;; GENERIC VARIABLE.
 (defvar DOCDIR (or (getenv "DOCDIR") "./doc"))
@@ -206,7 +213,7 @@ end with `skk'." )
 	(and (or (featurep 'gdbm) (featurep 'dbm) (featurep 'berkdb)
 		 (featurep 'berkeley-db))
 	     (setq list (nconc list (list 'skk-dbm))))
-	list )))
+	list)))
 (defvar SKK_PREFIX (or (getenv "SKK_PREFIX") "skk"))
 (defvar SKK_TEXIS (or (getenv "SKK_TEXIS") '("skk.texi")))
 (defvar SKK_TUTORIALS (or (getenv "SKK_TUTORIALS") '("SKK.tut" "SKK.tut.E")))
@@ -228,10 +235,10 @@ end with `skk'." )
 		 (append (if early-package-load-path early-packages)
 			 (if late-package-load-path late-packages)
 			 (if last-package-load-path last-packages)))
-		dir )
+		dir)
 	    (while (not (file-exists-p (setq dir (car dirs))))
 	      (setq dirs (cdr dirs)))
-	    dir ))))
+	    dir))))
 
 (defvar PACKAGE_INFODIR
   (or (getenv "PACKAGE_INFODIR") (expand-file-name "info" PACKAGEDIR)))
@@ -248,6 +255,10 @@ end with `skk'." )
 
 (defconst SKK_PACKAGE_NOT_USE '(skk-autoloads))
 (defconst SKK_DAREDEVIL_NOT_USE '(skk-vip skk-foreword stack-m))
+
+;; This code is for skk-jisx0201.el.
+(if (fboundp 'make-translation-table)
+    (setq standard-translation-table-for-decode (make-translation-table nil)))
 
 ;;; [ADVICES]
 (defadvice write-region (before SKK-MK-ad disable)
@@ -364,25 +375,25 @@ end with `skk'." )
 	     (let ((l
 		    (mapcar
 		     (function (lambda (d) (expand-file-name "lisp/skk" (car d))))
-		     package-locations )))
+		     package-locations)))
 	       (if early-package-load-path
 		   (nconc
 		    l 
 		    (mapcar
 		     (function (lambda (d) (expand-file-name "lisp/skk" d)))
-		     early-packages )))
+		     early-packages)))
 	       (if late-package-load-path
 		   (nconc
 		    l
 		    (mapcar
 		     (function (lambda (d) (expand-file-name "lisp/skk" d)))
-		     late-packages )))
+		     late-packages)))
 	       (if last-package-load-path
 		   (nconc
 		    l
 		    (mapcar
 		     (function (lambda (d) (expand-file-name "lisp/skk" d)))
-		     last-packages )))
+		     last-packages)))
 	       l )
 	   (delq nil
 		 (mapcar
@@ -390,8 +401,8 @@ end with `skk'." )
 		  load-path ))))
 	(files '("auto-autoloads.el" "custom-load.el" "skk-autoloads.el"
 		 ;; obsolete.
-		 "skk-vars.el" ))
-	(index0 0) (index1 0) (counter 0) dir file )
+		 "skk-vars.el"))
+	(index0 0) (index1 0) (counter 0) dir file)
     (message "Cleanup trouble makers...")
    (while (setq dir (nth index0 dirs))
      (setq index1 0)

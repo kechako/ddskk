@@ -4,9 +4,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.17 1999/12/19 09:01:40 minakaji Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.18 1999/12/30 09:05:50 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/19 09:01:40 $
+;; Last Modified: $Date: 1999/12/30 09:05:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -29,8 +29,7 @@
 ;; functions for hooks.
 ;;
 ;; 1. always invoke skk isearch.
-;; (add-hook 'isearch-mode-hook 
-;;           (function (lambda () (require 'skk) (skk-isearch-mode-setup))))
+;; (add-hook 'isearch-mode-hook 'skk-isearch-mode-setup)
 ;; (add-hook 'isearch-mode-end-hook 'skk-isearch-mode-cleanup)
 ;;
 ;; 2. invoke only if skk-mode is on.
@@ -51,7 +50,8 @@
 ;; skk-mode.
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'skk) (require 'static))
+(eval-when-compile (require 'skk-macs) (require 'static))
+(require 'skk)
 (require 'skk-vars)
 
 ;; interface to skk.el
@@ -66,7 +66,7 @@
 
 (defsubst skk-isearch-conversion-active-p ()
   "Non-nil if skk conversion is active."
-  skk-henkan-on )
+  skk-henkan-on)
 
 (defsubst skk-isearch-conversion-start ()
   "Point where conversion is start.  Includes skk marker."
@@ -94,11 +94,11 @@
 
 (defsubst skk-isearch-skk-jisx0208-latin-mode-p ()
   "Non-nil if skk is jisx0208 latin (zenkaku) input mode."
-  skk-jisx0208-latin-mode )
+  skk-jisx0208-latin-mode)
 
 (defsubst skk-isearch-skk-abbrev-mode-p ()
   "Non-nil if skk is Abbrev mode."
-  skk-abbrev-mode )
+  skk-abbrev-mode)
 
 (defsubst skk-isearch-skk-turn-on-jix0208-latin-mode ()
   "Set current skk mode to jisx0208 latin (zenkaku) input mode."
@@ -230,7 +230,7 @@ kakutei'ed and erase the buffer contents."
     (set skk-isearch-overriding-local-map nil)
     (setq skk-isearch-message nil
 	  skk-isearch-last-mode-string ""
-	  skk-isearch-last-mode-regexp "" )
+	  skk-isearch-last-mode-regexp "")
     ;; サーチ中に入力モードを変更したら、モードラインの表示もそれに従い
     ;; 変更されるので、カレントバッファの入力モードとモードラインの表示
     ;; とが sync しなくなる。従い、サーチが終了した際、モードラインをカ

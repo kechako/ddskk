@@ -1,12 +1,28 @@
 1999-12-30  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* SKK-MK (LISPDIR): Select a good place for MS-DOS and Windows.
+	(VERSION_SPECIFIC_LISPDIR): Ditto.
+	(standard-translation-table-for-decode): Under Emacs 20.3 or
+	lator, set this variable and compile skk-jisx0201.el properly.
+
+	* etc/Emacs.ad: Typo.
+
 	* experimental/skk-dos.el: New file.
 
+	* skk-isearch.el: Always require "skk".
 	* skk-jisx0201.el (skk-setup-modeline): Don't check the feature
-	`xemacs'. Refer to `skk-emacs-type' instead.
+	"xemacs". Refer to `skk-emacs-type' instead.
+
+	* skk-study.el (skk-study-file): Let the default value appropriate
+	for MS-DOS.
+	(skk-study-backup-file): Ditto.
+	(skk-study-save): Don't use `copy-file' under MS-DOS.
 
 	* skk-vars.el (skk-cursor-change-width): Ugh, fix the default
 	value.
+
+	* tinyinstall.el (install-prefix): Select a good place for MS-DOS
+	and Windows.
 
 1999-12-27  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 

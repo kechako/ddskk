@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.45 2000/09/12 16:54:50 czkmt Exp $
-;; Last Modified: $Date: 2000/09/12 16:54:50 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.46 2000/09/18 16:10:40 czkmt Exp $
+;; Last Modified: $Date: 2000/09/18 16:10:40 $
 
 ;; Commentary
 ;;
@@ -203,9 +203,7 @@
 		      (setq list (nconc list (list 'skk-xm20_4))))
 		     ((or (featurep 'gdbm) (featurep 'dbm) (featurep 'berkdb)
 			  (featurep 'berkeley-db))
-		      (setq list (nconc list (list 'skk-dbm)))))
-	       (setq list (delq 'skk-autolaods
-				(append list '(auto-autoloads custom-load)))))
+		      (setq list (nconc list (list 'skk-dbm))))))
 	      (t
 	       ;; FSFmacs
 	       (setq list (nconc list (list 'ccc)))
@@ -380,6 +378,10 @@ Just working around for it...")
 	 (SKK-MK-generate-autoloads-el)))
   (compile-elisp-modules SKK_MODULES (expand-file-name ".")))
 
+(defun SKK-MK-compile-package ()
+  (SKK-MK-generate-autoloads-el-package)
+  (compile-elisp-modules SKK_MODULES (expand-file-name ".")))
+
 (defun SKK-MK-compile-info ()
   (and SKK_INFO
        (if (or (not (file-exists-p (expand-file-name SKK_INFO DOCDIR)))
@@ -482,7 +484,7 @@ Just working around for it...")
 	;; merely copy without setup dictionary information.
 	(copy-file "skk-setup.el.in" "skk-setup.el" 'ok-if-already-exists)))
     ;;
-    (when (fboundp 'register-input-method)
+    (when (and (fboundp 'register-input-method) (not (featurep 'xemacs)))
       (copy-file "skk-setup.el" "leim-list.el" 'ok-if-already-exists)
       (install-elisp-modules (list 'leim-list) "." SKK_LISPDIR))
     ;; install skk-setup.el
@@ -500,6 +502,8 @@ Just working around for it...")
     (or (file-exists-p PACKAGE_INFODIR)
 	(make-directory PACKAGE_INFODIR t))
     ;; delete already installed unnecessary files.
+    (setq SKK_MODULES (delq 'skk-autoloads
+			    (append SKK_MODULES '(auto-autoloads custom-load))))
     (while SKK_DAREDEVIL_NOT_USE
       (setq SKK_MODULES (delq (car SKK_DAREDEVIL_NOT_USE) SKK_MODULES)
 	    delete-target (expand-file-name
@@ -510,7 +514,7 @@ Just working around for it...")
       (setq delete-target (concat delete-target "c"))
       (and (file-exists-p delete-target) (delete-file delete-target)))
     ;; install Emacs Lisp programs.
-    (SKK-MK-compile)
+    (SKK-MK-compile-package)
     (install-elisp-modules SKK_MODULES "." PACKAGE_LISPDIR)
     (delete-file "./auto-autoloads.el")
     (delete-file "./custom-load.el")
@@ -652,23 +656,20 @@ SKK tutorials:
 
 (defun SKK-MK-generate-autoloads-el ()
   "Generate skk-autoload.el."
-  (cond
-   (t
-    (let ((modules SKK_MODULES)
-	  (buf (get-buffer-create " *SKK-MK-generate-autoloads-el*"))
-	  (sort-min)
-	  (funcs)
-	  standard-output)
-      (save-excursion
-	(set-buffer buf)
-	(erase-buffer)
-	(or (featurep 'xemacs)
-	    (insert "\
+  (let ((modules SKK_MODULES)
+	(buf (get-buffer-create " *SKK-MK-generate-autoloads-el*"))
+	(sort-min)
+	(funcs)
+	standard-output)
+    (save-excursion
+      (set-buffer buf)
+      (erase-buffer)
+      (insert "\
 ;;; skk-autoloads.el --- autoload settings for SKK.
 
 ;; This file was generated automatically by SKK-MK at "
-		    (current-time-string)
-		    ".
+	      (current-time-string)
+	      ".
 
 ;; This file is part of Daredevil SKK.
 
@@ -687,55 +688,69 @@ SKK tutorials:
 ;; Software Foundation Inc., 59 Temple Place - Suite 330, Boston,
 ;; MA 02111-1307, USA.
 
-;;; Code:\n\n"))
-	(cond
-	 ((and (condition-case nil
-		   (and (require 'autoload)
-			(require 'poem))
-		 (error))
-	       (fboundp 'generate-file-autoloads))
-	  (mapcar
-	   (function
-	    (lambda (module)
-	      (let ((file (expand-file-name (format "%s.el" module) default-directory)))
-		(and (file-exists-p file)
-		     (generate-file-autoloads file)))))
-	   modules)
-	  (cond ((featurep 'xemacs)
-		 (let ((generated-autoload-file
-			(expand-file-name "auto-autoloads.el" default-directory)))
-		   (setq buffer-file-name generated-autoload-file)
-		   (fixup-autoload-buffer "skk-autoloads")
-		   (write-region-as-coding-system
-		    'iso-2022-jp
-		    (point-min) (point-max) generated-autoload-file)
-		   (kill-buffer buf)
-		   (add-to-list 'command-line-args-left ".")
-		   (Custom-make-dependencies)))
-		(t
-		 (goto-char (point-max))
-		 (insert "\n(provide 'skk-autoloads)\n;;; skk-autoloads.el ends here\n")
-		 (write-region-as-coding-system
-		  (if (boundp 'MULE) *junet*unix 'iso-2022-jp)
-		  (point-min) (point-max) "skk-autoloads.el" nil 'quiet)
-		 (kill-buffer buf))))
-	 (t
-	  (setq sort-min (point))
-	  (while modules
-	    (setq funcs (SKK-MK-collect-autoload-functions (car modules)))
-	    (while funcs
-	      (insert "(autoload '" (caar funcs)
-		      " \"" (file-name-nondirectory (symbol-name (car modules)))
-		      "\" nil "
-		      (symbol-name (if (cdar funcs) t))
-		      " nil)\n")
-	      (setq funcs (cdr funcs)))
-	    (setq modules (cdr modules)))
-	  (sort-lines nil sort-min (point-max))
-	  (goto-char (point-max))
-	  (insert "\n(provide 'skk-autoloads)\n;;; skk-autoloads.el ends here\n")
-	  (write-region (point-min) (point-max) "skk-autoloads.el" nil 'quiet)
-	  (kill-buffer buf))))))))
+;;; Code:\n\n")
+      (cond
+       ((and (condition-case nil
+		 (and (require 'autoload)
+		      (require 'poem))
+	       (error))
+	     (fboundp 'generate-file-autoloads))
+	(mapcar
+	 (function
+	  (lambda (module)
+	    (let ((file (expand-file-name (format "%s.el" module) default-directory)))
+	      (and (file-exists-p file)
+		   (generate-file-autoloads file)))))
+	 modules)
+	(goto-char (point-max))
+	(insert "\n(provide 'skk-autoloads)\n;;; skk-autoloads.el ends here\n")
+	(write-region-as-coding-system
+	 (if (boundp 'MULE) *junet*unix 'iso-2022-jp)
+	 (point-min) (point-max) "skk-autoloads.el" nil 'quiet)
+	(kill-buffer buf))
+       (t
+	(setq sort-min (point))
+	(while modules
+	  (setq funcs (SKK-MK-collect-autoload-functions (car modules)))
+	  (while funcs
+	    (insert "(autoload '" (caar funcs)
+		    " \"" (file-name-nondirectory (symbol-name (car modules)))
+		    "\" nil "
+		    (symbol-name (if (cdar funcs) t))
+		    " nil)\n")
+	    (setq funcs (cdr funcs)))
+	  (setq modules (cdr modules)))
+	(sort-lines nil sort-min (point-max))
+	(goto-char (point-max))
+	(insert "\n(provide 'skk-autoloads)\n;;; skk-autoloads.el ends here\n")
+	(write-region (point-min) (point-max) "skk-autoloads.el" nil 'quiet)
+	(kill-buffer buf))))))
+
+(defun SKK-MK-generate-autoloads-el-package ()
+  "Generate auto-autoload.el."
+  (let ((modules SKK_MODULES)
+	(buf (get-buffer-create " *SKK-MK-generate-autoloads-el*")))
+    (require 'poem)
+    (save-excursion
+      (set-buffer buf)
+      (erase-buffer)
+      (mapcar
+       (function
+	(lambda (module)
+	  (let ((file (expand-file-name (format "%s.el" module) default-directory)))
+	    (and (file-exists-p file)
+		 (generate-file-autoloads file)))))
+       modules)
+      (let ((generated-autoload-file
+	     (expand-file-name "auto-autoloads.el" default-directory)))
+	(setq buffer-file-name generated-autoload-file)
+	(fixup-autoload-buffer "skk-autoloads")
+	(write-region-as-coding-system
+	 'iso-2022-jp
+	 (point-min) (point-max) generated-autoload-file)
+	(kill-buffer buf)
+	(add-to-list 'command-line-args-left ".")
+	(Custom-make-dependencies)))))
 
 (defun SKK-MK-collect-autoload-functions (module)
   "Return a list of autoload functions defined in MODULE."

@@ -1,3 +1,10 @@
+2000-01-08  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-setup-delete-selection-mode): Setup for pending-del
+	on XEmacs.
+	(skk-lisp-prog-p): Check first character by aref instead of
+	skk-str-ref.  Check second character is more than ?\37, too.
+
 2000-01-02  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* experimental/skk-dos.el: Fix comments.

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.28 1999/12/26 02:33:08 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.29 2000/01/07 22:44:23 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/26 02:33:08 $
+;; Last Modified: $Date: 2000/01/07 22:44:23 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/12/26 02:33:08 $")
+      (let* ((raw-date "$Date: 2000/01/07 22:44:23 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))
@@ -597,14 +597,25 @@ dependent."
 (defun skk-setup-delete-selection-mode ()
   ;; Delete Selection モードが SKK を使った日本語入力に対しても機能するように
   ;; セットアップする。
-  (and (featurep 'delsel)
-       (not (get 'skk-insert 'delete-selection))
-       (mapcar (function (lambda (func) (put func 'delete-selection t)))
-	       '(skk-current-kuten
-		 skk-current-touten
-		 skk-input-by-code-or-menu
-		 skk-insert
-		 skk-today))))
+  (static-cond
+   ((eq skk-emacs-type 'xemacs)
+    (and (featurep 'pending-del)
+	 (not (get 'skk-insert 'pending-delete))
+	 (mapcar (function (lambda (func) (put func 'pending-delete t)))
+		 '(skk-current-kuten
+		   skk-current-touten
+		   skk-input-by-code-or-menu
+		   skk-insert
+		   skk-today))))
+   (t
+    (and (featurep 'delsel)
+	 (not (get 'skk-insert 'delete-selection))
+	 (mapcar (function (lambda (func) (put func 'delete-selection t)))
+		 '(skk-current-kuten
+		   skk-current-touten
+		   skk-input-by-code-or-menu
+		   skk-insert
+		   skk-today))))))
 
 (defun skk-setup-auto-paren ()
   (if (and skk-auto-insert-paren skk-auto-paren-string-alist)
@@ -3101,11 +3112,13 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                 "\")")
       word)))
 
-(defun skk-lisp-prog-p (word)
-  ;; word が Lisp プログラムであれば、t を返す。
-  (let ((l (skk-str-length word)))
-    (and (> l 2) (eq (skk-str-ref word 0) ?\() (< (aref word 1) 128)
-         (eq (skk-str-ref word (1- l)) ?\)))))
+(defun skk-lisp-prog-p (string)
+  ;; STRING が Lisp プログラムであれば、t を返す。
+  (let ((l (skk-str-length string)))
+    (and (> l 2) (eq (aref string 0) ?\()
+	 ;; second character is ascii or not.
+	 (< ?\37 (aref string 1)) (< (aref string 1) ?\200) 
+         (eq (skk-str-ref string (1- l)) ?\)))))
 
 (defun skk-public-jisyo-has-entry-p (okurigana word)
   ;; 共有辞書が MIDASHI 及びそれに対応する WORDS エントリを持っていれば、

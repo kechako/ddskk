@@ -44,6 +44,6 @@ clean:
 
 tar: clean
 	cd .. ; $(RM) $(PACKAGE)-$(VERSION) $(PACKAGE)-$(VERSION).tar.gz ;\
-	ln -sf $(PACKAGE) $(PACKAGE)-$(VERSION) ;\
+	ln -sf nicola $(PACKAGE)-$(VERSION) ;\
 	$(TAR) cvpf $(PACKAGE)-$(VERSION).tar -X .exclude -h $(PACKAGE)-$(VERSION) ;\
 	$(GZIP) $(PACKAGE)-$(VERSION).tar

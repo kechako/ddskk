@@ -1,3 +1,7 @@
+2000-09-22  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* cvs-ja.html, cvs.html: Update for CVS 1.11.
+
 2000-09-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* Makefile (package): Call `SKK-MK-compile-package'.

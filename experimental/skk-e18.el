@@ -52,6 +52,44 @@
 (defvar auto-fill-function nil)
 (defvar unread-command-events nil)
 
+(defconst skk-hankaku-alist
+  '((161 . 32)	; ?\ 
+    (170 . 33)	;?\!
+    (201 . 34)	;?\"
+    (244 . 35)	;?\#
+    (240 . 36)	;?\$
+    (243 . 37)	;?\%
+    (245 . 38)	;?\&
+    (199 . 39)	;?\'
+    (202 . 40)	;?\(
+    (203 . 41)	;?\)
+    (246 . 42)	;?\*
+    (220 . 43)	;?\+
+    (164 . 44)	;?\,
+    (221 . 45)	;?\-
+    (165 . 46)	;?\.
+    (191 . 47)	;?\/
+    (167 . 58)	;?\:
+    (168 . 59)	;?\;
+    (227 . 60)	;?\<
+    (225 . 61)	;?\=
+    (228 . 62)	;?\>
+    (169 . 63)	;?\?
+    (247 . 64)	;?\@
+    (206 . 91)	;?\[
+    (239 . 92)	;?\\
+    (207 . 93)	;?\]
+    (176 . 94)	;?^ 
+    (178 . 95)	;?\_
+    (208 . 123)	;?\{
+    (195 . 124)	;?\|
+    (209 . 125)	;?\}
+    (177 . 126)	;?\~
+    (198 . 96))	;?` 
+  "文字コードの 2 番目のバイトとその文字に対応する ascii 文字 \(char\) との連想リスト。
+Mule l もしくは  Mule 2 を使用する場合に skk-latin-region で参照する。
+Mule-2.3 添付の egg.el よりコピーした。")
+
 (skk-deflocalvar skk-current-local-map nil)
 
 (defvar skk-e18-self-insert-keys
@@ -241,6 +279,24 @@ be applied to `file-coding-system-for-read'."
 	      (save-excursion
 		(set-buffer buf)
 		(use-local-map local-map)))))))
+    (defun skk-jisx0208-to-ascii (string)
+      (let ((char
+	     (cond ((eq skk-emacs-type 'mule1)
+		    (let* ((ch (string-to-char string))
+			   (ch1 (char-component ch 1)))
+		      (cond ((eq 161 ch1)	; ?\241
+			     (cdr (assq (char-component ch 2) skk-hankaku-alist)))
+			    ((eq 163 ch1)	; ?\243
+			     (- (char-component ch 2) 128) ; ?\200
+			     ))))
+		   ((eq skk-emacs-type 'nemacs)
+		    (let* ((ch1 (aref string 0)))
+		      (cond ((eq 161 ch1)	; ?\241
+			     (cdr (assq (aref string 1) skk-hankaku-alist)))
+			    ((eq 163 ch1)	; ?\243
+			     (- (aref string 1) 128) ; ?\200
+			     )))))))
+	(and char (char-to-string char))))
     ;;
     )))
 

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-xm20_4.el,v 1.1.2.3.2.2 2000/09/27 13:42:09 minakaji Exp $
+;; Version: $Id: skk-xm20_4.el,v 1.1.2.3.2.3 2000/10/15 20:34:52 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:09 $
+;; Last Modified: $Date: 2000/10/15 20:34:52 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -110,7 +110,7 @@
 
 ;; reload new skk-leim.el.
 (load "skk-leim")
-(provide 'skk-xm20_4)
 
+(require 'product)
+(product-provide (provide 'skk-xm20_4) (require 'skk-version))
 ;;; end of skk-xm20_4.el.
-

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-tut.el,v 1.9.2.3.2.10 2000/09/27 13:42:08 minakaji Exp $
+;; Version: $Id: skk-tut.el,v 1.9.2.3.2.11 2000/10/15 20:34:50 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:08 $
+;; Last Modified: $Date: 2000/10/15 20:34:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -447,6 +447,7 @@ The English version is SKK.tut.E."
 
 (defadvice kill-buffer (around skktut-ad disable)
   "SKK $B%A%e!<%H%j%"%kMQ%"%I%P%$%9IU!#(B"
+  (interactive "bKill buffer: ") ; subr command with arg.
   (cond ((or (not (interactive-p))
 	     (null (member (ad-get-arg 0) (list skktut-working-buffer
 						skktut-question-buffer
@@ -491,10 +492,8 @@ C-u M-x skk-tutorial $B$9$k$H!"%A%e!<%H%j%"%k%U%!%$%k$NA*Br$,2DG=!#(B"
 	  (message "SKK tutorial language set to %s until you exit Emacs"
 		   lang))))
   (let ((inhibit-quit t))
-    (if (not (and (boundp 'skk-major-version) (boundp 'skk-minor-version)
-                  (or (> skk-major-version 10)
-                      (and (= skk-major-version 10) (>= skk-minor-version 46)))))
-        (error "skk.el version 10.46 or later is required")
+    (if (not (product-version>= 'skk-version '(10 3)))
+        (error "Daredevil SKK or later is required")
       (skktut-pre-setup-tutorial)
       (skktut-setup-jisyo-buffer)
       (skktut-setup-working-buffer)
@@ -926,8 +925,8 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
     (insert
      (if skktut-japanese-tut
 	 (concat "SKK $B%A%e!<%H%j%"%k$O$3$l$G=*$j$G$9!#(B\n\n"
-		 (format "%s SKK $B$K4X$9$k<ALd!"%3%a%s%H!"(Bbug report $BEy$O(B\n\n"
-			 skk-branch-name)
+		 (format "%s $B$K4X$9$k<ALd!"%3%a%s%H!"(Bbug report $BEy$O(B\n\n"
+			 (product-string-1 'skk-version t))
 		 (format "\t%s\n\n" skk-ml-address)
 		 "$BKx$*Aw$j2<$5$$!#$J$*!"$3$N%"%I%l%9$O(B SKK Ring Server Openlab Mailing list\n"
 		 "$B$N%"%I%l%9$G$9!#$I$J$?$G$bEj9F$O$G$-$^$9$,!"%a%s%P!<$K$7$+G[Aw$5$l$J$$$N$G!"(B\n"
@@ -938,8 +937,8 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
 		 "!! $B:G8e$K(B <return> $B%-!<$r2!$7$F$/$@$5$$!#(B")
        (concat "Now we end the SKK tutorial.\n\n"
 	       (format
-		"Please send comments, questions and bug reports on %s SKK to:\n\n"
-		skk-branch-name)
+		"Please send comments, questions and bug reports on %s to:\n\n"
+		(product-string-1 'skk-version t))
 	       (format "\t%s\n\n" skk-ml-address)
 	       "This is the address of the SKK Ring Server Openlab Mailing list.\n"
 	       "Anyone can post, but responces will be sent only to the ML members.\n"
@@ -967,5 +966,6 @@ C-u M-x skk-tutorial-quit $B$9$k$H!"(Byes-or-no-p $B$G?R$M$i$l$k$3$H$J$/D>$A$
 	     ))
 	(error nil)))))
 
-(provide 'skk-tut)
+(require 'product)
+(product-provide (provide 'skk-tut) (require 'skk-version))
 ;;; skk-tut.el ends here

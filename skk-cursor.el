@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.35 2000/10/14 22:59:54 czkmt Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.36 2000/10/15 20:34:46 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/14 22:59:54 $
+;; Last Modified: $Date: 2000/10/15 20:34:46 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -30,6 +30,7 @@
 ;;; Code:
 (or (skk-color-display-p) (error "SKK-CURSOR requires color display"))
 (eval-when-compile (require 'static) (require 'skk-macs) (require 'skk-vars))
+(or (eq skk-emacs-type 'xemacs) (require 'ccc))
 
 (defun skk-cursor-current-color ()
   ;; カレントバッファの SKK のモードから、カーソルの色を取得する。
@@ -45,7 +46,7 @@
 	(skk-jisx0201-mode skk-cursor-jisx0201-color)
 	(t skk-cursor-latin-color)))
 
-(static-if (featurep 'xemacs)
+(static-if (eq skk-emacs-type 'xemacs)
     ;; XEmacs
     (progn
       ;; advices.
@@ -123,7 +124,6 @@
 		'append)
       )
   ;; FSF Emacs
-  (require 'ccc)
   ;; advices.
   (defvar skk-cursor-buffer-local-frame-params-ad-targets
     '(
@@ -141,6 +141,10 @@
 
   (let ((funcs skk-cursor-buffer-local-frame-params-ad-targets))
     (while funcs
+      (if (and (commandp (car funcs)) (subr-fboundp (car funcs)))
+	  (message
+	   "WARNING: Adding advice to a subr command, %s without mirroring its interactive spec"
+	   (car funcs)))
       (eval
        (`
 	(defadvice (, (intern (symbol-name (car funcs))))
@@ -153,7 +157,8 @@
 ;;(add-hook 'isearch-mode-end-hook 'update-buffer-local-frame-params 'append)
 (add-hook 'skk-mode-hook 'skk-mode-once-again)
 
-(provide 'skk-cursor)
+(require 'product)
+(product-provide (provide 'skk-cursor) (require 'skk-version))
 ;;; Local Variables:
 ;;; End:
 ;;; skk-cursor.el ends here

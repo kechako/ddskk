@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-obsolete.el,v 1.1.2.4.2.4 2000/10/12 10:08:46 czkmt Exp $
+;; Version: $Id: skk-obsolete.el,v 1.1.2.4.2.5 2000/10/15 20:34:49 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/12 10:08:46 $
+;; Last Modified: $Date: 2000/10/15 20:34:49 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -208,5 +208,6 @@ C-u M-x skk-obsolete-check-all-files $B$N$h$&$K5/F0$7$?$H$-$O!"%G%#%U%)%k%H%G%#
     ;;  (setq fl (cdr fl)))))
    ))
 
-(provide 'skk-obsolete)
+(require 'product)
+(product-provide (provide 'skk-obsolete) (require 'skk-version))
 ;;; skk-obsolete.el ends here

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.25 2000/10/13 11:15:10 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.26 2000/10/15 20:34:49 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/13 11:15:10 $
+;; Last Modified: $Date: 2000/10/15 20:34:49 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -599,5 +599,6 @@
 (defsubst skk-minibuffer-origin ()
   (nth 1 (buffer-list)))
 
-(provide 'skk-macs)
+(require 'product)
+(product-provide (provide 'skk-macs) (require 'skk-version))
 ;;; end of skk-macs.el.

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.42 2000/10/12 10:09:17 czkmt Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.43 2000/10/15 20:34:50 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/12 10:09:17 $
+;; Last Modified: $Date: 2000/10/15 20:34:50 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -34,6 +34,11 @@
 (require 'path-util) ; for exec-installed-p.
 
 (eval-when-compile
+
+  ;; shut down compiler warnings.
+  (defvar word-across-newline)
+  (defvar emacs-beta-version)
+
   (defmacro skk-deflocalvar (var default-value &optional documentation)
     (` (progn
 	 (defvar (, var) (, default-value)
@@ -55,11 +60,6 @@
 				 ((and (boundp 'mule-version)
 				       (string< "1.0" mule-version) 'mule1)))))
 
-(defconst skk-version "11.3")
-(defconst skk-major-version (string-to-int (substring skk-version 0 2)))
-(defconst skk-minor-version (string-to-int (substring skk-version 3)))
-(defconst skk-branch-name "Daredevil")
-(defconst skk-codename "Sakurai")
 (defconst skk-ml-address "skk@ring.gr.jp")
 (defconst skk-ml-command-address "skk-request@ring.gr.jp")
 (defconst skk-background-mode
@@ -2622,5 +2622,6 @@ KEY $B5Z$S(B VALUE $B$O>JN,2DG=$G!"%(!<%8%'%s%H$KBP$9$k%*%W%7%g%s$r;XDj$9$k!#
 (defvar skk-lookup-module-list nil)
 (defvar skk-lookup-prefix-and-kana-map nil)
 
-(provide 'skk-vars)
+(require 'product)
+(product-provide (provide 'skk-vars) (require 'skk-version))
 ;;; skk-vars.el ends here

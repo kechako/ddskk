@@ -4,9 +4,9 @@
 ;;
 ;; Author: Murata Shuuichirou <mrt@mickey.ai.kyutech.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-leim.el,v 1.5.2.3.2.9 2000/10/02 12:40:39 czkmt Exp $
+;; Version: $Id: skk-leim.el,v 1.5.2.3.2.10 2000/10/15 20:34:48 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/02 12:40:39 $
+;; Last Modified: $Date: 2000/10/15 20:34:48 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -93,5 +93,6 @@
       (load-file (car files))
       (setq files (cdr files)))))
 
-(provide 'skk-leim)
+(require 'product)
+(product-provide (provide 'skk-leim) (require 'skk-version))
 ;;; skk-leim.el ends here

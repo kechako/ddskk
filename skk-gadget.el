@@ -4,9 +4,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.5 2000/10/12 10:07:28 czkmt Exp $
+;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.6 2000/10/15 20:34:47 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/12 10:07:28 $
+;; Last Modified: $Date: 2000/10/15 20:34:47 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -350,5 +350,6 @@ skk-date-ad と skk-number-style によって表示方法のカスタマイズが可能。
 
 (run-hooks 'skk-gadget-load-hook)
 
-(provide 'skk-gadget)
+(require 'product)
+(product-provide (provide 'skk-gadget) (require 'skk-version))
 ;;; skk-gadget.el ends here

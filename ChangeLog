@@ -1,5 +1,76 @@
-2000-10-15  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+2000-10-16  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+	
+	* skk-develop.el (skk-submit-bug-report): Do not put out
+	skk-henkan-face information.
+	Dump variables `isearch-mode-hook' and `isearch-mode-end-hook'.
+	Use skk-exserv.el when `skk-exserv-list' is non-nil.
+	Use new `skk-version'.
 
+	* skk-abbrev.el: Require product and call product-provide for its
+	feature.
+	* skk-auto.el: Ditto.
+	* skk-comp.el: Ditto.
+	* skk-cursor.el: Ditto.
+	* skk-develop.el: Ditto.
+	* skk-gadget.el: Ditto.
+	* skk-isearch.el: Ditto.
+	* skk-jisx0201.el: Ditto.
+	* skk-jisx0213.el: Ditto.
+	* skk-kakasi.el: Ditto.
+	* skk-kcode.el: Ditto.
+	* skk-leim.el: Ditto.
+	* skk-look.el: Ditto.
+	* skk-lookup.el: Ditto.
+	* skk-macs.el: Ditto.
+	* skk-num.el: Ditto.
+	* skk-obsolete.el: Ditto.
+	* skk-server.el: Ditto.
+	* skk-tut.el: Ditto.
+	* skk-vars.el: Ditto.
+	* skk-viper.el: Ditto.
+	* skk-xm20_4.el: Ditto.
+	* skk.el: Ditto.
+	* experimental/skk-correct.el: Ditto.
+	* experimental/skk-dos.el: Ditto.
+	* experimental/skk-dcomp.el: Ditto.
+	* experimental/skk-study.el: Ditto.
+	* experimental/tut-code/skk-tutcode.el: Ditto.
+	* experimental/tut-code/skk-tutcdef.el: Ditto.
+	* experimental/skk-is-n.el: Ditto.
+	* experimental/skk-exserv.el: Ditto.
+	* experimental/skk-exsearch.el: Ditto.
+	* experimental/skk-e18.el: Ditto.
+	* experimental/dbm/skk-dbm.el: Ditto.
+	* experimental/rdbms/skk-rdbms.el: Ditto.
+
+	* SKK-MK (SKK_MODULES): Add `skk-version'.
+	
+	* skk-tut.el (skktut-end-tutorial): Use
+	`(product-string-1 'skk-version t)' instead of `skk-branch-name'.
+	(kill-buffer): Specify original interactive spec.
+	(skk-tutorial): Check skk version using `product-version>='.
+
+	* skk-vars.el (skk-version): Removed.
+	(skk-major-version): Ditto.
+	(skk-minor-version): Ditto.
+	(skk-branch-name): Ditto.
+	(skk-codename): Ditto.
+
+	* skk.el (skk-version): Removed.
+	Check APEL version using `product-version>='.
+	(kill-buffer): Specify original interactive spec.
+	
+	* ccc.el (buffer-local-frame-params-ad-targets): Removed.
+	Check a function if a subr that has an interactive spec when
+	adding advices, and put on a mirroring original interactive spec
+	to advice.
+	
+	* skk-version.el: New file.
+	
+	* skk-study.el: Move it back to experimental directory.
+
+2000-10-15  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+	
 	* skk.el (skk-toggle-characters): Hand 'vcontract to
 	`skk-katakana-region' as VCONTRACT argument .
 

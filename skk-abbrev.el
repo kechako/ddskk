@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-abbrev.el,v 1.1.2.3.2.3 2000/09/27 13:42:04 minakaji Exp $
+;; Version: $Id: skk-abbrev.el,v 1.1.2.3.2.4 2000/10/15 20:34:46 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 23, 1999
-;; Last Modified: $Date: 2000/09/27 13:42:04 $
+;; Last Modified: $Date: 2000/10/15 20:34:46 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -94,4 +94,6 @@
 	 (delete-region skk-henkan-start-point (point))
 	 (insert c-word) )))))
 
+(require 'product)
+(product-provide (provide 'skk-abbrev) (require 'skk-version))
 ;; end of skk-abbrev.el

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-comp.el,v 1.4.2.4.2.5 2000/09/27 13:42:05 minakaji Exp $
+;; Version: $Id: skk-comp.el,v 1.4.2.4.2.6 2000/10/15 20:34:46 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:05 $
+;; Last Modified: $Date: 2000/10/15 20:34:46 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -122,7 +122,8 @@
 
 (run-hooks 'skk-comp-load-hook)
 
-(provide 'skk-comp)
+(require 'product)
+(product-provide (provide 'skk-comp) (require 'skk-version))
 ;;; Local Variables:
 ;;; End:
 ;;; skk-comp.el ends here

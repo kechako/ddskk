@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-kakasi.el,v 1.4.2.4.2.3 2000/09/27 13:42:06 minakaji Exp $
+;; Version: $Id: skk-kakasi.el,v 1.4.2.4.2.4 2000/10/15 20:34:48 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:06 $
+;; Last Modified: $Date: 2000/10/15 20:34:48 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -254,5 +254,6 @@ skk-romaji-*-by-hepburn $B$,(B nil $B$G$"$l$P!"%m!<%^;z$X$NJQ49MM<0$r71Na<0$K
         (skk-error "$BJQ49$G$-$^$;$s(B" "Cannot convert!")))))
 
 (run-hooks 'skk-kakasi-load-hook)
-(provide 'skk-kakasi)
+(require 'product)
+(product-provide (provide 'skk-kakasi) (require 'skk-version))
 ;;; skk-kakasi.el ends here

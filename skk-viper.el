@@ -5,9 +5,9 @@
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>,
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.12 2000/09/27 13:42:09 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.13 2000/10/15 20:34:52 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:09 $
+;; Last Modified: $Date: 2000/10/15 20:34:52 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -131,6 +131,7 @@
 viper-read-string-with-history は minibuffer-setup-hook を関数ローカル
 にしてしまうので、予め minibuffer-setup-hook にかけておいたフックが無効
 となる。"
+      ;; non-command subr.
       (add-hook 'minibuffer-setup-hook 'update-buffer-local-frame-params 'append)))
 
 (skk-viper-advice-select
@@ -272,5 +273,6 @@ Convert hirakana to katakana and vice versa."
 (skk-viper-normalize-map)
 (add-hook 'skk-mode-hook 'skk-mode-once-again)
 
-(provide 'skk-viper)
+(require 'product)
+(product-provide (provide 'skk-viper) (require 'skk-version))
 ;;; skk-viper.el ends here

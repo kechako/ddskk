@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.13 2000/09/27 13:42:06 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.14 2000/10/15 20:34:48 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:06 $
+;; Last Modified: $Date: 2000/10/15 20:34:48 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -109,7 +109,13 @@
 ;; ました。難波さんに感謝いたします。
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'skk-vars))
+(eval-when-compile
+  (require 'skk-macs)
+  (require 'skk-vars)
+  ;; shut up compiler warnings.
+  (defvar ispell-process)
+  (defvar ispell-filter)
+  (defvar ispell-filter))
 
 (and skk-look-command
      (null (member '(skk-look) skk-search-prog-list))
@@ -245,5 +251,6 @@
 		   var (cdr var)))
 	   (delete word (skk-nunion (skk-look-1 word) ret))))))
 
-(provide 'skk-look)
+(require 'product)
+(product-provide (provide 'skk-look) (require 'skk-version))
 ;;; skk-look.el ends here

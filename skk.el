@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.80 2000/10/14 22:18:33 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.81 2000/10/15 20:34:52 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/14 22:18:33 $
+;; Last Modified: $Date: 2000/10/15 20:34:52 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -45,6 +45,11 @@
 ;;   KATAKANA
 
 ;;; Code:
+(eval-when-compile ; shut up compiler warning.
+  (defvar epoch::version)
+  (defvar self-insert-after-hook)
+  (defvar skk-rdbms-private-jisyo-table))
+
 (cond ((or (and (boundp 'epoch::version) epoch::version)
 	   (string< (substring emacs-version 0 2) "19"))
       (message "This version of SKK may not work on Emacs 18..."))
@@ -57,6 +62,8 @@
 (require 'pces)
 (require 'pcustom)
 (require 'alist)
+(or (product-version>= 'apel-ver '(10 2))
+    (error "This version of Daredevil SKK requires APEL/10.2 or later"))
 ;; Elib 1.0 is required.
 (require 'queue-m)
 ;; Emacs 18.
@@ -83,26 +90,6 @@
   (and (memq last-command '(skk-insert skk-previous-candidate))
        (null (memq this-command skk-kana-cleanup-command-list))
        (skk-kana-cleanup t)))
-
-;;;###autoload
-(defun skk-version ()
-  (interactive)
-  (if (not (interactive-p))
-      skk-version
-    (save-match-data
-      (let* ((raw-date "$Date: 2000/10/14 22:18:33 $")
-             (year (substring raw-date 7 11))
-             (month (substring raw-date 12 14))
-             (date (substring raw-date 15 17)))
-        (if (string-match "^0" month)
-            (setq month (substring month (match-end 0))))
-        (if (string-match "^0" date)
-            (setq date (substring date (match-end 0))))
-        (message "SKK version %s %s %s of %s, %s"
-                 skk-branch-name skk-version skk-codename
-                 (concat (car (rassoc month skk-month-alist))
-                         " " date ", " year)
-		 (apel-version))))))
 
 ;;; normal functions.
 ;;;; aliases
@@ -3830,6 +3817,7 @@ C-u ARG $B$G(B ARG $B$rM?$($k$H!"$=$NJ8;zJ,$@$1La$C$FF1$8F0:n$r9T$J$&!#(B"
   "$B"'%b!<%I$G$"$l$P!"8uJd$NI=<($r$d$a$F"&%b!<%I$KLa$9(B ($B8+=P$78l$O;D$9(B)$B!#(B
 $B"&%b!<%I$G$"$l$P!"8+=P$78l$r:o=|$9$k!#(B
 $B>e5-$N$I$A$i$N%b!<%I$G$b$J$1$l$P(B abort-recursive-edit $B$HF1$8F0:n$r$9$k!#(B"
+  ;; subr command but no arg.
   (skk-remove-minibuffer-setup-hook
    'skk-j-mode-on 'skk-setup-minibuffer
    (function (lambda () (add-hook 'pre-command-hook 'skk-pre-command nil 'local))))
@@ -3885,6 +3873,7 @@ C-u ARG $B$G(B ARG $B$rM?$($k$H!"$=$NJ8;zJ,$@$1La$C$FF1$8F0:n$r9T$J$&!#(B"
 
 (defadvice exit-minibuffer (around skk-ad activate)
   "skk-egg-like-newline $B$,(B non-nil $B$@$C$?$i!"JQ49Cf$N(B exit-minibuffer $B$G3NDj$N$_9T$&!#(B"
+  ;; subr command but no arg.
   (skk-remove-minibuffer-setup-hook
    'skk-j-mode-on 'skk-setup-minibuffer
    (function (lambda ()
@@ -3906,6 +3895,7 @@ picture-mode $B$+$i=P$?$H$-$K$=$N%P%C%U%!$G(B SKK $B$r@5>o$KF0$+$9$?$a$N=hM}!
 
 (defadvice kill-buffer (before skk-ad activate)
   "SKK $B$N"'%b!<%I$@$C$?$i!"3NDj$7$F$+$i%P%C%U%!$r%-%k$9$k!#(B"
+  (interactive "bKill buffer: ") ; subr command with arg.
   (and skk-mode skk-henkan-on (interactive-p) (skk-kakutei)))
 
 (defadvice save-buffers-kill-emacs (before skk-ad activate)
@@ -3953,7 +3943,8 @@ picture-mode $B$+$i=P$?$H$-$K$=$N%P%C%U%!$G(B SKK $B$r@5>o$KF0$+$9$?$a$N=hM}!
 
 (run-hooks 'skk-load-hook)
 
-(provide 'skk)
+(require 'product)
+(product-provide (provide 'skk) (require 'skk-version))
 ;;; Local Variables:
 ;;; End:
 ;;; skk.el ends here

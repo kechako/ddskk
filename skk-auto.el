@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-auto.el,v 1.3.2.3.2.1 2000/09/27 13:42:04 minakaji Exp $
+;; Version: $Id: skk-auto.el,v 1.3.2.3.2.2 2000/10/15 20:34:46 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/27 13:42:04 $
+;; Last Modified: $Date: 2000/10/15 20:34:46 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -137,5 +137,6 @@
 ;;(add-hook 'skk-mode-hook 'skk-adjust-search-prog-list-for-auto-okuri)
 
 (run-hooks 'skk-auto-load-hook)
-(provide 'skk-auto)
+(require 'product)
+(product-provide (provide 'skk-auto) (require 'skk-version))
 ;;; skk-auto.el ends here

@@ -3,10 +3,10 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk-lookup.el,v 1.1.2.3.2.7 2000/09/30 15:26:50 minakaji Exp $
+;; Version: $Id: skk-lookup.el,v 1.1.2.3.2.8 2000/10/15 20:34:49 minakaji Exp $
 ;; Keywords: japanese
 ;; Created: Sep. 23, 1999
-;; Last Modified: $Date: 2000/09/30 15:26:50 $
+;; Last Modified: $Date: 2000/10/15 20:34:49 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -386,7 +386,8 @@
 	(setq alist (cons (cons prefix (list kana)) alist))))
     alist))
 
-(provide 'skk-lookup)
+(require 'product)
+(product-provide (provide 'skk-lookup) (require 'skk-version))
 ;;; Local Variables:
 ;;; End:
 ;;; skk-lookup.el ends here

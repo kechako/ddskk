@@ -1,5 +1,10 @@
 1999-12-18  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
+	* skk-cursor.el (minibuffer-setup-hook): Fix the behaviour under
+	XEmacs.
+
+1999-12-18  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
 	* skk-jisx0201.el (skk-setup-modeline): If `skk-status-indicator'
 	is left and the face `modeline' is not proportional, use the same
 	number of columns to display each SKK status, except for

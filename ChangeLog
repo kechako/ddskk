@@ -1,3 +1,7 @@
+1999-12-14  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* SKK-MK (SKK_DAREDEVIL_NOT_USE): Add skk-vip.
+
 1999-12-13  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-viper.el (skk-cursor-set-properly): Sync up with

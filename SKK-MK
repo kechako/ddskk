@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.10 1999/12/12 12:53:12 minakaji Exp $
-;; Last Modified: $Date: 1999/12/12 12:53:12 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.11 1999/12/13 23:41:41 minakaji Exp $
+;; Last Modified: $Date: 1999/12/13 23:41:41 $
 
 ;; Commentary
 ;;
@@ -239,7 +239,7 @@ end with `skk'." )
 (if SKK-MK-debugging (princ (format "SKK_MODULES=%s\n" SKK_MODULES)))
 
 (defconst SKK_PACKAGE_NOT_USE '(skk-autoloads))
-(defconst SKK_DAREDEVIL_NOT_USE '(skk-foreword stack-m))
+(defconst SKK_DAREDEVIL_NOT_USE '(skk-vip skk-foreword stack-m))
 
 ;;; [ADVICES]
 (defadvice write-region (before SKK-MK-ad disable)

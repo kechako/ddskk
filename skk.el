@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.88 2000/11/06 11:23:05 czkmt Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.89 2000/11/06 11:53:24 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/11/06 11:23:05 $
+;; Last Modified: $Date: 2000/11/06 11:53:24 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -1675,7 +1675,7 @@ skk-auto-insert-paren の値が non-nil の場合で、skk-auto-paren-string
 		 str (length (nthcdr n candidates))
 		 (make-string (length skk-current-search-prog-list) ?+)))
       (if (> (frame-width) (funcall string-width-function str))
-	  (message str)
+	  (message "%s" str)
 	(let ((buff (get-buffer-create "*候補*"))
 	      (case-fold-search t))
 	  (save-excursion

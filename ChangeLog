@@ -1,3 +1,13 @@
+1999-11-28  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
+
+	* skk-cursor.el (newline): New advice. Call
+	`skk-cursor-set-properly'.
+	(skk-delete-backward-char): Ditto.
+	(skk-start-henkan): Ditto.
+	(minibuffer-setup-hook): If `skk-insert' or `skk-start-henkan' has
+	just been executed, call `skk-cursor-set-properly', else set
+	cursor color to `skk-cursor-default-color'.
+
 1999-11-28  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (minibuffer-keyboard-quit): Use `static-cond'.

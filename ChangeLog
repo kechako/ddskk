@@ -1,3 +1,7 @@
+1999-12-10  FURUE Hideyuki  <furue@kke.co.jp>
+
+	* skk.el (skk-delete-okuri-mark): Bug fixed.
+
 1999-12-09  FURUE Hideyuki  <furue@kke.co.jp>
 
 	* skk.el (keyboard-quit): Typo fixed.

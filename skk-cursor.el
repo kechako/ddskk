@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.17 1999/12/13 23:02:08 minakaji Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.18 1999/12/14 12:43:10 furue Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/13 23:02:08 $
+;; Last Modified: $Date: 1999/12/14 12:43:10 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -99,9 +99,7 @@
 	       delete-window
 	       select-window
 	       select-frame
-	       delete-frame
-	       set-buffer
-	       erase-buffer)))
+	       delete-frame)))
   (while funcs
     (eval
      (`

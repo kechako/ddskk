@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/13 09:46:34 $
+;; Last Modified: $Date: 2000/09/14 14:50:18 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -58,10 +58,9 @@
        (setq buffer-read-only nil)
        (erase-buffer)
        (insert
-	(apply
-	 'concat
+	(concat
 	 (format "%s\n\n" (, title))
-	 (mapcar
+	 (mapconcat
 	  (function
 	   (lambda (cons)
 	     (cond
@@ -72,7 +71,7 @@
 	      (t
 	       (format "%s … %s\n" (car cons) (cdr cons))))))
 	  ;;
-	  (delq nil (, list)))))
+	  (delq nil (, list)) "")))
        ;;
        (setq buffer-read-only t)
        (set-buffer-modified-p nil)

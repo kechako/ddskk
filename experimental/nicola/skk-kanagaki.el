@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/13 09:46:34 $
+;; Last Modified: $Date: 2000/09/14 14:50:19 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -401,15 +401,16 @@ X $B>e$G(B xmodmap $B$,%$%s%9%H!<%k$5$l$F$$$k>l9g$@$1M-8z!#F0:n$,2~A1$5$l$kBe
      (cons (format "M-x help %s" skk-kanagaki-help-key) "$B$3$N%X%k%W$rI=<((B"))
     ;;
     (list
-     (let ((str
-	    (catch 'tag
-	      (dolist (list (nth 4 skk-kanagaki-rule-tree))
-		(when (memq (nth 3 list)
-			    '(skk-kanagaki-set-okurigana
-			      skk-kanagaki-set-okurigana-no-sokuon))
-		  (throw 'tag (nth 1 list)))))))
-       (if (stringp str)
-	   (cons str "$BAw$j$"$jJQ493+;O(B")))))))
+     (do ((spec (nth 4 skk-kanagaki-rule-tree) (cdr spec))
+	  (list nil (car spec))
+	  (str nil (and (memq
+			 (nth 3 list)
+			 '(skk-kanagaki-set-okurigana
+			   skk-kanagaki-set-okurigana-no-sokuon))
+			(nth 1 list))))
+	 ((or str (null spec))
+	  (and (stringp str)
+	       (cons str "$BAw$j$"$jJQ493+;O(B"))))))))
 
 ;;;###autoload
 (defun skk-kanagaki-insert (&optional arg)

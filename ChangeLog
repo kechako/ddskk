@@ -1,3 +1,15 @@
+2000-05-14  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-lookup.el: Add install notes to Commentary.
+	Remove unnecessary blanks between parens.	
+	(skk-lookup-option-alist): As to the list whose car is "GENIUS",
+	change 6th element nil to ",".
+	Change all S expressions in nested lists which represent regexp to
+	search to symbol `prefix'.
+	Doc fixed.
+	Change sexp choice in option to `(const nil)'.
+	(skk-lookup-default-option-list): Ditto.
+
 2000-04-28  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk.el (skk-truncate-message): Removed.

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.33 2000/11/08 15:43:18 czkmt Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.34 2000/11/09 08:22:56 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/11/08 15:43:18 $
+;; Last Modified: $Date: 2000/11/09 08:22:56 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -30,7 +30,10 @@
 ;;; Code:
 ;;;; macros
 (eval-when-compile
-  (require 'advice) (require 'static) (require 'skk-vars)
+  (require 'advice)
+  (require 'cl)
+  (require 'static)
+  (require 'skk-vars)
   (defconst skk-emacs-type
     (cond ((featurep 'xemacs) 'xemacs)
 	  ((and (boundp 'NEMACS)) 'nemacs)
@@ -183,6 +186,13 @@
 	       (overlay-put (, object) 'face (, face)))
 	   (move-overlay (, object) (, start) (, end))))))))
 
+(defmacro skk-sit-for (seconds &optional nodisplay)
+  (case skk-emacs-type
+   ((nemacs mule1 xemacs)
+    (` (sit-for (, seconds) (, nodisplay))))
+   (t
+    (` (sit-for (, seconds) nil (, nodisplay))))))
+
 ;;(defun-maybe mapvector (function sequence)
 ;;  "Apply FUNCTION to each element of SEQUENCE, making a vector of the results.
 ;;The result is a vector of the same length as SEQUENCE.
@@ -239,20 +249,11 @@
 	(setcdr (nthcdr (- pos2 pos1 1) sl) nil)
 	(mapconcat 'char-to-string sl ""))))))
 
-;; no argument use only in SKK.
-(defsubst skk-read-event ()
-  (static-cond
-   ((eq skk-emacs-type 'xemacs)
-    (next-command-event))
-   ((fboundp 'read-event)
-    (read-event))
-   (t (read-char))))
-
 (defsubst skk-char-to-string (char)
   (static-cond
    ((eq skk-emacs-type 'xemacs)
     (char-to-string char))
-   ((string< "20" emacs-version)
+   ((memq skk-emacs-type '(mule3 mule4 mule5))
     (condition-case nil (char-to-string char) (error)))
    (t (char-to-string char))))
 
@@ -572,7 +573,7 @@
 (defsubst skk-unread-event (event)
   ;; Unread single EVENT.
   (static-cond
-   ((string< (substring emacs-version 0 2) "19")
+   ((memq skk-emacs-type '(nemacs mule1))
     (setq unread-command-char event))
    (t (setq unread-command-events (nconc unread-command-events (list event))))))
 
@@ -596,7 +597,8 @@
 
 (defsubst skk-find-coding-system (code)
   (cond ((and code
-	      (or (coding-system-p code)
+	      (or (and (fboundp 'coding-system-p) 
+		       (coding-system-p code))
 		  (and (fboundp 'find-coding-system)
 		       (symbolp code)
 		       (find-coding-system code))))

@@ -2,29 +2,30 @@
 ;; Copyright (C) 2000 Tsukamoto Tetsuo
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
+;; Version: $Id: skk-e18.el,v 1.1.2.20 2000/08/12 14:25:02 czkmt Exp $
 ;; Keywords: japanese
+;; Last Modified: $Date: 2000/08/12 14:25:02 $
 
-;; This file is not part of Daredevil SKK yet.
+;; This file is not yet part of Daredevil SKK.
 
-;; Daredevil SKK is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either versions 2, or (at your option)
-;; any later version.
+;; Daredevil SKK  is free software;  you  can redistribute it  and/or modify it
+;; under the terms  of the GNU General Public License  as published by the Free
+;; Software  Foundation;  either versions  2,  or  (at your option)  any  later
+;; version.
 
-;; Daredevil SKK is distributed in the hope that it will be useful
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; Daredevil SKK is distributed in the hope that it will be useful  but WITHOUT
+;; ANY  WARRANTY;  without  even  the implied  warranty  of MERCHANTABILITY  or
+;; FITNESS  FOR  A PARTICULAR PURPOSE.  See the GNU General Public License  for
+;; more details.
 
-;; You should have received a copy of the GNU General Public License
-;; along with SKK, see the file COPYING.  If not, write to the Free
-;; Software Foundation Inc., 59 Temple Place - Suite 330, Boston,
-;; MA 02111-1307, USA.
+;; You should have received a copy of the GNU General Public License along with
+;; Daredevil SKK,  see the file COPYING.  If not,  write  to  the Free Software
+;; Foundation Inc., 59 Temple Place - Suite 330, Boston,  MA 02111-1307, USA.
 
 ;;; Commentary:
 
 ;; Daredevil SKK を Emacs 18 ベースで利用するための work around です。
-;; まだほとんど動いていない状況です。現在動作確認できる環境は
+;; 基本的な機能しか動きません。現在動作確認できる環境は
 ;;
 ;;     o Nemacs 3.3.2 based on Emacs 18.59
 ;;

@@ -1,3 +1,9 @@
+2000-04-06  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* experimental/skk-exsearch.el (core-engine): Bug fixed.
+	(search-engine): New argument ARGUMENT.
+	(skk-cdbget-search): Take SKK-HENKAN-KEY as its second argument.
+
 2000-04-03  Murata Shuuichirou  <mrt@notwork.org>
 
 	* skk-viper.el (skk-viper-normalize-map): Use

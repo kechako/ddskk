@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-exsearch.el,v 1.1.2.4 2000/03/24 13:57:22 minakaji Exp $
+;; Version: $Id: skk-exsearch.el,v 1.1.2.5 2000/04/06 00:20:18 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/03/24 13:57:22 $
+;; Last Modified: $Date: 2000/04/06 00:20:18 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -101,8 +101,9 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
   (save-excursion
     (let ((exit-code (apply 'call-process (oref engine program)
 			    (oref engine infile)
-			    t		;output to current buffer.
-			    (list t (oref engine stderr))
+			    (list t		;output to current buffer.
+				  (oref engine stderr))
+			    nil
 			    argument))
 	  error)
       (cond ((and (= (oref engine success-exit-code) exit-code)
@@ -110,14 +111,11 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
 	    ((>= exit-code (oref engine error-exit-code))
 	     (error (buffer-substring-no-properties (point-min) (point-max))))))))
 
-(defmethod search-engine ((engine regular-engine))
+(defmethod search-engine ((engine regular-engine) &rest argument)
   (let ((okurigana (or skk-henkan-okurigana skk-okuri-char))
-	(midasi (if skk-use-numeric-conversion
-		    (skk-num-compute-henkan-key skk-henkan-key)
-		  skk-henkan-key))
 	l)
     (with-temp-buffer 
-      (if (core-engine engine midasi)
+      (if (core-engine engine argument)
 	  (progn
 	    (forward-char 1)
 	    (and (setq l (skk-compute-henkan-lists okurigana))
@@ -146,7 +144,9 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
 
 ;;;###autoload
 (defun skk-cdbget-search ()
-  (search-engine cdbget))
+  (search-engine cdbget (if skk-use-numeric-conversion
+			    (skk-num-compute-henkan-key skk-henkan-key)
+			  skk-henkan-key)))
 
 ;;;###autoload
 (defun skk-look-search ()

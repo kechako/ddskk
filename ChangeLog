@@ -1,5 +1,9 @@
 2000-08-16  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
+	* SKK-MK (SKK-MK-generate-autoloads-el): Provide skk-autoloads.
+
+2000-08-16  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
 	* SKK-MK (SKK-MK-generate-autoloads-el): Always generate autoloads
 	here.
 

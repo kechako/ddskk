@@ -4,6 +4,8 @@
 	全く漢字が出てきません。, チュートリアルが起動できません。, スペー
 	スを押しても変換できません。): New questions.
 
+	* READMEs/NEWS: Add description.
+
 	* missing, mkinstalldirs: No longer in the repository.
 
 2000-10-25  Mikio Nakajima  <minakaji@osaka.email.ne.jp>

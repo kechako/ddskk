@@ -1,3 +1,8 @@
+2000-10-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* ccc.el (ccc-apply): New macro.
+	(ccc-ads): New variable.
+
 2000-10-18  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/README.win: Move 「`MAKE.BAT'の編集とインストール

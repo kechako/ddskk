@@ -5,8 +5,8 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: SKK Development Team <skk@ring.gr.jp>
-;; Version: $Id: SKK-MK,v 1.31.2.1.2.53 2000/11/01 09:42:26 czkmt Exp $
-;; Last Modified: $Date: 2000/11/01 09:42:26 $
+;; Version: $Id: SKK-MK,v 1.31.2.1.2.54 2000/11/02 09:52:07 czkmt Exp $
+;; Last Modified: $Date: 2000/11/02 09:52:07 $
 
 ;; Commentary
 ;;
@@ -280,28 +280,13 @@
 ;; Work around for Emacs 18.
 (if (= 18 emacs-major-version)
     (progn
-      (setq SKK_INFO nil)
-      (mapcar (function
-	       (lambda (elt)
-		 (setq SKK_MODULES (delq elt SKK_MODULES))))
-	      '(ccc skk-cursor skk-isearch skk-jisx0201 skk-study))
-      (condition-case nil
-	  (progn
-	    (load "bytecomp-runtime")
-	    (load "bytecomp")
-	    (load "byte-optimize"))
-	(error))
       (require 'cl)
-      ;; DEALING WITH A BUG IN EMACS 18.59.
-      ;; APPLY patch/e18/cl_el-defsetf.patch FOR REAL FIX.
-      (unless (get 'nth :setf-update-fn)
-	(message "%s" "\
-Loading cl... This CL is BROKEN!!
-You must overwrite cl.elc with patch/e18/cl.elc.
-Just working the bug around ...")
-	(defsetf nth
-	  setnth
-	  "`setf' inversion for `nth'"))
+      (setq SKK_INFO nil)
+      (dolist (elt '(ccc skk-cursor skk-isearch skk-jisx0201 skk-study))
+	(setq SKK_MODULES (delq elt SKK_MODULES)))
+      (condition-case nil
+	  (load "bytecomp-runtime")
+	(error))
       ;;
       (require 'skk-e18 (expand-file-name
 			 "experimental/skk-e18.el"
@@ -309,7 +294,9 @@ Just working the bug around ...")
       (condition-case nil
 	  (delete-file "experimental/skk-isearch.el")
 	(error))
-      (copy-file "experimental/skk-is-n.el" "experimental/skk-isearch.el" nil t)))
+      (copy-file "experimental/skk-is-n.el"
+		 "experimental/skk-isearch.el"
+		 nil 'keep-time)))
 
 ;;; [FUNCTIONS]
 (defun SKK-MK-make-setup-file (spec)
@@ -391,16 +378,16 @@ Just working the bug around ...")
 	 (SKK-MK-generate-autoloads-el)))
   (compile-elisp-modules SKK_MODULES (expand-file-name ".")))
 
-(defun SKK-MK-compile-package ()
-  (SKK-MK-generate-autoloads-el-package)
-  (compile-elisp-modules SKK_MODULES (expand-file-name ".")))
-
 (defun SKK-MK-compile-info ()
   (and SKK_INFO
        (if (or (not (file-exists-p (expand-file-name SKK_INFO DOCDIR)))
 	       (file-newer-than-file-p (expand-file-name (car SKK_TEXIS) DOCDIR)
 				       (expand-file-name SKK_INFO DOCDIR)))
 	   (SKK-MK-texinfo-format SKK_TEXIS))))
+
+(defun SKK-MK-compile-package ()
+  (SKK-MK-generate-autoloads-el-package)
+  (compile-elisp-modules SKK_MODULES (expand-file-name ".")))
 
 (defun SKK-MK-install ()
   (let ((dics SKK_DICTIONARIES)
@@ -413,8 +400,6 @@ Just working the bug around ...")
 	(make-directory SKK_LISPDIR t))
     (or (file-exists-p SKK_DATADIR)
 	(make-directory SKK_DATADIR t))
-    (or (file-exists-p SKK_INFODIR)
-	(make-directory SKK_INFODIR t))
     ;; delete already installed unnecessary files.
     (while SKK_DAREDEVIL_NOT_USE
       (setq SKK_MODULES (delq (car SKK_DAREDEVIL_NOT_USE) SKK_MODULES)
@@ -491,32 +476,35 @@ Just working the bug around ...")
     ;; install skk-setup.el
     (install-elisp-modules (list 'skk-setup) "." SKK_LISPDIR)
     ;; install infos.
-    (SKK-MK-compile-info)
-    (when SKK_INFO
-      (let ((files (list SKK_INFO))
-	    (i 1) file)
-	(while (file-exists-p
-		(expand-file-name (setq file (format "%s-%d" SKK_INFO i)) DOCDIR))
-	  (setq files (cons file files))
-	  (setq i (1+ i)))
-	(install-files (nreverse files) DOCDIR SKK_INFODIR nil t nil))
-      (require 'install-info
-	       (expand-file-name "install-info.el" default-directory))
-      (let ((dir-file
-	     (cond ((file-exists-p (expand-file-name "dir" SKK_INFODIR))
-		    (expand-file-name "dir" SKK_INFODIR))
-		   ((file-exists-p (expand-file-name "dir.info" SKK_INFODIR))
-		    (expand-file-name "dir.info" SKK_INFODIR))
-		   (t
-		    (expand-file-name "dir" SKK_INFODIR)))))
-	(condition-case nil
-	    (install-info (expand-file-name SKK_INFO SKK_INFODIR)
-			  dir-file nil nil 'delete)
-	  (error))
-	(install-info (expand-file-name SKK_INFO SKK_INFODIR)
-		      dir-file nil nil nil)))
+    (SKK-MK-install-info)
     ;; install tutorials.
     (install-files SKK_TUTORIALS ETCDIR SKK_DATADIR nil t nil)))
+
+(defun SKK-MK-install-info ()
+  (when SKK_INFO
+    (or (file-exists-p SKK_INFODIR)
+	(make-directory SKK_INFODIR t))
+    (SKK-MK-compile-info)
+    (let ((files (list SKK_INFO))
+	  (i 1) file)
+      (while (file-exists-p
+	      (expand-file-name (setq file (format "%s-%d" SKK_INFO i)) DOCDIR))
+	(setq files (cons file files))
+	(setq i (1+ i)))
+      (install-files (nreverse files) DOCDIR SKK_INFODIR nil t nil))
+    (require 'install-info
+	     (expand-file-name "install-info.el" default-directory))
+    (let ((info-file (expand-file-name SKK_INFO SKK_INFODIR))
+	  (dir-file
+	   (cond ((file-exists-p (expand-file-name "dir" SKK_INFODIR))
+		  (expand-file-name "dir" SKK_INFODIR))
+		 ((file-exists-p (expand-file-name "dir.info" SKK_INFODIR))
+		  (expand-file-name "dir.info" SKK_INFODIR))
+		 (t
+		  (expand-file-name "dir" SKK_INFODIR)))))
+      (when (file-readable-p dir-file)
+	(install-info info-file dir-file nil nil 'delete))
+      (install-info info-file dir-file nil nil nil))))
 
 (defun SKK-MK-install-package ()
   (let ((dics SKK_DICTIONARIES)

@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-macs.el,v 1.1.2.4.2.26 2000/10/15 20:34:49 minakaji Exp $
+;; Version: $Id: skk-macs.el,v 1.1.2.4.2.27 2000/10/19 11:48:31 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/10/15 20:34:49 $
+;; Last Modified: $Date: 2000/10/19 11:48:31 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -61,6 +61,25 @@
 	   (error "This SKK was byte compiled by different type of Emacs!")))))
 
 (skk-detect-emacs)
+
+(defmacro skk-defadvice (function &rest everything-else)
+  (if (and (commandp function)
+	   (subrp (if (ad-is-advised function)
+		      (ad-get-orig-definition function)
+		    (symbol-function function)))
+	   (null (memq function	; XXX possibilly Emacs version dependent
+		       ;; interactive commands which does not have interactive specs.
+		       '(abort-recursive-edit bury-buffer delete-frame delete-window 
+					      exit-minibuffer)))
+	   (not (memq 'interactive (list (car-safe (nth 1 everything-else))
+					 (car-safe (nth 2 everything-else))))))
+      (message
+       "*** WARNING: Adding advice to %s without mirroring its interactive spec ***"
+       function))
+  (` (defadvice (, function) (,@ everything-else))))
+
+(put 'skk-defadvice 'lisp-indent-function 'defun)
+(def-edebug-spec skk-defadvice defadvice)
 
 (defmacro skk-save-point (&rest body)
   (` (let ((skk-save-point (point-marker)))

@@ -1,3 +1,7 @@
+1999-12-16  Yuh Ohmura <yutopia@t3.rim.or.jp>
+
+        * make.bat : correct bug.
+	
 1999-12-15  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (skk-isearch-setup-keymap): No longer check if

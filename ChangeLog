@@ -3,7 +3,7 @@
 	* experimental/skk-e18.el (skk-hiragana-to-katakana): New function
 	for Nemacs.
 	(skk-katakana-to-hiragana): Ditto.
-	(window-minibuffer-p): Use WINDOW when given.
+	(window-minibuffer-p): Refer to WINDOW when it is given.
 
 	* skk.el (skk-search-and-replace): Use `goto-char' to go back to
 	the beginning of the match, instead of `backward-char'.

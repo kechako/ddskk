@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.23 2000/03/12 07:25:15 minakaji Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.24 2000/04/09 13:40:08 kawamura Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/03/12 07:25:15 $
+;; Last Modified: $Date: 2000/04/09 13:40:08 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -349,8 +349,10 @@ Mule では、*euc-japan*, *sjis*, *junet*。
   :group 'skk)
 
 (defcustom skk-keep-record t
-  "*Non-nil であれば、変換に関する記録を skk-record-file に取る。"
-  :type 'boolean
+  "*t であれば、変換に関する記録を skk-record-file に取る。
+数値であれば、skk-record-file をその行数より大きくしない。
+nil であれば、変換に関する記録を取らない。"
+  :type '(choice integer (const t) (const nil))
   :group 'skk)
 
 (defcustom skk-record-file (convert-standard-filename

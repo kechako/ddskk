@@ -3,10 +3,10 @@
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.14 1999/12/30 12:06:40 czkmt Exp $
+;; Version: $Id: skk-jisx0201.el,v 1.1.2.3.2.15 2000/01/15 08:59:41 czkmt Exp $
 ;; Keywords: japanese
 ;; Created: Oct. 30, 1999.
-;; Last Modified: $Date: 1999/12/30 12:06:40 $
+;; Last Modified: $Date: 2000/01/15 08:59:41 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -60,11 +60,13 @@
 ;; モードは別々の方がいいと思います。
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'skk-vars))
+(eval-when-compile (require 'skk-macs) (require 'skk-vars) (require 'static))
 
-(and (eq skk-emacs-type 'mule2)
-     (defvar fence-mode-map (make-keymap))
-     (require 'jisx0201))
+(static-cond ((eq skk-emacs-type 'mule2)
+	      (defvar fence-mode-map (make-keymap))
+	      (require 'jisx0201))
+	     (t
+	      (require 'japan-util)))
 
 (defgroup skk-jisx0201 nil "SKK jisx0201 related customization."
   :prefix "skk-jisx0201-"
@@ -525,18 +527,22 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 (defun skk-jisx0201-zenkaku (str)
   "STR の JIS X 0201 カナに属する文字列を対応する JIS X 0208 の文字列で置き換え
 る。"
-  (let ((func (or (and (featurep 'jisx0201)
-		       'zenkaku-katakana-region)
-		  'japanese-zenkaku-region)))
-    (skk-jisx0201-string-conversion str func)))
+  (skk-jisx0201-string-conversion
+   str
+   (static-cond ((eq skk-emacs-type 'mule2)
+		 'zenkaku-katakana-region)
+		(t
+		 'japanese-zenkaku-region))))
 
 (defun skk-jisx0201-hankaku (str)
   "STR の JIS X 0208 に属する文字列を対応する JIS X 0201 カナの文字列で置き換え
 る。"
-  (let ((func (or (and (featurep 'jisx0201)
-		       'hankaku-katakana-region)
-		  'japanese-hankaku-region)))
-    (skk-jisx0201-string-conversion str func)))
+  (skk-jisx0201-string-conversion
+   str
+   (static-cond ((eq skk-emacs-type 'mule2)
+		 'hankaku-katakana-region)
+		(t
+		 'japanese-hankaku-region))))
 
 (defun skk-jisx0201-insert (&optional arg)
   "SKK JISX0201 モードの文字入力を行なう。"
@@ -876,29 +882,29 @@ skk-rom-kana-rule-list から木の形にコンパイルされる。")
 		     (skk-jisx0208-latin-mode-string . ("--全英:" . " 全英"))
 		     (skk-abbrev-mode-string . ("--aあ::" . " aあ"))
 		     (skk-jisx0201-mode-string . ("--jisx0201" . " jisx0201"))))))
-	 (cond ((eq skk-emacs-type 'xemacs)
-		(or (memq 'skk-input-mode-string default-modeline-format)
-		    (setq-default default-modeline-format
-				  (append '("" skk-input-mode-string)
-					  default-modeline-format)))
-		(mapc
-		 (function
-		  (lambda (buf)
-		    (if (buffer-live-p buf)
-			(save-excursion
-			  (set-buffer buf)
-			  (or (not (listp modeline-format))
-			      (memq 'skk-input-mode-string modeline-format)
-			      (setq modeline-format
-				    (append '("" skk-input-mode-string)
-					    modeline-format)))))))
-		 (buffer-list)))
-	       (t
-		(or (memq 'skk-input-mode-string mode-line-format)
-		    (setq-default
-		     mode-line-format
-		     (append '("" skk-input-mode-string)
-			     mode-line-format)))))
+	 (static-cond
+	  ((eq skk-emacs-type 'xemacs)
+	   (or (memq 'skk-input-mode-string default-modeline-format)
+	       (setq-default default-modeline-format
+			     (append '("" skk-input-mode-string)
+				     default-modeline-format)))
+	   (mapc
+	    (function (lambda (buf)
+			(if (buffer-live-p buf)
+			    (save-excursion
+			      (set-buffer buf)
+			      (or (not (listp modeline-format))
+				  (memq 'skk-input-mode-string modeline-format)
+				  (setq modeline-format
+					(append '("" skk-input-mode-string)
+						modeline-format)))))))
+	    (buffer-list)))
+	  (t
+	   (or (memq 'skk-input-mode-string mode-line-format)
+	       (setq-default
+		mode-line-format
+		(append '("" skk-input-mode-string)
+			mode-line-format)))))
 	 (setq-default skk-input-mode-string "")
 	 (force-mode-line-update t))
 	(t

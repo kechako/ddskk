@@ -1,3 +1,14 @@
+1999-11-25  Takao KAWAMURA  <kawamura@debian.org>
+
+	* skk-autoloads.el: Added an entry for `skk-compile-rule-list'.
+
+	* skk.el (skk-compile-rule-list): ;;;###autoload
+
+	* skk-tut.el (skk-tutorial): Fixed to be used with the version 11
+	or later.
+	(skktut-end-tutorial): Modified for Daredevil SKK.
+	Activated (require 'skk-vars) while being loaded.
+
 1999-11-24  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (skk-isearch-mode-setup): Call

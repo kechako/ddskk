@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.39 2000/01/27 05:18:47 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.40 2000/01/27 13:40:03 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/27 05:18:47 $
+;; Last Modified: $Date: 2000/01/27 13:40:03 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -47,7 +47,7 @@
 ;;; Code:
 (cond ((or (and (boundp 'epoch::version) epoch::version)
 	   (string< (substring emacs-version 0 2) "19"))
-      (error "This version of SKK may not work on Emacs 18..."))
+      (message "This version of SKK may not work on Emacs 18..."))
      ((not (or (featurep 'mule) (boundp 'NEMACS)))
       (error "This version of SKK requires MULE features")))
 ;; APEL 9.22 or later required.
@@ -87,7 +87,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 2000/01/27 05:18:47 $")
+      (let* ((raw-date "$Date: 2000/01/27 13:40:03 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)))

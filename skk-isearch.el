@@ -5,9 +5,9 @@
 
 ;; Author: Enami Tsugutomo <enami@ba2.so-net.or.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.2 1999/11/22 16:33:50 czkmt Exp $
+;; Version: $Id: skk-isearch.el,v 1.5.2.4.2.3 1999/11/22 17:15:35 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/22 16:33:50 $
+;; Last Modified: $Date: 1999/11/22 17:15:35 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -333,7 +333,7 @@ If the conversion is in progress and no string is fixed, just return nil."
 	  (cond ((skk-isearch-conversion-active-p)
 		 (let ((start (skk-isearch-conversion-start)))
 		   ;; is there fixed string?
-		   (if (/= start 1)
+		   (if (> start 1)
 		       (prog1
 			   (buffer-substring 1 start)
 			 (delete-region 1 start)))))

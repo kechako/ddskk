@@ -1,3 +1,7 @@
+2000-08-19  YOSHIZAWA Masahiro <manbou@ceres.dti.ne.jp>
+
+	* skk.el (skk-okurigana-prefix): Fix the condition description.
+
 2000-08-18  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* READMEs/PROPOSAL : tm ML => APEL ML.

@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.16 1999/12/13 12:46:24 furue Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.17 1999/12/13 23:02:08 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/13 12:46:24 $
+;; Last Modified: $Date: 1999/12/13 23:02:08 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -68,9 +68,11 @@
 ;; Overwrite by skk-viper.el
 (defun skk-cursor-set-properly ()
   ;; カレントバッファの SKK のモードに従い、カーソルの色を変更する。
-  (if (and skk-use-color-cursor (get-buffer-window (current-buffer)))
-      (skk-cursor-set-color (skk-cursor-current-color)) )
-  (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)) )
+  (if (not (get-buffer-window (current-buffer)))
+      nil
+    (and skk-use-color-cursor 
+	 (skk-cursor-set-color (skk-cursor-current-color)) )
+    (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)) ))
 
 ;;; advices.
 ;; cover to original Emacs functions.
@@ -234,7 +236,7 @@
       (skk-cursor-set-color (if skk-katakana skk-cursor-katakana-color
 			      skk-cursor-hiragana-color ))))
 
-(defadvice skk-save-jisyo-original (after skk-cursor-ad activate)
+(defadvice skk-save-jisyo (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
   (skk-cursor-set-properly) )
 

@@ -1,3 +1,13 @@
+1999-12-13  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-viper.el (skk-cursor-set-properly): Sync up with
+	skk-cursor-set-properly in skk-cursor.el.
+
+	* skk-cursor.el (skk-save-jisyo-original): Change defadvice for
+	`skk-save-jisyo'.
+	(skk-cursor-set-properly): Check current buffer has a window or
+	not first.
+
 1999-12-13  FURUE Hideyuki  <furue@kke.co.jp>
 
 	* skk-cursor.el (skk-cursor-current-color): Change order again.
@@ -61,6 +71,7 @@
 	(after-make-frame-hook): Remove hook.
 	(minibuffer-setup-hook): Simplify hook.
 	
+>>>>>>> 1.1.2.4.2.65
 1999-12-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* skk-cursor.el (skk-cursor-set-properly) : Bug fixed.

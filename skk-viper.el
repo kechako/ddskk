@@ -6,9 +6,9 @@
 ;;         Murata Shuuichirou <mrt@notwork.org>
 ;; Maintainer: Murata Shuuichirou <mrt@notwork.org>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.2 1999/12/12 05:10:14 minakaji Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.3 1999/12/13 23:02:09 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/12 05:10:14 $
+;; Last Modified: $Date: 1999/12/13 23:02:09 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -188,26 +188,24 @@
 
 (defun skk-cursor-set-properly ()
   ;; カレントバッファの SKK のモードに従い、カーソルの色を変更する。
-  (if (and skk-use-color-cursor
-	   ;;(x-color-defined-p viper-insert-state-cursor-color)
-	   (get-buffer-window (current-buffer)) )
-      (cond
-       ((or (not skk-mode)
-	    ;; vi-state のときは、SKK モードになっていてもカーソルをディ
-	    ;; フォルトにしておく。
-	    (or (and (boundp 'viper-current-state)
-		     (eq viper-current-state 'vi-state) )
-		(and (boundp 'vip-current-state)
-		     (eq vip-current-state 'vi-state) )))
-	(skk-cursor-set-color skk-cursor-default-color) )
-       (t
-	(skk-cursor-set-color (cond (skk-jisx0208-latin-mode
-				     skk-cursor-jisx0208-latin-color )
-				    (skk-katakana skk-cursor-katakana-color)
-				    (skk-j-mode skk-cursor-hiragana-color)
-				    (t skk-cursor-latin-color) )))))
-  (if skk-cursor-change-width
-      (skk-cursor-change-when-ovwrt) ))
+  (if (not (get-buffer-window (current-buffer)))
+      nil
+    (if 
+	;;(and 
+	skk-use-color-cursor
+	;;(x-color-defined-p viper-insert-state-cursor-color)
+	(cond
+	 ;; vi-state のときは、SKK モードになっていてもカーソルをディ
+	 ;; フォルトにしておく。
+	 ((or (and (boundp 'viper-current-state)
+		   (eq viper-current-state 'vi-state) )
+	      (and (boundp 'vip-current-state)
+		   (eq vip-current-state 'vi-state) ))
+	  (skk-cursor-set-color skk-cursor-default-color) )
+	 (t
+	  (skk-cursor-set-color (skk-cursor-current-color)) )))
+    (if skk-cursor-change-width 
+	(skk-cursor-change-when-ovwrt) )))
 
 (skk-viper-normalize-map)
 

@@ -90,7 +90,7 @@
 (defadvice require (around skk-dos-ad activate preactivate)
   "Just a work around for SKK.
 May not work with a more complicated program like Gnus."
-  (condition-case err
+  (condition-case err1
       ad-do-it
     (error
      (let* ((file (or (ad-get-arg 1) (format "%s" (ad-get-arg 0))))
@@ -100,16 +100,17 @@ May not work with a more complicated program like Gnus."
 	      (setq str (substring file 0 6))
 	      (catch 'tag
 		(while (<= i 5)
-		  (condition-case nil
+		  (condition-case err2
 		      (and
 		       (ad-Orig-require (ad-get-arg 0) (format "%s~%d" str i))
 		       (throw 'tag t))
-		    (error nil))
+		    (file-error nil)
+		    (error (car err2) (cdr err2)))
 		  (setq i (1+ i)))))
 	     (t
 	      nil)))
      (or (featurep (ad-get-arg 0))
-	 (error (car err) (cdr err))))))
+	 (error (car err1) (cdr err1))))))
 
 ;; Functions.
 (or (fboundp 'make-color-instance)

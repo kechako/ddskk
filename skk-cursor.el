@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <masata-y@is.aist-nara.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.29 2000/09/09 03:25:48 minakaji Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.30 2000/09/09 05:13:26 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/09 03:25:48 $
+;; Last Modified: $Date: 2000/09/09 05:13:26 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -144,6 +144,7 @@
   )
 ;;; Hooks
 ;;(add-hook 'isearch-mode-end-hook 'update-buffer-local-frame-params 'append)
+(add-hook 'skk-mode-hook 'skk-mode-once-again)
 
 (provide 'skk-cursor)
 ;;; Local Variables:

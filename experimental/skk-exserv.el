@@ -6,9 +6,9 @@
 ;;
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-exserv.el,v 1.1.2.1 2000/03/24 13:57:22 minakaji Exp $
+;; Version: $Id: skk-exserv.el,v 1.1.2.2 2000/03/24 14:06:17 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/03/24 13:57:22 $
+;; Last Modified: $Date: 2000/03/24 14:06:17 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -144,28 +144,30 @@ candidates that are delimited by slash.")
   (or (skk-open-server)
       (skk-error "Cannot open connection to SKK server"
 		 "SKK サーバーとコネクションを張ることができません"))
-  (unwind-protect
-      (with-current-buffer (oref engine buffer)
-	(let (v)
-	  (erase-buffer)
-	  ;; サーバーバージョンを得る。
-	  (process-send-string (oref engine name) "2")
-	  (while (and (server-opened-p engine) (eq (buffer-size) 0))
-	    (accept-process-output))
-	  (setq v (buffer-string))
-	  (erase-buffer)
-	  ;; ホスト名を得る。
-	  (process-send-string (oref engine name) "3")
-	  (while (and (server-opened-p engine) (eq (buffer-size) 0))
-	    (accept-process-output))
-	  (goto-char (point-min))
-	  (format
-	   (concat "SKK SERVER version %s"
-		   (if skk-japanese-message-and-error
-		       "(ホスト名 %s)"
-		     "running on HOST %s"))
-	   v (buffer-string) )))
-    (erase-buffer)))
+  (save-excursion
+    (unwind-protect
+	(progn
+	  (set-buffer (oref engine buffer))
+	  (let (v)
+	    (erase-buffer)
+	    ;; サーバーバージョンを得る。
+	    (process-send-string (oref engine name) "2")
+	    (while (and (server-opened-p engine) (eq (buffer-size) 0))
+	      (accept-process-output))
+	    (setq v (buffer-string))
+	    (erase-buffer)
+	    ;; ホスト名を得る。
+	    (process-send-string (oref engine name) "3")
+	    (while (and (server-opened-p engine) (eq (buffer-size) 0))
+	      (accept-process-output))
+	    (goto-char (point-min))
+	    (format
+	     (concat "SKK SERVER version %s"
+		     (if skk-japanese-message-and-error
+			 "(ホスト名 %s)"
+		       "running on HOST %s"))
+	     v (buffer-string) )))
+      (erase-buffer))))
 
 ;;;###autoload
 (defun skk-exserv-search ()

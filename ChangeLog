@@ -1,5 +1,7 @@
 2000-03-24  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* experimental/skk-exserv.el (server-version): Bug fixed.
+
 	* SKK-MK (SKK_MODULES): Add `skk-exserv'.
 
 	* experimental/skk-exserv.el: New experimental program.

@@ -5,9 +5,9 @@
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Murata Shuuichirou  <mrt@astec.co.jp>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.1 2000/07/07 22:13:36 minakaji Exp $
+;; Version: $Id: skk-gadget.el,v 1.3.2.4.2.2 2000/08/12 14:24:08 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/07 22:13:36 $
+;; Last Modified: $Date: 2000/08/12 14:24:08 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -50,7 +50,7 @@
 ;; $B$+$i:n$i$l$?B$8l$i$7$$!#(B
 
 ;;; Code:
-(eval-when-compile (require 'skk-macs) (require 'skk-vars))
+(eval-when-compile (require 'skk-macs) (require 'skk-vars) (require 'static))
 
 ;; -- programs
 ;;;###autoload
@@ -103,14 +103,7 @@ interactive $B$K5/F0$9$kB>!"(B\"clock /(skk-clock)/\" $B$J$I$N%(%s%H%j$r(B S
 skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#(B"
   (interactive "*")
   (let ((start (current-time))
-        ;; Hit any key $B$H$7$?$$$H$3$m$@$,!"2?8N$+>e<j$/$f$+$J$$(B (;_;)...$B!#(B
-        ;;(now-map (if skk-emacs19
-        ;;             '(keymap (t . keyboard-quit))
-        ;;           (fillarray (make-keymap) 'keyboard-quit)))
-        (overriding-terminal-local-map
-         (fillarray (setcar (cdr (make-keymap)) (make-vector 256 nil))
-                    'keyboard-quit))
-        end mes expr1 expr2)
+        end mes expr1 expr2 sec snd)
     (cond ((or (not skk-number-style)
                (eq skk-number-style 0))
            (setq expr1 "[789]$BIC(B"
@@ -125,6 +118,18 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
           (t
            (setq expr1 "[$B<7H,6e(B]$BIC(B"
                  expr2 "$B!;IC(B")))
+    (static-when (eq skk-emacs-type 'xemacs)
+      ;; XEmacs $B$G(B sound $B$,%m!<%I$5$l$F$$$k$+$I$&$+!#(B
+      (setq snd (and (boundp 'sound-alist)
+		     (eq t (catch 'tag
+			     (mapc
+			      (function
+			       (lambda (list)
+				 (and
+				  (eq 'cuckoo
+				      (cadr (memq :sound list)))
+				  (throw 'tag t))))
+			      sound-alist))))))
     (save-match-data
       (condition-case nil
           (let (case-fold-search
@@ -133,14 +138,17 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
 		skk-jisx0208-latin-mode)
             (while (not quit-flag)
               (setq mes (skk-current-date t))
-              (message (concat  mes "    Hit C-g quit"))
-              ;;(message (concat  mes "    Hit any key to quit"))
+	      (message "%s    Hit any key to quit" mes)
+	      (setq sec (if snd (/ (float 1) (float 200)) 0))
               (if time-signal
                   (if (string-match expr1 mes)
                       ;; [7890] $B$N$h$&$K@55,I=8=$r;H$o$:!"(B7 $B$@$1$GA4$F$N%^%7%s$,(B
                       ;; $BCe$$$F$f$1$PNI$$$N$@$,(B...$B!#CzEY$3$N4X?t<B9T;~$K(B Garbage
                       ;; collection $B$,8F$P$l$F$bI=<($5$l$k?t;z$,Ht$V>l9g$,$"$k!#(B
-                      (ding)
+		      (static-if (eq skk-emacs-type 'xemacs)
+			  ;; $B$$$$2;$,$J$$$J$!(B...
+			  (ding nil 'yeep)
+			(ding))
                     (if (string-match expr2 mes)
                         ;; 0 $B$@$1!V%]!A%s!W$H$$$-$?$$$H$3$m$G$9$,!"%^%7%s$K$h$C(B
                         ;; $B$F:9$,$"$k!#(B
@@ -149,15 +157,36 @@ skk-date-ad $B$H(B skk-number-style $B$K$h$C$FI=<(J}K!$N%+%9%?%^%$%:$,2DG=!#
                         ;; $B!V%T%T%C!W$H$J$j!"2;$N%?%$%_%s%0$ONI$$$N$@$,!"$H$-(B
                         ;; $B$I$-(B 1 $BICJ,$D$$$F$$$1$J$/$J$k!#(BPentium 90Mhz +
                         ;; Mule-2.x$B$@$H!V%T%C!W$H$$$&C12;$K$J$C$F$7$^$&(B... (;_;)$B!#(B
-                        (progn (ding)(ding)))))
-              (sit-for 1)))
+			(static-cond
+			 ((eq skk-emacs-type 'xemacs)
+			  (if snd
+			      ;; $B$A$g$C$H$b$?$D$/(B ?
+			      (ding nil 'cuckoo)
+			    (ding)
+			    (unless (sit-for (setq sec (/ (float 1) (float 6))))
+			      (next-command-event)
+			      (signal 'quit nil))
+			    (ding)))
+			 ((featurep 'lisp-float-type)
+			  (ding)
+			  (unless (sit-for (setq sec (/ (float 1) (float 6))))
+			    (next-command-event)
+			    (signal 'quit nil))
+			  (ding))
+			 (t
+			  ;; Emacs 18
+			  (ding)
+			  (ding))))))
+	      (unless (sit-for (- 1 sec))
+		(next-command-event)
+		(signal 'quit nil))))
         (quit
          (prog2
              (setq end (current-time))
              (skk-current-date t)
            (if kakutei-when-quit
                (setq skk-kakutei-flag t))
-           (message (format "$B7P2a;~4V(B: %s $BIC(B" (skk-time-difference start end)))))))))
+           (message "$B7P2a;~4V(B: %s $BIC(B" (skk-time-difference start end))))))))
 
 ;;;###autoload
 (defun skk-ad-to-gengo (&optional fstr lstr)

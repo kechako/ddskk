@@ -3,9 +3,9 @@
 ;; Copyright (C) 1999, 2000 Tsukamoto Tetsuo
 
 ;; Author: Tsukamoto Tetsuo <czkmt@remus.dti.ne.jp>
-;; Version: $Id: skk-dos.el,v 1.1.2.6 2000/08/23 13:31:07 czkmt Exp $
+;; Version: $Id: skk-dos.el,v 1.1.2.7 2000/08/25 13:54:29 czkmt Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/08/23 13:31:07 $
+;; Last Modified: $Date: 2000/08/25 13:54:29 $
 
 ;; This file is not part of Daredevil SKK yet.
 
@@ -179,13 +179,18 @@
 
 (defun skk-dos-load-apel ()
   (cond ((= emacs-major-version 18)
+	 ;; Demacs 1.2.0
 	 (defun accept-process-output (&rest args))
 	 (provide 'static)
 	 (provide 'filename)
 	 (require 'product)
 	 (load "static")
 	 (require 'poe-18)
-	 (provide 'tcp)
+	 (unless (fboundp 'open-network-stream)
+	   (condition-case nil
+	       (require 'tcp)
+	     (error
+	      (provide 'tcp))))
 	 (condition-case nil
 	     (progn
 	       (require 'localhook "localhoo")
@@ -210,6 +215,7 @@
 	 (require 'emu)
 	 (load "filename"))
 	(t
+	 ;; Mule 2.3 based on Emacs 19.30
 	 (condition-case nil
 	     (progn
 	       (require 'invisible "invisibl")
@@ -220,6 +226,12 @@
 	 (add-hook 'skk-load-hook
 		   '(lambda ()
 		      (require 'skk-cursor "skk-cu~1")))
+	 ;;
+	 (defadvice skk-save-jisyo (around skk-dos-ad activate)
+	   (let ((mode (file-modes skk-jisyo)))
+	     ad-do-it
+	     (set-file-modes skk-jisyo mode)))
+	 ;;
 	 (or (fboundp 'make-color-instance)
 	     (defalias 'make-color-instance 'ignore))
 	 (or (fboundp 'color-instance-rgb-components)
@@ -228,8 +240,9 @@
 (condition-case err1
     (skk-dos-load-apel)
   (error
-   (set-buffer (get-buffer-create "*skk-dos-err*"))
-   (insert (format "%s" err1))
+   (save-excursion
+     (set-buffer (get-buffer-create "*skk-dos-err*"))
+     (insert (format "%s" err1)))
    (signal 'error err1)))
 
 (provide 'skk-autoloads)

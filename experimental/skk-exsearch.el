@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-exsearch.el,v 1.1.2.7 2000/07/17 20:59:23 minakaji Exp $
+;; Version: $Id: skk-exsearch.el,v 1.1.2.8 2000/09/09 11:11:44 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/07/17 20:59:23 $
+;; Last Modified: $Date: 2000/09/09 11:11:44 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -128,7 +128,8 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
 
 (defmethod search-engine ((engine look-engine) &rest argument)
   (with-temp-buffer 
-    (let (opt)
+    (let ((word argument)
+	  opt)
       (and (oref engine dictionary) 
 	   (nconc argument (list (oref engine dictionary))))
       (and skk-look-dictionary-order (setq opt "d"))
@@ -140,8 +141,9 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
 	   (setq argument
 		 (cons (list "-t" skk-look-termination-character) argument)))
       (and (core-engine engine argument)
-	   (split-string (buffer-substring-no-properties (point-min) (1- (point-max)))
-			 "\n")))))
+	   (delete word (split-string (buffer-substring-no-properties
+				       (point-min) (1- (point-max)))
+				      "\n"))))))
 
 ;;;###autoload
 (defun skk-cdbget-search ()
@@ -155,7 +157,9 @@ This type inserts multiple lines to the buffer.  Each line contains a candidate.
        (eq (skk-str-ref skk-henkan-key (1- (length skk-henkan-key))) ?*)
        (let ((args (substring skk-henkan-key 0 (1- (length skk-henkan-key))))
 	     v)
-	 (setq v (search-engine look args))
+	 (if (not skk-look-use-ispell)
+	     (setq v (search-engine look args))
+	   (setq v (skk-look-ispell args)))
 	 (if (not skk-look-recursive-search)
 	     v
 	   (let (skk-henkan-key v2 v3)

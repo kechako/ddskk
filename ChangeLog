@@ -1,3 +1,11 @@
+2000-09-09  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-look.el (skk-look-ispell): Call `skk-look-1' for a word
+	originally handed to when ispell recognize WORD is a exact word.
+
+	* experimental/skk-exsearch.el (search-engine):  Do not put out
+	originally handed word.
+
 2000-09-09  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* READMEs/CVS_00readme: Update.

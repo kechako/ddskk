@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-look.el,v 1.5.2.4.2.8 2000/09/09 03:25:49 minakaji Exp $
+;; Version: $Id: skk-look.el,v 1.5.2.4.2.9 2000/09/09 11:11:42 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/09/09 03:25:49 $
+;; Last Modified: $Date: 2000/09/09 11:11:42 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -203,14 +203,15 @@
 		       'error)))
 	ret var)
     (setq ispell-filter nil)
-    (cond ((or (eq poss t) (stringp poss)) nil)
+    (cond ((or (eq poss t) (stringp poss))
+	   (skk-look-1 word))
 	  ((eq poss 'error)
 	   (skk-message "ispell process でエラーが発生しました。"
 			"error in ispell process")
 	   (sit-for 1)
 	   (message "")
 	   nil)
-	  ((null (or (nth 2 poss) (nth 3 poss)))
+	  ((and (null (or (nth 2 poss) (nth 3 poss))) (car poss))
 	   ;;             word
 	   (skk-look-1 (car poss)))
 	  (t
@@ -218,7 +219,7 @@
 	   (setq var (nconc (nth 2 poss) (nth 3 poss)))
 	   (while var
 	     ;; call look command by each candidate put out by ispell.
-	     (setq ret (skk-nunion (cons (car var) (skk-look-1 (car var))) ret)
+	     (setq ret (skk-nunion ret (cons (car var) (skk-look-1 (car var))))
 		   var (cdr var)))
 	   ;; unnecessary?
 	   (delete word ret)))))

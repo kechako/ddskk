@@ -1,8 +1,0 @@
--*- text -*-
-             $Date: 1999/11/08 23:26:30 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
-	     $Id: GUIDELINE,v 1.2.2.1 1999/11/08 23:26:30 minakaji Exp $
-
-
-o 全く新しい機能を提供するプログラムで、はこのディレクトリに置くことにし
-  ます。
-[end of GUIDELINE]

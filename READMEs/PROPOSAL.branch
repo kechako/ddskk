@@ -1,7 +1,7 @@
 -*- outline -*-
 
-             $Date: 1999/11/14 15:10:22 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
-	     $Id: PROPOSAL.branch,v 1.1.2.2 1999/11/14 15:10:22 minakaji Exp $
+             $Date: 1999/11/15 22:25:37 $ Mikio Nakajima/中島幹夫 <minakaji@osaka.email.ne.jp>
+	     $Id: PROPOSAL.branch,v 1.1.2.3 1999/11/15 22:25:37 minakaji Exp $
 
 * CVS ダイジェスト
 
@@ -44,7 +44,7 @@ login は不要になります (注1)。
 Checkout して cvs server からソースをもらってきます (このファイルをワー
 キングコピーといいます) (注2)。
 
-  $ cvs checkout -r daredevil skk/main
+  $ cvs -d :pserver:guest@openlab.ring.gr.jp:/circus/cvsrootcheckout -r daredevil skk/main
 
 カレントディレクトリの下にできる skk/main というディレクトリにワーキン
 グコピーがコピーされます。
@@ -84,8 +84,8 @@ openlab.ring.gr.jp 上にアカウントがないと update, commit, tag できませ
 $Bたときに差分だけ取り寄せ、ワーキングコピーを最新の状態にすることができ
 ます。
 ワーキングコピーは、openlab.ring.gr.jp:/circus/cvsroot を指しているこ
-とを記憶している (注3) ので、次節の Checkout から始めると、自動的にロ
-グインできます。
+とを記憶している (注3) ので、update から始めると、自動的にログインでき
+ます。
 
    $ cvs update
 

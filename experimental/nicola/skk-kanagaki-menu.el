@@ -3,7 +3,7 @@
 
 ;; Author: Tetsuo Tsukamoto <czkmt@remus.dti.ne.jp>
 ;; Keywords: japanese, keyboard
-;; Last Modified: $Date: 2000/09/06 11:34:48 $
+;; Last Modified: $Date: 2000/09/08 17:23:15 $
 
 ;; This file is not yet part of Daredevil SKK.
 
@@ -54,9 +54,9 @@ Convert to Hankaku Katakana or Toggle Katakana <=> Hankaku Katakana Mode"
       ["Toggle Roma <=> Kana" skk-kanagaki-toggle-rom-kana t]
       "--"
       ["Show Key Bindings" skk-kanagaki-help t]
-      ["Show the Keymap based on NICOLA" skk-nicola-help
+      ["Show the Current Keymap based on NICOLA" skk-nicola-help
        (featurep 'skk-nicola)]
-      ["Show NICOLA-specific Key Bindings" skk-nicola-2nd-help
+      ["Show NICOLA-Specific Key Bindings" skk-nicola-2nd-help
        (featurep 'skk-nicola)]
       "--"
       ["Visit NIHONGO-NYURYOKU CONSORTIUM Web Site"

@@ -1,3 +1,11 @@
+2000-09-08  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* Makefile (VERSION): Use version number of Darevil SKK.
+
+	* README.URIs: Highlight URIs as if they are clickable.
+
+	* README.ja: Ditto.
+
 2000-09-06  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-*.el: Add keywords.

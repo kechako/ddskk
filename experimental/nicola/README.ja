@@ -1,6 +1,6 @@
 -*- mode: outline -*-
 
-	$Id: README.ja,v 1.1.2.1 2000/09/04 15:13:18 czkmt Exp $
+	$Id: README.ja,v 1.1.2.2 2000/09/08 17:23:15 czkmt Exp $
 
 
 このディレクトリには SKK の仮名入力対応コードを置いています。
@@ -177,3 +177,22 @@ http://www.eva.hi-ho.ne.jp/%7Eminoura/kbd/keymap.html
 「ー」を犠牲にしてあります (SHIFT と共に押せば入力できるようにしてあり
 ます)。これを刻印通りの入力にするには、 xmodmap を使うなどしてキーシン
 ボルの割当てを変更する必要があります。
+
+
+# Local Variables:
+# eval: (local-set-key (if (featurep 'xemacs)
+			   [button3]
+			 [mouse-3]) 'browse-url-at-mouse)
+# eval: (save-excursion
+	  (goto-char (point-min))
+	  (while (re-search-forward "\\(ht\\|f\\)tp://.+$" nil t)
+	    (put-text-property (match-beginning 0) (match-end 0)
+			       'mouse-face 'highlight)))
+# eval: (defvar font-lock-keywords nil)
+# eval: (make-local-variable 'font-lock-keywords)
+# eval: (defvar outline-font-lock-keywords nil)
+# eval: (if (featurep 'font-lock) (font-lock-set-defaults)) 
+# eval: (setq font-lock-keywords
+	      (append outline-font-lock-keywords
+		      '(("\\(ht\\|f\\)tp://.+$" 0 'bold))))
+# End:

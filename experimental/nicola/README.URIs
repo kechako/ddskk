@@ -1,6 +1,6 @@
 -*- mode: fundamental -*-
 
-	$Id: README.URIs,v 1.1.2.1 2000/09/04 15:13:18 czkmt Exp $
+	$Id: README.URIs,v 1.1.2.2 2000/09/08 17:23:15 czkmt Exp $
 
 
 o 日本語入力コンソーシアム (NICOLA)
@@ -36,3 +36,16 @@ http://www2.airnet.ne.jp/pak04955/dl-linux.htm#nicolatter
 o OASYS のホームページ
 
 http://www.fujitsu.co.jp/people/kanda/
+
+
+# Local Variables:
+# eval: (local-set-key (if (featurep 'xemacs)
+			   [button3]
+			 [mouse-3]) 'browse-url-at-mouse)
+# eval: (save-excursion
+	  (goto-char (point-min))
+	  (while (re-search-forward "\\(ht\\|f\\)tp://.+$" nil t)
+	    (put-text-property (match-beginning 0) (match-end 0)
+			       'mouse-face 'highlight)
+	    (put-text-property (match-beginning 0) (match-end 0) 'face 'bold)))
+# End:

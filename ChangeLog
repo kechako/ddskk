@@ -1,3 +1,11 @@
+2000-08-23  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
+
+	* experimental/skk-dos.el: Work around for Demacs 1.2.0.
+
+	* skk-vars.el (skk-isearch-switch): Default to nil.
+
+	* skk.el (comint-send-input): New advice.
+
 2000-08-20  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el (skk-isearch-delete-char): Call `skk-kakutei' if

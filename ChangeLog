@@ -1,3 +1,9 @@
+2000-04-26  Yuh Ohmura <yutopia@t3.rim.or.jp>
+
+	* make.bat: Change maintenner.
+
+	* READMEs/README.win: add about dictionary
+
 2000-04-26  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
 	* READMEs/INSTALL: Add description about dictionaries.

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-develop.el,v 1.6 1999/10/03 11:32:35 minakaji Exp $
+;; Version: $Id: skk-develop.el,v 1.6.2.1 1999/11/07 06:09:58 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/10/03 11:32:35 $
+;; Last Modified: $Date: 1999/11/07 06:09:58 $
 
 ;; This file is not part of SKK yet.
 
@@ -76,16 +76,16 @@ mail-user-agent $B$r@_Dj$9$k$3$H$K$h$j9%$_$N%a!<%k%$%s%?!<%U%'%$%9$r;HMQ$9$k$3$
 			       (concat ", SKKSERV; "
 				       (getenv "SKKSERV") ))))))
      (let ((base (list 'window-system
-		       'skk-auto-okuri-process
-		       'skk-auto-start-henkan
-		       'skk-egg-like-newline
-		       'skk-henkan-okuri-strictly
-		       'skk-henkan-strict-okuri-precedence
-		       'skk-kakutei-early
-		       'skk-process-okuri-early
-		       'skk-search-prog-list
-		       'skk-use-face
-		       'skk-use-viper )))
+                       'skk-auto-okuri-process
+                       'skk-auto-start-henkan
+                       'skk-egg-like-newline
+                       'skk-henkan-okuri-strictly
+                       'skk-henkan-strict-okuri-precedence
+                       'skk-kakutei-early
+                       'skk-process-okuri-early
+                       'skk-search-prog-list
+                       'skk-share-private-jisyo
+                       'skk-use-viper )))
        (and (boundp 'skk-henkan-face)
 	    (setq base (append base '(skk-henkan-face))) )
        (and (boundp 'skk-server-host)

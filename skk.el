@@ -1,15 +1,13 @@
-;;; skk.el --- SKK (Simple Kana to Kanji conversion program)
+;;; skk.el --- Aloha branch of SKK (Simple Kana to Kanji conversion program)
 ;; Copyright (C) 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997,
 ;;               1998, 1999
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
-;; Maintainer: Hideki Sakurada <sakurada@kuis.kyoto-u.ac.jp>
-;;             Murata Shuuichirou <mrt@astec.co.jp>
-;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19 1999/11/07 02:54:26 minakaji Exp $
+;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
+;; Version: $Id: skk.el,v 1.19.2.1 1999/11/07 06:06:42 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/07 02:54:26 $
+;; Last Modified: $Date: 1999/11/07 06:06:42 $
 
 ;; SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -46,11 +44,17 @@
 ;; skk-katakana: t
 ;;   KATAKANA
 
+;; This branch of SKK is called `Aloha SKK'.  As you know `Aloha' is a word
+;; of Hawaian dialect which means `Welcome', `Hello', `Good-bye' and `Love'. 
+;; Origin of the word is each initial letters of the five Hawaian local 
+;; words, i.e., Akahai (親切), Lokahi (合同), Olu`olu (快い), Ha`aha`a (謙遜)
+;; and Ahonui (忍耐).  I hope this branch will be developed by spirit of 
+;; `Aloha'.
 
 ;;; Code:
 (require 'skk-foreword)
 
-(defconst skk-version "10.57")
+(defconst skk-version "1.0")
 (defconst skk-major-version (string-to-int (substring skk-version 0 2)))
 (defconst skk-minor-version (string-to-int (substring skk-version 3)))
 
@@ -60,7 +64,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/11/07 02:54:26 $")
+      (let* ((raw-date "$Date: 1999/11/07 06:06:42 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -68,7 +72,7 @@
             (setq month (substring month (match-end 0))) )
         (if (string-match "^0" date)
             (setq date (substring date (match-end 0))) )
-        (message "SKK version %s of %s, APEL inside"
+        (message "SKK version Aloha %s of %s, APEL inside"
                  skk-version
                  (concat (car (rassoc month skk-month-alist))
                          " " date ", " year ))))))
@@ -1038,6 +1042,17 @@ nil であれば、英語で表示する。"
   :type '(repeat character)
   :group 'skk )
 
+
+(defcustom skk-emacs-id-file (convert-standard-filename "~/.skk-emacs-id")
+  "*skk-jisyo-file に最近アクセスした SKK の skk-emacs-id を保存するファイル。"
+  :type 'file
+  :group 'skk )
+
+(defcustom skk-share-private-jisyo nil
+  "*Non-nil であれば、複数の SKK が個人辞書を共有していることを考慮して辞書を更新する。"
+  :type 'boolean
+  :group 'skk )
+
 (defcustom skk-jisyo-save-count 50
   "*数値であれば、その回数辞書が更新されたときに辞書を自動的にセーブする。
 nil であれば、辞書のオートセーブを行なわない。" 
@@ -1942,6 +1957,20 @@ dependent."
 			(> emacs-minor-version 2) )))
 	      (require 'skk-leim) )
 	  (if skk-use-numeric-conversion (require 'skk-num))
+	  (if skk-share-private-jisyo
+	      (progn
+		(skk-create-file skk-emacs-id-file)
+		(setq skk-emacs-id
+		      (make-temp-name
+		       (concat (system-name) ":"
+			       (mapconcat 'int-to-string (current-time) "")
+			       ":" )))
+		(setq skk-jisyo-update-vector
+		      (make-vector skk-jisyo-save-count nil))
+		(with-temp-buffer
+		  (insert-file-contents skk-emacs-id-file)
+		  (insert skk-emacs-id "\n")
+		  (write-region 1 (point-max) skk-emacs-id-file nil 'nomsg) )))
           (if skk-keep-record
 	      (skk-create-file skk-record-file
 			       "SKK の記録用ファイルを作りました"
@@ -3806,6 +3835,33 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                            "No need to save SKK jisyo" )
               (sit-for 1) ))
       (with-current-buffer jisyo-buffer
+	(if (and skk-share-private-jisyo
+		 ;; 個人辞書が他の emacs 上の skk により更新されたかをチェック
+		 (with-temp-buffer
+		   (insert-file-contents skk-emacs-id-file)
+		   (goto-char (point-min))
+		   (not (search-forward skk-emacs-id nil t)) ))
+	    (progn
+	      (lock-buffer skk-jisyo)
+	      ;; 現在の jisyo-buffer の内容を消去して、他の emacs 上の skk が
+	      ;; 更新した skk-jisyo を読み込む。
+	      (erase-buffer)
+	      (insert-file-contents skk-jisyo)
+	      (skk-setup-jisyo-buffer)
+	      ;; skk-jisyo-update-vector にしたがってバッファを更新する。
+	      (let ((index 0) list skk-henkan-key)
+		(while (and (< index skk-jisyo-save-count)
+			    (setq list (aref skk-jisyo-update-vector index)) )
+		  ;; skk-update-jisyo-1, skk-search-jisyo-file-1
+		  ;; で参照される skk-henkan-key をセットする
+		  (setq skk-henkan-key (car list))
+		  (skk-update-jisyo-1
+		   ;; okurigana    word 
+		   (nth 1 list) (nth 2 list)
+		   (skk-search-jisyo-file-1 (nth 1 list) 0 'delete)
+		   ;; purge
+		   (nth 3 list) )
+		  (setq index (1+ index)) ))))
         (let ((inhibit-quit t)
               (tempo-file (skk-make-temp-jisyo)) )
           (if (not quiet)
@@ -3822,7 +3878,13 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
                              "Saving SKK jisyo...done" )
                 (sit-for 1) ))
           (and (eq this-command 'save-buffers-kill-emacs)
-	       (skk-record-jisyo-data) )))
+	       (skk-record-jisyo-data) ))
+	(if skk-share-private-jisyo
+	    (with-temp-buffer
+	      (fillarray skk-jisyo-update-vector nil)
+	      (insert skk-emacs-id "\n")
+	      (write-region 1 (point-max) skk-emacs-id-file nil 'nomsg)
+	      (unlock-buffer) )) )
       (skk-set-cursor-properly) )))
 
 (defun skk-save-jisyo-1 (file)
@@ -4472,7 +4534,12 @@ C-u ARG で ARG を与えると、その文字分だけ戻って同じ動作を行なう。"
 	    (setq skk-henkan-key midasi
 		  old-entry (skk-search-jisyo-file-1 okurigana 0 'delete) )
 	    (skk-update-jisyo-1 okurigana word old-entry purge)
-	    (and skk-update-end-function
+	    ;; 複数の emacs で SKK が起動されているときに個人辞書を整合的に
+	    ;; 更新するために確定の動作を記録する。
+	    (if skk-share-private-jisyo
+		(aset skk-jisyo-update-vector skk-update-jisyo-count
+		      (list midasi okurigana word purge) ))
+	    	    (and skk-update-end-function
 		 (funcall skk-update-end-function
 			  henkan-buffer midasi okurigana word purge ))
 	    (setq skk-update-jisyo-count (1+ skk-update-jisyo-count))

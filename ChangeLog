@@ -1,5 +1,14 @@
 1999-11-07  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 
+	* skk-develop.el (skk-submit-bug-report): Add
+	`skk-share-private-jisyo' to BASE list.
+
+	* skk.el (skk-emacs-id-file): New user option.
+	(skk-share-private-jisyo): Ditto.
+	(skk-mode): Add code for `skk-share-private-jisyo'.
+	(skk-save-jisyo-original): Ditto.
+	(skk-update-jisyo-original): Ditto.
+
 	* experimental/skk-jisx0201.el (skk-jisx0201-mode-string): Change
 	mode indicator to `jisx0201' and doc fixed.
 	(skk-jisx0201-rule-list): Define latin-jisx0201 characters.

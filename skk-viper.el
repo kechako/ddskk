@@ -3,12 +3,12 @@
 ;; Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>, Murata Shuuichirou <mrt@astec.co.jp>
 ;;
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>,
-;;         Murata Shuuichirou <mrt@astec.co.jp>
-;; Maintainer: Murata Shuuichirou <mrt@astec.co.jp>
+;;         Murata Shuuichirou <mrt@notwork.org>
+;; Maintainer: Murata Shuuichirou <mrt@notwork.org>
 ;;             Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-viper.el,v 1.5.2.4.2.1 1999/11/17 15:48:12 tsumura Exp $
+;; Version: $Id: skk-viper.el,v 1.5.2.4.2.2 1999/12/12 05:10:14 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/11/17 15:48:12 $
+;; Last Modified: $Date: 1999/12/12 05:10:14 $
 
 ;; This file is part of Daredevil SKK.
 

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.20 1999/12/09 16:13:03 furue Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.21 1999/12/12 05:10:14 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/09 16:13:03 $
+;; Last Modified: $Date: 1999/12/12 05:10:14 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/12/09 16:13:03 $")
+      (let* ((raw-date "$Date: 1999/12/12 05:10:14 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -389,7 +389,6 @@ dependent."
 			;; XEmacs 20.4 or later.
 			(> emacs-minor-version 2) )))
 	      (require 'skk-leim) )
-	  (if skk-use-numeric-conversion (require 'skk-num))
 	  (if skk-share-private-jisyo
 	      (progn
 		(skk-create-file skk-emacs-id-file)
@@ -414,9 +413,8 @@ dependent."
 	  (skk-regularize)
 	  (and (or skk-use-color-cursor skk-cursor-change-width)
 	       (require 'skk-cursor)
-	       (interactive-p)
-	       (skk-cursor-set-color skk-cursor-hiragana-color) )
-          (setq skk-mode-invoked t)))
+	       (and (interactive-p) (skk-cursor-set-properly)) )
+          (setq skk-mode-invoked t) ))
     ;; 以下は skk-mode に入るたびに毎度コールされるコード。
     (and skk-use-viper (require 'skk-viper))
     ;; .skk で skk-kakutei-key の変更が可能になるように。

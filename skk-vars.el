@@ -4,9 +4,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-vars.el,v 1.6.2.3.2.9 1999/12/08 19:25:42 furue Exp $
+;; Version: $Id: skk-vars.el,v 1.6.2.3.2.10 1999/12/12 05:10:13 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/08 19:25:42 $
+;; Last Modified: $Date: 1999/12/12 05:10:13 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -1060,12 +1060,14 @@ nil であれば、先頭の文字を共通にする文字列について補完が行なわれる。
   :group 'skk-comp )
 
 (defcustom skk-completion-function 'skk-completion-original
-  "*skk-completion で使用する関数。"
+  "*skk-completion で使用する関数。
+skk-comp.el 以外の補完機能を利用できるように関数を funcall する形にしておく。"
   :type 'function
   :group 'skk-comp )
 
 (defcustom skk-previous-completion-function 'skk-previous-completion-original
-  "*skk-previous-completion で使用する関数。"
+  "*skk-previous-completion で使用する関数。
+skk-comp.el 以外の補完機能を利用できるように関数を funcall する形にしておく。"
   :type 'function
   :group 'skk-comp )
 

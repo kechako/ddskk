@@ -1,3 +1,25 @@
+1999-12-12  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-mode): Call `skk-cursor-set-properly` if
+        `skk-use-color-cursor' or `skk-cursor-change-width' is non-nil.
+	
+	Not required skk-num.el expressly. (skk-num-list という buffer
+	local 変数に関するエラーを回避するために
+	skk-use-numeric-conversion が non-nil であれば skk-mode 内で先に
+	skk-num.el を require していたのだが、上記の問題は daredevil に限っ
+	ては起こる可能性がないので、明示的な require を止めた (必要となっ
+	たときに autoload される)。
+	skk-use-numeric-conversion が non-nil で、skk-num.el の load 前に
+	let で temporary 変数として bind し、その let 内で skk-num.el を
+	require したとき、let を出た後に skk-num-list が void になるという
+	エラーがあった。Daredevil では変数は全て skk-vars.el に入っており、
+	これを skk.el が require しているので、skk-num-list 変数は skk.el
+	の load 直後から存在しているので、この問題は発生しない。
+
+	* skk-vars.el (skk-completion-function): Add descriptions to doc
+	string.
+	(skk-previous-completion-function): Ditto.
+
 1999-12-10  FURUE Hideyuki  <furue@kke.co.jp>
 
 	* skk.el (skk-delete-okuri-mark): Bug fixed.

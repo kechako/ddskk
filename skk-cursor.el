@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.12 1999/12/08 19:24:42 furue Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.13 1999/12/12 05:10:13 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/08 19:24:42 $
+;; Last Modified: $Date: 1999/12/12 05:10:13 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -316,8 +316,13 @@
 	   (lambda ()
 	     (skk-cursor-set-color
 	      skk-cursor-color-before-entering-minibuffer)
-	     (and skk-cursor-change-width (skk-cursor-change-when-ovwrt))
-	     )) 'append)
+	     (and skk-cursor-change-width (skk-cursor-change-when-ovwrt)) ))
+	  'append )
+
+;; 最初に load されたときは、skk-cursor adviced function になる前の関数によって
+;; 呼ばれており、advice が効いてないので、トップレベルでカーソルを合わせておく。
+;; ここじゃ効かないのか...(;_;)
+;;(and (interactive-p) (skk-cursor-set-properly))
 
 (provide 'skk-cursor)
 ;;; Local Variables:

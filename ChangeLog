@@ -1,10 +1,29 @@
+2000-03-21  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* experimental/skk-exsearch.el (search-engine): Get forward
+	one character if there is a candidates string in the working
+	buffer.
+	(synchronous-search-engine): Removed (server is connecting with
+	TCP network stream, not started by `start-process'...)
+	(server-search-engine): Removed.
+	(synchronous-search-engine): New slot `success-exit-code' and
+	`error-exit-code' are provided.
+	(core-engine): Refer to slot of eigine `success-exit-code' and
+	`error-exit-code'.
+	If error occured, show stderr as error message.
+	Bug fixed as to BUFFER argument of `call-process'.
+
 2000-03-20  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk-server.el (skk-open-server): Use temporary variable PROC for
+	NEmacs.
 
 	* experimental/skk-exsearch.el (search-engine): New superclass.
 	(synchronous-search-engine): Change it to class (not superclass).
 	(asynchronous-search-engine): Specify `search-engine' as its
 	superclass.
 	Doc fixed.
+	(setup-synchronous-engine): New function.
 
 2000-03-19  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
 

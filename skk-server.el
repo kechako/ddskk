@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-server.el,v 1.3.2.4.2.2 2000/01/23 13:40:09 czkmt Exp $
+;; Version: $Id: skk-server.el,v 1.3.2.4.2.3 2000/03/21 13:46:22 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/01/23 13:40:09 $
+;; Last Modified: $Date: 2000/03/21 13:46:22 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -142,7 +142,7 @@
 		  (set-process-input-coding-system proc code)
 		  (set-process-output-coding-system proc code))
 		 ((eq skk-emacs-type 'nemacs)
-		  (set-process-kanji-code (get-process "skkservd") 0))
+		  (set-process-kanji-code proc 0))
 		 (t
 		  (set-process-coding-system proc code code)))))))
     status ))

@@ -3,9 +3,9 @@
 
 ;; Author: Mikio Nakajima <minakaji@osaka.email.ne.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-exsearch.el,v 1.1.2.2 2000/03/20 03:05:01 minakaji Exp $
+;; Version: $Id: skk-exsearch.el,v 1.1.2.3 2000/03/21 13:46:23 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 2000/03/20 03:05:01 $
+;; Last Modified: $Date: 2000/03/21 13:46:23 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -55,56 +55,43 @@
 	   :documentation
 	   "This is where the program's input comes from. (nil means `/dev/null').")
    (stderr :initarg :stderr
-	   :initform nil
+	   :initform t
 	   :documentation "What to do with standard error in the child.\
 nil (discard standard error output), t (mix it with ordinary output),\
-or a file name string."))
-   "External synchronous search engine class.")
-
-(defclass asynchronous-search-engine (search-engine)
-  ((process initarg :process
-	    :initform nil
-	    :documentation "Process object that belongs to program.")
-   (buffer :initarg :buffer
-	   :initform nil
-	   :documentation
-	   "the buffer or (buffer-name) to associate with the process.\
-Process output goes at end of that buffer, unless you specify\
-an output stream or filter function to handle the output.\
-BUFFER may be also nil, meaning that this process is not associated\
-with any buffer."))
-  "External asynchronous search engine class.")
+or a file name string.")
+   (success-exit-code :initarg :success-exit-code 
+		      :initform 0
+		      :documentation "Numeric exit status of success." )
+   (error-exit-code :initarg :error-exit-code
+		    :initform 2
+		    :documentation "Numeric exit status of error." ))
+  "External synchronous search engine class.")
 
 (defclass regular-engine (synchronous-search-engine)
   ((coding-system :initarg :coding-system
 		  :initform (lambda () (skk-find-coding-system skk-jisyo-code))))
   "Regular search engine type.
 Call program synchronously in separate process.
-This type returns a line that contains candidates that are delimited by slash.")
+Output of this type is a line that contains candidates delimited by slash.")
 
 (defclass look-engine (synchronous-search-engine)
   (())
   "look type.
 Call program synchronously in separate process.
-This type returns multiple lines.  Each line contains a candidate.")
+This type inserts multiple lines to the buffer.  Each line contains a candidate.")
 
-(defclass server-engine (asynchronous-search-engine)
-  ((found :initform 1
-	  :documentation "A magic number that indicates the server found a candidate.")
-   (not-found :initform 4
-	      :documentation
-	      "A magic number that indicates the server did not find a candidates.")
-   (coding-system :initarg :coding-system
-		  :initform (lambda () (skk-find-coding-system skk-jisyo-code))))
-  "Server search engine type.
-Call program asynchronously in separate process.
-This type returns a line that contains a magic number and candidates that are
-delimited by slash.")
+(defmethod setup-synchronous-engine ((engine synchronous-search-engine))
+  (and (slot-exists-p engine 'coding-system)
+       (with-slots ((code coding-system)) engine
+	 (if (and code (fboundp 'modify-coding-system-alist))
+	     (modify-coding-system-alist
+	      'process (oref engine program) (cons code code))))))
 
 (defvar cdbget (make-instance regular-engine
 			      :program "/usr/local/bin/cdbget"
 			      :infile "/usr/local/share/skk/SKK-JISYO.L.cdb")
   "*cdbget search engine object.")
+(setup-synchronous-engine cdbget)
 
 (defvar look (make-instance look-engine :program "/usr/bin/look")
   "*look search engine object.")
@@ -112,24 +99,30 @@ delimited by slash.")
 (defmethod core-engine ((engine synchronous-search-engine) argument)
   ;; core search engine
   (save-excursion
-    (and (= 0 (apply 'call-process (oref engine program)
-		     (oref engine infile)
-		     t			; output to current buffer.
-		     (cons t (oref engine stderr))
-		     argument))
-	 (> (buffer-size) 0))))
-		       
+    (let ((exit-code (apply 'call-process (oref engine program)
+			    (oref engine infile)
+			    t		;output to current buffer.
+			    (list t (oref engine stderr))
+			    argument))
+	  error)
+      (cond ((and (= (oref engine success-exit-code) exit-code)
+		  (> (buffer-size) 0)))
+	    ((>= exit-code (oref engine error-exit-code))
+	     (error (buffer-substring-no-properties (point-min) (point-max))))))))
+
 (defmethod search-engine ((engine regular-engine) &rest argument)
   (let ((okurigana (or skk-henkan-okurigana skk-okuri-char))
 	l)
     (with-temp-buffer 
-      (and (core-engine engine argument)
-	   (setq l (skk-compute-henkan-lists okurigana))
-	   (cond ((and okurigana skk-henkan-okuri-strictly)
-		  (nth 2 l))
-		 ((and okurigana skk-henkan-strict-okuri-precedence)
-		  (skk-nunion (nth 2 l) (car l)))
-		 (t (car l)))))))
+      (if (core-engine engine argument)
+	  (progn
+	    (forward-char 1)
+	    (and (setq l (skk-compute-henkan-lists okurigana))
+		 (cond ((and okurigana skk-henkan-okuri-strictly)
+			(nth 2 l))
+		       ((and okurigana skk-henkan-strict-okuri-precedence)
+			(skk-nunion (nth 2 l) (car l)))
+		       (t (car l)))))))))
 
 (defmethod search-engine ((engine look-engine) &rest argument)
   (with-temp-buffer 
@@ -147,11 +140,6 @@ delimited by slash.")
       (and (core-engine engine argument)
 	   (split-string (buffer-substring-no-properties (point-min) (1- (point-max)))
 			 "\n" )))))
-
-(if (fboundp 'modify-coding-system-alist)
-    (modify-coding-system-alist
-     'process (oref cdbget program)
-     (cons (oref cdbget coding-system) (oref cdbget coding-system))))
 
 ;;;###autoload
 (defun skk-cdbget-search ()

@@ -5,9 +5,9 @@
 
 ;; Author: Masahiko Sato <masahiko@kuis.kyoto-u.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk.el,v 1.19.2.6.2.21 1999/12/12 05:10:14 minakaji Exp $
+;; Version: $Id: skk.el,v 1.19.2.6.2.22 1999/12/14 23:50:39 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/12 05:10:14 $
+;; Last Modified: $Date: 1999/12/14 23:50:39 $
 
 ;; Daredevil SKK is free software; you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -83,7 +83,7 @@
   (if (not (interactive-p))
       skk-version
     (save-match-data
-      (let* ((raw-date "$Date: 1999/12/12 05:10:14 $")
+      (let* ((raw-date "$Date: 1999/12/14 23:50:39 $")
              (year (substring raw-date 7 11))
              (month (substring raw-date 12 14))
              (date (substring raw-date 15 17)) )
@@ -412,8 +412,7 @@ dependent."
 			   "I have created an empty SKK Jisyo file for you" )
 	  (skk-regularize)
 	  (and (or skk-use-color-cursor skk-cursor-change-width)
-	       (require 'skk-cursor)
-	       (and (interactive-p) (skk-cursor-set-properly)) )
+	       (require 'skk-cursor) )
           (setq skk-mode-invoked t) ))
     ;; 以下は skk-mode に入るたびに毎度コールされるコード。
     (and skk-use-viper (require 'skk-viper))

@@ -1,3 +1,13 @@
+1999-12-15  Mikio Nakajima  <minakaji@osaka.email.ne.jp>
+
+	* skk.el (skk-mode): Move skk-cursor.el related codes to
+	skk-cursor.el.
+
+	* skk-cursor.el (skk-mode): Remove duplicated advice.
+	Do not use skk-cursor-set-properly.
+	Add codes in the top level in order to set cursor properly when
+	first time skk-cursor.el is loaded.
+
 1999-12-14  Tsukamoto Tetsuo  <czkmt@remus.dti.ne.jp>
 
 	* skk-isearch.el: Require `skk-vars' also at the load time.

@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.18 1999/12/14 12:43:10 furue Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.19 1999/12/14 23:50:39 minakaji Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/14 12:43:10 $
+;; Last Modified: $Date: 1999/12/14 23:50:39 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -201,8 +201,17 @@
   (and skk-mode (skk-cursor-set-properly)) )
 
 ;; cover to SKK functions.
+;; skk-mode と skk-auto-fill-mode だけは、skk-cursor-set-properly を呼ばない。
 (defadvice skk-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly) )
+  (skk-cursor-set-color (if skk-mode
+			    skk-cursor-hiragana-color
+			  skk-cursor-default-color )))
+
+(defadvice skk-auto-fill-mode (after skk-cursor-ad activate)
+  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+  (skk-cursor-set-color (if skk-mode
+			    skk-cursor-hiragana-color
+			  skk-cursor-default-color )))
 
 (defadvice skk-latin-mode (after skk-cursor-ad activate)
   (skk-cursor-set-properly) )
@@ -212,15 +221,6 @@
 
 (defadvice skk-abbrev-mode (after skk-cursor-ad activate)
   (skk-cursor-set-properly) )
-
-(defadvice skk-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly) )
-
-(defadvice skk-auto-fill-mode (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-color (if skk-mode
-			    skk-cursor-hiragana-color
-			  skk-cursor-default-color )))
 
 (defadvice skk-toggle-kana (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
@@ -322,8 +322,13 @@
 
 ;; 最初に load されたときは、skk-cursor adviced function になる前の関数によって
 ;; 呼ばれており、advice が効いてないので、トップレベルでカーソルを合わせておく。
-;; ここじゃ効かないのか...(;_;)
-;;(and (interactive-p) (skk-cursor-set-properly))
+(and (get-buffer-window (current-buffer))
+     ;; only first time when this file loaded.
+     (not skk-mode-invoked)
+     (let ((skk-j-mode t)
+	   skk-latin-mode skk-abbrev-mode skk-jisx0208-latin-mode
+	   skk-katakana )
+       (skk-cursor-set-properly) ))
 
 (provide 'skk-cursor)
 ;;; Local Variables:

@@ -4,6 +4,8 @@
 	experimental/skk-annotation.el, skk-server.el, skk-vars.el,
 	skk.el: Sync with main trunk.
 
+	* install-info.el (install-info-point-at-eol): New macro.
+
 2000-11-05  Tetsuo Tsukamoto  <czkmt@remus.dti.ne.jp>
 
 	* skk-macs.el (skk-do-auto-fill): Check `skk-emacs-type' instead

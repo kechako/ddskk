@@ -4,9 +4,9 @@
 
 ;; Author: Masatake YAMATO <jet@airlab.cs.ritsumei.ac.jp>
 ;; Maintainer: Mikio Nakajima <minakaji@osaka.email.ne.jp>
-;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.14 1999/12/12 12:52:49 minakaji Exp $
+;; Version: $Id: skk-cursor.el,v 1.1.2.5.2.15 1999/12/13 06:03:48 furue Exp $
 ;; Keywords: japanese
-;; Last Modified: $Date: 1999/12/12 12:52:49 $
+;; Last Modified: $Date: 1999/12/13 06:03:48 $
 
 ;; This file is part of Daredevil SKK.
 
@@ -58,8 +58,8 @@
     (cond (skk-jisx0208-latin-mode
 	   skk-cursor-jisx0208-latin-color )
 	  (skk-katakana skk-cursor-katakana-color)
-	  (skk-j-mode skk-cursor-hiragana-color)
 	  (skk-abbrev-mode skk-cursor-abbrev-color)
+	  (skk-j-mode skk-cursor-hiragana-color)
 	  ((and (boundp 'skk-jisx0201-mode)
 		skk-jisx0201-mode)
 	   skk-cursor-jisx0201-color)
@@ -99,19 +99,15 @@
 	       select-frame
 	       delete-frame
 	       set-buffer
-	       erase-buffer
-	       )))
+	       erase-buffer)))
   (while funcs
     (eval
      (`
       (defadvice (, (intern (symbol-name (car funcs))))
 	(after skk-cursor-ad activate)
 	"入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-	(skk-cursor-set-properly)
-	)
-      ) )
-    (setq funcs (cdr funcs)) )
-  )
+	(skk-cursor-set-properly) ) ) )
+    (setq funcs (cdr funcs)) ) )
 
 ;;(defadvice goto-line (after skk-cursor-ad activate)
 ;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
@@ -133,11 +129,11 @@
 ;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
 ;;  (and skk-mode (skk-cursor-set-properly)) )
 
-(defadvice newline (around skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if skk-abbrev-mode
-      (progn ad-do-it (skk-cursor-set-properly))
-    ad-do-it ))
+;;;;;(defadvice newline (around skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (if skk-abbrev-mode
+;;;;;	   (progn ad-do-it (skk-cursor-set-properly))
+;;;;;	 ad-do-it ))
 
 ;; cover to hilit19 functions.
 (defadvice hilit-yank (after skk-cursor-ad activate)
@@ -201,105 +197,112 @@
 (defadvice skk-mode (after skk-cursor-ad activate)
   (skk-cursor-set-properly) )
 
-(defadvice skk-latin-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly) )
+;;;;;(defadvice skk-latin-mode (after skk-cursor-ad activate)
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-jisx0208-latin-mode (after skk-cursor-ad activate)
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-abbrev-mode (after skk-cursor-ad activate)
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-mode (after skk-cursor-ad activate)
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-auto-fill-mode (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-color (if skk-mode
+;;;;;				 skk-cursor-hiragana-color
+;;;;;			       skk-cursor-default-color )))
+;;;;;
+;;;;;(defadvice skk-toggle-kana (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (if skk-katakana
+;;;;;	   (skk-cursor-set-color skk-cursor-katakana-color)
+;;;;;	 (skk-cursor-set-color skk-cursor-hiragana-color) ))
+;;;;;
+;;;;;(defadvice skk-kakutei (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (if (interactive-p)
+;;;;;	   (skk-cursor-set-color (if skk-katakana skk-cursor-katakana-color
+;;;;;				   skk-cursor-hiragana-color ))))
+;;;;;
+;;;;;(defadvice skk-save-jisyo-original (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-katakana-region (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-hiragana-region (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-jisx0208-latin-region (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-latin-region (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-jisx0201-region (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-gyakubiki-message (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-gyakubiki-katakana-region (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-gyakubiki-katakana-message (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-hurigana-region (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-hurigana-message (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-hurigana-katakana-region (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-romaji-region (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-romaji-message (after skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (skk-cursor-set-properly) )
+;;;;;
+;;;;;(defadvice skk-delete-backward-char (around skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (if skk-abbrev-mode
+;;;;;	   (progn ad-do-it (skk-cursor-set-properly))
+;;;;;	 ad-do-it ))
+;;;;;
+;;;;;(defadvice skk-start-henkan (around skk-cursor-ad activate)
+;;;;;  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
+;;;;;  (if skk-abbrev-mode
+;;;;;	   (progn ad-do-it (skk-cursor-set-properly))
+;;;;;	 ad-do-it ))
 
-(defadvice skk-jisx0208-latin-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly) )
-
-(defadvice skk-abbrev-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly) )
-
-(defadvice skk-mode (after skk-cursor-ad activate)
-  (skk-cursor-set-properly) )
-
-(defadvice skk-auto-fill-mode (after skk-cursor-ad activate)
+;; XXX: force-mode-line-updateを直接adviceするのは行儀悪い。
+;; skk-force-mode-line-and-cursor-updateなどのラッパー関数を定義して、
+;; 関数内からhookを呼んでやる構造の方がよいと思う。
+(defadvice force-mode-line-update (after skk-cursor-ad activate)
   "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-color (if skk-mode
-			    skk-cursor-hiragana-color
-			  skk-cursor-default-color )))
+  (and skk-mode (skk-cursor-set-properly) ) )
 
-(defadvice skk-toggle-kana (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if skk-katakana
-      (skk-cursor-set-color skk-cursor-katakana-color)
-    (skk-cursor-set-color skk-cursor-hiragana-color) ))
-
-(defadvice skk-kakutei (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if (interactive-p)
-      (skk-cursor-set-color (if skk-katakana skk-cursor-katakana-color
-			      skk-cursor-hiragana-color ))))
-
-(defadvice skk-save-jisyo-original (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-katakana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-hiragana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-jisx0208-latin-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-latin-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-jisx0201-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-gyakubiki-message (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-gyakubiki-katakana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-gyakubiki-katakana-message (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-hurigana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-hurigana-message (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-hurigana-katakana-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-romaji-region (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-romaji-message (after skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (skk-cursor-set-properly) )
-
-(defadvice skk-delete-backward-char (around skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if skk-abbrev-mode
-      (progn ad-do-it (skk-cursor-set-properly))
-    ad-do-it ))
-
-(defadvice skk-start-henkan (around skk-cursor-ad activate)
-  "入力モードに応じカーソル色を変化させる。Ovwrt モードのときにカーソル幅を小さくする。"
-  (if skk-abbrev-mode
-      (progn ad-do-it (skk-cursor-set-properly))
-    ad-do-it ))
-
-(add-hook 'after-make-frame-hook 'skk-cursor-set-properly)
+;;(add-hook 'after-make-frame-hook 'skk-cursor-set-properly)
 
 (add-hook 'minibuffer-setup-hook
 	  (function
@@ -307,9 +310,7 @@
 	     (setq skk-cursor-color-before-entering-minibuffer
 		   (with-current-buffer
 		       (skk-minibuffer-origin) (skk-cursor-current-color)))
-	     (if (memq this-command '(skk-insert skk-start-henkan))
-		 (skk-cursor-set-properly)
-	       (skk-cursor-set-color skk-cursor-default-color)))))
+	     (skk-cursor-set-properly) ) ) )
 
 (add-hook 'minibuffer-exit-hook
 	  (function

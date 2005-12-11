@@ -14,6 +14,8 @@
 	(skk-toolip-show-at-point): Emacs 22.0.50 only.  Move mouse
 	pointer slightly up to avoid tooltip partly off the screen.
 
+	(tooltip-hide): Advice.  Call `update-buffer-local-frame-params'.
+
 	* skk-server.el: Use `kill-emacs-hook' instead of
 	`skk-before-kill-emacs-hook'.
 
@@ -31,7 +33,8 @@
 	(other-frame): `defadvice' instead of `skk-defadvice'.
 
 	(skktut-init-variables-alist): Use `skk-search-jisyo-buf' instead
-	of `skk-search-jisyo-file'.
+	of `skk-search-jisyo-file'.  Bind `skk-show-tooltip' and
+	`skk-show-inline' to nil.
 
 	(skk-get-jisyo-buffer): Advice.  Return skktut-jisyo-buffer in SKK
 	tutorial.
@@ -5213,8 +5216,8 @@
 
 
 
-Version: $Id: ChangeLog,v 1.911 2005/12/11 07:26:07 skk-cvs Exp $
-Last Modified: $Date: 2005/12/11 07:26:07 $
+Version: $Id: ChangeLog,v 1.913 2005/12/11 07:28:35 skk-cvs Exp $
+Last Modified: $Date: 2005/12/11 07:28:35 $
 
 Local Variables:
 buffer-file-coding-system: iso-2022-jp
